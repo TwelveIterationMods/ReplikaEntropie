@@ -1,0 +1,16 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 7,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "count": 2,
+      "item": "minecraft:blaze_rod"
+    }
+  ],
+  "result": {
+    "item": "replikaentropie:semisonic_speeders"
+  }
+}

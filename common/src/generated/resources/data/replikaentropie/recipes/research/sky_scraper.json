@@ -1,0 +1,18 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 0,
+  "data": 0,
+  "fragments": 0,
+  "hardDependencies": [],
+  "icon": {
+    "item": "replikaentropie:sky_scraper"
+  },
+  "nonogram": "replikaentropie:sky_scraper",
+  "research_type": "crafting",
+  "scrap": 0,
+  "softDependencies": [],
+  "sort_order": 100,
+  "unlocked_recipes": [
+    "replikaentropie:handheld_analyzer"
+  ]
+}

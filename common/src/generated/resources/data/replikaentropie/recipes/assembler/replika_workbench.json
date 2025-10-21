@@ -1,0 +1,28 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 9,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:diamond"
+    },
+    {
+      "count": 4,
+      "item": "replikaentropie:chipset"
+    },
+    {
+      "count": 8,
+      "item": "replikaentropie:scrap"
+    },
+    {
+      "count": 4,
+      "item": "replikaentropie:fragments"
+    }
+  ],
+  "result": {
+    "item": "replikaentropie:replika_workbench"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.1,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:golden_carrot"
+  },
+  "scrap": 0.08888889
+}

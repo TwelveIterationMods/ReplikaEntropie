@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/replika_workbench",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/replika_workbench"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/replika_workbench",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/replika_workbench",
+      "y": 270
+    }
+  }
+}

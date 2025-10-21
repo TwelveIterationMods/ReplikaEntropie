@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.0,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:light_weighted_pressure_plate"
+  },
+  "scrap": 0.2
+}

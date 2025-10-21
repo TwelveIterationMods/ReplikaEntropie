@@ -1,0 +1,17 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 12,
+  "data": 5,
+  "fragments": 6,
+  "hardDependencies": [
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "item": "minecraft:lightning_rod"
+  },
+  "nonogram": "replikaentropie:burst_energy",
+  "research_type": "lore",
+  "scrap": 12,
+  "softDependencies": [],
+  "sort_order": 1200
+}

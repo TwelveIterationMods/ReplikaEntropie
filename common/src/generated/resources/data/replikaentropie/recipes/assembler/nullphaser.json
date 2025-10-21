@@ -1,0 +1,18 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 2,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "minecraft:glass"
+    }
+  ],
+  "result": {
+    "item": "replikaentropie:nullphaser"
+  }
+}

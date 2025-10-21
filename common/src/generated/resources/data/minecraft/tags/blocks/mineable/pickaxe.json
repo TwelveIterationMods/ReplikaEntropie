@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "replikaentropie:replika_workbench",
+    "replikaentropie:entropic_data_miner",
+    "replikaentropie:fabricator",
+    "replikaentropie:assembler",
+    "replikaentropie:fragmental_waste",
+    "replikaentropie:biomass_incubator",
+    "replikaentropie:biomass_harvester",
+    "replikaentropie:cobblescrap",
+    "replikaentropie:lavascrap",
+    "replikaentropie:world_eater",
+    "replikaentropie:defragmentizer",
+    "replikaentropie:fragment_accelerator",
+    "replikaentropie:chaos_engine",
+    "replikaentropie:recycler"
+  ]
+}

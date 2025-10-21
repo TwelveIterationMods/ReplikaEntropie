@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/world_eater",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/world_eater"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/world_eater",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/world_eater",
+      "y": 270
+    }
+  }
+}

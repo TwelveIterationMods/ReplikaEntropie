@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.05,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:stone_sword"
+  },
+  "scrap": 0.0
+}

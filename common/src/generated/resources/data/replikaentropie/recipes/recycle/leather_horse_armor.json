@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.7,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:leather_horse_armor"
+  },
+  "scrap": 0.0
+}

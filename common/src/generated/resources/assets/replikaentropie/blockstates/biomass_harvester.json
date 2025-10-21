@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/biomass_harvester",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/biomass_harvester"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/biomass_harvester",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/biomass_harvester",
+      "y": 270
+    }
+  }
+}

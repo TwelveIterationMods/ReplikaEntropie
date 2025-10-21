@@ -1,0 +1,17 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 0,
+  "data": 1,
+  "fragments": 0,
+  "hardDependencies": [
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "item": "replikaentropie:assembly_ticket"
+  },
+  "nonogram": "replikaentropie:assembly_ticket",
+  "research_type": "lore",
+  "scrap": 0,
+  "softDependencies": [],
+  "sort_order": 1000
+}

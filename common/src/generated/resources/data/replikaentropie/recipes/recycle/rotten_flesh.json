@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.2,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:rotten_flesh"
+  },
+  "scrap": 0.0
+}

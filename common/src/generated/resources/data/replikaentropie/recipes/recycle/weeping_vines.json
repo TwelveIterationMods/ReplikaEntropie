@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.2,
+  "fragments": 0.2,
+  "ingredient": {
+    "item": "minecraft:weeping_vines"
+  },
+  "scrap": 0.0
+}

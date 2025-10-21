@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.1,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:rose_bush"
+  },
+  "scrap": 0.0
+}

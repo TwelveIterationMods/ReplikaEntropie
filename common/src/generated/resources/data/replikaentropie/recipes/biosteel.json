@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "replikaentropie:scrap"
+    },
+    {
+      "item": "replikaentropie:scrap"
+    },
+    {
+      "item": "replikaentropie:biomass"
+    },
+    {
+      "item": "replikaentropie:biomass"
+    },
+    {
+      "item": "replikaentropie:biomass"
+    }
+  ],
+  "result": {
+    "item": "replikaentropie:biosteel"
+  }
+}

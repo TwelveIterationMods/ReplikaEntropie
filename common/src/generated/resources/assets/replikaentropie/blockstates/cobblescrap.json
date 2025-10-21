@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/cobblescrap",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/cobblescrap"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/cobblescrap",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/cobblescrap",
+      "y": 270
+    }
+  }
+}

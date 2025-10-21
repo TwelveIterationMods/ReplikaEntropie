@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "replikaentropie:replika_helmet",
+    "replikaentropie:replika_chestplate",
+    "replikaentropie:replika_leggings",
+    "replikaentropie:replika_boots"
+  ]
+}

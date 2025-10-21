@@ -1,0 +1,7 @@
+{
+  "type": "replikaentropie:vacuumable_ore",
+  "empty_block": "minecraft:stone",
+  "ingredient": {
+    "item": "minecraft:gold_ore"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.6,
+  "fragments": 0.1,
+  "ingredient": {
+    "item": "minecraft:glow_item_frame"
+  },
+  "scrap": 0.0
+}

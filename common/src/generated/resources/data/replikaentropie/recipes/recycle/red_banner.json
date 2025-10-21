@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.65000004,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:red_banner"
+  },
+  "scrap": 0.0
+}

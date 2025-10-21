@@ -1,0 +1,22 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 2,
+  "data": 5,
+  "fragments": 2,
+  "hardDependencies": [
+    "replikaentropie:research/scrap",
+    "replikaentropie:research/biomass",
+    "replikaentropie:research/fragments"
+  ],
+  "icon": {
+    "item": "replikaentropie:assembler"
+  },
+  "nonogram": "replikaentropie:assembler",
+  "research_type": "crafting",
+  "scrap": 2,
+  "softDependencies": [],
+  "sort_order": 900,
+  "unlocked_recipes": [
+    "replikaentropie:assembler"
+  ]
+}

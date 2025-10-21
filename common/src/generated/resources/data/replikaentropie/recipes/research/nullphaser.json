@@ -1,0 +1,20 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 0,
+  "data": 8,
+  "fragments": 8,
+  "hardDependencies": [
+    "replikaentropie:research/burst_energy"
+  ],
+  "icon": {
+    "item": "replikaentropie:nullphaser"
+  },
+  "nonogram": "replikaentropie:nullphaser",
+  "research_type": "assembler",
+  "scrap": 4,
+  "softDependencies": [],
+  "sort_order": 1700,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/nullphaser"
+  ]
+}

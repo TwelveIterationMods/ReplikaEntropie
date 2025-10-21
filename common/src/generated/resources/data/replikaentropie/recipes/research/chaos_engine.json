@@ -1,0 +1,21 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 12,
+  "data": 20,
+  "fragments": 48,
+  "hardDependencies": [
+    "replikaentropie:research/entropic_data_miner",
+    "replikaentropie:research/fragmental_waste"
+  ],
+  "icon": {
+    "item": "replikaentropie:chaos_engine"
+  },
+  "nonogram": "replikaentropie:chaos_engine",
+  "research_type": "assembler",
+  "scrap": 24,
+  "softDependencies": [],
+  "sort_order": 3400,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/chaos_engine"
+  ]
+}

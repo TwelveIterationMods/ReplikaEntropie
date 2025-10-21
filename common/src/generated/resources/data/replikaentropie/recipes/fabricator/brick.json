@@ -1,0 +1,10 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 0,
+  "fragments": 0,
+  "result": {
+    "item": "minecraft:brick"
+  },
+  "scrap": 2,
+  "sortOrder": 1400
+}

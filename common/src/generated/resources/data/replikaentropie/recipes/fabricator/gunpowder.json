@@ -1,0 +1,10 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 0,
+  "fragments": 2,
+  "result": {
+    "item": "minecraft:gunpowder"
+  },
+  "scrap": 2,
+  "sortOrder": 1000
+}

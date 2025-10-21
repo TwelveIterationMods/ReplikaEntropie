@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "replikaentropie:replika_skin"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "BDB",
+    "B B",
+    "B B"
+  ],
+  "result": {
+    "item": "replikaentropie:replika_leggings_frame"
+  },
+  "show_notification": true
+}

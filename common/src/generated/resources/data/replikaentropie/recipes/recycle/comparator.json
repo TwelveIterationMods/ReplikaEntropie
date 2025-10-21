@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.15,
+  "fragments": 0.3,
+  "ingredient": {
+    "item": "minecraft:comparator"
+  },
+  "scrap": 0.1
+}

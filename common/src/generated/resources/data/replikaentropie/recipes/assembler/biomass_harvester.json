@@ -1,0 +1,26 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 9,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "count": 8,
+      "item": "minecraft:rail"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "minecraft:hopper"
+    },
+    {
+      "item": "minecraft:lead"
+    }
+  ],
+  "result": {
+    "item": "replikaentropie:biomass_harvester"
+  }
+}

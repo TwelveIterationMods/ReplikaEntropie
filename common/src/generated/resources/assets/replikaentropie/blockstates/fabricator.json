@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/fabricator",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/fabricator"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/fabricator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/fabricator",
+      "y": 270
+    }
+  }
+}

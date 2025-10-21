@@ -1,0 +1,20 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 2,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "count": 2,
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "count": 2,
+      "item": "minecraft:glow_ink_sac"
+    }
+  ],
+  "result": {
+    "item": "replikaentropie:brightvision_goggles"
+  }
+}

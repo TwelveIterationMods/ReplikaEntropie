@@ -1,0 +1,7 @@
+dependencies {
+    implementation("net.blay09.mods:balm-forge:${balm_version}") {
+        changing = balm_version.contains("SNAPSHOT")
+    }
+    implementation("net.blay09.mods:kuma-api-forge:${kuma_version}")
+    implementation("curse.maven:jei-238222:7037120")
+}

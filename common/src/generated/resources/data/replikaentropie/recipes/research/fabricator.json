@@ -1,0 +1,20 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 2,
+  "data": 5,
+  "fragments": 2,
+  "hardDependencies": [
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "item": "replikaentropie:assembler"
+  },
+  "nonogram": "replikaentropie:fabricator",
+  "research_type": "assembler",
+  "scrap": 2,
+  "softDependencies": [],
+  "sort_order": 1100,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/fabricator"
+  ]
+}

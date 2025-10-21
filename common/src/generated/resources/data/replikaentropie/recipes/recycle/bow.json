@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.45000002,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:bow"
+  },
+  "scrap": 0.0
+}

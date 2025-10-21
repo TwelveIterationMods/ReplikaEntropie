@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "replikaentropie:block/fragment_accelerator"
+    }
+  }
+}

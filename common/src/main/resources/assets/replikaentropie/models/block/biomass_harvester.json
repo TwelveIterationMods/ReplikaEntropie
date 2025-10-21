@@ -1,0 +1,51 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"parent": "block/cube_all",
+	"textures": {
+		"0": "replikaentropie:block/machine_top_danger",
+		"1": "replikaentropie:block/biomass_harvester",
+		"particle": "replikaentropie:block/machine_top_danger"
+	},
+	"elements": [
+		{
+			"name": "bottom",
+			"from": [0, 0, 0],
+			"to": [16, 6, 16],
+			"faces": {
+				"north": {"uv": [0, 10, 16, 16], "texture": "#1", "cullface": "north"},
+				"east": {"uv": [0, 10, 16, 16], "texture": "#1", "cullface": "east"},
+				"south": {"uv": [0, 10, 16, 16], "texture": "#1", "cullface": "south"},
+				"west": {"uv": [0, 10, 16, 16], "texture": "#1", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0", "cullface": "down"}
+			}
+		},
+		{
+			"name": "center",
+			"from": [5, 6, 5],
+			"to": [11, 10, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-1, 4, 5]},
+			"faces": {
+				"north": {"uv": [6, 6, 12, 10], "texture": "#1"},
+				"east": {"uv": [0, 6, 6, 10], "texture": "#1"},
+				"south": {"uv": [10, 6, 16, 10], "texture": "#1"},
+				"west": {"uv": [0, 6, 6, 10], "texture": "#1"}
+			}
+		},
+		{
+			"name": "top",
+			"from": [0, 10, 0],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 10, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 6], "texture": "#1", "cullface": "north"},
+				"east": {"uv": [0, 0, 16, 6], "texture": "#1", "cullface": "east"},
+				"south": {"uv": [0, 0, 16, 6], "texture": "#1", "cullface": "south"},
+				"west": {"uv": [0, 0, 16, 6], "texture": "#1", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0", "cullface": "up"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		}
+	]
+}

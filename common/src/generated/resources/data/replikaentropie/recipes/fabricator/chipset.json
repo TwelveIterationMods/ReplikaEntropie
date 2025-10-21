@@ -1,0 +1,10 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 0,
+  "fragments": 1,
+  "result": {
+    "item": "replikaentropie:chipset"
+  },
+  "scrap": 2,
+  "sortOrder": 200
+}

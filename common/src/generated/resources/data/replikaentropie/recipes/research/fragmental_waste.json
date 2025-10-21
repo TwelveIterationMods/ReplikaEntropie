@@ -1,0 +1,17 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 0,
+  "data": 1,
+  "fragments": 2,
+  "hardDependencies": [
+    "replikaentropie:research/defragmentizer"
+  ],
+  "icon": {
+    "item": "replikaentropie:fragmental_waste"
+  },
+  "nonogram": "replikaentropie:fragmental_waste",
+  "research_type": "lore",
+  "scrap": 0,
+  "softDependencies": [],
+  "sort_order": 3100
+}

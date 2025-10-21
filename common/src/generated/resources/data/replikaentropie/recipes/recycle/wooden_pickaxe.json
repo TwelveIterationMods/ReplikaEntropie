@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.4,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:wooden_pickaxe"
+  },
+  "scrap": 0.0
+}

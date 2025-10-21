@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.4,
+  "fragments": 0.1,
+  "ingredient": {
+    "item": "minecraft:enchanted_book"
+  },
+  "scrap": 0.0
+}

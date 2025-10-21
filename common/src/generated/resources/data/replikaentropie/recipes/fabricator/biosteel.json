@@ -1,0 +1,10 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 2,
+  "fragments": 0,
+  "result": {
+    "item": "replikaentropie:biosteel"
+  },
+  "scrap": 2,
+  "sortOrder": 100
+}

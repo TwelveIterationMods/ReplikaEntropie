@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_replika_framing": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "replikaentropie:replika_skin"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "replikaentropie:replika_chestplate_frame"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_replika_framing",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "replikaentropie:replika_chestplate_frame"
+    ]
+  },
+  "sends_telemetry_event": false
+}

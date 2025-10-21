@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.2,
+  "fragments": 0.2,
+  "ingredient": {
+    "item": "minecraft:pitcher_pod"
+  },
+  "scrap": 0.0
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/biomass_incubator",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/biomass_incubator"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/biomass_incubator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/biomass_incubator",
+      "y": 270
+    }
+  }
+}

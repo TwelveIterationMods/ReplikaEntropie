@@ -1,0 +1,20 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 4,
+  "data": 32,
+  "fragments": 32,
+  "hardDependencies": [
+    "replikaentropie:research/burst_energy"
+  ],
+  "icon": {
+    "item": "replikaentropie:gravilift_harness"
+  },
+  "nonogram": "replikaentropie:gravilift_harness",
+  "research_type": "assembler",
+  "scrap": 16,
+  "softDependencies": [],
+  "sort_order": 2300,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/gravilift_harness"
+  ]
+}

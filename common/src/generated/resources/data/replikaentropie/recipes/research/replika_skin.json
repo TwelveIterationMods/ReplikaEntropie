@@ -1,0 +1,17 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 12,
+  "data": 8,
+  "fragments": 0,
+  "hardDependencies": [
+    "replikaentropie:research/burst_energy"
+  ],
+  "icon": {
+    "item": "replikaentropie:replika_skin"
+  },
+  "nonogram": "replikaentropie:replika_skin",
+  "research_type": "lore",
+  "scrap": 0,
+  "softDependencies": [],
+  "sort_order": 3500
+}

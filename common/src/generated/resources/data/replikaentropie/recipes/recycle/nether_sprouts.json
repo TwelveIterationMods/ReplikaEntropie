@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.2,
+  "fragments": 0.2,
+  "ingredient": {
+    "item": "minecraft:nether_sprouts"
+  },
+  "scrap": 0.0
+}

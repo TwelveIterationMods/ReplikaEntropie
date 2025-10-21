@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.1,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:netherite_shovel"
+  },
+  "scrap": 0.8
+}

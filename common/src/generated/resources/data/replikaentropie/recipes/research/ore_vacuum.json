@@ -1,0 +1,20 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 0,
+  "data": 10,
+  "fragments": 2,
+  "hardDependencies": [
+    "replikaentropie:research/burst_drill"
+  ],
+  "icon": {
+    "item": "replikaentropie:ore_vacuum"
+  },
+  "nonogram": "replikaentropie:ore_vacuum",
+  "research_type": "assembler",
+  "scrap": 8,
+  "softDependencies": [],
+  "sort_order": 1400,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/ore_vacuum"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 1,
+  "fragments": 0,
+  "result": {
+    "item": "minecraft:stick"
+  },
+  "scrap": 0,
+  "sortOrder": 600
+}

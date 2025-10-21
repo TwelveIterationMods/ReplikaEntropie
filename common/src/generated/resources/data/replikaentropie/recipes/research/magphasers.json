@@ -1,0 +1,20 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 0,
+  "data": 20,
+  "fragments": 8,
+  "hardDependencies": [
+    "replikaentropie:research/slowphasers"
+  ],
+  "icon": {
+    "item": "replikaentropie:magphasers"
+  },
+  "nonogram": "replikaentropie:magphasers",
+  "research_type": "assembler",
+  "scrap": 4,
+  "softDependencies": [],
+  "sort_order": 1600,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/magphasers"
+  ]
+}

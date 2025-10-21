@@ -1,0 +1,20 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 32,
+  "data": 10,
+  "fragments": 0,
+  "hardDependencies": [
+    "replikaentropie:research/biomass_incubator"
+  ],
+  "icon": {
+    "item": "replikaentropie:biomass_harvester"
+  },
+  "nonogram": "replikaentropie:biomass_harvester",
+  "research_type": "assembler",
+  "scrap": 0,
+  "softDependencies": [],
+  "sort_order": 2900,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/biomass_incubator"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 8,
+  "fragments": 2,
+  "result": {
+    "item": "replikaentropie:replika_skin"
+  },
+  "scrap": 8,
+  "sortOrder": 400
+}

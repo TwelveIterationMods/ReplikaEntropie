@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "${group}.${mod_id}.mixin",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ItemEntityMixin",
+    "LiquidBlockMixin",
+    "LivingEntityMixin",
+    "RandomizableContainerBlockEntityMixin",
+    "RandomizableContainerBlockEntityAccessor"
+  ],
+  "client": [
+    "GameRendererAccessor",
+    "GameRendererMixin",
+    "MultiPlayerGameModeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

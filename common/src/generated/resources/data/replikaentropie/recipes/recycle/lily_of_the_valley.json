@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.1,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:lily_of_the_valley"
+  },
+  "scrap": 0.0
+}

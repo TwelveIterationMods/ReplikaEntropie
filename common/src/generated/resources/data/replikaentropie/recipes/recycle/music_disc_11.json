@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.0,
+  "fragments": 0.1,
+  "ingredient": {
+    "item": "minecraft:music_disc_11"
+  },
+  "scrap": 1.0
+}

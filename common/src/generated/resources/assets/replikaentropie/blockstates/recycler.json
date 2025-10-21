@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/recycler",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/recycler"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/recycler",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/recycler",
+      "y": 270
+    }
+  }
+}

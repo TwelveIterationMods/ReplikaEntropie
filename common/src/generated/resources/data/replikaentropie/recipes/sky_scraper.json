@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "replikaentropie:chipset"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "III",
+    "GCG",
+    "III"
+  ],
+  "result": {
+    "item": "replikaentropie:sky_scraper"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "D": {
+      "item": "minecraft:daylight_detector"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "IDI",
+    "CAC",
+    "III"
+  ],
+  "result": {
+    "item": "replikaentropie:assembler"
+  },
+  "show_notification": true
+}

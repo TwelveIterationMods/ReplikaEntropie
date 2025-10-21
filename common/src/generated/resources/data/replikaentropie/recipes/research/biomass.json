@@ -1,0 +1,17 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 1,
+  "data": 1,
+  "fragments": 0,
+  "hardDependencies": [
+    "replikaentropie:research/recycler"
+  ],
+  "icon": {
+    "item": "replikaentropie:biomass"
+  },
+  "nonogram": "replikaentropie:biomass",
+  "research_type": "lore",
+  "scrap": 0,
+  "softDependencies": [],
+  "sort_order": 600
+}

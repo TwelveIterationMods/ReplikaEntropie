@@ -1,0 +1,28 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 9,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "count": 2,
+      "item": "replikaentropie:chipset"
+    },
+    {
+      "count": 3,
+      "item": "minecraft:copper_ingot"
+    },
+    {
+      "count": 8,
+      "item": "replikaentropie:fragments"
+    },
+    {
+      "count": 8,
+      "item": "replikaentropie:biomass"
+    }
+  ],
+  "result": {
+    "item": "replikaentropie:entropic_data_miner"
+  }
+}

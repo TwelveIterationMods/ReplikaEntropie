@@ -1,0 +1,24 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 9,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:recovery_compass"
+    },
+    {
+      "item": "minecraft:clock"
+    },
+    {
+      "item": "minecraft:compass"
+    }
+  ],
+  "result": {
+    "item": "replikaentropie:chaos_engine"
+  }
+}

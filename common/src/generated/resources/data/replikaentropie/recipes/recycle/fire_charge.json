@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.1,
+  "fragments": 0.1,
+  "ingredient": {
+    "item": "minecraft:fire_charge"
+  },
+  "scrap": 0.2
+}

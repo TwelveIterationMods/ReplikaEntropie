@@ -1,0 +1,17 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 0,
+  "data": 1,
+  "fragments": 0,
+  "hardDependencies": [
+    "replikaentropie:research/recycler"
+  ],
+  "icon": {
+    "item": "minecraft:daylight_detector"
+  },
+  "nonogram": "replikaentropie:entropic_energy",
+  "research_type": "lore",
+  "scrap": 0,
+  "softDependencies": [],
+  "sort_order": 400
+}

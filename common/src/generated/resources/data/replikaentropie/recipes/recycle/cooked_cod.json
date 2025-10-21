@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.3,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:cooked_cod"
+  },
+  "scrap": 0.0
+}

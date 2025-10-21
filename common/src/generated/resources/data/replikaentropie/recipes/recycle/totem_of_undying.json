@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.0,
+  "fragments": 1.0,
+  "ingredient": {
+    "item": "minecraft:totem_of_undying"
+  },
+  "scrap": 1.0
+}

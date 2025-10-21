@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hazmat_lining": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "replikaentropie:hazmat_lining"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "replikaentropie:hazmat_helmet"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_hazmat_lining",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "replikaentropie:hazmat_helmet"
+    ]
+  },
+  "sends_telemetry_event": false
+}

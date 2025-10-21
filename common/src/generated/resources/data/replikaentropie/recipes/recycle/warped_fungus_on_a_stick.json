@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.3,
+  "fragments": 0.1,
+  "ingredient": {
+    "item": "minecraft:warped_fungus_on_a_stick"
+  },
+  "scrap": 0.0
+}

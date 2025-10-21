@@ -1,0 +1,23 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 4,
+  "data": 1,
+  "fragments": 4,
+  "hardDependencies": [
+    "replikaentropie:research/fragmental_waste"
+  ],
+  "icon": {
+    "item": "replikaentropie:hazmat_helmet"
+  },
+  "nonogram": "replikaentropie:hazmat",
+  "research_type": "crafting",
+  "scrap": 1,
+  "softDependencies": [],
+  "sort_order": 3200,
+  "unlocked_recipes": [
+    "replikaentropie:hazmat_helmet",
+    "replikaentropie:hazmat_chestplate",
+    "replikaentropie:hazmat_leggings",
+    "replikaentropie:hazmat_boots"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 9,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "count": 6,
+      "item": "minecraft:glass"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:brick"
+    },
+    {
+      "count": 3,
+      "item": "minecraft:diamond"
+    }
+  ],
+  "result": {
+    "item": "replikaentropie:lavascrap"
+  }
+}

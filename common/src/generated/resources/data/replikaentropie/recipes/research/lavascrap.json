@@ -1,0 +1,20 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 0,
+  "data": 10,
+  "fragments": 0,
+  "hardDependencies": [
+    "replikaentropie:research/cobblescrap"
+  ],
+  "icon": {
+    "item": "replikaentropie:lavascrap"
+  },
+  "nonogram": "replikaentropie:lavascrap",
+  "research_type": "assembler",
+  "scrap": 32,
+  "softDependencies": [],
+  "sort_order": 2800,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/lavascrap"
+  ]
+}

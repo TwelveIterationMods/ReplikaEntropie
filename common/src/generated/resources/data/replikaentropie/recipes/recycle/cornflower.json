@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.1,
+  "fragments": 0.0,
+  "ingredient": {
+    "item": "minecraft:cornflower"
+  },
+  "scrap": 0.0
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/entropic_data_miner",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/entropic_data_miner"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/entropic_data_miner",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/entropic_data_miner",
+      "y": 270
+    }
+  }
+}

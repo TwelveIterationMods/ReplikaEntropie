@@ -1,0 +1,20 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 32,
+  "data": 32,
+  "fragments": 32,
+  "hardDependencies": [
+    "replikaentropie:research/replika_skin"
+  ],
+  "icon": {
+    "item": "replikaentropie:replika_workbench"
+  },
+  "nonogram": "replikaentropie:replika_workbench",
+  "research_type": "assembler",
+  "scrap": 32,
+  "softDependencies": [],
+  "sort_order": 3600,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/replika_workbench"
+  ]
+}

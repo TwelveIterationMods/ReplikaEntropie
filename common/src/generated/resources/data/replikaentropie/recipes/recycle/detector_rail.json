@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.0,
+  "fragments": 0.1,
+  "ingredient": {
+    "item": "minecraft:detector_rail"
+  },
+  "scrap": 0.6
+}
