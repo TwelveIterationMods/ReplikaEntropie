@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.block;
 
+import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.replikaentropie.block.entity.ChaosEngineBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -125,4 +126,5 @@ public class ChaosEngineBlock extends BaseEntityBlock {
                 ? createTickerHelper(type, ModBlockEntities.chaosEngine.get(), ChaosEngineBlockEntity::clientTick)
                 : createTickerHelper(type, ModBlockEntities.chaosEngine.get(), ChaosEngineBlockEntity::serverTick);
     }
+
 }

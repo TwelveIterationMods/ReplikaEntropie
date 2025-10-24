@@ -1,6 +1,7 @@
 package net.blay09.mods.replikaentropie.block;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.replikaentropie.block.entity.LavascrapBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -59,5 +60,16 @@ public class LavaScrapBlock extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide ? null : createTickerHelper(type, ModBlockEntities.lavascrap.get(), LavascrapBlockEntity::serverTick);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            if (level.getBlockEntity(pos) instanceof BalmContainerProvider provider) {
+                provider.dropItems(level, pos);
+            }
+
+            super.onRemove(state, level, pos, newState, isMoving);
+        }
     }
 }

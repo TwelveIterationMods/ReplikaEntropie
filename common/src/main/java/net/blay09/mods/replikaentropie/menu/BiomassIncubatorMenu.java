@@ -37,10 +37,10 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu {
     private final QuickMove.Routing quickMove;
 
     public BiomassIncubatorMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT));
+        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainer(3), new SimpleContainerData(DATA_COUNT));
     }
 
-    public BiomassIncubatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
+    public BiomassIncubatorMenu(int containerId, Inventory playerInventory, Container container, Container soilContainer, ContainerData data) {
         super(ModMenus.biomassIncubator.get(), containerId);
         this.container = container;
         checkContainerSize(container, 8);
@@ -55,9 +55,9 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu {
         addSlot(new Slot(container, 3, 69, 23));
         addSlot(new Slot(container, 4, 87, 23));
 
-        addSlot(new ReadonlySlot(container, 5, 51, 41));
-        addSlot(new ReadonlySlot(container, 6, 69, 41));
-        addSlot(new ReadonlySlot(container, 7, 87, 41));
+        addSlot(new ReadonlySlot(soilContainer, 0, 51, 41));
+        addSlot(new ReadonlySlot(soilContainer, 1, 69, 41));
+        addSlot(new ReadonlySlot(soilContainer, 2, 87, 41));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; ++j) {

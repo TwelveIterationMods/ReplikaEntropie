@@ -1,6 +1,7 @@
 package net.blay09.mods.replikaentropie.block;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.replikaentropie.block.entity.ReplikaWorkbenchBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -57,5 +58,16 @@ public class ReplikaWorkbenchBlock extends BaseEntityBlock {
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            if (level.getBlockEntity(pos) instanceof BalmContainerProvider provider) {
+                provider.dropItems(level, pos);
+            }
+
+            super.onRemove(state, level, pos, newState, isMoving);
+        }
     }
 }

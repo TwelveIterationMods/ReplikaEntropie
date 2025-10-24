@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.block;
 
+import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.replikaentropie.block.entity.FragmentalWasteBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.blay09.mods.replikaentropie.item.ModItems;
@@ -90,4 +91,5 @@ public class FragmentalWasteBlock extends BaseEntityBlock {
         final var pos = hit.getBlockPos();
         level.explode(null, pos.getX(), pos.getY(), pos.getZ(), 3f, true, Level.ExplosionInteraction.BLOCK);
     }
+
 }

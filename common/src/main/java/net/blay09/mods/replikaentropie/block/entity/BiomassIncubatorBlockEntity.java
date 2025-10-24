@@ -63,7 +63,13 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
     private final Container outputContainer = new SubContainer(backingContainer, 0, 2);
     private final Container waterContainer = new SubContainer(backingContainer, 1, 2);
     private final Container seedsContainer = new SubContainer(backingContainer, 2, 5);
-    private final Container soilContainer = new SubContainer(backingContainer, 5, 8);
+    private final DefaultContainer soilContainer = new DefaultContainer(3)  {
+        @Override
+        public void setChanged() {
+            BiomassIncubatorBlockEntity.this.setChanged();
+            isSyncDirty = true;
+        }
+    };
     private final FluidTank waterTank = new FluidTank(3000);
 
     private final int[] growthTicks = new int[3];
@@ -235,6 +241,8 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
 
         backingContainer.clearContent();
         ContainerHelper.loadAllItems(tag, backingContainer.getItems());
+        soilContainer.clearContent();
+        ContainerHelper.loadAllItems(tag.getCompound("Soil"), soilContainer.getItems());
         waterTank.deserialize(tag.getCompound("WaterTank"));
 
         wateringTicks = tag.getInt("WateringTicks");
@@ -272,7 +280,7 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new BiomassIncubatorMenu(containerId, inventory, backingContainer, dataAccess);
+        return new BiomassIncubatorMenu(containerId, inventory, backingContainer, soilContainer, dataAccess);
     }
 
     @Override
@@ -299,6 +307,7 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
         super.writeUpdateTag(tag);
 
         ContainerHelper.saveAllItems(tag, backingContainer.getItems());
+        tag.put("Soil", ContainerHelper.saveAllItems(new CompoundTag(), soilContainer.getItems()));
         for (int i = 0; i < 3; i++) {
             tag.putInt("GrowthTicks" + i, growthTicks[i]);
         }

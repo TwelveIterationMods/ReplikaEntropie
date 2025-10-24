@@ -1,6 +1,7 @@
 package net.blay09.mods.replikaentropie.block;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.replikaentropie.block.entity.FragmentAcceleratorBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -70,5 +71,16 @@ public class FragmentAcceleratorBlock extends BaseEntityBlock {
         return level.isClientSide
                 ? createTickerHelper(type, ModBlockEntities.fragmentAccelerator.get(), FragmentAcceleratorBlockEntity::clientTick)
                 : createTickerHelper(type, ModBlockEntities.fragmentAccelerator.get(), FragmentAcceleratorBlockEntity::serverTick);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            if (level.getBlockEntity(pos) instanceof BalmContainerProvider provider) {
+                provider.dropItems(level, pos);
+            }
+
+            super.onRemove(state, level, pos, newState, isMoving);
+        }
     }
 }

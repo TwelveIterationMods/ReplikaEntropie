@@ -1,9 +1,13 @@
 package net.blay09.mods.replikaentropie.block;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import net.blay09.mods.balm.api.container.ContainerUtils;
 import net.blay09.mods.replikaentropie.block.entity.FabricatorBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
 
 public class FabricatorBlock extends BaseEntityBlock {
     protected FabricatorBlock(Properties properties) {
@@ -59,6 +62,17 @@ public class FabricatorBlock extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide ? null : createTickerHelper(type, ModBlockEntities.fabricator.get(), FabricatorBlockEntity::serverTick);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            if (level.getBlockEntity(pos) instanceof BalmContainerProvider provider) {
+                provider.dropItems(level, pos);
+            }
+
+            super.onRemove(state, level, pos, newState, isMoving);
+        }
     }
 
 }
