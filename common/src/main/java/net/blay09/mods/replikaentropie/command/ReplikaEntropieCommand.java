@@ -45,6 +45,7 @@ public class ReplikaEntropieCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("replikaentropie")
+                .requires(source -> source.hasPermission(2))
                 .then(Commands.literal("scans")
                         .then(Commands.literal("reset")
                                 .executes(ReplikaEntropieCommand::resetScans)))
