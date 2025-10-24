@@ -3,6 +3,7 @@ package net.blay09.mods.replikaentropie.block;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.replikaentropie.item.FragmentalWasteItem;
+import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;

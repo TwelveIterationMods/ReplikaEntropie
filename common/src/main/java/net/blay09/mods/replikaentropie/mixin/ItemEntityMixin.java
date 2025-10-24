@@ -17,7 +17,7 @@ public class ItemEntityMixin {
     @Inject(method = "tick", at = @At("HEAD"))
     public void tick(CallbackInfo ci) {
         final var itemEntity = (ItemEntity) (Object) this;
-        if (itemEntity.getItem().is(ModItems.fragmentalWaste)) {
+        if (itemEntity.getItem().is(ModBlocks.fragmentalWaste.asItem())) {
             FragmentalWaste.applyWasteAroundEntity(itemEntity);
 
             if (itemEntity.getAge() + 1 >= 6000) {

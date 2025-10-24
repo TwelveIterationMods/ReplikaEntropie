@@ -27,7 +27,7 @@ public class ReplikaEntropieJEI implements IModPlugin {
         registration.addIngredientInfo(ModItems.assemblyTicket, Component.translatable("jei.replikaentropie.assembly_ticket.info"));
         registration.addIngredientInfo(ModItems.data, Component.translatable("jei.replikaentropie.data.info"));
         registration.addIngredientInfo(ModItems.damagedChipset, Component.translatable("jei.replikaentropie.damaged_chipset.info"));
-        registration.addIngredientInfo(ModItems.fragmentalWaste, Component.translatable("jei.replikaentropie.fragmental_waste.info"));
+        registration.addIngredientInfo(ModBlocks.fragmentalWaste, Component.translatable("jei.replikaentropie.fragmental_waste.info"));
 
         registration.addRecipes(JeiRecyclerCategory.TYPE, recipeManager.getAllRecipesFor(ModRecipes.recyclerType));
         registration.addRecipes(JeiDefragmentizerCategory.TYPE, recipeManager.getAllRecipesFor(ModRecipes.recyclerType).stream()

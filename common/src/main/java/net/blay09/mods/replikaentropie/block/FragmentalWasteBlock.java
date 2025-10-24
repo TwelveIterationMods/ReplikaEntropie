@@ -67,7 +67,7 @@ public class FragmentalWasteBlock extends BaseEntityBlock {
         if (blockEntity instanceof FragmentalWasteBlockEntity fragmentalWaste) {
             for (int i = 1; i < fragmentalWaste.getWasteCount(); i++) {
                 for (final var drop : drops) {
-                    if (drop.is(ModItems.fragmentalWaste)) {
+                    if (drop.is(ModBlocks.fragmentalWaste.asItem())) {
                         result.add(drop.copy());
                     }
                 }

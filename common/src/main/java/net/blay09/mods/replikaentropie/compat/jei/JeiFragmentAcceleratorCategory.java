@@ -66,7 +66,7 @@ public class JeiFragmentAcceleratorCategory implements IRecipeCategory<RecyclerR
         builder.addOutputSlot(30, 30)
                 .addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.fragments, fragments));
         builder.addOutputSlot(61, 30)
-                .addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.fragmentalWaste));
+                .addIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.fragmentalWaste));
     }
 
 }

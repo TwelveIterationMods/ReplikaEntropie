@@ -147,7 +147,7 @@ public class FragmentAcceleratorBlockEntity extends BalmBlockEntity implements B
 
     private void spreadWaste() {
         final var wasteStack = wasteContainer.getItem(0);
-        if (wasteStack.is(ModItems.fragmentalWaste) && level.getGameTime() % 20 == 0) {
+        if (wasteStack.is(ModBlocks.fragmentalWaste.asItem()) && level.getGameTime() % 20 == 0) {
             FragmentalWaste.applyWasteAroundBlockEntity(this);
         }
     }
@@ -232,8 +232,8 @@ public class FragmentAcceleratorBlockEntity extends BalmBlockEntity implements B
     private void generateWaste() {
         final var wasteSlotItem = wasteContainer.getItem(0);
         if (wasteSlotItem.isEmpty()) {
-            wasteContainer.setItem(0, new ItemStack(ModBlocks.fragmentalWaste.asItem(), 1));
-        } else if (wasteSlotItem.getItem() == ModBlocks.fragmentalWaste.asItem() &&
+            wasteContainer.setItem(0, new ItemStack(ModBlocks.fragmentalWaste, 1));
+        } else if (wasteSlotItem.is(ModBlocks.fragmentalWaste.asItem()) &&
                 wasteSlotItem.getCount() < wasteSlotItem.getMaxStackSize()) {
             wasteSlotItem.grow(1);
         }

@@ -65,8 +65,6 @@ public class ModItems {
     public static Item semisonicSpeeders;
     public static Item assemblyTicket;
 
-    public static Item fragmentalWaste;
-
     public static void initialize(BalmItems items) {
         items.registerItem((identifier) -> handheldAnalyzer = new HandheldAnalyzerItem(itemProperties(identifier).stacksTo(1)), id("handheld_analyzer"));
         items.registerItem((identifier) -> skyScraper = new SkyScraperItem(itemProperties(identifier).stacksTo(1)), id("sky_scraper"));
@@ -116,7 +114,6 @@ public class ModItems {
         items.registerItem((identifier) -> replikaLeggings = new ReplikaArmorItem(ArmorItem.Type.LEGGINGS, itemProperties(identifier)), id("replika_leggings"));
         items.registerItem((identifier) -> replikaBoots = new ReplikaArmorItem(ArmorItem.Type.BOOTS, itemProperties(identifier)), id("replika_boots"));
 
-        fragmentalWaste = ModBlocks.fragmentalWaste.asItem();
         creativeModeTab = items.registerCreativeModeTab(() -> new ItemStack(handheldAnalyzer), id(ReplikaEntropie.MOD_ID));
 
         items.setCreativeModeTabSorting(id(ReplikaEntropie.MOD_ID), new Comparator<>() {

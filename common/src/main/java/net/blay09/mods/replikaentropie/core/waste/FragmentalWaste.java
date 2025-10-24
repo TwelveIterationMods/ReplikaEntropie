@@ -2,6 +2,7 @@ package net.blay09.mods.replikaentropie.core.waste;
 
 import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.event.PlayerOpenMenuEvent;
+import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.item.HazmatArmorItem;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.core.registries.Registries;
@@ -31,7 +32,7 @@ public class FragmentalWaste {
     public static void initialize(BalmEvents events) {
         events.onEvent(PlayerOpenMenuEvent.class, (event) -> {
             for (final var itemStack : event.getMenu().getItems()) {
-                if (itemStack.is(ModItems.fragmentalWaste)) {
+                if (itemStack.is(ModBlocks.fragmentalWaste.asItem())) {
                     applyWasteAroundEntity(event.getPlayer());
                     break;
                 }
@@ -40,7 +41,7 @@ public class FragmentalWaste {
             event.getMenu().addSlotListener(new ContainerListener() {
                 @Override
                 public void slotChanged(AbstractContainerMenu menu, int slotId, ItemStack itemStack) {
-                    if (itemStack.is(ModItems.fragmentalWaste)) {
+                    if (itemStack.is(ModBlocks.fragmentalWaste.asItem())) {
                         applyWasteAroundEntity(event.getPlayer());
                     }
                 }
