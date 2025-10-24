@@ -239,9 +239,9 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
     public void load(CompoundTag tag) {
         super.load(tag);
 
-        backingContainer.clearContent();
+        backingContainer.getItems().clear();
         ContainerHelper.loadAllItems(tag, backingContainer.getItems());
-        soilContainer.clearContent();
+        soilContainer.getItems().clear();
         ContainerHelper.loadAllItems(tag.getCompound("Soil"), soilContainer.getItems());
         waterTank.deserialize(tag.getCompound("WaterTank"));
 

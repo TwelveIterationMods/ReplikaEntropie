@@ -228,7 +228,7 @@ public class DefragmentizerBlockEntity extends BalmBlockEntity implements BalmCo
     public void load(CompoundTag tag) {
         super.load(tag);
 
-        backingContainer.clearContent();
+        backingContainer.getItems().clear();
         ContainerHelper.loadAllItems(tag, backingContainer.getItems());
 
         for (int i = 0; i < INPUTS_COUNT; i++) {

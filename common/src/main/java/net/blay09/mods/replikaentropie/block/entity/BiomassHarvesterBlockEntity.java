@@ -330,7 +330,7 @@ public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements Balm
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        backingContainer.clearContent();
+        backingContainer.getItems().clear();
         ContainerHelper.loadAllItems(tag, backingContainer.getItems());
         try {
             state = State.valueOf(tag.getString("State"));

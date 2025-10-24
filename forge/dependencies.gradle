@@ -3,5 +3,5 @@ dependencies {
         changing = balm_version.contains("SNAPSHOT")
     }
     implementation("net.blay09.mods:kuma-api-forge:${kuma_version}")
-    implementation("curse.maven:jei-238222:7037120")
+    compileOnly("curse.maven:jei-238222:7037120")
 }

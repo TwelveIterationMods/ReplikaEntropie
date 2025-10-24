@@ -51,7 +51,6 @@ public class WorldEaterBlockEntity extends BalmBlockEntity implements BalmContai
     private final DefaultContainer previewContainer = new DefaultContainer(15) {
         @Override
         public void setChanged() {
-            super.setChanged();
             isSyncDirty = true;
         }
     };
@@ -260,7 +259,7 @@ public class WorldEaterBlockEntity extends BalmBlockEntity implements BalmContai
             scannedPositions.put(i, BlockPos.of(scannedPositionsArray[i]));
         }
 
-        previewContainer.clearContent();
+        previewContainer.getItems().clear();
         final var previewTag = tag.getCompound("Preview");
         ContainerHelper.loadAllItems(previewTag, previewContainer.getItems());
     }
