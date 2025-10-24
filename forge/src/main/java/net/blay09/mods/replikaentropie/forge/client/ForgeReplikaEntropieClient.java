@@ -1,12 +1,12 @@
 package net.blay09.mods.replikaentropie.forge.client;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.replikaentropie.ReplikaEntropie;
+import net.blay09.mods.balm.api.client.BalmClient;
+import net.blay09.mods.replikaentropie.client.ReplikaEntropieClient;
 
 public class ForgeReplikaEntropieClient {
 
     public static void initialize() {
-        Balm.registerModule(new ReplikaEntropie());
+        BalmClient.registerModule(new ReplikaEntropieClient());
     }
 
 }
