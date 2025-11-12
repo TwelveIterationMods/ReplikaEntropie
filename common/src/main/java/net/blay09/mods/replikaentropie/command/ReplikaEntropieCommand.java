@@ -94,12 +94,14 @@ public class ReplikaEntropieCommand {
     private static int resetScans(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         final var player = context.getSource().getPlayerOrException();
         Analyzer.resetAllAnalyzed(player);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.scans.reset"), false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int resetEvents(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         final var player = context.getSource().getPlayerOrException();
         Analyzer.resetDataMinedEvents(player);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.events.reset"), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -110,15 +112,16 @@ public class ReplikaEntropieCommand {
         }
 
         Research.updateResearch(player, researchRecipe.id(), ResearchState.UNLOCKED);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.unlock", researchRecipe.id().toString()), false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int researchUnlockAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         final var player = context.getSource().getPlayerOrException();
         final var recipeManager = context.getSource().getLevel().getRecipeManager();
-        recipeManager.getAllRecipesFor(ModRecipes.researchType).forEach(r ->
-                Research.updateResearch(player, r.getId(), ResearchState.UNLOCKED)
-        );
+        final var recipes = recipeManager.getAllRecipesFor(ModRecipes.researchType);
+        recipes.forEach(r -> Research.updateResearch(player, r.getId(), ResearchState.UNLOCKED));
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.unlockAll"), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -128,12 +131,14 @@ public class ReplikaEntropieCommand {
             throw INVALID_RECIPE.create();
         }
         Research.updateResearch(player, researchRecipe.id(), ResearchState.NONE);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.reset", researchRecipe.id().toString()), false);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int researchResetAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         final var player = context.getSource().getPlayerOrException();
         Research.resetAllResearch(player);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.resetAll"), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -158,6 +163,7 @@ public class ReplikaEntropieCommand {
             }
         });
 
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.nonogram.create", id.toString(), width, height), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -182,6 +188,7 @@ public class ReplikaEntropieCommand {
             }
         });
 
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.nonogram.view", id.toString()), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -206,6 +213,7 @@ public class ReplikaEntropieCommand {
             }
         });
 
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.nonogram.play", id.toString()), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -230,6 +238,7 @@ public class ReplikaEntropieCommand {
             }
         });
 
+        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.nonogram.edit", id.toString()), false);
         return Command.SINGLE_SUCCESS;
     }
 

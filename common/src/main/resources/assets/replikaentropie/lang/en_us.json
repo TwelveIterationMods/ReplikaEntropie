@@ -220,5 +220,17 @@
   "jei.replikaentropie.damaged_chipset.info": "Damaged Chipsets may be found in various chests around the world. Finding one is the easiest way to get started with Replika Entropie.",
   "jei.replikaentropie.fragmental_waste.info": "Fragmental Waste does not despawn and is very explosive. It also emits harmful particles. Consider wearing a Hazmat Suit when handling it.",
   "death.attack.fragmental_waste": "%1$s has fragmented away",
-  "death.attack.fragmental_waste.player": "%1$s has fragmented away"
+  "death.attack.fragmental_waste.player": "%1$s has fragmented away",
+  "commands.replikaentropie.scans.reset": "Reset analyzed scans.",
+  "commands.replikaentropie.events.reset": "Cleared captured events.",
+  "commands.replikaentropie.research.unlock": "Unlocked research: %s",
+  "commands.replikaentropie.research.unlockAll": "Unlocked all research.",
+  "commands.replikaentropie.research.reset": "Reset research: %s",
+  "commands.replikaentropie.research.resetAll": "Reset all research.",
+  "commands.replikaentropie.research.invalidRecipe": "Not a research recipe.",
+  "commands.replikaentropie.nonogram.create": "Created nonogram %s (%d x %d).",
+  "commands.replikaentropie.nonogram.view": "Opened nonogram %s (view).",
+  "commands.replikaentropie.nonogram.play": "Opened nonogram %s (play).",
+  "commands.replikaentropie.nonogram.edit": "Opened nonogram %s (edit).",
+  "commands.replikaentropie.nonogram.invalidNonogram": "Nonogram not found."
 }
