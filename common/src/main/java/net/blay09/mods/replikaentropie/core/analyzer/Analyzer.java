@@ -1,7 +1,6 @@
 package net.blay09.mods.replikaentropie.core.analyzer;
 
-import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.event.PlayerLoginEvent;
+import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -12,8 +11,8 @@ public class Analyzer {
     private static final InMemoryAnalyzerManager localManager = new InMemoryAnalyzerManager();
     private static final PersistentAnalyzerManager persistentManager = new PersistentAnalyzerManager();
 
-    public static void initialize(BalmEvents events) {
-        events.onEvent(PlayerLoginEvent.class, event -> persistentManager.sendAllToPlayer(event.getPlayer()));
+    public static void initialize() {
+        ServerPlayerCallback.Join.EVENT.register(persistentManager::sendAllToPlayer);
     }
 
     public static InMemoryAnalyzerManager getLocalManager() {

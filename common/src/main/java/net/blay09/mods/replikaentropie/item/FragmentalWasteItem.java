@@ -1,12 +1,15 @@
 package net.blay09.mods.replikaentropie.item;
 
 import net.blay09.mods.replikaentropie.core.waste.FragmentalWaste;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import org.jspecify.annotations.Nullable;
 
 public class FragmentalWasteItem extends BlockItem {
     public FragmentalWasteItem(Block block, Properties properties) {
@@ -25,10 +28,9 @@ public class FragmentalWasteItem extends BlockItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if (entity.tickCount % 20 == 0) {
-            FragmentalWaste.applyWasteAroundEntity(entity);
+    public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
+        if (owner.tickCount % 20 == 0) {
+            FragmentalWaste.applyWasteAroundEntity(owner);
         }
     }
 }

@@ -14,8 +14,8 @@ public class DataItem extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack itemStack, Level level, LivingEntity livingEntity) {
-        if (isEdible() && livingEntity instanceof ServerPlayer player) {
-            Analyzer.getManager(player).grantData(player, level.random.nextInt(1, 10));
+        if (livingEntity instanceof ServerPlayer player) {
+            Analyzer.getManager(player).grantData(player, level.getRandom().nextInt(1, 10));
         }
         return super.finishUsingItem(itemStack, level, livingEntity);
     }

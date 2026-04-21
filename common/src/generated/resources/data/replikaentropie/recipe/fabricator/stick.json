@@ -1,0 +1,8 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 1,
+  "result": {
+    "id": "minecraft:stick"
+  },
+  "sortOrder": 600
+}

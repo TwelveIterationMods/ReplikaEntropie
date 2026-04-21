@@ -1,0 +1,7 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.1,
+  "fragments": 0.1,
+  "ingredient": "minecraft:magma_cream",
+  "scrap": 0.1
+}

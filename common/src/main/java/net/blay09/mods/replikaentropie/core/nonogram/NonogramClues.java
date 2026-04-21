@@ -3,11 +3,14 @@ package net.blay09.mods.replikaentropie.core.nonogram;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
 
 public record NonogramClues(int width, int height, int[][] columnClues, int[][] rowClues) {
+    public static final StreamCodec<RegistryFriendlyByteBuf, NonogramClues> STREAM_CODEC = StreamCodec.ofMember(NonogramClues::write, NonogramClues::read);
 
     public static NonogramClues forGrid(int width, int height, int[] grid) {
         return new NonogramClues(width, height, extractColumnClues(width, height, grid), extractRowClues(width, height, grid));

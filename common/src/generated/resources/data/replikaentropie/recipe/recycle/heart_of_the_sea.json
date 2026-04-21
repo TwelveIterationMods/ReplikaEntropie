@@ -1,0 +1,7 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 1.0,
+  "fragments": 1.0,
+  "ingredient": "minecraft:heart_of_the_sea",
+  "scrap": 0.0
+}

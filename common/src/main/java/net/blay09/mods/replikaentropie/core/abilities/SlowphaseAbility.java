@@ -6,13 +6,13 @@ import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +22,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class SlowphaseAbility implements Ability {
 
     public static final SlowphaseAbility INSTANCE = new SlowphaseAbility();
-    public static final ResourceLocation ID = id("slowphase");
+    public static final Identifier ID = id("slowphase");
 
     private record Slowphaseable(float burstCost) {
         public static final Slowphaseable WATER = new Slowphaseable(0.2f);
@@ -33,7 +33,7 @@ public class SlowphaseAbility implements Ability {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 
@@ -69,7 +69,7 @@ public class SlowphaseAbility implements Ability {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorItem.Type.BOOTS, ModItems.slowphasers);
+        return ReplikaArmor.hasPart(player, ArmorType.BOOTS, ModItems.slowphasers);
     }
 
     @Nullable

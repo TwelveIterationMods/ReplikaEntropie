@@ -1,0 +1,17 @@
+{
+  "type": "replikaentropie:research",
+  "data": 20,
+  "hardDependencies": [
+    "replikaentropie:research/lavascrap"
+  ],
+  "icon": {
+    "id": "replikaentropie:world_eater"
+  },
+  "nonogram": "replikaentropie:world_eater",
+  "research_type": "assembler",
+  "scrap": 64,
+  "sort_order": 3000,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/world_eater"
+  ]
+}

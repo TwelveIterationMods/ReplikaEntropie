@@ -1,22 +1,23 @@
 package net.blay09.mods.replikaentropie.menu.slot;
 
-import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.replikaentropie.item.ModItems;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.jspecify.annotations.Nullable;
+
+import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class FragmentsSlot extends IngredientSlot {
 
-    private final Pair<ResourceLocation, ResourceLocation> ICON = Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("replikaentropie", "item/empty_fragments_slot"));
+    private final Identifier ICON = id("item/empty_fragments_slot");
 
     public FragmentsSlot(Container container, int slot, int x, int y) {
         super(container, slot, x, y, Ingredient.of(ModItems.fragments));
     }
 
     @Override
-    public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+    public Identifier getNoItemIcon() {
         return ICON;
     }
 }

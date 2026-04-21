@@ -1,0 +1,12 @@
+{
+  "type": "replikaentropie:research",
+  "data": 1,
+  "hardDependencies": [
+    "replikaentropie:research/recycler"
+  ],
+  "icon": {
+    "id": "minecraft:daylight_detector"
+  },
+  "nonogram": "replikaentropie:entropic_energy",
+  "sort_order": 400
+}

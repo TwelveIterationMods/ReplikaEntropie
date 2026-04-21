@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "replikaentropie:hazmat_lining"
+  },
+  "pattern": [
+    "BBB",
+    "B B"
+  ],
+  "result": {
+    "id": "replikaentropie:hazmat_helmet"
+  }
+}

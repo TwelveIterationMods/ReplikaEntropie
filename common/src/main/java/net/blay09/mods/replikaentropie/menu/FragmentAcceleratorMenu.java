@@ -27,7 +27,7 @@ public class FragmentAcceleratorMenu extends AbstractContainerMenu {
     }
 
     public FragmentAcceleratorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
-        super(ModMenus.fragmentAccelerator.get(), containerId);
+        super(ModMenus.fragmentAccelerator.value(), containerId);
         this.playerInventory = playerInventory;
         this.container = container;
         checkContainerSize(container, 8);

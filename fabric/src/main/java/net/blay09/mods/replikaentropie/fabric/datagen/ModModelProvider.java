@@ -1,78 +1,97 @@
 package net.blay09.mods.replikaentropie.fabric.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.ItemModelGenerators;
-import net.minecraft.data.models.model.*;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.item.ModItems;
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
+import net.minecraft.client.data.models.model.ModelTemplates;
 
 public class ModModelProvider extends FabricModelProvider {
-    public ModModelProvider(FabricDataOutput output) {
+
+    public ModModelProvider(FabricPackOutput output) {
         super(output);
     }
 
     @Override
-    public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.replikaWorkbench);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.entropicDataMiner);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.recycler);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.fabricator);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.assembler);
-        blockStateModelGenerator.createNonTemplateModelBlock(ModBlocks.fragmentalWaste);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.biomassIncubator);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.biomassHarvester);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.cobblescrap);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.lavascrap);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.worldEater);
-        blockStateModelGenerator.createNonTemplateModelBlock(ModBlocks.fragmentAccelerator);
-        blockStateModelGenerator.createNonTemplateModelBlock(ModBlocks.defragmentizer);
-        blockStateModelGenerator.createNonTemplateHorizontalBlock(ModBlocks.chaosEngine);
+    public void generateBlockStateModels(BlockModelGenerators generators) {
+        generators.createNonTemplateHorizontalBlock(ModBlocks.replikaWorkbench.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.entropicDataMiner.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.recycler.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.fabricator.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.assembler.value());
+        generators.createNonTemplateModelBlock(ModBlocks.fragmentalWaste.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.biomassIncubator.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.biomassHarvester.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.cobblescrap.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.lavascrap.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.worldEater.value());
+        generators.createNonTemplateModelBlock(ModBlocks.fragmentAccelerator.value());
+        generators.createNonTemplateModelBlock(ModBlocks.defragmentizer.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.chaosEngine.value());
+
+        generators.registerSimpleItemModel(ModBlocks.replikaWorkbench.value(), ModelLocationUtils.getModelLocation(ModBlocks.replikaWorkbench.value()));
+        generators.registerSimpleItemModel(ModBlocks.entropicDataMiner.value(), ModelLocationUtils.getModelLocation(ModBlocks.entropicDataMiner.value()));
+        generators.registerSimpleItemModel(ModBlocks.recycler.value(), ModelLocationUtils.getModelLocation(ModBlocks.recycler.value()));
+        generators.registerSimpleItemModel(ModBlocks.fabricator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fabricator.value()));
+        generators.registerSimpleItemModel(ModBlocks.assembler.value(), ModelLocationUtils.getModelLocation(ModBlocks.assembler.value()));
+        generators.registerSimpleItemModel(ModBlocks.fragmentalWaste.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentalWaste.value()));
+        generators.registerSimpleItemModel(ModBlocks.biomassIncubator.value(), ModelLocationUtils.getModelLocation(ModBlocks.biomassIncubator.value()));
+        generators.registerSimpleItemModel(ModBlocks.biomassHarvester.value(), ModelLocationUtils.getModelLocation(ModBlocks.biomassHarvester.value()));
+        generators.registerSimpleItemModel(ModBlocks.cobblescrap.value(), ModelLocationUtils.getModelLocation(ModBlocks.cobblescrap.value()));
+        generators.registerSimpleItemModel(ModBlocks.lavascrap.value(), ModelLocationUtils.getModelLocation(ModBlocks.lavascrap.value()));
+        generators.registerSimpleItemModel(ModBlocks.worldEater.value(), ModelLocationUtils.getModelLocation(ModBlocks.worldEater.value()));
+        generators.registerSimpleItemModel(ModBlocks.fragmentAccelerator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentAccelerator.value()));
+        generators.registerSimpleItemModel(ModBlocks.defragmentizer.value(), ModelLocationUtils.getModelLocation(ModBlocks.defragmentizer.value()));
+        generators.registerSimpleItemModel(ModBlocks.chaosEngine.value(), ModelLocationUtils.getModelLocation(ModBlocks.chaosEngine.value()));
     }
 
     @Override
-    public void generateItemModels(ItemModelGenerators itemModelGenerator) {
-        itemModelGenerator.generateFlatItem(ModItems.damagedChipset, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.handheldAnalyzer, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.skyScraper, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.data, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.scrap, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.biomass, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.fragments, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.chipset, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.biosteel, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.assemblyTicket, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.biosteelHelmet, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.biosteelChestplate, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.biosteelLeggings, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.biosteelBoots, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.hazmatLining, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.hazmatHelmet, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.hazmatChestplate, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.hazmatLeggings, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.hazmatBoots, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.replikaSkin, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.replikaHelmetFrame, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.replikaChestplateFrame, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.replikaLeggingsFrame, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.replikaBootsFrame, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.replikaHelmet, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.replikaChestplate, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.replikaLeggings, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.replikaBoots, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.nightVisionGoggles, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.brightVisionGoggles, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.graviliftHarness, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.semisonicSpeeders, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.magphasers, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.slowphasers, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.stompers, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.springBoots, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.nullphaser, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.oreVacuum, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.burstDrill, ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.biomash, ModelTemplates.FLAT_ITEM);
-    }
+    public void generateItemModels(ItemModelGenerators generators) {
+        generators.generateFlatItem(ModItems.damagedChipset.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.data.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.scrap.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.biomass.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.fragments.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.chipset.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.biosteel.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.assemblyTicket.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.biomash.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.hazmatLining.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaSkin.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaHelmetFrame.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaChestplateFrame.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaLeggingsFrame.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaBootsFrame.asItem(), ModelTemplates.FLAT_ITEM);
 
+        generators.generateFlatItem(ModItems.handheldAnalyzer.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        generators.generateFlatItem(ModItems.skyScraper.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        generators.generateFlatItem(ModItems.nullphaser.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        generators.generateFlatItem(ModItems.oreVacuum.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        generators.generateFlatItem(ModItems.burstDrill.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
+
+        generators.generateFlatItem(ModItems.biosteelHelmet.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.biosteelChestplate.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.biosteelLeggings.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.biosteelBoots.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.hazmatHelmet.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.hazmatChestplate.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.hazmatLeggings.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.hazmatBoots.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaHelmet.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaChestplate.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaLeggings.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaBoots.asItem(), ModelTemplates.FLAT_ITEM);
+
+        generators.generateFlatItem(ModItems.nightVisionGoggles.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.brightVisionGoggles.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.graviliftHarness.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.semisonicSpeeders.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.magphasers.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.slowphasers.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.stompers.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.springBoots.asItem(), ModelTemplates.FLAT_ITEM);
+    }
 }

@@ -1,0 +1,5 @@
+{
+  "type": "replikaentropie:vacuumable_ore",
+  "empty_block": "minecraft:deepslate",
+  "ingredient": "minecraft:deepslate_iron_ore"
+}

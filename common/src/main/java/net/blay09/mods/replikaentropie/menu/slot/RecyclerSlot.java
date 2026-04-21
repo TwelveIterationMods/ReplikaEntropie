@@ -1,21 +1,20 @@
 package net.blay09.mods.replikaentropie.menu.slot;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
+
 public class RecyclerSlot extends Slot {
 
-    public static final List<Pair<ResourceLocation, ResourceLocation>> ICONS = List.of(
-            Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("replikaentropie", "item/empty_dust_slot")),
-            Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("replikaentropie", "item/empty_flesh_slot")),
-            Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("replikaentropie", "item/empty_ingot_slot")),
-            Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("replikaentropie", "item/empty_ore_slot"))
+    public static final List<Identifier> ICONS = List.of(
+            id("item/empty_dust_slot"),
+            id("item/empty_flesh_slot"),
+            id("item/empty_ingot_slot"),
+            id("item/empty_ore_slot")
     );
 
     private long lastIconChange;
@@ -26,7 +25,7 @@ public class RecyclerSlot extends Slot {
     }
 
     @Override
-    public @Nullable Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+    public Identifier getNoItemIcon() {
         final var now = System.currentTimeMillis();
         final var timePassed = now - lastIconChange;
         if (timePassed >= 1500) {

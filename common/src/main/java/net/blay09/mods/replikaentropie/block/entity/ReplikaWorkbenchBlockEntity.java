@@ -1,12 +1,16 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.replikaentropie.menu.ReplikaWorkbenchMenu;
 import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -38,11 +42,11 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
     };
 
     public ReplikaWorkbenchBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.replikaWorkbench.get(), pos, blockState);
+        super(ModBlockEntities.replikaWorkbench.value(), pos, blockState);
     }
 
     public BalmMenuProvider getMenuProvider() {
-        return new BalmMenuProvider() {
+        return new BalmMenuProvider<Unit>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.replikaentropie.replika_workbench");
@@ -51,6 +55,16 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                 return new ReplikaWorkbenchMenu(i, inventory, backingContainer);
+            }
+
+            @Override
+            public Unit getScreenOpeningData(ServerPlayer player) {
+                return Unit.INSTANCE;
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+                return Unit.STREAM_CODEC.cast();
             }
         };
     }

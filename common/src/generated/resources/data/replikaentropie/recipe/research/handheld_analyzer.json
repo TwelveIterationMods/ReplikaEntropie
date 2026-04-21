@@ -1,0 +1,12 @@
+{
+  "type": "replikaentropie:research",
+  "data": 1,
+  "hardDependencies": [
+    "replikaentropie:research/sky_scraper"
+  ],
+  "icon": {
+    "id": "replikaentropie:handheld_analyzer"
+  },
+  "nonogram": "replikaentropie:handheld_analyzer",
+  "sort_order": 200
+}

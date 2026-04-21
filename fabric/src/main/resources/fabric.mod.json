@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
+  "id": "replikaentropie",
   "version": "${version}",
 
   "name": "${mod_name}",
@@ -15,32 +15,30 @@
   },
 
   "license": "${license}",
-  "icon": "${mod_id}.png",
+  "icon": "replikaentropie.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "${group}.${mod_id}.fabric.Fabric${mod_main}"
+      "net.blay09.mods.replikaentropie.fabric.FabricReplikaEntropie"
     ],
     "client": [
-      "${group}.${mod_id}.fabric.client.Fabric${mod_main}Client"
+      "net.blay09.mods.replikaentropie.fabric.client.FabricReplikaEntropieClient"
     ],
     "fabric-datagen": [
       "net.blay09.mods.replikaentropie.fabric.datagen.ModDataGenerator"
-    ],
-    "jei_mod_plugin": [
-      "net.blay09.mods.replikaentropie.compat.jei.ReplikaEntropieJEI"
     ]
   },
   "mixins": [
-    "${mod_id}.mixins.json",    "${mod_id}.fabric.mixins.json"
+    "replikaentropie.mixins.json",
+    "replikaentropie.fabric.mixins.json"
   ],
   "depends": {
     "java": ">=${java_version}",
-    "minecraft": ">=${minimum_minecraft_version}",
+    "minecraft": "${fabric_minecraft_version_range}",
     "fabricloader": ">=${fabric_loader_version}",
-    "fabric-api": ">=${fabric_version}",
-    "balm-fabric": ">=${minimum_balm_version}"
+    "fabric-api": ">=${fabric_api_version}",
+    "balm": ">=${balm_version}"
   },
   "suggests": {
   },

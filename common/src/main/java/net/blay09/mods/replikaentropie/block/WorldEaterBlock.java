@@ -1,7 +1,7 @@
 package net.blay09.mods.replikaentropie.block;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import com.mojang.serialization.MapCodec;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.blay09.mods.replikaentropie.block.entity.WorldEaterBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -27,6 +27,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class WorldEaterBlock extends BaseEntityBlock {
+    public static final MapCodec<WorldEaterBlock> CODEC = simpleCodec(WorldEaterBlock::new);
 
     public static final VoxelShape[] SHAPES = new VoxelShape[] {
             Shapes.or(
@@ -56,6 +57,11 @@ public class WorldEaterBlock extends BaseEntityBlock {
     }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.HORIZONTAL_FACING);
     }
@@ -76,10 +82,10 @@ public class WorldEaterBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof WorldEaterBlockEntity worldEaterBlockEntity) {
-                Balm.getNetworking().openMenu(player, worldEaterBlockEntity);
+                Balm.networking().openMenu(player, worldEaterBlockEntity);
             }
         }
         return InteractionResult.CONSUME;
@@ -92,17 +98,6 @@ public class WorldEaterBlock extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide ? null : createTickerHelper(type, ModBlockEntities.worldEater.get(), WorldEaterBlockEntity::serverTick);
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            if (level.getBlockEntity(pos) instanceof BalmContainerProvider provider) {
-                provider.dropItems(level, pos);
-            }
-
-            super.onRemove(state, level, pos, newState, isMoving);
-        }
+        return level.isClientSide() ? null : createTickerHelper(type, ModBlockEntities.worldEater.value(), WorldEaterBlockEntity::serverTick);
     }
 }

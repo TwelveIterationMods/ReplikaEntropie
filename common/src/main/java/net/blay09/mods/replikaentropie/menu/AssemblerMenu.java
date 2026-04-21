@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.menu;
 
+import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.slot.AssemblerTicketSlot;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
@@ -7,7 +8,9 @@ import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
 import net.blay09.mods.replikaentropie.recipe.AssemblerRecipe;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,7 +38,7 @@ public class AssemblerMenu extends AbstractContainerMenu {
     }
 
     public AssemblerMenu(int id, Inventory playerInventory, Container container, ContainerData data) {
-        super(ModMenus.assembler.get(), id);
+        super(ModMenus.assembler.value(), id);
         this.playerInventory = playerInventory;
         this.container = container;
         checkContainerSize(container, 7);
@@ -112,21 +115,24 @@ public class AssemblerMenu extends AbstractContainerMenu {
 
     private void updatePreviewFromTicket() {
         final var ticketStack = container.getItem(1);
-        if (ticketStack.isEmpty() || !ticketStack.hasTag()) {
+        if (ticketStack.isEmpty()) {
             clearPreview();
             return;
         }
 
-        final var itemData = ticketStack.getTag();
-        final var recipeId = itemData != null ? ResourceLocation.tryParse(itemData.getString("ReplikaEntropieAssemblerResult")) : null;
-        if (recipeId == null) {
+        final var ticketData = ticketStack.get(ModDataComponents.assemblyTicket());
+        if (ticketData == null || ticketData.recipeId().isEmpty()) {
             clearPreview();
             return;
         }
 
-        final var recipeManager = playerInventory.player.level().getRecipeManager();
-        final var recipe = recipeManager.byKey(recipeId).orElse(null);
-        if (!(recipe instanceof AssemblerRecipe assemblerRecipe)) {
+        if (!(playerInventory.player.level() instanceof ServerLevel serverLevel)) {
+            clearPreview();
+            return;
+        }
+
+        final var recipe = serverLevel.recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, ticketData.recipeId().get())).orElse(null);
+        if (recipe == null || !(recipe.value() instanceof AssemblerRecipe assemblerRecipe)) {
             clearPreview();
             return;
         }
@@ -137,10 +143,11 @@ public class AssemblerMenu extends AbstractContainerMenu {
                 break;
             }
 
-            final var validItems = countedIngredient.ingredient().getItems();
-            if (validItems.length > 0) {
+            final var validItems = countedIngredient.ingredient().items();
+            final var firstItem = validItems.findFirst().orElse(null);
+            if (firstItem != null) {
                 // POSTJAM Have preview slots support Ingredient
-                final var itemStack = validItems[0].copy();
+                final var itemStack = new ItemStack(firstItem);
                 itemStack.setCount(Math.max(1, countedIngredient.count()));
                 previewContainer.setItem(i, itemStack);
             } else {

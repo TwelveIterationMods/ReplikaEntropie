@@ -1,6 +1,5 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.blay09.mods.replikaentropie.core.dataminer.LocalEventLog;
@@ -16,13 +15,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ChaosEngineBlockEntity extends BalmBlockEntity {
+public class ChaosEngineBlockEntity extends BlockEntity {
 
     private static final List<String> GIBBERISH = List.of(
             "gui.replikaentropie.entropic_data_miner.event.chaos.blorfed",
@@ -55,7 +55,7 @@ public class ChaosEngineBlockEntity extends BalmBlockEntity {
     private int ticksUntilNextParticle = -1;
 
     public ChaosEngineBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.chaosEngine.get(), pos, state);
+        super(ModBlockEntities.chaosEngine.value(), pos, state);
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, ChaosEngineBlockEntity blockEntity) {
@@ -74,11 +74,11 @@ public class ChaosEngineBlockEntity extends BalmBlockEntity {
             LocalEventLog.findNearbyDataMiners(level, worldPosition).forEach(dataMiner -> {
                 if (dataMiner.countChaosEvents() < 5) {
                     final var variant = UUID.randomUUID().toString();
-                    var randomBlock = pickBlockCandidate(level.random);
+                    var randomBlock = pickBlockCandidate(level.getRandom());
                     if (randomBlock == null) {
                         randomBlock = Blocks.DIRT.defaultBlockState();
                     }
-                    final var gibberish = GIBBERISH.get(level.random.nextInt(GIBBERISH.size()));
+                    final var gibberish = GIBBERISH.get(level.getRandom().nextInt(GIBBERISH.size()));
                     final var label = Component.translatable(gibberish, new ItemStack(randomBlock.getBlock()).getHoverName());
                     final var event = DataMinedEvent.of(DataMinedEvent.Type.CHAOS, variant, new ItemStack(ModBlocks.chaosEngine), label);
                     dataMiner.addEvent(event);
@@ -91,7 +91,7 @@ public class ChaosEngineBlockEntity extends BalmBlockEntity {
     private void processDisplayChange() {
         ticksSinceDisplayChange++;
         if (displayBlockState == null || ticksSinceDisplayChange >= 4) {
-            displayBlockState = pickBlockCandidate(level.random);
+            displayBlockState = pickBlockCandidate(level.getRandom());
             ticksSinceDisplayChange = 0;
         }
     }
@@ -127,13 +127,13 @@ public class ChaosEngineBlockEntity extends BalmBlockEntity {
             return;
         }
 
-        final var sound = pickRandomSound(level.random);
+        final var sound = pickRandomSound(level.getRandom());
         if (sound != null) {
-            float pitch = 0.75f + level.random.nextFloat() * 0.75f;
+            float pitch = 0.75f + level.getRandom().nextFloat() * 0.75f;
             level.playSound(null, worldPosition, sound, SoundSource.BLOCKS, 0.8f, pitch);
         }
 
-        ticksUntilNextSound = level.random.nextInt(40, 200);
+        ticksUntilNextSound = level.getRandom().nextInt(40, 200);
     }
 
     private SoundEvent pickRandomSound(RandomSource random) {
@@ -168,7 +168,7 @@ public class ChaosEngineBlockEntity extends BalmBlockEntity {
             return;
         }
 
-        final var rnd = level.random;
+        final var rnd = level.getRandom();
         final ParticleOptions particle = PARTICLE_CANDIDATES.get(rnd.nextInt(PARTICLE_CANDIDATES.size()));
 
         final double baseX = worldPosition.getX() + 0.5;

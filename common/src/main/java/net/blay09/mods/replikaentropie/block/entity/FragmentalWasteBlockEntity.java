@@ -7,6 +7,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class FragmentalWasteBlockEntity extends BlockEntity {
 
@@ -17,7 +19,7 @@ public class FragmentalWasteBlockEntity extends BlockEntity {
     }
 
     public FragmentalWasteBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.fragmentalWaste.get(), pos, blockState);
+        super(ModBlockEntities.fragmentalWaste.value(), pos, blockState);
     }
 
     public int getWasteCount() {
@@ -31,18 +33,15 @@ public class FragmentalWasteBlockEntity extends BlockEntity {
         }
     }
 
+
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.putInt("WasteCount", wasteCount);
+    protected void saveAdditional(ValueOutput output) {
+        output.putInt("WasteCount", wasteCount);
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (tag.contains("WasteCount")) {
-            wasteCount = tag.getInt("WasteCount");
-        }
+    protected void loadAdditional(ValueInput input) {
+        wasteCount = input.getIntOr("WasteCount", 0);
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, FragmentalWasteBlockEntity blockEntity) {

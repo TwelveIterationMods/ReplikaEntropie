@@ -1,13 +1,11 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.event.PlayerLoginEvent;
-import net.blay09.mods.balm.api.event.TickPhase;
-import net.blay09.mods.balm.api.event.TickType;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
+import net.blay09.mods.balm.platform.event.callback.ServerTickCallback;
 import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
 import net.blay09.mods.replikaentropie.network.protocol.AbilityStateMessage;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -16,18 +14,17 @@ import java.util.Map;
 
 public class AbilityManager {
 
-    private static final Map<ResourceLocation, Ability> abilities = new HashMap<>();
+    private static final Map<Identifier, Ability> abilities = new HashMap<>();
     private static final LocalAbilityStateManager localStateManager = new LocalAbilityStateManager();
     private static final AuthoritativeAbilityStateManager authoritativeStateManager = new AuthoritativeAbilityStateManager();
 
-    public static void initialize(BalmEvents events) {
-        events.onTickEvent(TickType.ServerPlayer, TickPhase.Start, AbilityManager::serverTick);
+    public static void initialize() {
+        ServerTickCallback.ServerPlayerTick.BEFORE.register(AbilityManager::serverTick);
 
-        events.onEvent(PlayerLoginEvent.class, event -> {
-            final var player = event.getPlayer();
+        ServerPlayerCallback.Join.EVENT.register(player -> {
             final var manager = getStateManager(player);
             for (final var ability : abilities.values()) {
-                Balm.getNetworking().sendTo(player, new AbilityStateMessage(ability.getId(), manager.isActive(player, ability), manager.getBurstCost(player, ability)));
+                Balm.networking().sendTo(player, new AbilityStateMessage(ability.getId(), manager.isActive(player, ability), manager.getBurstCost(player, ability)));
             }
         });
     }
@@ -71,7 +68,7 @@ public class AbilityManager {
         return player.isLocalPlayer() ? localStateManager : authoritativeStateManager;
     }
 
-    public static Ability getAbility(Player player, ResourceLocation id) {
+    public static Ability getAbility(Player player, Identifier id) {
         return abilities.get(id);
     }
 

@@ -1,29 +1,32 @@
 package net.blay09.mods.replikaentropie.fabric.datagen;
 
 import net.blay09.mods.replikaentropie.block.ModBlocks;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
+import net.minecraft.core.HolderLookup;
 
-public class ModBlockLootTableProvider extends FabricBlockLootTableProvider {
-    protected ModBlockLootTableProvider(FabricDataOutput dataOutput) {
-        super(dataOutput);
+import java.util.concurrent.CompletableFuture;
+
+public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
+    protected ModBlockLootTableProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
     }
 
     @Override
     public void generate() {
-        dropSelf(ModBlocks.replikaWorkbench);
-        dropSelf(ModBlocks.entropicDataMiner);
-        dropSelf(ModBlocks.fabricator);
-        dropSelf(ModBlocks.assembler);
-        dropSelf(ModBlocks.fragmentalWaste);
-        dropSelf(ModBlocks.biomassIncubator);
-        dropSelf(ModBlocks.biomassHarvester);
-        dropSelf(ModBlocks.cobblescrap);
-        dropSelf(ModBlocks.lavascrap);
-        dropSelf(ModBlocks.worldEater);
-        dropSelf(ModBlocks.defragmentizer);
-        dropSelf(ModBlocks.fragmentAccelerator);
-        dropSelf(ModBlocks.chaosEngine);
-        dropSelf(ModBlocks.recycler);
+        dropSelf(ModBlocks.replikaWorkbench.value());
+        dropSelf(ModBlocks.entropicDataMiner.value());
+        dropSelf(ModBlocks.fabricator.value());
+        dropSelf(ModBlocks.assembler.value());
+        dropSelf(ModBlocks.fragmentalWaste.value());
+        dropSelf(ModBlocks.biomassIncubator.value());
+        dropSelf(ModBlocks.biomassHarvester.value());
+        dropSelf(ModBlocks.cobblescrap.value());
+        dropSelf(ModBlocks.lavascrap.value());
+        dropSelf(ModBlocks.worldEater.value());
+        dropSelf(ModBlocks.defragmentizer.value());
+        dropSelf(ModBlocks.fragmentAccelerator.value());
+        dropSelf(ModBlocks.chaosEngine.value());
+        dropSelf(ModBlocks.recycler.value());
     }
 }

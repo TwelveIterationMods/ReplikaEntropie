@@ -1,0 +1,8 @@
+{
+  "type": "replikaentropie:fabricator",
+  "result": {
+    "id": "minecraft:brick"
+  },
+  "scrap": 2,
+  "sortOrder": 1400
+}

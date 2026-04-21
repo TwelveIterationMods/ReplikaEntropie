@@ -1,9 +1,0 @@
-{
-  "type": "replikaentropie:recycler",
-  "biomass": 0.8,
-  "fragments": 0.0,
-  "ingredient": {
-    "item": "minecraft:leather_chestplate"
-  },
-  "scrap": 0.0
-}

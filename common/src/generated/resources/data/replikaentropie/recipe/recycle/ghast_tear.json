@@ -1,0 +1,7 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.1,
+  "fragments": 0.1,
+  "ingredient": "minecraft:ghast_tear",
+  "scrap": 0.0
+}

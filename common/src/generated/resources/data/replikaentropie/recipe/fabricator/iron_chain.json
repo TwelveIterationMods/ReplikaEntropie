@@ -1,0 +1,8 @@
+{
+  "type": "replikaentropie:fabricator",
+  "result": {
+    "id": "minecraft:iron_chain"
+  },
+  "scrap": 2,
+  "sortOrder": 500
+}

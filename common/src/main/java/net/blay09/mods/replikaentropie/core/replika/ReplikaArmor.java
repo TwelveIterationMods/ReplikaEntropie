@@ -1,23 +1,20 @@
 package net.blay09.mods.replikaentropie.core.replika;
 
+import net.blay09.mods.replikaentropie.component.ModDataComponents;
+import net.blay09.mods.replikaentropie.component.ReplikaParts;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.tag.ModItemTags;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 public class ReplikaArmor {
-
-    public static final String TAG_ITEMS = "Items";
 
     private static boolean testForPart(ItemStack itemStack, Predicate<ItemStack> predicate) {
         if (!(itemStack.is(ModItemTags.REPLIKA_SUIT))) {
@@ -33,7 +30,7 @@ public class ReplikaArmor {
         return false;
     }
 
-    private static boolean testForPart(Player player, ArmorItem.Type armorType, Predicate<ItemStack> predicate) {
+    private static boolean testForPart(Player player, ArmorType armorType, Predicate<ItemStack> predicate) {
         final var itemStack = player.getItemBySlot(armorType.getSlot());
         if (predicate.test(itemStack)) {
             return true;
@@ -42,46 +39,34 @@ public class ReplikaArmor {
         return testForPart(itemStack, predicate);
     }
 
-    public static boolean hasPart(Player player, ArmorItem.Type armorType, Item target) {
-        return testForPart(player, armorType, it -> it.is(target));
+    public static boolean hasPart(Player player, ArmorType armorType, ItemLike target) {
+        return testForPart(player, armorType, it -> it.is(target.asItem()));
     }
 
     public static List<ItemStack> getParts(ItemStack itemStack) {
-        final var parts = new ArrayList<ItemStack>();
-        if (!itemStack.hasTag()) {
-            return parts;
-        }
-
-        final var itemData = Objects.requireNonNull(itemStack.getTag());
-        final var partsTag = itemData.getList(TAG_ITEMS, Tag.TAG_COMPOUND);
-        for (final var partTag : partsTag) {
-            if (partTag instanceof CompoundTag compoundTag) {
-                parts.add(ItemStack.of(compoundTag));
-            }
-        }
-        return parts;
+        final var data = itemStack.get(ModDataComponents.replikaParts());
+        return data != null ? data.parts().stream().map(ItemStackTemplate::create).toList() : List.of();
     }
 
     public static void setParts(ItemStack itemStack, List<ItemStack> parts) {
-        final var itemData = itemStack.getOrCreateTag();
-        final var partsTag = new ListTag();
+        final var storedParts = new ArrayList<ItemStackTemplate>();
         for (final var part : parts) {
             if (!part.isEmpty()) {
-                partsTag.add(part.save(new CompoundTag()));
+                storedParts.add(ItemStackTemplate.fromNonEmptyStack(part));
             }
         }
-        itemData.put(TAG_ITEMS, partsTag);
+        itemStack.set(ModDataComponents.replikaParts(), new ReplikaParts(storedParts));
     }
 
     public static ItemStack assembleFrame(ItemStack frameItem) {
         if (frameItem.is(ModItems.replikaHelmetFrame)) {
-            return new ItemStack(ModItems.replikaHelmet);
+            return ModItems.replikaHelmet.createStack();
         } else if (frameItem.is(ModItems.replikaChestplateFrame)) {
-            return new ItemStack(ModItems.replikaChestplate);
+            return ModItems.replikaChestplate.createStack();
         } else if (frameItem.is(ModItems.replikaLeggingsFrame)) {
-            return new ItemStack(ModItems.replikaLeggings);
+            return ModItems.replikaLeggings.createStack();
         } else if (frameItem.is(ModItems.replikaBootsFrame)) {
-            return new ItemStack(ModItems.replikaBoots);
+            return ModItems.replikaBoots.createStack();
         }
         return ItemStack.EMPTY;
     }

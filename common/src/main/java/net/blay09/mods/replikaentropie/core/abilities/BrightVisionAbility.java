@@ -3,25 +3,25 @@ package net.blay09.mods.replikaentropie.core.abilities;
 import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class BrightVisionAbility implements Ability {
 
     public static final BrightVisionAbility INSTANCE = new BrightVisionAbility();
-    public static final ResourceLocation ID = id("bright_vision");
+    public static final Identifier ID = id("bright_vision");
 
     protected BrightVisionAbility() {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 
@@ -36,7 +36,7 @@ public class BrightVisionAbility implements Ability {
             return;
         }
 
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             if (player instanceof ServerPlayer serverPlayer) {
                 DarknessTracker.tick(serverPlayer);
             }
@@ -48,7 +48,7 @@ public class BrightVisionAbility implements Ability {
 
     @Override
     public void deactivate(Player player) {
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (player instanceof ServerPlayer serverPlayer) {
                 DarknessTracker.reset(serverPlayer);
@@ -66,7 +66,7 @@ public class BrightVisionAbility implements Ability {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorItem.Type.HELMET, ModItems.brightVisionGoggles);
+        return ReplikaArmor.hasPart(player, ArmorType.HELMET, ModItems.brightVisionGoggles);
     }
 
     @Override

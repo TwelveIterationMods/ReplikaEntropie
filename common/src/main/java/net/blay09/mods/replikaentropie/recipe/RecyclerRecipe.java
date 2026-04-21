@@ -1,92 +1,105 @@
 package net.blay09.mods.replikaentropie.recipe;
 
-import com.google.gson.JsonObject;
-import net.blay09.mods.replikaentropie.container.SingleItemContainer;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-public record RecyclerRecipe(ResourceLocation id, Ingredient ingredient, float scrap, float biomass,
-                             float fragments) implements Recipe<Container> {
+public record RecyclerRecipe(Ingredient ingredient, float scrap, float biomass,
+                             float fragments) implements Recipe<SingleRecipeInput>, PreviewableRecipe {
+    private static final MapCodec<RecyclerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Ingredient.CODEC.fieldOf("ingredient").forGetter(RecyclerRecipe::ingredient),
+            Codec.FLOAT.fieldOf("scrap").forGetter(RecyclerRecipe::scrap),
+            Codec.FLOAT.fieldOf("biomass").forGetter(RecyclerRecipe::biomass),
+            Codec.FLOAT.fieldOf("fragments").forGetter(RecyclerRecipe::fragments)
+    ).apply(instance, RecyclerRecipe::new));
+
+    private static final StreamCodec<RegistryFriendlyByteBuf, RecyclerRecipe> STREAM_CODEC = StreamCodec.composite(
+            Ingredient.CONTENTS_STREAM_CODEC,
+            RecyclerRecipe::ingredient,
+            ByteBufCodecs.FLOAT,
+            RecyclerRecipe::scrap,
+            ByteBufCodecs.FLOAT,
+            RecyclerRecipe::biomass,
+            ByteBufCodecs.FLOAT,
+            RecyclerRecipe::fragments,
+            RecyclerRecipe::new
+    );
+
     public static Optional<RecyclerRecipe> getRecipe(Level level, ItemStack itemStack) {
         if (itemStack.isEmpty()) {
             return Optional.empty();
         }
 
         return level != null
-                ? level.getRecipeManager().getRecipeFor(ModRecipes.recyclerType, new SingleItemContainer(itemStack), level)
+                ? ModRecipes.recycler.getRecipeFor(level, new SingleRecipeInput(itemStack))
+                .map(holder -> holder.value())
                 : Optional.empty();
     }
 
     @Override
-    public boolean matches(Container container, Level level) {
-        return ingredient.test(container.getItem(0));
+    public boolean matches(SingleRecipeInput input, Level level) {
+        return ingredient.test(input.item());
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
+    public ItemStack assemble(SingleRecipeInput input) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int i, int i1) {
+    public boolean showNotification() {
         return false;
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public String group() {
+        return "";
+    }
+
+    public ItemStack getResultItem() {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public ResourceLocation getId() {
-        return id;
+    public ItemStack previewResultItem() {
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return ModRecipes.recyclerSerializer;
+    public RecipeSerializer<RecyclerRecipe> getSerializer() {
+        return ModRecipes.recycler.serializer();
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return ModRecipes.recyclerType;
+    public RecipeType<RecyclerRecipe> getType() {
+        return ModRecipes.recycler.type();
     }
 
-    public static class Serializer implements RecipeSerializer<RecyclerRecipe> {
-        @Override
-        public RecyclerRecipe fromJson(ResourceLocation id, JsonObject jsonObject) {
-            final var ingredient = Ingredient.fromJson(jsonObject.get("ingredient"));
-            final var scrap = jsonObject.get("scrap").getAsFloat();
-            final var biomass = jsonObject.get("biomass").getAsFloat();
-            final var fragments = jsonObject.get("fragments").getAsFloat();
-            return new RecyclerRecipe(id, ingredient, scrap, biomass, fragments);
-        }
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.create(ingredient);
+    }
 
-        @Override
-        public RecyclerRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            final var ingredient = Ingredient.fromNetwork(buf);
-            final var scrap = buf.readFloat();
-            final var biomass = buf.readFloat();
-            final var fragments = buf.readFloat();
-            return new RecyclerRecipe(id, ingredient, scrap, biomass, fragments);
-        }
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return ModRecipes.recycler.bookCategory();
+    }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buf, RecyclerRecipe recipe) {
-            recipe.ingredient.toNetwork(buf);
-            buf.writeFloat(recipe.scrap);
-            buf.writeFloat(recipe.biomass);
-            buf.writeFloat(recipe.fragments);
-        }
+    public static RecipeSerializer<RecyclerRecipe> serializer() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

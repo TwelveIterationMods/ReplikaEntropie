@@ -5,7 +5,7 @@ import net.blay09.mods.replikaentropie.core.nonogram.NonogramClueProvider;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramClues;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import com.google.gson.Gson;
@@ -19,7 +19,7 @@ public class NonogramEditorMenu extends AbstractNonogramMenu {
 
     private final NonogramState nonogramState;
     @Nullable
-    private final ResourceLocation outputId;
+    private final Identifier outputId;
 
     private NonogramClues clues;
 
@@ -27,8 +27,8 @@ public class NonogramEditorMenu extends AbstractNonogramMenu {
         this(containerId, data, data.state(), null);
     }
 
-    public NonogramEditorMenu(int containerId, NonogramClueProvider clues, NonogramState nonogramState, @Nullable ResourceLocation outputId) {
-        super(ModMenus.nonogramEditor.get(), containerId);
+    public NonogramEditorMenu(int containerId, NonogramClueProvider clues, NonogramState nonogramState, @Nullable Identifier outputId) {
+        super(ModMenus.nonogramEditor.value(), containerId);
         this.clues = clues.clues();
         this.nonogramState = nonogramState;
         this.outputId = outputId;
@@ -53,7 +53,7 @@ public class NonogramEditorMenu extends AbstractNonogramMenu {
     public void removed(Player player) {
         super.removed(player);
 
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             saveCurrentAsJson(clues.width(), clues.height(), nonogramState.marks(), outputId);
         }
     }
@@ -64,7 +64,7 @@ public class NonogramEditorMenu extends AbstractNonogramMenu {
         clues = NonogramClues.forGrid(nonogramState.width(), nonogramState.height(), nonogramState.marks());
     }
 
-    private void saveCurrentAsJson(int width, int height, int[] marks, ResourceLocation id) {
+    private void saveCurrentAsJson(int width, int height, int[] marks, Identifier id) {
         final var grid = new int[width][height];
         for (int row = 0; row < height; row++) {
             for (int column = 0; column < width; column++) {

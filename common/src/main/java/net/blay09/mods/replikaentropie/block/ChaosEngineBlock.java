@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.block;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import com.mojang.serialization.MapCodec;
 import net.blay09.mods.replikaentropie.block.entity.ChaosEngineBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -22,6 +22,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class ChaosEngineBlock extends BaseEntityBlock {
+    public static final MapCodec<ChaosEngineBlock> CODEC = simpleCodec(ChaosEngineBlock::new);
 
     public static final VoxelShape[] SHAPES = new VoxelShape[]{
             Shapes.or(
@@ -90,6 +91,11 @@ public class ChaosEngineBlock extends BaseEntityBlock {
     }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(BlockStateProperties.HORIZONTAL_FACING);
@@ -122,9 +128,9 @@ public class ChaosEngineBlock extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide
-                ? createTickerHelper(type, ModBlockEntities.chaosEngine.get(), ChaosEngineBlockEntity::clientTick)
-                : createTickerHelper(type, ModBlockEntities.chaosEngine.get(), ChaosEngineBlockEntity::serverTick);
+        return level.isClientSide()
+                ? createTickerHelper(type, ModBlockEntities.chaosEngine.value(), ChaosEngineBlockEntity::clientTick)
+                : createTickerHelper(type, ModBlockEntities.chaosEngine.value(), ChaosEngineBlockEntity::serverTick);
     }
 
 }

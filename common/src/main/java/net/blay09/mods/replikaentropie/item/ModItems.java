@@ -1,211 +1,172 @@
 package net.blay09.mods.replikaentropie.item;
 
-import net.blay09.mods.balm.api.DeferredObject;
-import net.blay09.mods.balm.api.item.BalmItems;
+import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
+import net.blay09.mods.balm.world.item.BalmItemRegistrar;
+import net.blay09.mods.balm.world.item.DeferredItem;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.Equippable;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import static net.blay09.mods.balm.api.item.BalmItems.itemProperties;
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class ModItems {
-    public static DeferredObject<CreativeModeTab> creativeModeTab;
+    public static DeferredItem damagedChipset;
+    public static DeferredItem handheldAnalyzer;
+    public static DeferredItem skyScraper;
+    public static DeferredItem data;
+    public static DeferredItem scrap;
+    public static DeferredItem biomass;
+    public static DeferredItem fragments;
+    public static DeferredItem biomash;
+    public static DeferredItem chipset;
+    public static DeferredItem biosteel;
+    public static DeferredItem biosteelHelmet;
+    public static DeferredItem biosteelChestplate;
+    public static DeferredItem biosteelLeggings;
+    public static DeferredItem biosteelBoots;
+    public static DeferredItem hazmatLining;
+    public static DeferredItem hazmatHelmet;
+    public static DeferredItem hazmatChestplate;
+    public static DeferredItem hazmatLeggings;
+    public static DeferredItem hazmatBoots;
+    public static DeferredItem replikaSkin;
+    public static DeferredItem replikaHelmetFrame;
+    public static DeferredItem replikaChestplateFrame;
+    public static DeferredItem replikaLeggingsFrame;
+    public static DeferredItem replikaBootsFrame;
+    public static DeferredItem replikaHelmet;
+    public static DeferredItem replikaChestplate;
+    public static DeferredItem replikaLeggings;
+    public static DeferredItem replikaBoots;
+    public static DeferredItem nightVisionGoggles;
+    public static DeferredItem brightVisionGoggles;
+    public static DeferredItem graviliftHarness;
+    public static DeferredItem magphasers;
+    public static DeferredItem nullphaser;
+    public static DeferredItem burstDrill;
+    public static DeferredItem oreVacuum;
+    public static DeferredItem slowphasers;
+    public static DeferredItem stompers;
+    public static DeferredItem springBoots;
+    public static DeferredItem semisonicSpeeders;
+    public static DeferredItem assemblyTicket;
 
-    public static Item damagedChipset;
-    public static Item handheldAnalyzer;
-    public static Item skyScraper;
+    public static void initialize(BalmItemRegistrar items) {
+        handheldAnalyzer = items.register("handheld_analyzer", HandheldAnalyzerItem::new, it -> it.stacksTo(1)).asDeferredItem();
+        skyScraper = items.register("sky_scraper", SkyScraperItem::new, it -> it.stacksTo(1)).asDeferredItem();
+        damagedChipset = items.register("damaged_chipset", Item::new, it -> it).asDeferredItem();
+        data = items.register("data", DataItem::new, it -> it.food(new FoodProperties.Builder().alwaysEdible().build())).asDeferredItem();
+        scrap = items.register("scrap", Item::new, it -> it).asDeferredItem();
+        biomass = items.register("biomass", Item::new, it -> it).asDeferredItem();
+        fragments = items.register("fragments", Item::new, it -> it).asDeferredItem();
+        chipset = items.register("chipset", Item::new, it -> it).asDeferredItem();
+        biosteel = items.register("biosteel", Item::new, it -> it).asDeferredItem();
+        assemblyTicket = items.register("assembly_ticket", AssemblyTicketItem::new, it -> it).asDeferredItem();
+        biomash = items.register("biomash", Item::new, it -> it.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.1f).build())).asDeferredItem();
+        nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> it).asDeferredItem();
+        brightVisionGoggles = items.register("brightvision_goggles", ReplikaPieceArmorItem::new, it -> it).asDeferredItem();
+        graviliftHarness = items.register("gravilift_harness", ReplikaPieceArmorItem::new, it -> it.durability(-1)).asDeferredItem();
+        magphasers = items.register("magphasers", ReplikaPieceArmorItem::new, it -> it.durability(-1)).asDeferredItem();
+        nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(-1)).asDeferredItem();
+        burstDrill = items.register("burst_drill", BurstDrillItem::new, it -> it.durability(-1)).asDeferredItem();
+        oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(-1)).asDeferredItem();
+        slowphasers = items.register("slowphasers", ReplikaPieceArmorItem::new, it -> it.durability(-1)).asDeferredItem();
+        stompers = items.register("stompers", ReplikaPieceArmorItem::new, it -> it.durability(-1)).asDeferredItem();
+        springBoots = items.register("spring_boots", ReplikaPieceArmorItem::new, it -> it.durability(-1)).asDeferredItem();
+        semisonicSpeeders = items.register("semisonic_speeders", ReplikaPieceArmorItem::new, it -> it.durability(-1)).asDeferredItem();
+        biosteelHelmet = items.register("biosteel_helmet", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.HELMET)).asDeferredItem();
+        biosteelChestplate = items.register("biosteel_chestplate", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.CHESTPLATE)).asDeferredItem();
+        biosteelLeggings = items.register("biosteel_leggings", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.LEGGINGS)).asDeferredItem();
+        biosteelBoots = items.register("biosteel_boots", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.BOOTS)).asDeferredItem();
+        hazmatLining = items.register("hazmat_lining", Item::new, it -> it).asDeferredItem();
+        hazmatHelmet = items.register("hazmat_helmet", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.HELMET)).asDeferredItem();
+        hazmatChestplate = items.register("hazmat_chestplate", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE)).asDeferredItem();
+        hazmatLeggings = items.register("hazmat_leggings", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.LEGGINGS)).asDeferredItem();
+        hazmatBoots = items.register("hazmat_boots", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS)).asDeferredItem();
+        replikaSkin = items.register("replika_skin", Item::new, it -> it).asDeferredItem();
+        replikaHelmetFrame = items.register("replika_helmet_frame", Item::new, it -> it).asDeferredItem();
+        replikaChestplateFrame = items.register("replika_chestplate_frame", Item::new, it -> it).asDeferredItem();
+        replikaLeggingsFrame = items.register("replika_leggings_frame", Item::new, it -> it).asDeferredItem();
+        replikaBootsFrame = items.register("replika_boots_frame", Item::new, it -> it).asDeferredItem();
+        replikaHelmet = items.register("replika_helmet", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.HELMET)).asDeferredItem();
+        replikaChestplate = items.register("replika_chestplate", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE)).asDeferredItem();
+        replikaLeggings = items.register("replika_leggings", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.LEGGINGS)).asDeferredItem();
+        replikaBoots = items.register("replika_boots", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS)).asDeferredItem();
+    }
 
-    public static Item data;
-    public static Item scrap;
-    public static Item biomass;
-    public static Item fragments;
-    public static Item biomash;
-    public static Item chipset;
-    public static Item biosteel;
-    public static Item biosteelHelmet;
-    public static Item biosteelChestplate;
-    public static Item biosteelLeggings;
-    public static Item biosteelBoots;
-    public static Item hazmatLining;
-    public static Item hazmatHelmet;
-    public static Item hazmatChestplate;
-    public static Item hazmatLeggings;
-    public static Item hazmatBoots;
-    public static Item replikaSkin;
-    public static Item replikaHelmetFrame;
-    public static Item replikaChestplateFrame;
-    public static Item replikaLeggingsFrame;
-    public static Item replikaBootsFrame;
-    public static Item replikaHelmet;
-    public static Item replikaChestplate;
-    public static Item replikaLeggings;
-    public static Item replikaBoots;
-    public static Item nightVisionGoggles;
-    public static Item brightVisionGoggles;
-    public static Item graviliftHarness;
-    public static Item magphasers;
-    public static Item nullphaser;
-    public static Item burstDrill;
-    public static Item oreVacuum;
-    public static Item slowphasers;
-    public static Item stompers;
-    public static Item springBoots;
-    public static Item semisonicSpeeders;
-    public static Item assemblyTicket;
+    public static void initialize(BalmCreativeModeTabRegistrar creativeModeTabs) {
+        creativeModeTabs.register(ReplikaEntropie.MOD_ID, builder -> builder
+                .icon(() -> handheldAnalyzer.createStack())
+                .title(Component.translatable(id(ReplikaEntropie.MOD_ID).toLanguageKey("itemGroup")))
+                .displayItems(((_, output) -> {
+                    output.accept(damagedChipset);
+                    output.accept(chipset);
+                    output.accept(skyScraper);
+                    output.accept(handheldAnalyzer);
+                    output.accept(scrap);
+                    output.accept(biomass);
+                    output.accept(fragments);
+                    output.accept(biomash);
+                    output.accept(data);
+                    output.accept(ModBlocks.recycler);
+                    output.accept(ModBlocks.assembler);
+                    output.accept(ModBlocks.fabricator);
+                    output.accept(ModBlocks.entropicDataMiner);
+                    output.accept(ModBlocks.cobblescrap);
+                    output.accept(ModBlocks.lavascrap);
+                    output.accept(ModBlocks.worldEater);
+                    output.accept(ModBlocks.biomassIncubator);
+                    output.accept(ModBlocks.biomassHarvester);
+                    output.accept(ModBlocks.defragmentizer);
+                    output.accept(ModBlocks.fragmentAccelerator);
+                    output.accept(ModBlocks.chaosEngine);
+                    output.accept(ModBlocks.fragmentalWaste);
+                    output.accept(burstDrill);
+                    output.accept(oreVacuum);
+                    output.accept(nullphaser);
+                    output.accept(nightVisionGoggles);
+                    output.accept(brightVisionGoggles);
+                    output.accept(graviliftHarness);
+                    output.accept(semisonicSpeeders);
+                    output.accept(springBoots);
+                    output.accept(stompers);
+                    output.accept(slowphasers);
+                    output.accept(magphasers);
+                    output.accept(biosteel);
+                    output.accept(biosteelHelmet);
+                    output.accept(biosteelChestplate);
+                    output.accept(biosteelLeggings);
+                    output.accept(biosteelBoots);
+                    output.accept(hazmatLining);
+                    output.accept(hazmatHelmet);
+                    output.accept(hazmatChestplate);
+                    output.accept(hazmatLeggings);
+                    output.accept(hazmatBoots);
+                    output.accept(replikaHelmet);
+                    output.accept(replikaChestplate);
+                    output.accept(replikaLeggings);
+                    output.accept(replikaBoots);
+                    output.accept(assemblyTicket);
+                })));
+    }
 
-    public static void initialize(BalmItems items) {
-        items.registerItem((identifier) -> handheldAnalyzer = new HandheldAnalyzerItem(itemProperties(identifier).stacksTo(1)), id("handheld_analyzer"));
-        items.registerItem((identifier) -> skyScraper = new SkyScraperItem(itemProperties(identifier).stacksTo(1)), id("sky_scraper"));
-        items.registerItem((identifier) -> damagedChipset = new Item(itemProperties(identifier)), id("damaged_chipset"));
-        items.registerItem((identifier) -> data = new DataItem(itemProperties(identifier).food(new FoodProperties.Builder().fast().alwaysEat().build())), id("data"));
-        items.registerItem((identifier) -> scrap = new Item(itemProperties(identifier)), id("scrap"));
-        items.registerItem((identifier) -> biomass = new Item(itemProperties(identifier)), id("biomass"));
-        items.registerItem((identifier) -> fragments = new Item(itemProperties(identifier)), id("fragments"));
-        items.registerItem((identifier) -> chipset = new Item(itemProperties(identifier)), id("chipset"));
-        items.registerItem((identifier) -> biosteel = new Item(itemProperties(identifier)), id("biosteel"));
-        items.registerItem((identifier) -> assemblyTicket = new AssemblyTicketItem(itemProperties(identifier)), id("assembly_ticket"));
-        items.registerItem((identifier) -> biomash = new Item(itemProperties(identifier).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.1f).build())), id("biomash"));
-
-        items.registerItem((identifier) -> nightVisionGoggles = new ReplikaPieceArmorItem(GogglesArmorMaterial.INSTANCE, ArmorItem.Type.HELMET, itemProperties(identifier)), id("nightvision_goggles"));
-        items.registerItem((identifier) -> brightVisionGoggles = new ReplikaPieceArmorItem(GogglesArmorMaterial.INSTANCE, ArmorItem.Type.HELMET, itemProperties(identifier)), id("brightvision_goggles"));
-
-        items.registerItem((identifier) -> graviliftHarness = new ReplikaPieceArmorItem(ArmorItem.Type.CHESTPLATE, itemProperties(identifier).durability(-1)), id("gravilift_harness"));
-
-        items.registerItem((identifier) -> magphasers = new ReplikaPieceArmorItem(ArmorItem.Type.BOOTS, itemProperties(identifier).durability(-1)), id("magphasers"));
-        items.registerItem((identifier) -> nullphaser = new NullphaserItem(itemProperties(identifier).durability(-1)), id("nullphaser"));
-        items.registerItem((identifier) -> burstDrill = new BurstDrillItem(itemProperties(identifier).durability(-1)), id("burst_drill"));
-        items.registerItem((identifier) -> oreVacuum = new OreVacuumItem(itemProperties(identifier).durability(-1)), id("ore_vacuum"));
-        items.registerItem((identifier) -> slowphasers = new ReplikaPieceArmorItem(ArmorItem.Type.BOOTS, itemProperties(identifier).durability(-1)), id("slowphasers"));
-        items.registerItem((identifier) -> stompers = new ReplikaPieceArmorItem(ArmorItem.Type.BOOTS, itemProperties(identifier).durability(-1)), id("stompers"));
-        items.registerItem((identifier) -> springBoots = new ReplikaPieceArmorItem(ArmorItem.Type.BOOTS, itemProperties(identifier).durability(-1)), id("spring_boots"));
-        items.registerItem((identifier) -> semisonicSpeeders = new ReplikaPieceArmorItem(ArmorItem.Type.LEGGINGS, itemProperties(identifier).durability(-1)), id("semisonic_speeders"));
-
-        items.registerItem((identifier) -> biosteelHelmet = new BiosteelArmorItem(ArmorItem.Type.HELMET, itemProperties(identifier)), id("biosteel_helmet"));
-        items.registerItem((identifier) -> biosteelChestplate = new BiosteelArmorItem(ArmorItem.Type.CHESTPLATE, itemProperties(identifier)), id("biosteel_chestplate"));
-        items.registerItem((identifier) -> biosteelLeggings = new BiosteelArmorItem(ArmorItem.Type.LEGGINGS, itemProperties(identifier)), id("biosteel_leggings"));
-        items.registerItem((identifier) -> biosteelBoots = new BiosteelArmorItem(ArmorItem.Type.BOOTS, itemProperties(identifier)), id("biosteel_boots"));
-
-        items.registerItem((identifier) -> hazmatLining = new Item(itemProperties(identifier)), id("hazmat_lining"));
-        items.registerItem((identifier) -> hazmatHelmet = new HazmatArmorItem(ArmorItem.Type.HELMET, itemProperties(identifier)), id("hazmat_helmet"));
-        items.registerItem((identifier) -> hazmatChestplate = new HazmatArmorItem(ArmorItem.Type.CHESTPLATE, itemProperties(identifier)), id("hazmat_chestplate"));
-        items.registerItem((identifier) -> hazmatLeggings = new HazmatArmorItem(ArmorItem.Type.LEGGINGS, itemProperties(identifier)), id("hazmat_leggings"));
-        items.registerItem((identifier) -> hazmatBoots = new HazmatArmorItem(ArmorItem.Type.BOOTS, itemProperties(identifier)), id("hazmat_boots"));
-
-        items.registerItem((identifier) -> replikaSkin = new Item(itemProperties(identifier)), id("replika_skin"));
-        items.registerItem((identifier) -> replikaHelmetFrame = new Item(itemProperties(identifier)), id("replika_helmet_frame"));
-        items.registerItem((identifier) -> replikaChestplateFrame = new Item(itemProperties(identifier)), id("replika_chestplate_frame"));
-        items.registerItem((identifier) -> replikaLeggingsFrame = new Item(itemProperties(identifier)), id("replika_leggings_frame"));
-        items.registerItem((identifier) -> replikaBootsFrame = new Item(itemProperties(identifier)), id("replika_boots_frame"));
-
-        items.registerItem((identifier) -> replikaHelmet = new ReplikaArmorItem(ArmorItem.Type.HELMET, itemProperties(identifier)), id("replika_helmet"));
-        items.registerItem((identifier) -> replikaChestplate = new ReplikaArmorItem(ArmorItem.Type.CHESTPLATE, itemProperties(identifier)), id("replika_chestplate"));
-        items.registerItem((identifier) -> replikaLeggings = new ReplikaArmorItem(ArmorItem.Type.LEGGINGS, itemProperties(identifier)), id("replika_leggings"));
-        items.registerItem((identifier) -> replikaBoots = new ReplikaArmorItem(ArmorItem.Type.BOOTS, itemProperties(identifier)), id("replika_boots"));
-
-        creativeModeTab = items.registerCreativeModeTab(() -> new ItemStack(handheldAnalyzer), id(ReplikaEntropie.MOD_ID));
-
-        items.setCreativeModeTabSorting(id(ReplikaEntropie.MOD_ID), new Comparator<>() {
-            private static final String[] patternStrings = new String[]{
-                    "damaged_chipset",
-                    "chipset",
-                    "sky_scraper",
-                    "handheld_analyzer",
-                    "scrap",
-                    "biomass",
-                    "fragments",
-                    "biomash",
-                    "data",
-                    "recycler",
-                    "assembler",
-                    "fabricator",
-                    "entropic_data_miner",
-                    "cobblescrap",
-                    "lavascrap",
-                    "world_eater",
-                    "biomass_incubator",
-                    "biomass_harvester",
-                    "defragmentizer",
-                    "fragment_accelerator",
-                    "chaos_engine",
-                    "fragmental_waste",
-                    "burst_drill",
-                    "ore_vacuum",
-                    "nullphaser",
-                    "nightvision_goggles",
-                    "brightvision_goggles",
-                    "gravilift_harness",
-                    "semisonic_speeders",
-                    "spring_boots",
-                    "stompers",
-                    "slowphasers",
-                    "magphasers",
-                    "biosteel",
-                    "biosteel_.+",
-                    "hazmat_lining",
-                    "hazmat_.+",
-                    "replika_skin",
-                    "replika_.+_frame",
-                    "replika_.+",
-                    "assembly_ticket",
-            };
-
-            private static final Map<String, Integer> indexMap = new HashMap<>();
-            private static final Map<Pattern, Integer> patternIndexMap = new HashMap<>();
-
-            static {
-                for (int i = 0; i < patternStrings.length; i++) {
-                    final var patternString = patternStrings[i];
-                    indexMap.put(patternString, i);
-                    patternIndexMap.put(Pattern.compile(patternString), i);
-                }
-            }
-
-            private static int getIndex(String name) {
-                final var index = indexMap.get(name);
-                if (index != null) {
-                    return index;
-                }
-
-                for (var entry : patternIndexMap.entrySet()) {
-                    if (entry.getKey().matcher(name).matches()) {
-                        return entry.getValue();
-                    }
-                }
-
-                return -1;
-            }
-
-            @Override
-            public int compare(ItemLike o1, ItemLike o2) {
-                final var id1 = BuiltInRegistries.ITEM.getKey(o1.asItem());
-                final var id2 = BuiltInRegistries.ITEM.getKey(o2.asItem());
-                final var name1 = id1.getPath();
-                final var name2 = id2.getPath();
-                final var index1 = getIndex(name1);
-                final var index2 = getIndex(name2);
-                if (index1 != -1 && index2 != -1) {
-                    return Integer.compare(index1, index2);
-                } else if (index1 != -1) {
-                    return -1;
-                } else if (index2 != -1) {
-                    return 1;
-                }
-
-                return name1.compareTo(name2);
-            }
-        });
+    private static Item.Properties humanoidArmor(Item.Properties properties, ArmorMaterial material, ArmorType type) {
+        var result = properties.durability(type.getDurability(material.durability()))
+                .attributes(material.createAttributes(type))
+                .component(DataComponents.EQUIPPABLE, Equippable.builder(type.getSlot())
+                        .setEquipSound(material.equipSound())
+                        .setAsset(material.assetId()).build())
+                .repairable(material.repairIngredient());
+        if (material.enchantmentValue() > 0) {
+            result = result.enchantable(material.enchantmentValue());
+        }
+        return result;
     }
 
 }

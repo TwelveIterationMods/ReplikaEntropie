@@ -1,85 +1,82 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.DeferredObject;
-import net.blay09.mods.balm.api.block.BalmBlockEntities;
+import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityTypeRegistrar;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
+public class ModBlockEntities {
+    public static Holder<BlockEntityType<ReplikaWorkbenchBlockEntity>> replikaWorkbench;
+    public static Holder<BlockEntityType<FabricatorBlockEntity>> fabricator;
+    public static Holder<BlockEntityType<AssemblerBlockEntity>> assembler;
+    public static Holder<BlockEntityType<CobblescrapBlockEntity>> cobblescrap;
+    public static Holder<BlockEntityType<LavascrapBlockEntity>> lavascrap;
+    public static Holder<BlockEntityType<WorldEaterBlockEntity>> worldEater;
+    public static Holder<BlockEntityType<FragmentAcceleratorBlockEntity>> fragmentAccelerator;
+    public static Holder<BlockEntityType<DefragmentizerBlockEntity>> defragmentizer;
+    public static Holder<BlockEntityType<BiomassHarvesterBlockEntity>> biomassHarvester;
+    public static Holder<BlockEntityType<BiomassIncubatorBlockEntity>> biomassIncubator;
+    public static Holder<BlockEntityType<FragmentalWasteBlockEntity>> fragmentalWaste;
+    public static Holder<BlockEntityType<EntropicDataMinerBlockEntity>> entropicDataMiner;
+    public static Holder<BlockEntityType<RecyclerBlockEntity>> recycler;
+    public static Holder<BlockEntityType<ChaosEngineBlockEntity>> chaosEngine;
 
- public class ModBlockEntities {
-    public static DeferredObject<BlockEntityType<ReplikaWorkbenchBlockEntity>> replikaWorkbench;
-    public static DeferredObject<BlockEntityType<FabricatorBlockEntity>> fabricator;
-    public static DeferredObject<BlockEntityType<AssemblerBlockEntity>> assembler;
-    public static DeferredObject<BlockEntityType<CobblescrapBlockEntity>> cobblescrap;
-    public static DeferredObject<BlockEntityType<LavascrapBlockEntity>> lavascrap;
-    public static DeferredObject<BlockEntityType<WorldEaterBlockEntity>> worldEater;
-    public static DeferredObject<BlockEntityType<FragmentAcceleratorBlockEntity>> fragmentAccelerator;
-    public static DeferredObject<BlockEntityType<DefragmentizerBlockEntity>> defragmentizer;
-    public static DeferredObject<BlockEntityType<BiomassHarvesterBlockEntity>> biomassHarvester;
-    public static DeferredObject<BlockEntityType<BiomassIncubatorBlockEntity>> biomassIncubator;
-    public static DeferredObject<BlockEntityType<FragmentalWasteBlockEntity>> fragmentalWaste;
-    public static DeferredObject<BlockEntityType<EntropicDataMinerBlockEntity>> entropicDataMiner;
-    public static DeferredObject<BlockEntityType<RecyclerBlockEntity>> recycler;
-    public static DeferredObject<BlockEntityType<ChaosEngineBlockEntity>> chaosEngine;
-
-    public static void initialize(BalmBlockEntities blockEntities) {
-        replikaWorkbench = blockEntities.registerBlockEntity(id("replika_workbench"),
+    public static void initialize(BalmBlockEntityTypeRegistrar blockEntities) {
+        replikaWorkbench = blockEntities.register("replika_workbench",
                 ReplikaWorkbenchBlockEntity::new,
-                () -> new Block[]{ModBlocks.replikaWorkbench});
+                ModBlocks.replikaWorkbench).asHolder();
 
-        fabricator = blockEntities.registerBlockEntity(id("fabricator"),
+        fabricator = blockEntities.register("fabricator",
                 FabricatorBlockEntity::new,
-                () -> new Block[]{ModBlocks.fabricator});
+                ModBlocks.fabricator).asHolder();
 
-        assembler = blockEntities.registerBlockEntity(id("assembler"),
+        assembler = blockEntities.register("assembler",
                 AssemblerBlockEntity::new,
-                () -> new Block[]{ModBlocks.assembler});
+                ModBlocks.assembler).asHolder();
 
-        cobblescrap = blockEntities.registerBlockEntity(id("cobblescrap"),
+        cobblescrap = blockEntities.register("cobblescrap",
                 CobblescrapBlockEntity::new,
-                () -> new Block[]{ModBlocks.cobblescrap});
+                ModBlocks.cobblescrap).asHolder();
 
-        lavascrap = blockEntities.registerBlockEntity(id("lavascrap"),
+        lavascrap = blockEntities.register("lavascrap",
                 LavascrapBlockEntity::new,
-                () -> new Block[]{ModBlocks.lavascrap});
+                ModBlocks.lavascrap).asHolder();
 
-        worldEater = blockEntities.registerBlockEntity(id("world_eater"),
+        worldEater = blockEntities.register("world_eater",
                 WorldEaterBlockEntity::new,
-                () -> new Block[]{ModBlocks.worldEater});
+                ModBlocks.worldEater).asHolder();
 
-        fragmentAccelerator = blockEntities.registerBlockEntity(id("fragment_accelerator"),
+        fragmentAccelerator = blockEntities.register("fragment_accelerator",
                 FragmentAcceleratorBlockEntity::new,
-                () -> new Block[]{ModBlocks.fragmentAccelerator});
+                ModBlocks.fragmentAccelerator).asHolder();
 
-        defragmentizer = blockEntities.registerBlockEntity(id("defragmentizer"),
+        defragmentizer = blockEntities.register("defragmentizer",
                 DefragmentizerBlockEntity::new,
-                () -> new Block[]{ModBlocks.defragmentizer});
+                ModBlocks.defragmentizer).asHolder();
 
-        biomassHarvester = blockEntities.registerBlockEntity(id("biomass_harvester"),
+        biomassHarvester = blockEntities.register("biomass_harvester",
                 BiomassHarvesterBlockEntity::new,
-                () -> new Block[]{ModBlocks.biomassHarvester});
+                ModBlocks.biomassHarvester).asHolder();
 
-        biomassIncubator = blockEntities.registerBlockEntity(id("biomass_incubator"),
+        biomassIncubator = blockEntities.register("biomass_incubator",
                 BiomassIncubatorBlockEntity::new,
-                () -> new Block[]{ModBlocks.biomassIncubator});
+                ModBlocks.biomassIncubator).asHolder();
 
-        fragmentalWaste = blockEntities.registerBlockEntity(id("fragmental_waste"),
+        fragmentalWaste = blockEntities.register("fragmental_waste",
                 FragmentalWasteBlockEntity::new,
-                () -> new Block[]{ModBlocks.fragmentalWaste});
+                ModBlocks.fragmentalWaste).asHolder();
 
-        entropicDataMiner = blockEntities.registerBlockEntity(id("entropic_data_miner"),
+        entropicDataMiner = blockEntities.register("entropic_data_miner",
                 EntropicDataMinerBlockEntity::new,
-                () -> new Block[]{ModBlocks.entropicDataMiner});
+                ModBlocks.entropicDataMiner).asHolder();
 
-        recycler = blockEntities.registerBlockEntity(id("recycler"),
+        recycler = blockEntities.register("recycler",
                 RecyclerBlockEntity::new,
-                () -> new Block[]{ModBlocks.recycler});
+                ModBlocks.recycler).asHolder();
 
-        chaosEngine = blockEntities.registerBlockEntity(id("chaos_engine"),
+        chaosEngine = blockEntities.register("chaos_engine",
                 ChaosEngineBlockEntity::new,
-                () -> new Block[]{ModBlocks.chaosEngine});
+                ModBlocks.chaosEngine).asHolder();
     }
 }
 

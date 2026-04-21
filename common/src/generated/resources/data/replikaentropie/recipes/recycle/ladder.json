@@ -1,9 +1,0 @@
-{
-  "type": "replikaentropie:recycler",
-  "biomass": 0.35,
-  "fragments": 0.0,
-  "ingredient": {
-    "item": "minecraft:ladder"
-  },
-  "scrap": 0.0
-}

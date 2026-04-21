@@ -1,7 +1,7 @@
 package net.blay09.mods.replikaentropie.block;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import com.mojang.serialization.MapCodec;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.block.entity.DefragmentizerBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -23,6 +23,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class DefragmentizerBlock extends BaseEntityBlock {
+    public static final MapCodec<DefragmentizerBlock> CODEC = simpleCodec(DefragmentizerBlock::new);
+
     public static final VoxelShape SHAPE = Shapes.or(
             Shapes.box(0, 0, 0, 1, 1/16f, 1),
             Shapes.box(1/16f, 1/16f, 1/16f, 15/16f, 15/16f, 15/16f),
@@ -34,15 +36,20 @@ public class DefragmentizerBlock extends BaseEntityBlock {
     }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new DefragmentizerBlockEntity(blockPos, blockState);
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof DefragmentizerBlockEntity defragmentizerBlockEntity) {
-                Balm.getNetworking().openMenu(player, defragmentizerBlockEntity);
+                Balm.networking().openMenu(player, defragmentizerBlockEntity);
             }
         }
         return InteractionResult.CONSUME;
@@ -60,19 +67,8 @@ public class DefragmentizerBlock extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide
-                ? createTickerHelper(type, ModBlockEntities.defragmentizer.get(), DefragmentizerBlockEntity::clientTick)
-                : createTickerHelper(type, ModBlockEntities.defragmentizer.get(), DefragmentizerBlockEntity::serverTick);
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            if (level.getBlockEntity(pos) instanceof BalmContainerProvider provider) {
-                provider.dropItems(level, pos);
-            }
-
-            super.onRemove(state, level, pos, newState, isMoving);
-        }
+        return level.isClientSide()
+                ? createTickerHelper(type, ModBlockEntities.defragmentizer.value(), DefragmentizerBlockEntity::clientTick)
+                : createTickerHelper(type, ModBlockEntities.defragmentizer.value(), DefragmentizerBlockEntity::serverTick);
     }
 }

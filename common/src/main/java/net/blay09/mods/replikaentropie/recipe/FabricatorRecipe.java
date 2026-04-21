@@ -1,96 +1,111 @@
 package net.blay09.mods.replikaentropie.recipe;
 
-import com.google.gson.JsonObject;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public record FabricatorRecipe(ResourceLocation id, int scrap, int biomass, int fragments,
-                               ItemStack result, int sortOrder) implements Recipe<Container> {
+public record FabricatorRecipe(int scrap, int biomass, int fragments,
+                               ItemStackTemplate result, int sortOrder) implements Recipe<RecipeInput>, PreviewableRecipe {
+    private static final MapCodec<FabricatorRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.INT.optionalFieldOf("scrap", 0).forGetter(FabricatorRecipe::scrap),
+            Codec.INT.optionalFieldOf("biomass", 0).forGetter(FabricatorRecipe::biomass),
+            Codec.INT.optionalFieldOf("fragments", 0).forGetter(FabricatorRecipe::fragments),
+            ItemStackTemplate.CODEC.fieldOf("result").forGetter(FabricatorRecipe::result),
+            Codec.INT.optionalFieldOf("sortOrder", 0).forGetter(FabricatorRecipe::sortOrder)
+    ).apply(instance, FabricatorRecipe::new));
+
+    private static final StreamCodec<RegistryFriendlyByteBuf, FabricatorRecipe> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT,
+            FabricatorRecipe::scrap,
+            ByteBufCodecs.VAR_INT,
+            FabricatorRecipe::biomass,
+            ByteBufCodecs.VAR_INT,
+            FabricatorRecipe::fragments,
+            ItemStackTemplate.STREAM_CODEC,
+            FabricatorRecipe::result,
+            ByteBufCodecs.VAR_INT,
+            FabricatorRecipe::sortOrder,
+            FabricatorRecipe::new
+    );
 
     public static List<FabricatorRecipe> getRecipes(Level level) {
         return level != null
-                ? level.getRecipeManager().getAllRecipesFor(ModRecipes.fabricatorType).stream()
-                .sorted(Comparator.comparingInt(FabricatorRecipe::sortOrder).thenComparing(FabricatorRecipe::getId))
+                && level instanceof ServerLevel serverLevel
+                ? serverLevel.recipeAccess().getRecipes().stream()
+                .filter(holder -> holder.value().getType() == ModRecipes.fabricator.type())
+                .map(holder -> (FabricatorRecipe) holder.value())
+                .sorted(Comparator.comparingInt(FabricatorRecipe::sortOrder))
                 .toList()
                 : Collections.emptyList();
     }
 
     @Override
-    public boolean matches(Container container, Level level) {
+    public boolean matches(RecipeInput input, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
-        return result.copy();
+    public ItemStack assemble(RecipeInput input) {
+        return result.create();
     }
 
     @Override
-    public boolean canCraftInDimensions(int i, int i1) {
+    public boolean showNotification() {
         return false;
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
-        return result;
+    public String group() {
+        return "";
+    }
+
+    public ItemStack getResultItem() {
+        return result.create();
     }
 
     @Override
-    public ResourceLocation getId() {
-        return id;
+    public ItemStack previewResultItem() {
+        return result.create();
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return ModRecipes.fabricatorSerializer;
+    public RecipeSerializer<FabricatorRecipe> getSerializer() {
+        return ModRecipes.fabricator.serializer();
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return ModRecipes.fabricatorType;
+    public RecipeType<FabricatorRecipe> getType() {
+        return ModRecipes.fabricator.type();
     }
 
-    public static class Serializer implements RecipeSerializer<FabricatorRecipe> {
-        @Override
-        public FabricatorRecipe fromJson(ResourceLocation id, JsonObject jsonObject) {
-            final var scrap = GsonHelper.getAsInt(jsonObject, "scrap", 0);
-            final var biomass = GsonHelper.getAsInt(jsonObject, "biomass", 0);
-            final var fragments = GsonHelper.getAsInt(jsonObject, "fragments", 0);
-            final var result = ShapedRecipe.itemStackFromJson(jsonObject.getAsJsonObject("result"));
-            final var sortOrder = GsonHelper.getAsInt(jsonObject, "sortOrder", 0);
-            return new FabricatorRecipe(id, scrap, biomass, fragments, result, sortOrder);
-        }
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
 
-        @Override
-        public FabricatorRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            final var scrap = buf.readVarInt();
-            final var biomass = buf.readVarInt();
-            final var fragments = buf.readVarInt();
-            final var result = buf.readItem();
-            final var sortOrder = buf.readVarInt();
-            return new FabricatorRecipe(id, scrap, biomass, fragments, result, sortOrder);
-        }
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return ModRecipes.fabricator.bookCategory();
+    }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buf, FabricatorRecipe recipe) {
-            buf.writeVarInt(recipe.scrap);
-            buf.writeVarInt(recipe.biomass);
-            buf.writeVarInt(recipe.fragments);
-            buf.writeItem(recipe.result);
-            buf.writeVarInt(recipe.sortOrder);
-        }
+    public static RecipeSerializer<FabricatorRecipe> serializer() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

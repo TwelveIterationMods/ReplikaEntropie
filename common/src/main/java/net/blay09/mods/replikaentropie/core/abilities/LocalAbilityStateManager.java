@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -10,8 +10,8 @@ import java.util.Set;
 
 public class LocalAbilityStateManager implements AbilityStateManager {
 
-    private final Set<ResourceLocation> activeAbilities = new HashSet<>();
-    private final Map<ResourceLocation, Float> abilityBurstCosts = new HashMap<>();
+    private final Set<Identifier> activeAbilities = new HashSet<>();
+    private final Map<Identifier, Float> abilityBurstCosts = new HashMap<>();
 
     @Override
     public boolean isActive(Player player, Ability ability) {

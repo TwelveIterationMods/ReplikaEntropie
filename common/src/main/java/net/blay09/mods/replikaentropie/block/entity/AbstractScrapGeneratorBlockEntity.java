@@ -1,12 +1,11 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.SubContainer;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public abstract class AbstractScrapGeneratorBlockEntity extends BlockEntity implements BalmContainerProvider {
 
@@ -102,21 +103,19 @@ public abstract class AbstractScrapGeneratorBlockEntity extends BlockEntity impl
     protected abstract float getScrapPerProcess();
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        ContainerHelper.loadAllItems(tag, backingContainer.getItems());
-        inputProcessingTicks = tag.getInt("InputProcessingTicks");
-        outputProcessingTicks = tag.getInt("OutputProcessingTicks");
-        scrap.setFractionalAmount(tag.getFloat("FractionalScrap"));
+    protected void loadAdditional(ValueInput input) {
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
+        inputProcessingTicks = input.getIntOr("InputProcessingTicks", 0);
+        outputProcessingTicks = input.getIntOr("OutputProcessingTicks", 0);
+        scrap.setFractionalAmount(input.getFloatOr("FractionalScrap", 0f));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.putInt("InputProcessingTicks", inputProcessingTicks);
-        tag.putInt("OutputProcessingTicks", outputProcessingTicks);
-        tag.putFloat("FractionalScrap", scrap.getFractionalAmount());
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
+        output.putInt("InputProcessingTicks", inputProcessingTicks);
+        output.putInt("OutputProcessingTicks", outputProcessingTicks);
+        output.putFloat("FractionalScrap", scrap.getFractionalAmount());
     }
 
     @Override

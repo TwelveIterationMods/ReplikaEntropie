@@ -3,23 +3,23 @@ package net.blay09.mods.replikaentropie.core.abilities;
 import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class GraviliftAbility implements Ability {
 
     public static final GraviliftAbility INSTANCE = new GraviliftAbility();
-    public static final ResourceLocation ID = id("gravilift");
+    public static final Identifier ID = id("gravilift");
 
     protected GraviliftAbility() {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 
@@ -56,7 +56,7 @@ public class GraviliftAbility implements Ability {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorItem.Type.CHESTPLATE, ModItems.graviliftHarness);
+        return ReplikaArmor.hasPart(player, ArmorType.CHESTPLATE, ModItems.graviliftHarness);
     }
 
     @Override

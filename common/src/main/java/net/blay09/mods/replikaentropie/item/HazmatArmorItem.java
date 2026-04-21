@@ -1,14 +1,14 @@
 package net.blay09.mods.replikaentropie.item;
 
 import net.blay09.mods.replikaentropie.tag.ModItemTags;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 
-public class HazmatArmorItem extends ArmorItem {
-    public HazmatArmorItem(Type type, Properties properties) {
-        super(HazmatArmorMaterial.INSTANCE, type, properties);
+public class HazmatArmorItem extends Item {
+
+    public HazmatArmorItem(Item.Properties properties) {
+        super(properties);
     }
 
     public static boolean tryProtect(LivingEntity entity) {
@@ -33,12 +33,7 @@ public class HazmatArmorItem extends ArmorItem {
     private static void damageSuitPart(LivingEntity entity, EquipmentSlot slot, int damage) {
         final var itemStack = entity.getItemBySlot(slot);
         if (itemStack.isDamageableItem() && itemStack.is(ModItemTags.PROTECTS_FROM_FRAGMENTAL_WASTE)) {
-            itemStack.hurtAndBreak(damage, entity, e -> e.broadcastBreakEvent(slot));
+            itemStack.hurtAndBreak(damage, entity, slot);
         }
-    }
-
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return false;
     }
 }

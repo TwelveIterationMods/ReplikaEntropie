@@ -40,7 +40,7 @@ public class FabricatorMenu extends AbstractContainerMenu {
     }
 
     public FabricatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, List<FabricatorRecipe> recipes) {
-        super(ModMenus.fabricator.get(), containerId);
+        super(ModMenus.fabricator.value(), containerId);
         this.playerInventory = playerInventory;
         this.container = container;
         checkContainerSize(container, 8);
@@ -90,19 +90,19 @@ public class FabricatorMenu extends AbstractContainerMenu {
     private void updateRecipeDisplays() {
         for (int i = 0; i < recipeContainer.getContainerSize(); i++) {
             final var recipe = i < recipes.size() ? recipes.get(i) : null;
-            recipeContainer.setRecipe(playerInventory.player.level().registryAccess(), i, recipe);
+            recipeContainer.setRecipe(i, recipe);
         }
     }
 
     @Override
-    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+    public void clicked(int slotId, int button, ContainerInput clickType, Player player) {
         if (slotId >= 7 && slotId <= 34 && !player.level().isClientSide()) {
             int recipeIndex = slots.get(slotId).getContainerSlot();
             final var recipe = recipeContainer.getRecipe(recipeIndex);
             if (recipe != null) {
-                if (clickType == ClickType.PICKUP) {
+                if (clickType == ContainerInput.PICKUP) {
                     data.set(DATA_RECIPES_START + recipeIndex, Mth.clamp(data.get(DATA_RECIPES_START + recipeIndex) + (button == 1 ? -1 : 1), 0, 64));
-                } else if (clickType == ClickType.QUICK_MOVE) {
+                } else if (clickType == ContainerInput.QUICK_MOVE) {
                     data.set(DATA_RECIPES_START + recipeIndex, data.get(DATA_RECIPES_START + recipeIndex) == -1 ? 0 : -1);
                 }
             }

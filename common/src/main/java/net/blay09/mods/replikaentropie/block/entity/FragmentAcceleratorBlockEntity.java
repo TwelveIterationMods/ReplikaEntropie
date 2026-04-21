@@ -2,11 +2,11 @@ package net.blay09.mods.replikaentropie.block.entity;
 
 import com.google.common.collect.HashMultiset;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.SubContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.balm.common.BalmBlockEntity;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
+import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.core.waste.FragmentalWaste;
 import net.blay09.mods.replikaentropie.item.ModItems;
@@ -16,7 +16,11 @@ import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,11 +30,14 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.ArrayList;
 
-public class FragmentAcceleratorBlockEntity extends BalmBlockEntity implements BalmContainerProvider, BalmMenuProvider {
+public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
     private static final int PROCESSING_TICKS = 100;
     private static final float SPEED_INCREMENT_PER_COMPLETION = 0.5f;
@@ -102,7 +109,7 @@ public class FragmentAcceleratorBlockEntity extends BalmBlockEntity implements B
     };
 
     public FragmentAcceleratorBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.fragmentAccelerator.get(), pos, blockState);
+        super(ModBlockEntities.fragmentAccelerator.value(), pos, blockState);
     }
 
     @Override
@@ -113,6 +120,16 @@ public class FragmentAcceleratorBlockEntity extends BalmBlockEntity implements B
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
         return new FragmentAcceleratorMenu(containerId, inventory, backingContainer, dataAccess);
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+        return Unit.STREAM_CODEC.cast();
+    }
+
+    @Override
+    public Unit getScreenOpeningData(ServerPlayer player) {
+        return Unit.INSTANCE;
     }
 
     @Override
@@ -269,36 +286,27 @@ public class FragmentAcceleratorBlockEntity extends BalmBlockEntity implements B
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        ContainerHelper.loadAllItems(tag, backingContainer.getItems());
-        processingTicks = tag.getInt("ProcessingTicks");
-        fragments.setFractionalAmount(tag.getFloat("FractionalFragments"));
-        speedMultiplier = Math.max(1f, tag.getFloat("SpeedMultiplier"));
+    protected void loadAdditional(ValueInput input) {
+        backingContainer.clearContent();
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
+        processingTicks = input.getIntOr("ProcessingTicks", 0);
+        fragments.setFractionalAmount(input.getFloatOr("FractionalFragments", 0f));
+        speedMultiplier = Math.max(1f, input.getFloatOr("SpeedMultiplier", 0f));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.putInt("ProcessingTicks", processingTicks);
-        tag.putFloat("FractionalFragments", fragments.getFractionalAmount());
-        tag.putFloat("SpeedMultiplier", speedMultiplier);
-    }
-
-    @Override
-    protected void writeUpdateTag(CompoundTag tag) {
-        super.writeUpdateTag(tag);
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.putFloat("SpeedMultiplier", speedMultiplier);
-        tag.putFloat("ProcessingTicks", processingTicks);
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
+        output.putInt("ProcessingTicks", processingTicks);
+        output.putFloat("FractionalFragments", fragments.getFractionalAmount());
+        output.putFloat("SpeedMultiplier", speedMultiplier);
     }
 
     private void broadcastChanges() {
         ticksSinceSync++;
         final boolean isProcessing = canProcess();
         if (isSyncDirty || (ticksSinceSync >= 10 && isProcessing)) {
-            sync();
+            BalmBlockEntityUtils.sync(this);
             isSyncDirty = false;
             ticksSinceSync = 0;
         }

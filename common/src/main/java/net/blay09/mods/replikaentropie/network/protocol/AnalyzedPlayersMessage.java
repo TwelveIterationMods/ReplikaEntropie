@@ -2,23 +2,34 @@ package net.blay09.mods.replikaentropie.network.protocol;
 
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public record AnalyzedPlayersMessage(boolean reset, List<UUID> players) {
+import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
-    public static void encode(AnalyzedPlayersMessage message, FriendlyByteBuf buf) {
-        buf.writeBoolean(message.reset);
-        buf.writeCollection(message.players, FriendlyByteBuf::writeUUID);
-    }
+public record AnalyzedPlayersMessage(boolean reset, List<UUID> players) implements CustomPacketPayload {
+    public static final Type<AnalyzedPlayersMessage> TYPE = new Type<>(id("analyzed_players"));
+    private static final StreamCodec<RegistryFriendlyByteBuf, UUID> UUID_STREAM_CODEC = StreamCodec.of(
+            (buf, uuid) -> FriendlyByteBuf.writeUUID(buf, uuid),
+            buf -> FriendlyByteBuf.readUUID(buf)
+    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, AnalyzedPlayersMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL,
+            AnalyzedPlayersMessage::reset,
+            UUID_STREAM_CODEC.apply(ByteBufCodecs.list()),
+            AnalyzedPlayersMessage::players,
+            AnalyzedPlayersMessage::new
+    );
 
-    public static AnalyzedPlayersMessage decode(FriendlyByteBuf buf) {
-        final var reset = buf.readBoolean();
-        final var items = buf.readList(FriendlyByteBuf::readUUID);
-        return new AnalyzedPlayersMessage(reset, items);
+    @Override
+    public Type<AnalyzedPlayersMessage> type() {
+        return TYPE;
     }
 
     public static void handle(Player player, AnalyzedPlayersMessage message) {

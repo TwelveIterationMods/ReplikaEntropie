@@ -15,7 +15,7 @@ public class GameRendererMixin {
     public void checkEntityPostEffect(@Nullable Entity entity, CallbackInfo ci) {
         var effect = PostEffects.getEntityPostEffect(entity);
         if (effect != null) {
-            ((GameRendererAccessor) this).callLoadEffect(effect);
+            ((GameRendererAccessor) this).callSetPostEffect(effect);
             ci.cancel();
         }
     }

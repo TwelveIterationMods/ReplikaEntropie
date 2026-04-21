@@ -1,10 +1,10 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.SubContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.balm.common.BalmBlockEntity;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
+import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.DefragmentizerMenu;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
@@ -12,8 +12,12 @@ import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,11 +26,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.Arrays;
 
-public class DefragmentizerBlockEntity extends BalmBlockEntity implements BalmContainerProvider, BalmMenuProvider {
+public class DefragmentizerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
     private static final int MIN_PROCESSING_TICKS = 60;
     private static final int MAX_PROCESSING_TICKS = 140;
@@ -86,7 +93,7 @@ public class DefragmentizerBlockEntity extends BalmBlockEntity implements BalmCo
     };
 
     public DefragmentizerBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.defragmentizer.get(), blockPos, blockState);
+        super(ModBlockEntities.defragmentizer.value(), blockPos, blockState);
         Arrays.fill(maxProcessingTicks, 0);
     }
 
@@ -94,7 +101,7 @@ public class DefragmentizerBlockEntity extends BalmBlockEntity implements BalmCo
         for (int i = 0; i < INPUTS_COUNT; i++) {
             if (blockEntity.canStartProcessing(i)) {
                 blockEntity.processingTicks[i] = 0;
-                blockEntity.maxProcessingTicks[i] = level.random.nextInt(MIN_PROCESSING_TICKS, MAX_PROCESSING_TICKS);
+                blockEntity.maxProcessingTicks[i] = level.getRandom().nextInt(MIN_PROCESSING_TICKS, MAX_PROCESSING_TICKS);
                 blockEntity.setChanged();
             } else if (blockEntity.maxProcessingTicks[i] > 0) {
                 blockEntity.processingTicks[i]++;
@@ -147,7 +154,7 @@ public class DefragmentizerBlockEntity extends BalmBlockEntity implements BalmCo
         ticksSinceSync++;
 
         if (isSyncDirty || (ticksSinceSync >= 10 && isProcessing())) {
-            sync();
+            BalmBlockEntityUtils.sync(this);
             isSyncDirty = false;
             ticksSinceSync = 0;
         }
@@ -212,39 +219,35 @@ public class DefragmentizerBlockEntity extends BalmBlockEntity implements BalmCo
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+        return Unit.STREAM_CODEC.cast();
+    }
 
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
+    @Override
+    public Unit getScreenOpeningData(ServerPlayer player) {
+        return Unit.INSTANCE;
+    }
+
+    @Override
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
 
         for (int i = 0; i < INPUTS_COUNT; i++) {
-            tag.putInt("ProcessingTicks" + i, processingTicks[i]);
-            tag.putInt("MaxProcessingTicks" + i, maxProcessingTicks[i]);
-            tag.putFloat("FractionalFragments" + i, fragments[i].getFractionalAmount());
+            output.putInt("ProcessingTicks" + i, processingTicks[i]);
+            output.putInt("MaxProcessingTicks" + i, maxProcessingTicks[i]);
+            output.putFloat("FractionalFragments" + i, fragments[i].getFractionalAmount());
         }
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-
+    protected void loadAdditional(ValueInput input) {
         backingContainer.getItems().clear();
-        ContainerHelper.loadAllItems(tag, backingContainer.getItems());
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
 
         for (int i = 0; i < INPUTS_COUNT; i++) {
-            processingTicks[i] = tag.getInt("ProcessingTicks" + i);
-            maxProcessingTicks[i] = tag.getInt("MaxProcessingTicks" + i);
-            fragments[i].setFractionalAmount(tag.getFloat("FractionalFragments" + i));
-        }
-    }
-
-    @Override
-    protected void writeUpdateTag(CompoundTag tag) {
-        super.writeUpdateTag(tag);
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        for (int i = 0; i < INPUTS_COUNT; i++) {
-            tag.putInt("ProcessingTicks" + i, processingTicks[i]);
-            tag.putInt("MaxProcessingTicks" + i, maxProcessingTicks[i]);
+            processingTicks[i] = input.getIntOr("ProcessingTicks" + i, 0);
+            maxProcessingTicks[i] = input.getIntOr("MaxProcessingTicks" + i, 0);
+            fragments[i].setFractionalAmount(input.getFloatOr("FractionalFragments" + i, 0f));
         }
     }
 }

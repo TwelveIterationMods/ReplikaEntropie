@@ -29,7 +29,7 @@ public class DefragmentizerMenu extends AbstractContainerMenu {
     }
 
     public DefragmentizerMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
-        super(ModMenus.defragmentizer.get(), containerId);
+        super(ModMenus.defragmentizer.value(), containerId);
         this.container = container;
         checkContainerSize(container, 8);
         this.data = data;

@@ -1,20 +1,24 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.SubContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import com.mojang.serialization.Codec;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.FabricatorMenu;
 import net.blay09.mods.replikaentropie.recipe.FabricatorRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +28,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,7 +46,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
 
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
-            return switch(slot) {
+            return switch (slot) {
                 case 1 -> itemStack.is(ModItems.scrap);
                 case 2 -> itemStack.is(ModItems.biomass);
                 case 3 -> itemStack.is(ModItems.fragments);
@@ -142,7 +148,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
     };
 
     public FabricatorBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.fabricator.get(), pos, blockState);
+        super(ModBlockEntities.fabricator.value(), pos, blockState);
     }
 
     @Override
@@ -152,7 +158,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
     }
 
     public BalmMenuProvider getMenuProvider() {
-        return new BalmMenuProvider() {
+        return new BalmMenuProvider<Unit>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.replikaentropie.fabricator");
@@ -161,6 +167,16 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                 return new FabricatorMenu(i, inventory, backingContainer, dataAccess, recipes);
+            }
+
+            @Override
+            public Unit getScreenOpeningData(ServerPlayer player) {
+                return Unit.INSTANCE;
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+                return Unit.STREAM_CODEC.cast();
             }
         };
     }
@@ -209,7 +225,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
         if (processingTicks >= OUTPUT_PROCESSING_TICKS) {
             consumeResources(currentRecipe);
 
-            bufferContainer.setItem(0, currentRecipe.result().copy());
+            bufferContainer.setItem(0, currentRecipe.result().create());
 
             if (!recipeQueue.isEmpty()) {
                 recipeQueue.poll();
@@ -278,7 +294,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
                         if (resultItem.isEmpty()) {
                             resultContainer.setItem(0, currentItem);
                             bufferContainer.setItem(i, ItemStack.EMPTY);
-                        } else if (ItemStack.isSameItemSameTags(resultItem, currentItem) &&
+                        } else if (ItemStack.isSameItemSameComponents(resultItem, currentItem) &&
                                 resultItem.getCount() + currentItem.getCount() <= resultItem.getMaxStackSize()) {
                             resultItem.grow(currentItem.getCount());
                             bufferContainer.setItem(i, ItemStack.EMPTY);
@@ -298,65 +314,75 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-
-        processingTicks = tag.getInt("ProcessingTicks");
-        bufferMovementTicks = tag.getInt("BufferMovementTicks");
-        infiniteQueueIndex = tag.getInt("InfiniteQueueIndex");
+    protected void loadAdditional(ValueInput input) {
+        processingTicks = input.getIntOr("ProcessingTicks", 0);
+        bufferMovementTicks = input.getIntOr("BufferMovementTicks", 0);
+        infiniteQueueIndex = input.getIntOr("InfiniteQueueIndex", 0);
 
         recipeQueue.clear();
-        if (tag.contains("RecipeQueue")) {
-            final var queueList = tag.getList("RecipeQueue", Tag.TAG_STRING);
-            for (int i = 0; i < queueList.size(); i++) {
-                final var recipeId = queueList.getString(i);
-                if (level != null) {
-                    level.getRecipeManager().byKey(new ResourceLocation(recipeId))
-                            .ifPresent(recipe -> {
-                                if (recipe instanceof FabricatorRecipe fabricatorRecipe) {
-                                    recipeQueue.offer(fabricatorRecipe);
-                                }
-                            });
-                }
+        final var queueList = input.listOrEmpty("RecipeQueue", Codec.STRING);
+        for (final var recipeId : queueList) {
+            if (level instanceof ServerLevel serverLevel) {
+                serverLevel.recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, Identifier.parse(recipeId)))
+                        .ifPresent(holder -> {
+                            if (holder.value() instanceof FabricatorRecipe fabricatorRecipe) {
+                                recipeQueue.offer(fabricatorRecipe);
+                            }
+                        });
             }
         }
 
         infiniteQueue.clear();
-        if (tag.contains("InfiniteQueue")) {
-            final var infiniteList = tag.getList("InfiniteQueue", Tag.TAG_STRING);
-            for (int i = 0; i < infiniteList.size(); i++) {
-                final var recipeId = infiniteList.getString(i);
-                if (level != null) {
-                    level.getRecipeManager().byKey(new ResourceLocation(recipeId))
-                            .ifPresent(recipe -> {
-                                if (recipe instanceof FabricatorRecipe fabricatorRecipe) {
-                                    infiniteQueue.add(fabricatorRecipe);
-                                }
-                            });
-                }
+        final var infiniteList = input.listOrEmpty("InfiniteQueue", Codec.STRING);
+        for (final var recipeId : infiniteList) {
+            if (level instanceof ServerLevel serverLevel) {
+                serverLevel.recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, Identifier.parse(recipeId)))
+                        .ifPresent(holder -> {
+                            if (holder.value() instanceof FabricatorRecipe fabricatorRecipe) {
+                                infiniteQueue.add(fabricatorRecipe);
+                            }
+                        });
             }
         }
-
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.putInt("ProcessingTicks", processingTicks);
-        tag.putInt("BufferMovementTicks", bufferMovementTicks);
-        tag.putInt("InfiniteQueueIndex", infiniteQueueIndex);
+    protected void saveAdditional(ValueOutput output) {
+        output.putInt("ProcessingTicks", processingTicks);
+        output.putInt("BufferMovementTicks", bufferMovementTicks);
+        output.putInt("InfiniteQueueIndex", infiniteQueueIndex);
 
-        final var queueList = new ListTag();
+        final var queueList = output.list("RecipeQueue", Codec.STRING);
         for (final var recipe : recipeQueue) {
-            queueList.add(StringTag.valueOf(recipe.getId().toString()));
+            final var recipeId = getRecipeId(recipe);
+            if (recipeId != null) {
+                queueList.add(recipeId.toString());
+            }
         }
-        tag.put("RecipeQueue", queueList);
 
-        final var infiniteList = new ListTag();
+        final var infiniteList = output.list("InfiniteQueue", Codec.STRING);
         for (final var recipe : infiniteQueue) {
-            infiniteList.add(StringTag.valueOf(recipe.getId().toString()));
+            final var recipeId = getRecipeId(recipe);
+            if (recipeId != null) {
+                infiniteList.add(recipeId.toString());
+            }
         }
-        tag.put("InfiniteQueue", infiniteList);
+    }
+
+    private Identifier getRecipeId(FabricatorRecipe recipe) {
+        if (level == null) {
+            return null;
+        }
+
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return null;
+        }
+
+        return serverLevel.recipeAccess().getRecipes().stream()
+                .filter(holder -> holder.value() == recipe)
+                .findFirst()
+                .map(holder -> holder.id().identifier())
+                .orElse(null);
     }
 
 }

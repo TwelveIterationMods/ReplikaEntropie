@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.network.protocol.AbilityStateMessage;
 import net.minecraft.nbt.CompoundTag;
@@ -13,17 +13,17 @@ public class AuthoritativeAbilityStateManager implements AbilityStateManager {
     @Override
     public boolean isActive(Player player, Ability ability) {
         final var data = getPersistentData(player);
-        final var abilityStates = data.getCompound(ABILITY_STATES);
-        return abilityStates.getBoolean(ability.getId().toString());
+        final var abilityStates = data.getCompoundOrEmpty(ABILITY_STATES);
+        return abilityStates.getBooleanOr(ability.getId().toString(), false);
     }
 
     @Override
     public void setActive(Player player, Ability ability, boolean active) {
         final var data = getPersistentData(player);
-        final var abilityStates = data.getCompound(ABILITY_STATES);
+        final var abilityStates = data.getCompoundOrEmpty(ABILITY_STATES);
         data.put(ABILITY_STATES, abilityStates);
         final var abilityKey = ability.getId().toString();
-        final var wasActive = abilityStates.getBoolean(abilityKey);
+        final var wasActive = abilityStates.getBooleanOr(abilityKey, false);
         abilityStates.putBoolean(abilityKey, active);
 
         if (!wasActive && active) {
@@ -32,7 +32,7 @@ public class AuthoritativeAbilityStateManager implements AbilityStateManager {
             ability.deactivate(player);
         }
 
-        Balm.getNetworking().sendTo(player, new AbilityStateMessage(ability.getId(), active, ability.getDefaultBurstCost()));
+        Balm.networking().sendTo(player, new AbilityStateMessage(ability.getId(), active, ability.getDefaultBurstCost()));
     }
 
     @Override
@@ -41,8 +41,8 @@ public class AuthoritativeAbilityStateManager implements AbilityStateManager {
     }
 
     private static CompoundTag getPersistentData(Player player) {
-        final var data = Balm.getHooks().getPersistentData(player);
-        final var modData = data.getCompound(ReplikaEntropie.MOD_ID);
+        final var data = Balm.hooks().getPersistentData(player);
+        final var modData = data.getCompoundOrEmpty(ReplikaEntropie.MOD_ID);
         data.put(ReplikaEntropie.MOD_ID, modData);
         return modData;
     }

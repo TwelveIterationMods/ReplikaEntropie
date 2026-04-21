@@ -27,7 +27,7 @@ public class LavascrapMenu extends AbstractScrapGeneratorMenu {
     }
 
     public LavascrapMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
-        super(ModMenus.lavascrap.get(), containerId, playerInventory, container, data);
+        super(ModMenus.lavascrap.value(), containerId, playerInventory, container, data);
 
         checkContainerSize(container, 4);
 

@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -33,17 +33,17 @@ public class DarknessTracker {
     }
 
     public static int get(ServerPlayer player) {
-        final var data = Balm.getHooks().getPersistentData(player);
-        final var modData = data.getCompound(ReplikaEntropie.MOD_ID);
+        final var data = Balm.hooks().getPersistentData(player);
+        final var modData = data.getCompoundOrEmpty(ReplikaEntropie.MOD_ID);
         if (modData.isEmpty()) {
             data.put(ReplikaEntropie.MOD_ID, modData);
         }
-        return modData.getInt(TAG_KEY);
+        return modData.getIntOr(TAG_KEY, 0);
     }
 
     public static void set(ServerPlayer player, int value) {
-        final var data = Balm.getHooks().getPersistentData(player);
-        final var modData = data.getCompound(ReplikaEntropie.MOD_ID);
+        final var data = Balm.hooks().getPersistentData(player);
+        final var modData = data.getCompoundOrEmpty(ReplikaEntropie.MOD_ID);
         if (modData.isEmpty()) {
             data.put(ReplikaEntropie.MOD_ID, modData);
         }

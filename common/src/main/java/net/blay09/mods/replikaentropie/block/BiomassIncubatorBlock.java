@@ -1,7 +1,7 @@
 package net.blay09.mods.replikaentropie.block;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import com.mojang.serialization.MapCodec;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.block.entity.BiomassIncubatorBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -27,6 +27,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class BiomassIncubatorBlock extends BaseEntityBlock {
+    public static final MapCodec<BiomassIncubatorBlock> CODEC = simpleCodec(BiomassIncubatorBlock::new);
 
     public static final VoxelShape SHAPE = Shapes.or(
             Shapes.box(0, 0, 0, 1, 1 / 16f, 1),
@@ -36,6 +37,11 @@ public class BiomassIncubatorBlock extends BaseEntityBlock {
 
     public BiomassIncubatorBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -54,11 +60,11 @@ public class BiomassIncubatorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
             final var blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof BiomassIncubatorBlockEntity biomassIncubator) {
-                Balm.getNetworking().openMenu(player, biomassIncubator);
+                Balm.networking().openMenu(player, biomassIncubator);
             }
         }
         return InteractionResult.SUCCESS;
@@ -73,22 +79,11 @@ public class BiomassIncubatorBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide ? null : createTickerHelper(type, ModBlockEntities.biomassIncubator.get(), BiomassIncubatorBlockEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(type, ModBlockEntities.biomassIncubator.value(), BiomassIncubatorBlockEntity::serverTick);
     }
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            if (level.getBlockEntity(pos) instanceof BalmContainerProvider provider) {
-                provider.dropItems(level, pos);
-            }
-
-            super.onRemove(state, level, pos, newState, isMoving);
-        }
     }
 }

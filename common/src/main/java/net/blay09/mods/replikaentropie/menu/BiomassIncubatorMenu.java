@@ -41,7 +41,7 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu {
     }
 
     public BiomassIncubatorMenu(int containerId, Inventory playerInventory, Container container, Container soilContainer, ContainerData data) {
-        super(ModMenus.biomassIncubator.get(), containerId);
+        super(ModMenus.biomassIncubator.value(), containerId);
         this.container = container;
         checkContainerSize(container, 8);
         this.data = data;

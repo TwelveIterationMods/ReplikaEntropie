@@ -1,21 +1,26 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.SubContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.balm.common.BalmBlockEntity;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
+import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.BiomassHarvesterMenu;
 import net.blay09.mods.replikaentropie.tag.ModEntityTypeTags;
 import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,14 +31,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements BalmContainerProvider, BalmMenuProvider {
+public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
     private static final int WARNING_TICKS = 60;
     private static final int SLAUGHTER_TICKS = 60;
@@ -97,7 +104,7 @@ public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements Balm
     };
 
     public BiomassHarvesterBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.biomassHarvester.get(), pos, blockState);
+        super(ModBlockEntities.biomassHarvester.value(), pos, blockState);
     }
 
     @Override
@@ -108,6 +115,16 @@ public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements Balm
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
         return new BiomassHarvesterMenu(containerId, inventory, backingContainer, dataAccess);
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+        return Unit.STREAM_CODEC.cast();
+    }
+
+    @Override
+    public Unit getScreenOpeningData(ServerPlayer player) {
+        return Unit.INSTANCE;
     }
 
     @Override
@@ -135,7 +152,7 @@ public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements Balm
 
     private void broadcastChanges() {
         if (isSyncDirty) {
-            sync();
+            BalmBlockEntityUtils.sync(this);
             isSyncDirty = false;
         }
     }
@@ -144,7 +161,7 @@ public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements Balm
         this.state = state;
         stateTicks = 0;
         setChanged();
-        sync();
+        BalmBlockEntityUtils.sync(this);
     }
 
     private void processState() {
@@ -232,14 +249,9 @@ public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements Balm
     private static float getWeaponDamage(ItemStack itemStack) {
         if (itemStack.isEmpty()) {
             return 0f;
-        } else if (itemStack.getItem() instanceof SwordItem sword) {
-            return sword.getDamage();
-        } else if (itemStack.getItem() instanceof AxeItem axe) {
-            return axe.getAttackDamage();
-        } else if (itemStack.getItem() instanceof TridentItem) {
-            return TridentItem.BASE_DAMAGE;
         }
-        return 0f;
+        final var weapon = itemStack.get(DataComponents.WEAPON);
+        return weapon != null ? weapon.itemDamagePerAttack() : 0f; // TODO itemDamagePerAttack sounds wrong ... is this right?
     }
 
     private void pullNearbyEntities() {
@@ -288,7 +300,7 @@ public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements Balm
     }
 
     private void attackNearbyEntities() {
-        if (level != null) {
+        if (level instanceof ServerLevel serverLevel) {
             final var attackArea = new AABB(worldPosition).inflate(ATTACK_RANGE, 0f, ATTACK_RANGE);
             final var nearbyEntities = level.getEntitiesOfClass(LivingEntity.class, attackArea);
             int entityIndex = 0;
@@ -297,12 +309,14 @@ public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements Balm
                 final var damage = getWeaponDamage(weaponStack);
                 if (damage > 0f) {
                     final var entity = entityIndex < nearbyEntities.size() ? nearbyEntities.get(entityIndex) : null;
-                    if (entity != null && entity.isAlive() && !entity.getType().is(ModEntityTypeTags.IMMUNE_TO_BIOMASS_HARVESTER)) {
+                    if (entity != null && entity.isAlive() && !entity.is(ModEntityTypeTags.IMMUNE_TO_BIOMASS_HARVESTER)) {
                         final var damageSource = entity.damageSources().generic();
-                        if (entity.hurt(damageSource, damage) && !entity.isAlive()) {
+                        if (entity.hurtServer(serverLevel, damageSource, damage) && !entity.isAlive()) {
                             biomass.add(getBiomassForEntity(entity));
                         }
-                        weaponStack.hurt(1, level.random, null);
+                        weaponStack.hurtAndBreak(1, serverLevel, null, (item) -> {
+                            // TODO do something here?
+                        });
                         entityIndex++;
                     }
                 }
@@ -328,34 +342,24 @@ public class BiomassHarvesterBlockEntity extends BalmBlockEntity implements Balm
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(ValueInput input) {
         backingContainer.getItems().clear();
-        ContainerHelper.loadAllItems(tag, backingContainer.getItems());
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
         try {
-            state = State.valueOf(tag.getString("State"));
+            state = State.valueOf(input.getStringOr("State", "IDLE"));
         } catch (IllegalArgumentException e) {
             state = State.IDLE;
         }
-        stateTicks = tag.getInt("StateTicks");
-        biomass.setFractionalAmount(tag.getFloat("FractionalBiomass"));
+        stateTicks = input.getIntOr("StateTicks", 0);
+        biomass.setFractionalAmount(input.getFloatOr("FractionalBiomass", 0f));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.putString("State", state.name());
-        tag.putInt("StateTicks", stateTicks);
-        tag.putFloat("FractionalBiomass", biomass.getFractionalAmount());
-    }
-
-    @Override
-    protected void writeUpdateTag(CompoundTag tag) {
-        super.writeUpdateTag(tag);
-
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.putString("State", state.name());
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
+        output.putString("State", state.name());
+        output.putInt("StateTicks", stateTicks);
+        output.putFloat("FractionalBiomass", biomass.getFractionalAmount());
     }
 
     public Container getWeaponsContainer() {

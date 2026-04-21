@@ -1,0 +1,23 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 8,
+      "ingredient": "minecraft:iron_ingot"
+    },
+    {
+      "count": 8,
+      "ingredient": "minecraft:feather"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:ghast_tear"
+    },
+    {
+      "ingredient": "minecraft:nether_star"
+    }
+  ],
+  "result": {
+    "id": "replikaentropie:gravilift_harness"
+  }
+}

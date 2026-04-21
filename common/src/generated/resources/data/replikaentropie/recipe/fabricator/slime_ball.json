@@ -1,0 +1,8 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 8,
+  "result": {
+    "id": "minecraft:slime_ball"
+  },
+  "sortOrder": 900
+}

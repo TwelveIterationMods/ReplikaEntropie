@@ -1,0 +1,5 @@
+{
+  "type": "replikaentropie:vacuumable_ore",
+  "empty_block": "minecraft:netherrack",
+  "ingredient": "minecraft:ancient_debris"
+}

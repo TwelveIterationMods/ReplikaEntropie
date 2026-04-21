@@ -4,26 +4,26 @@ import net.blay09.mods.replikaentropie.client.handler.PostEffects;
 import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class NightVisionAbility implements Ability {
 
     public static final NightVisionAbility INSTANCE = new NightVisionAbility();
-    public static final ResourceLocation ID = id("night_vision");
-    public static final ResourceLocation SHADER = new ResourceLocation("shaders/post/creeper.json");
+    public static final Identifier ID = id("night_vision");
+    public static final Identifier SHADER = Identifier.withDefaultNamespace("shaders/post/creeper.json");
 
     protected NightVisionAbility() {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 
@@ -38,7 +38,7 @@ public class NightVisionAbility implements Ability {
             return;
         }
 
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             if (player instanceof ServerPlayer serverPlayer) {
                 DarknessTracker.tick(serverPlayer);
             }
@@ -51,14 +51,14 @@ public class NightVisionAbility implements Ability {
 
     @Override
     public void activate(Player player) {
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             PostEffects.updatePostEffect();
         }
     }
 
     @Override
     public void deactivate(Player player) {
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (player instanceof ServerPlayer serverPlayer) {
                 DarknessTracker.reset(serverPlayer);
@@ -77,7 +77,7 @@ public class NightVisionAbility implements Ability {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorItem.Type.HELMET, ModItems.nightVisionGoggles);
+        return ReplikaArmor.hasPart(player, ArmorType.HELMET, ModItems.nightVisionGoggles);
     }
 
     @Override

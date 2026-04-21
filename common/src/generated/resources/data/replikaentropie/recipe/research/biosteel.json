@@ -1,0 +1,16 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 1,
+  "data": 1,
+  "hardDependencies": [
+    "replikaentropie:research/scrap",
+    "replikaentropie:research/biomass"
+  ],
+  "icon": {
+    "id": "replikaentropie:biosteel"
+  },
+  "nonogram": "replikaentropie:biosteel",
+  "research_type": "crafting",
+  "scrap": 1,
+  "sort_order": 800
+}

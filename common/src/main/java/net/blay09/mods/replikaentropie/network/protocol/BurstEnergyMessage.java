@@ -1,18 +1,25 @@
 package net.blay09.mods.replikaentropie.network.protocol;
 
 import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 
-public record BurstEnergyMessage(float energy) {
+import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
-    public static void encode(BurstEnergyMessage message, FriendlyByteBuf buf) {
-        buf.writeFloat(message.energy);
-    }
+public record BurstEnergyMessage(float energy) implements CustomPacketPayload {
+    public static final Type<BurstEnergyMessage> TYPE = new Type<>(id("burst_energy"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, BurstEnergyMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.FLOAT,
+            BurstEnergyMessage::energy,
+            BurstEnergyMessage::new
+    );
 
-    public static BurstEnergyMessage decode(FriendlyByteBuf buf) {
-        final var energy = buf.readFloat();
-        return new BurstEnergyMessage(energy);
+    @Override
+    public Type<BurstEnergyMessage> type() {
+        return TYPE;
     }
 
     public static void handle(Player player, BurstEnergyMessage message) {

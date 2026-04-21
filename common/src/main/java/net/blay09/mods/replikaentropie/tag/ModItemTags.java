@@ -15,4 +15,7 @@ public class ModItemTags {
     public static final TagKey<Item> REPLIKA_CHESTPLATE_PART = TagKey.create(Registries.ITEM, id("replika_chestplate_part"));
     public static final TagKey<Item> REPLIKA_LEGGINGS_PART = TagKey.create(Registries.ITEM, id("replika_leggings_part"));
     public static final TagKey<Item> REPLIKA_BOOTS_PART = TagKey.create(Registries.ITEM, id("replika_boots_part"));
+    public static final TagKey<Item> REPAIRS_REPLIKA_ARMOR = TagKey.create(Registries.ITEM, id("repairs_replika_armor"));
+    public static final TagKey<Item> REPAIRS_BIOSTEEL_ARMOR = TagKey.create(Registries.ITEM, id("repairs_biosteel_armor"));
+    public static final TagKey<Item> REPAIRS_HAZMAT_ARMOR = TagKey.create(Registries.ITEM, id("repairs_hazmat_armor"));
 }

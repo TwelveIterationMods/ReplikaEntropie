@@ -1,10 +1,10 @@
 package net.blay09.mods.replikaentropie.block;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import com.mojang.serialization.MapCodec;
 import net.blay09.mods.replikaentropie.block.entity.FragmentalWasteBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentalWasteBlock extends BaseEntityBlock {
+    public static final MapCodec<FragmentalWasteBlock> CODEC = simpleCodec(FragmentalWasteBlock::new);
 
     private final VoxelShape SHAPE = Shapes.or(
             box(4, 0, 2, 12, 16, 14),
@@ -37,6 +38,11 @@ public class FragmentalWasteBlock extends BaseEntityBlock {
 
     protected FragmentalWasteBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -56,7 +62,7 @@ public class FragmentalWasteBlock extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide ? null : createTickerHelper(type, ModBlockEntities.fragmentalWaste.get(), FragmentalWasteBlockEntity::serverTick);
+        return level.isClientSide() ? null : createTickerHelper(type, ModBlockEntities.fragmentalWaste.value(), FragmentalWasteBlockEntity::serverTick);
     }
 
     @Override
@@ -78,7 +84,7 @@ public class FragmentalWasteBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void wasExploded(Level level, BlockPos pos, Explosion explosion) {
+    public void wasExploded(ServerLevel level, BlockPos pos, Explosion explosion) {
         super.wasExploded(level, pos, explosion);
 
         level.explode(null, pos.getX(), pos.getY(), pos.getZ(), 3f, true, Level.ExplosionInteraction.BLOCK);

@@ -1,19 +1,20 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
-import net.blay09.mods.replikaentropie.client.gui.components.ProgressRenderer;
-import net.blay09.mods.replikaentropie.client.gui.components.SegmentedProgressRenderer;
-import net.blay09.mods.replikaentropie.client.gui.components.SimpleProgressRenderer;
+import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
+import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
+import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
 import net.blay09.mods.replikaentropie.menu.RecyclerMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
-    private static final ResourceLocation BACKGROUND = id("textures/gui/container/recycler.png");
+    private static final Identifier BACKGROUND = id("textures/gui/container/recycler.png");
 
     private final SegmentedProgressRenderer topProgressRenderer = new SegmentedProgressRenderer(BACKGROUND, 256, 256)
             .addInvisibleSegment(28)
@@ -32,31 +33,24 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
     private final ProgressRenderer fractionalFragmentsRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(130, 81).size(3, 26).uv(176, 0);
 
     public RecyclerScreen(RecyclerMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageHeight = 206;
+        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 206);
         inventoryLabelY = imageHeight - 94;
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         final var progress = menu.getProcessingProgress();
         if (progress > 0f) {
-            topProgressRenderer.render(guiGraphics, leftPos, topPos, progress);
-            middleProgressRenderer.render(guiGraphics, leftPos, topPos, progress);
-            bottomProgressRenderer.render(guiGraphics, leftPos, topPos, progress);
+            topProgressRenderer.render(graphics, leftPos, topPos, progress);
+            middleProgressRenderer.render(graphics, leftPos, topPos, progress);
+            bottomProgressRenderer.render(graphics, leftPos, topPos, progress);
         }
 
-        fractionalScrapRenderer.render(guiGraphics, leftPos, topPos, menu.getFractionalScrap());
-        fractionalBiomassRenderer.render(guiGraphics, leftPos, topPos, menu.getFractionalBiomass());
-        fractionalFragmentsRenderer.render(guiGraphics, leftPos, topPos, menu.getFractionalFragments());
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
+        fractionalScrapRenderer.render(graphics, leftPos, topPos, menu.getFractionalScrap());
+        fractionalBiomassRenderer.render(graphics, leftPos, topPos, menu.getFractionalBiomass());
+        fractionalFragmentsRenderer.render(graphics, leftPos, topPos, menu.getFractionalFragments());
     }
 }

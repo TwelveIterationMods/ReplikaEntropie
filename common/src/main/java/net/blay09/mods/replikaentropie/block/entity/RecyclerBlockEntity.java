@@ -1,9 +1,9 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.SubContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.RecyclerMenu;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
@@ -11,7 +11,11 @@ import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,6 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class RecyclerBlockEntity extends BlockEntity implements BalmContainerProvider {
 
@@ -79,11 +85,11 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
     };
 
     public RecyclerBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.recycler.get(), pos, state);
+        super(ModBlockEntities.recycler.value(), pos, state);
     }
 
-    public BalmMenuProvider getMenuProvider() {
-        return new BalmMenuProvider() {
+    public BalmMenuProvider<Unit> getMenuProvider() {
+        return new BalmMenuProvider<>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.replikaentropie.recycler");
@@ -92,6 +98,16 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
             @Override
             public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
                 return new RecyclerMenu(containerId, inventory, backingContainer, dataAccess);
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+                return Unit.STREAM_CODEC.cast();
+            }
+
+            @Override
+            public Unit getScreenOpeningData(ServerPlayer player) {
+                return Unit.INSTANCE;
             }
         };
     }
@@ -142,22 +158,20 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        ContainerHelper.loadAllItems(tag, backingContainer.getItems());
-        processingTicks = tag.getInt("ProcessingTicks");
-        scrap.setFractionalAmount(tag.getFloat("FractionalScrap"));
-        biomass.setFractionalAmount(tag.getFloat("FractionalBiomass"));
-        fragments.setFractionalAmount(tag.getFloat("FractionalFragments"));
+    protected void loadAdditional(ValueInput input) {
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
+        processingTicks = input.getIntOr("ProcessingTicks", 0);
+        scrap.setFractionalAmount(input.getFloatOr("FractionalScrap", 0));
+        biomass.setFractionalAmount(input.getFloatOr("FractionalBiomass", 0));
+        fragments.setFractionalAmount(input.getFloatOr("FractionalFragments", 0));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.putInt("ProcessingTicks", processingTicks);
-        tag.putFloat("FractionalScrap", scrap.getFractionalAmount());
-        tag.putFloat("FractionalBiomass", biomass.getFractionalAmount());
-        tag.putFloat("FractionalFragments", fragments.getFractionalAmount());
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
+        output.putInt("ProcessingTicks", processingTicks);
+        output.putFloat("FractionalScrap", scrap.getFractionalAmount());
+        output.putFloat("FractionalBiomass", biomass.getFractionalAmount());
+        output.putFloat("FractionalFragments", fragments.getFractionalAmount());
     }
 }

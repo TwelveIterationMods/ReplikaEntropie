@@ -1,7 +1,7 @@
 package net.blay09.mods.replikaentropie.block;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import com.mojang.serialization.MapCodec;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.block.entity.FragmentAcceleratorBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -27,6 +27,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class FragmentAcceleratorBlock extends BaseEntityBlock {
+    public static final MapCodec<FragmentAcceleratorBlock> CODEC = simpleCodec(FragmentAcceleratorBlock::new);
+
     public static final VoxelShape SHAPE = Shapes.or(
             Shapes.box(0, 0, 0, 1, 4/16f, 1),
             Shapes.box(1/16f, 4/16f, 7/16f, 3/16f, 12/16f, 9/16f),
@@ -42,6 +44,11 @@ public class FragmentAcceleratorBlock extends BaseEntityBlock {
     }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new FragmentAcceleratorBlockEntity(blockPos, blockState);
     }
@@ -52,10 +59,10 @@ public class FragmentAcceleratorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof FragmentAcceleratorBlockEntity fragmentAcceleratorBlockEntity) {
-                Balm.getNetworking().openMenu(player, fragmentAcceleratorBlockEntity);
+                Balm.networking().openMenu(player, fragmentAcceleratorBlockEntity);
             }
         }
         return InteractionResult.CONSUME;
@@ -68,19 +75,9 @@ public class FragmentAcceleratorBlock extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide
-                ? createTickerHelper(type, ModBlockEntities.fragmentAccelerator.get(), FragmentAcceleratorBlockEntity::clientTick)
-                : createTickerHelper(type, ModBlockEntities.fragmentAccelerator.get(), FragmentAcceleratorBlockEntity::serverTick);
+        return level.isClientSide()
+                ? createTickerHelper(type, ModBlockEntities.fragmentAccelerator.value(), FragmentAcceleratorBlockEntity::clientTick)
+                : createTickerHelper(type, ModBlockEntities.fragmentAccelerator.value(), FragmentAcceleratorBlockEntity::serverTick);
     }
 
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            if (level.getBlockEntity(pos) instanceof BalmContainerProvider provider) {
-                provider.dropItems(level, pos);
-            }
-
-            super.onRemove(state, level, pos, newState, isMoving);
-        }
-    }
 }

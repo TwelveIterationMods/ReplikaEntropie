@@ -26,7 +26,7 @@ public class WorldEaterMenu extends AbstractContainerMenu {
     public static final int DATA_COUNT = 6;
 
     public WorldEaterMenu(int containerId, Inventory playerInventory, Container previewContainer, Container container, ContainerData data) {
-        super(ModMenus.worldEater.get(), containerId);
+        super(ModMenus.worldEater.value(), containerId);
         this.container = container;
         checkContainerSize(container, 1);
         checkContainerSize(previewContainer, 15);

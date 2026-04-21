@@ -1,7 +1,9 @@
 package net.blay09.mods.replikaentropie.menu;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.replikaentropie.component.AssemblyTicket;
+import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
 import net.blay09.mods.replikaentropie.core.research.Research;
@@ -12,22 +14,30 @@ import net.blay09.mods.replikaentropie.menu.slot.ResearchEntrySlot;
 import net.blay09.mods.replikaentropie.recipe.ModRecipes;
 import net.blay09.mods.replikaentropie.recipe.ResearchRecipe;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Locale;
+import java.util.function.IntFunction;
 
 public class ResearchMenu extends AbstractContainerMenu {
 
@@ -37,6 +47,8 @@ public class ResearchMenu extends AbstractContainerMenu {
         AVAILABLE(2),
         IN_PROGRESS(1),
         UNLOCKED(0);
+
+        public static final IntFunction<MenuResearchState> BY_ID = ByIdMap.continuous(Enum::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
 
         private final int priority;
 
@@ -53,39 +65,39 @@ public class ResearchMenu extends AbstractContainerMenu {
         }
     }
 
-    public record StatefulResearchEntry(ResearchRecipe recipe, MenuResearchState state) {
-        public static StatefulResearchEntry read(FriendlyByteBuf buf) {
-            final var recipe = ModRecipes.researchSerializer.fromNetwork(buf.readResourceLocation(), buf);
-            final var state = buf.readEnum(MenuResearchState.class);
-            return new StatefulResearchEntry(recipe, state);
-        }
+    public record StatefulResearchEntry(Identifier id, ResearchRecipe recipe, MenuResearchState state) {
+        private static final StreamCodec<RegistryFriendlyByteBuf, ResearchRecipe> RESEARCH_RECIPE_STREAM_CODEC = StreamCodec.of(
+                (buf, recipe) -> ModRecipes.research.serializer().streamCodec().encode(buf, recipe),
+                buf -> ModRecipes.research.serializer().streamCodec().decode(buf)
+        );
 
-        public static void write(FriendlyByteBuf buf, StatefulResearchEntry entry) {
-            buf.writeResourceLocation(entry.recipe().id());
-            ModRecipes.researchSerializer.toNetwork(buf, entry.recipe);
-            buf.writeEnum(entry.state);
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, StatefulResearchEntry> STREAM_CODEC = StreamCodec.composite(
+                Identifier.STREAM_CODEC,
+                StatefulResearchEntry::id,
+                RESEARCH_RECIPE_STREAM_CODEC,
+                StatefulResearchEntry::recipe,
+                ByteBufCodecs.idMapper(MenuResearchState.BY_ID, MenuResearchState::ordinal).cast(),
+                StatefulResearchEntry::state,
+                StatefulResearchEntry::new
+        );
 
         public Component title() {
-            return Component.translatable(recipe.getId().toLanguageKey("research", "title"));
+            return Component.translatable(id.toLanguageKey("research", "title"));
         }
 
         public Component description() {
-            return Component.translatable(recipe.getId().toLanguageKey("research", "description"));
+            return Component.translatable(id.toLanguageKey("research", "description"));
         }
     }
 
     public record Data(List<StatefulResearchEntry> entries, int dataCollected) {
-        public static Data read(FriendlyByteBuf buf) {
-            final var entries = buf.readList(StatefulResearchEntry::read);
-            final var dataCollected = buf.readVarInt();
-            return new Data(entries, dataCollected);
-        }
-
-        public void write(FriendlyByteBuf buf) {
-            buf.writeCollection(entries, StatefulResearchEntry::write);
-            buf.writeVarInt(dataCollected);
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                StatefulResearchEntry.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                Data::entries,
+                ByteBufCodecs.VAR_INT,
+                Data::dataCollected,
+                Data::new
+        );
     }
 
     private final List<ResearchEntrySlot> researchSlots = new ArrayList<>();
@@ -102,7 +114,7 @@ public class ResearchMenu extends AbstractContainerMenu {
     private final Comparator<StatefulResearchEntry> currentSorting =
             Comparator.comparingInt((StatefulResearchEntry it) -> it.state().priority())
                     .thenComparingInt(it -> it.recipe().sortOrder())
-                    .thenComparing(it -> it.recipe().id());
+                    .thenComparing(StatefulResearchEntry::id);
 
     @Nullable
     private StatefulResearchEntry clientSelectedResearch;
@@ -111,7 +123,7 @@ public class ResearchMenu extends AbstractContainerMenu {
     private int scrollOffset;
 
     public ResearchMenu(int containerId, Inventory playerInventory, Data data) {
-        super(ModMenus.research.get(), containerId);
+        super(ModMenus.research.value(), containerId);
         this.playerInventory = playerInventory;
         researchEntries = data.entries();
         dataCollected = data.dataCollected();
@@ -140,7 +152,7 @@ public class ResearchMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+    public void clicked(int slotId, int button, ContainerInput clickType, Player player) {
         final var slot = slotId >= 0 && slotId < slots.size() ? slots.get(slotId) : null;
         if (player.level().isClientSide() && slot instanceof ResearchEntrySlot researchEntrySlot) {
             final var researchEntry = researchEntrySlot.getResearchEntry();
@@ -187,7 +199,7 @@ public class ResearchMenu extends AbstractContainerMenu {
                     inventory.clearOrCountMatchingItems(it -> it.is(ModItems.fragments), recipe.fragmentsCost(), inventory);
                 }
                 player.inventoryMenu.broadcastChanges();
-                Research.updateResearch(player, entry.recipe().id(), ResearchState.IN_PROGRESS);
+                Research.updateResearch(player, entry.id(), ResearchState.IN_PROGRESS);
                 openNonogram(player, entry);
             } else if (entry.state() == MenuResearchState.IN_PROGRESS) {
                 openNonogram(player, entry);
@@ -203,19 +215,17 @@ public class ResearchMenu extends AbstractContainerMenu {
     }
 
     private ItemStack printAssemblyTicket(StatefulResearchEntry entry) {
-        final var itemStack = new ItemStack(ModItems.assemblyTicket);
-        itemStack.setHoverName(entry.title());
-        final var itemData = itemStack.getOrCreateTag();
+        final var itemStack = ModItems.assemblyTicket.createStack();
+        itemStack.set(DataComponents.CUSTOM_NAME, entry.title());
         final var recipe = entry.recipe();
         if (recipe != null && !recipe.unlockedRecipes().isEmpty()) {
-            itemData.putString("ReplikaEntropieAssemblerResult", recipe.unlockedRecipes().get(0).toString());
+            itemStack.set(ModDataComponents.assemblyTicket(), new AssemblyTicket(recipe.unlockedRecipes().get(0), 1));
         }
-        itemData.putInt("ReplikaEntropieAssemblerUsesLeft", 1);
         return itemStack;
     }
 
     public void openNonogram(Player player, StatefulResearchEntry entry) {
-        Balm.getNetworking().openMenu(player, new BalmMenuProvider() {
+        Balm.networking().openMenu(player, new BalmMenuProvider<NonogramMenu.Data>() {
             @Override
             public Component getDisplayName() {
                 return entry.title();
@@ -223,7 +233,7 @@ public class ResearchMenu extends AbstractContainerMenu {
 
             @Override
             public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-                final var researchId = entry.recipe().id();
+                final var researchId = entry.id();
                 final var nonogram = NonogramLoader.getNonogram(entry.recipe().nonogram())
                         .orElseGet(NonogramLoader::createFallback);
                 final var nonogramState = Research.getNonogramState(player, researchId)
@@ -233,13 +243,18 @@ public class ResearchMenu extends AbstractContainerMenu {
             }
 
             @Override
-            public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+            public NonogramMenu.Data getScreenOpeningData(ServerPlayer player) {
                 final var nonogram = NonogramLoader.getNonogram(entry.recipe().nonogram())
                         .orElseGet(NonogramLoader::createFallback);
-                final var nonogramState = Research.getNonogramState(player, entry.recipe().id())
+                final var nonogramState = Research.getNonogramState(player, entry.id())
                         .map(nonogram::ensureState)
                         .orElseGet(nonogram::createState);
-                new NonogramMenu.Data(nonogram.clues(), nonogramState).write(buf);
+                return new NonogramMenu.Data(nonogram.clues(), nonogramState);
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, NonogramMenu.Data> getScreenStreamCodec() {
+                return NonogramMenu.Data.STREAM_CODEC;
             }
         });
     }
@@ -274,11 +289,11 @@ public class ResearchMenu extends AbstractContainerMenu {
         dataCostSlot.setCost(statefulEntry.state().requiresPayment() ? data : 0);
         dataCostSlot.setAvailable(Mth.clamp(dataCollected, 0, data));
         scrapCostSlot.setCost(statefulEntry.state().requiresPayment() ? scrap : 0);
-        scrapCostSlot.setAvailable(playerInventory.countItem(ModItems.scrap));
+        scrapCostSlot.setAvailable(playerInventory.countItem(ModItems.scrap.asItem()));
         biomassCostSlot.setCost(statefulEntry.state().requiresPayment() ? biomass : 0);
-        biomassCostSlot.setAvailable(playerInventory.countItem(ModItems.biomass));
+        biomassCostSlot.setAvailable(playerInventory.countItem(ModItems.biomass.asItem()));
         fragmentsCostSlot.setCost(statefulEntry.state().requiresPayment() ? fragments : 0);
-        fragmentsCostSlot.setAvailable(playerInventory.countItem(ModItems.fragments));
+        fragmentsCostSlot.setAvailable(playerInventory.countItem(ModItems.fragments.asItem()));
     }
 
     public void setScrollOffset(int scrollOffset) {
@@ -356,17 +371,17 @@ public class ResearchMenu extends AbstractContainerMenu {
         setScrollOffsetDirty(true);
     }
 
-    public int getFilteredIndexOf(ResourceLocation id) {
+    public int getFilteredIndexOf(Identifier id) {
         for (int i = 0; i < filteredEntries.size(); i++) {
             final var entry = filteredEntries.get(i);
-            if (entry.recipe() != null && entry.recipe().id().equals(id)) {
+            if (entry.recipe() != null && entry.id().equals(id)) {
                 return i;
             }
         }
         return -1;
     }
 
-    public static class Provider implements BalmMenuProvider {
+    public static class Provider implements BalmMenuProvider<ResearchMenu.Data> {
 
         @Override
         public Component getDisplayName() {
@@ -378,14 +393,30 @@ public class ResearchMenu extends AbstractContainerMenu {
             return new ResearchMenu(containerId, inventory, createMenuData(player));
         }
 
+        @Override
+        public Data getScreenOpeningData(ServerPlayer player) {
+            return createMenuData(player);
+        }
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, Data> getScreenStreamCodec() {
+            return ResearchMenu.Data.STREAM_CODEC;
+        }
+
         private static ResearchMenu.Data createMenuData(Player player) {
             final var dataCollected = Analyzer.getManager(player).getDataCollected(player);
-            final var recipeManager = player.level().getRecipeManager();
+            if (!(player.level() instanceof ServerLevel serverLevel)) {
+                return new ResearchMenu.Data(List.of(), dataCollected);
+            }
+
+            final var recipeManager = serverLevel.recipeAccess();
             final var researchManager = Research.getManager(player);
 
-            final var entries = recipeManager.getAllRecipesFor(ModRecipes.researchType).stream()
-                    .map(recipe -> {
-                        final var id = recipe.getId();
+            final var entries = recipeManager.getRecipes().stream()
+                    .filter(holder -> holder.value().getType() == ModRecipes.research.type())
+                    .map(holder -> {
+                        final var id = holder.id().identifier();
+                        final var recipe = (ResearchRecipe) holder.value();
                         final var state = researchManager.getResearchState(player, id);
                         if (state == ResearchState.NONE) {
                             if (!researchManager.meetsDependencies(player, recipe.hardDependencies())) {
@@ -407,7 +438,7 @@ public class ResearchMenu extends AbstractContainerMenu {
                             default -> MenuResearchState.UNLOCKED;
                         };
 
-                        return new ResearchMenu.StatefulResearchEntry(recipe, menuState);
+                        return new ResearchMenu.StatefulResearchEntry(id, recipe, menuState);
                     })
                     .filter(Objects::nonNull)
                     .toList();
@@ -416,18 +447,13 @@ public class ResearchMenu extends AbstractContainerMenu {
 
         private static boolean canAfford(Player player, ResearchRecipe recipe) {
             final var dataCollected = Analyzer.getManager(player).getDataCollected(player);
-            final var scrap = player.getInventory().countItem(ModItems.scrap);
-            final var biomass = player.getInventory().countItem(ModItems.biomass);
-            final var fragments = player.getInventory().countItem(ModItems.fragments);
+            final var scrap = player.getInventory().countItem(ModItems.scrap.asItem());
+            final var biomass = player.getInventory().countItem(ModItems.biomass.asItem());
+            final var fragments = player.getInventory().countItem(ModItems.fragments.asItem());
             return dataCollected >= recipe.dataCost()
                     && scrap >= recipe.scrapCost()
                     && biomass >= recipe.biomassCost()
                     && fragments >= recipe.fragmentsCost();
-        }
-
-        @Override
-        public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-            createMenuData(player).write(buf);
         }
     }
 

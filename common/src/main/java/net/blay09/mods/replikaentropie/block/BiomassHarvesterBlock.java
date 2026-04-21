@@ -1,7 +1,7 @@
 package net.blay09.mods.replikaentropie.block;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import com.mojang.serialization.MapCodec;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.block.entity.BiomassHarvesterBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -27,6 +27,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class BiomassHarvesterBlock extends BaseEntityBlock {
+    public static final MapCodec<BiomassHarvesterBlock> CODEC = simpleCodec(BiomassHarvesterBlock::new);
 
     private static final VoxelShape SHAPE = Shapes.or(
             Shapes.box(0, 0, 0, 1, 6 / 16f, 1),
@@ -36,6 +37,11 @@ public class BiomassHarvesterBlock extends BaseEntityBlock {
 
     public BiomassHarvesterBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -59,10 +65,10 @@ public class BiomassHarvesterBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof BiomassHarvesterBlockEntity biomassHarvesterBlockEntity) {
-                Balm.getNetworking().openMenu(player, biomassHarvesterBlockEntity);
+                Balm.networking().openMenu(player, biomassHarvesterBlockEntity);
             }
         }
         return InteractionResult.CONSUME;
@@ -75,19 +81,8 @@ public class BiomassHarvesterBlock extends BaseEntityBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide
-                ? createTickerHelper(type, ModBlockEntities.biomassHarvester.get(), BiomassHarvesterBlockEntity::clientTick)
-                : createTickerHelper(type, ModBlockEntities.biomassHarvester.get(), BiomassHarvesterBlockEntity::serverTick);
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            if (level.getBlockEntity(pos) instanceof BalmContainerProvider provider) {
-                provider.dropItems(level, pos);
-            }
-
-            super.onRemove(state, level, pos, newState, isMoving);
-        }
+        return level.isClientSide()
+                ? createTickerHelper(type, ModBlockEntities.biomassHarvester.value(), BiomassHarvesterBlockEntity::clientTick)
+                : createTickerHelper(type, ModBlockEntities.biomassHarvester.value(), BiomassHarvesterBlockEntity::serverTick);
     }
 }

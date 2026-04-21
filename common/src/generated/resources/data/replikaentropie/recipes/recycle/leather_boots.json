@@ -1,9 +1,0 @@
-{
-  "type": "replikaentropie:recycler",
-  "biomass": 0.4,
-  "fragments": 0.0,
-  "ingredient": {
-    "item": "minecraft:leather_boots"
-  },
-  "scrap": 0.0
-}

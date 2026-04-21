@@ -2,24 +2,30 @@ package net.blay09.mods.replikaentropie.network.protocol;
 
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public record AnalyzedEntitiesMessage(boolean reset, List<? extends EntityType<?>> entityTypes) {
+import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
-    public static void encode(AnalyzedEntitiesMessage message, FriendlyByteBuf buf) {
-        buf.writeBoolean(message.reset);
-        buf.writeCollection(message.entityTypes, (it, item) -> it.writeId(BuiltInRegistries.ENTITY_TYPE, item));
-    }
+public record AnalyzedEntitiesMessage(boolean reset, List<EntityType<?>> entityTypes) implements CustomPacketPayload {
+    public static final Type<AnalyzedEntitiesMessage> TYPE = new Type<>(id("analyzed_entities"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, AnalyzedEntitiesMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL,
+            AnalyzedEntitiesMessage::reset,
+            ByteBufCodecs.idMapper(BuiltInRegistries.ENTITY_TYPE).apply(ByteBufCodecs.list()),
+            AnalyzedEntitiesMessage::entityTypes,
+            AnalyzedEntitiesMessage::new
+    );
 
-    public static AnalyzedEntitiesMessage decode(FriendlyByteBuf buf) {
-        final var reset = buf.readBoolean();
-        final var entityTypes = buf.readList((it) -> it.readById(BuiltInRegistries.ENTITY_TYPE));
-        return new AnalyzedEntitiesMessage(reset, entityTypes);
+    @Override
+    public Type<AnalyzedEntitiesMessage> type() {
+        return TYPE;
     }
 
     public static void handle(Player player, AnalyzedEntitiesMessage message) {

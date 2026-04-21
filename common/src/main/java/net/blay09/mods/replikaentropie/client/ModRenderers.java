@@ -1,46 +1,28 @@
 package net.blay09.mods.replikaentropie.client;
 
-import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
+import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
+import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
-import net.blay09.mods.replikaentropie.client.renderer.BiomassHarvesterRenderer;
-import net.blay09.mods.replikaentropie.client.renderer.BiomassIncubatorRenderer;
-import net.blay09.mods.replikaentropie.client.renderer.WorldEaterRenderer;
-import net.blay09.mods.replikaentropie.client.renderer.DefragmentizerRenderer;
-import net.blay09.mods.replikaentropie.client.renderer.ChaosEngineRenderer;
-import net.blay09.mods.replikaentropie.client.renderer.FragmentAcceleratorRenderer;
-import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
+import net.blay09.mods.replikaentropie.client.renderer.*;
+import net.minecraft.client.color.block.BlockTintSources;
 
-import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
+import java.util.List;
 
 public class ModRenderers {
-    public static void initialize(BalmRenderers renderers) {
-        renderers.setBlockRenderType(() -> ModBlocks.fabricator, RenderType.cutout());
-        renderers.setBlockRenderType(() -> ModBlocks.assembler, RenderType.cutout());
-        renderers.setBlockRenderType(() -> ModBlocks.biomassIncubator, RenderType.cutout());
-        renderers.setBlockRenderType(() -> ModBlocks.cobblescrap, RenderType.cutout());
-        renderers.setBlockRenderType(() -> ModBlocks.lavascrap, RenderType.cutout());
-        renderers.setBlockRenderType(() -> ModBlocks.worldEater, RenderType.cutout());
-        renderers.setBlockRenderType(() -> ModBlocks.recycler, RenderType.cutout());
-        renderers.setBlockRenderType(() -> ModBlocks.defragmentizer, RenderType.cutout());
-        renderers.setBlockRenderType(() -> ModBlocks.fragmentAccelerator, RenderType.cutout());
-        renderers.registerBlockColorHandler(id("biomass_incubator"), (state, level, pos, index) -> level.getBlockTint(pos, BiomeColors.WATER_COLOR_RESOLVER), () -> new Block[]{ModBlocks.biomassIncubator});
-        renderers.registerBlockColorHandler(id("cobblescrap"), (state, level, pos, index) -> level.getBlockTint(pos, BiomeColors.WATER_COLOR_RESOLVER), () -> new Block[]{ModBlocks.cobblescrap, ModBlocks.lavascrap});
-        renderers.registerItemColorHandler((itemStack, index) -> 0xFF3F76E4, () -> new ItemLike[]{
-                ModBlocks.cobblescrap,
-                ModBlocks.lavascrap,
-                ModBlocks.biomassIncubator
-        });
+    public static void initialize(BalmBlockColorRegistrar registrar) {
+        // TODO 0xFF3F76E4 item color cobblescrap, lavascrap, biomass incubator
+        registrar.register(List.of(BlockTintSources.water()), ModBlocks.biomassIncubator);
+        registrar.register(List.of(BlockTintSources.water()), ModBlocks.cobblescrap, ModBlocks.lavascrap);
+    }
 
-        renderers.registerBlockEntityRenderer(id("biomass_harvester"), ModBlockEntities.biomassHarvester::get, BiomassHarvesterRenderer::new);
-        renderers.registerBlockEntityRenderer(id("biomass_incubator"), ModBlockEntities.biomassIncubator::get, BiomassIncubatorRenderer::new);
-        renderers.registerBlockEntityRenderer(id("world_eater"), ModBlockEntities.worldEater::get, WorldEaterRenderer::new);
-        renderers.registerBlockEntityRenderer(id("defragmentizer"), ModBlockEntities.defragmentizer::get, DefragmentizerRenderer::new);
-        renderers.registerBlockEntityRenderer(id("chaos_engine"), ModBlockEntities.chaosEngine::get, ChaosEngineRenderer::new);
-        renderers.registerBlockEntityRenderer(id("fragment_accelerator"), ModBlockEntities.fragmentAccelerator::get, FragmentAcceleratorRenderer::new);
+    public static void initialize(BalmBlockEntityRendererRegistrar registrar) {
+        registrar.register(ModBlockEntities.biomassHarvester, BiomassHarvesterRenderer::new);
+        registrar.register(ModBlockEntities.biomassIncubator, BiomassIncubatorRenderer::new);
+        registrar.register(ModBlockEntities.worldEater, WorldEaterRenderer::new);
+        registrar.register(ModBlockEntities.defragmentizer, DefragmentizerRenderer::new);
+        registrar.register(ModBlockEntities.chaosEngine, ChaosEngineRenderer::new);
+        registrar.register(ModBlockEntities.fragmentAccelerator, FragmentAcceleratorRenderer::new);
     }
 }
 

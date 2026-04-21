@@ -1,0 +1,26 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 9,
+      "ingredient": "minecraft:iron_ingot"
+    },
+    {
+      "count": 6,
+      "ingredient": "minecraft:glass"
+    },
+    {
+      "count": 3,
+      "ingredient": "minecraft:flint"
+    },
+    {
+      "ingredient": "minecraft:water_bucket"
+    },
+    {
+      "ingredient": "minecraft:lava_bucket"
+    }
+  ],
+  "result": {
+    "id": "replikaentropie:cobblescrap"
+  }
+}

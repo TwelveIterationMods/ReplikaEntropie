@@ -1,0 +1,7 @@
+{
+  "type": "replikaentropie:recycler",
+  "biomass": 0.0125,
+  "fragments": 0.1,
+  "ingredient": "minecraft:soul_lantern",
+  "scrap": 0.15
+}

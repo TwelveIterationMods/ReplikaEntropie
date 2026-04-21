@@ -1,7 +1,7 @@
 package net.blay09.mods.replikaentropie.effect;
 
-import net.blay09.mods.balm.api.BalmRegistries;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.blay09.mods.balm.core.BalmRegistrar;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -11,16 +11,13 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class ModEffects {
 
-    public static MobEffect entropicSpeed;
-    public static MobEffect fragmentalContamination;
+    public static Holder<MobEffect> entropicSpeed;
+    public static Holder<MobEffect> fragmentalContamination;
 
-    public static void initialize(BalmRegistries registries) {
-        registries.register(BuiltInRegistries.MOB_EFFECT, (identifier) ->
-                        entropicSpeed = new CustomMobEffect(MobEffectCategory.BENEFICIAL, 0xFF33EBFF)
-                                .addAttributeModifier(Attributes.MOVEMENT_SPEED, "a582e4e1-edf5-4c58-b336-478f5c811d9d", 0.2, AttributeModifier.Operation.MULTIPLY_TOTAL),
-                id("entropic_speed"));
-        registries.register(BuiltInRegistries.MOB_EFFECT, (identifier) ->
-                        fragmentalContamination = new FragmentalContaminationEffect(),
-                id("fragmental_contamination"));
+    public static void initialize(BalmRegistrar.Scoped<MobEffect> registries) {
+        entropicSpeed = registries.register("entropic_speed", _ ->
+                new CustomMobEffect(MobEffectCategory.BENEFICIAL, 0xFF33EBFF)
+                        .addAttributeModifier(Attributes.MOVEMENT_SPEED, id("entropic_speed"), 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        fragmentalContamination = registries.register("fragmental_contamination", _ -> new FragmentalContaminationEffect());
     }
 }

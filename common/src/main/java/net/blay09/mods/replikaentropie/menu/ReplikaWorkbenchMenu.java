@@ -26,7 +26,7 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu {
     }
 
     public ReplikaWorkbenchMenu(int containerId, Inventory inventory, Container container) {
-        super(ModMenus.replikaWorkbench.get(), containerId);
+        super(ModMenus.replikaWorkbench.value(), containerId);
         this.container = container;
 
         for (int i = 0; i < 3; i++) {
@@ -82,7 +82,7 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu {
     public boolean clickMenuButton(Player player, int buttonId) {
         if (buttonId == 0) {
             assemble();
-            if (!player.level().isClientSide) {
+            if (!player.level().isClientSide()) {
                 player.level().playSound(null, player.blockPosition(), SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 1f, 1f);
             }
             return true;

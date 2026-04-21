@@ -1,27 +1,54 @@
 package net.blay09.mods.replikaentropie.recipe;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public record AssemblerRecipe(ResourceLocation id,
-                              List<CountedIngredient> ingredients,
-                              ItemStack result) implements Recipe<Container> {
+public record AssemblerRecipe(List<CountedIngredient> ingredients,
+                              ItemStackTemplate result) implements Recipe<RecipeInput>, PreviewableRecipe {
+    private static final MapCodec<AssemblerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            CountedIngredient.CODEC.listOf(1, 5).fieldOf("ingredients").forGetter(AssemblerRecipe::ingredients),
+            ItemStackTemplate.CODEC.fieldOf("result").forGetter(AssemblerRecipe::result)
+    ).apply(instance, AssemblerRecipe::new));
+
+    private static final StreamCodec<RegistryFriendlyByteBuf, AssemblerRecipe> STREAM_CODEC = StreamCodec.composite(
+            CountedIngredient.STREAM_CODEC.apply(ByteBufCodecs.list(5)),
+            AssemblerRecipe::ingredients,
+            ItemStackTemplate.STREAM_CODEC,
+            AssemblerRecipe::result,
+            AssemblerRecipe::new
+    );
+
+    public boolean matches(Container container, Level level) {
+        return matches(new ContainerInput(container), level);
+    }
+
+    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
+        return assemble(new ContainerInput(container));
+    }
 
     @Override
-    public boolean matches(Container container, Level level) {
+    public boolean matches(RecipeInput input, Level level) {
         final var inputStacks = new ArrayList<ItemStack>();
         final var remainingCounts = new ArrayList<Integer>();
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            final var stack = container.getItem(i);
+        for (int i = 0; i < input.size(); i++) {
+            final var stack = input.getItem(i);
             if (!stack.isEmpty()) {
                 inputStacks.add(stack);
                 remainingCounts.add(stack.getCount());
@@ -49,69 +76,62 @@ public record AssemblerRecipe(ResourceLocation id,
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
-        return result.copy();
+    public ItemStack assemble(RecipeInput input) {
+        return result.create();
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
+    public boolean showNotification() {
         return false;
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
-        return result;
+    public String group() {
+        return "";
+    }
+
+    public ItemStack getResultItem() {
+        return result.create();
     }
 
     @Override
-    public ResourceLocation getId() {
-        return id;
+    public ItemStack previewResultItem() {
+        return result.create();
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return ModRecipes.assemblerSerializer;
+    public RecipeSerializer<AssemblerRecipe> getSerializer() {
+        return ModRecipes.assembler.serializer();
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return ModRecipes.assemblerType;
+    public RecipeType<AssemblerRecipe> getType() {
+        return ModRecipes.assembler.type();
     }
 
-    public static class Serializer implements RecipeSerializer<AssemblerRecipe> {
-        @Override
-        public AssemblerRecipe fromJson(ResourceLocation id, JsonObject json) {
-            final var ingredientsJson = json.getAsJsonArray("ingredients");
-            if (ingredientsJson == null || ingredientsJson.isEmpty() || ingredientsJson.size() > 5) {
-                throw new IllegalArgumentException("Assembler recipe must have between 1 and 5 ingredients");
-            }
-            final var countedIngredients = new ArrayList<CountedIngredient>(ingredientsJson.size());
-            for (int i = 0; i < ingredientsJson.size(); i++) {
-                countedIngredients.add(CountedIngredient.fromJson(ingredientsJson.get(i)));
-            }
-            final var result = ShapedRecipe.itemStackFromJson(json.getAsJsonObject("result"));
-            return new AssemblerRecipe(id, countedIngredients, result);
-        }
-
-        @Override
-        public AssemblerRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            final var ingredients = buf.readList((it) -> {
-                final var ing = Ingredient.fromNetwork(it);
-                final int count = it.readVarInt();
-                return new CountedIngredient(ing, count);
-            });
-            final var result = buf.readItem();
-            return new AssemblerRecipe(id, ingredients, result);
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buf, AssemblerRecipe recipe) {
-            buf.writeCollection(recipe.ingredients(), (it, item) -> {
-                item.ingredient().toNetwork(it);
-                it.writeVarInt(Math.max(1, item.count()));
-            });
-            buf.writeItem(recipe.result());
-        }
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.create(ingredients.stream().map(CountedIngredient::ingredient).toList());
     }
 
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return ModRecipes.assembler.bookCategory();
+    }
+
+    public static RecipeSerializer<AssemblerRecipe> serializer() {
+        return new RecipeSerializer<>(CODEC, STREAM_CODEC);
+    }
+
+    private record ContainerInput(Container container) implements RecipeInput {
+        @Override
+        public ItemStack getItem(int index) {
+            return container.getItem(index);
+        }
+
+        @Override
+        public int size() {
+            return container.getContainerSize();
+        }
+    }
 }

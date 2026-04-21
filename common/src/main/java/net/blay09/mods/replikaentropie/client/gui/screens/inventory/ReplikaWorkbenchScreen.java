@@ -1,24 +1,24 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
 import net.blay09.mods.replikaentropie.menu.ReplikaWorkbenchMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class ReplikaWorkbenchScreen extends AbstractContainerScreen<ReplikaWorkbenchMenu> {
-    private static final ResourceLocation BACKGROUND = id("textures/gui/container/replika_workbench.png");
+    private static final Identifier BACKGROUND = id("textures/gui/container/replika_workbench.png");
 
     private Button assembleButton;
 
     public ReplikaWorkbenchScreen(ReplikaWorkbenchMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
+        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 206);
 
-        imageHeight = 206;
         inventoryLabelY = imageHeight - 94;
     }
 
@@ -35,15 +35,9 @@ public class ReplikaWorkbenchScreen extends AbstractContainerScreen<ReplikaWorkb
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
-        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
     }
 
     @Override

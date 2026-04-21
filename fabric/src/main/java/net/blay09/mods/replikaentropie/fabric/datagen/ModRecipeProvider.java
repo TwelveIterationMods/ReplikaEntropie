@@ -3,30 +3,32 @@ package net.blay09.mods.replikaentropie.fabric.datagen;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.item.ModItems;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
-import java.util.function.Consumer;
-
-import static net.minecraft.data.recipes.ShapedRecipeBuilder.shaped;
-import static net.minecraft.data.recipes.ShapelessRecipeBuilder.shapeless;
+import java.util.concurrent.CompletableFuture;
 
 public class ModRecipeProvider extends FabricRecipeProvider {
-    public ModRecipeProvider(FabricDataOutput output) {
-        super(output);
+    public ModRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> exporter) {
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        return new RecipeProvider(registries, output) {
+            @Override
+            public void buildRecipes() {
         shapeless(RecipeCategory.REDSTONE, ModItems.chipset)
                 .requires(ModItems.damagedChipset)
                 .requires(Items.REDSTONE)
                 .requires(Items.STRING)
                 .unlockedBy("has_damaged_chipset", has(ModItems.damagedChipset))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.TOOLS, ModItems.handheldAnalyzer)
                 .pattern("IIG")
@@ -36,7 +38,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('R', Items.REDSTONE)
                 .define('G', Items.GLASS)
                 .unlockedBy("has_redstone", has(Items.REDSTONE))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.TOOLS, ModItems.skyScraper)
                 .pattern("III")
@@ -46,7 +48,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('C', ModItems.chipset)
                 .define('G', Items.GLASS)
                 .unlockedBy("has_chipset", has(ModItems.chipset))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.MISC, ModBlocks.recycler)
                 .pattern("IDI")
@@ -55,9 +57,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('I', Items.IRON_INGOT)
                 .define('D', Items.DAYLIGHT_DETECTOR)
                 .define('S', Items.SHEARS)
-                .define('C', Items.CHAIN)
+                .define('C', Items.IRON_CHAIN)
                 .unlockedBy("has_quartz", has(Items.QUARTZ))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.MISC, ModBlocks.assembler)
                 .pattern("IDI")
@@ -66,9 +68,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('I', Items.IRON_INGOT)
                 .define('D', Items.DAYLIGHT_DETECTOR)
                 .define('A', Items.ANVIL)
-                .define('C', Items.CHAIN)
+                .define('C', Items.IRON_CHAIN)
                 .unlockedBy("has_quartz", has(Items.QUARTZ))
-                .save(exporter);
+                .save(output);
 
         shapeless(RecipeCategory.COMBAT, ModItems.biosteel)
                 .requires(Items.IRON_INGOT)
@@ -78,14 +80,14 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .requires(ModItems.biomass)
                 .requires(ModItems.biomass)
                 .unlockedBy("has_biomass", has(ModItems.biomass))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.biosteelHelmet)
                 .pattern("BBB")
                 .pattern("B B")
                 .define('B', ModItems.biosteel)
                 .unlockedBy("has_biosteel", has(ModItems.biosteel))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.biosteelChestplate)
                 .pattern("B B")
@@ -93,7 +95,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .pattern("BBB")
                 .define('B', ModItems.biosteel)
                 .unlockedBy("has_biosteel", has(ModItems.biosteel))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.biosteelLeggings)
                 .pattern("BBB")
@@ -101,21 +103,21 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .pattern("B B")
                 .define('B', ModItems.biosteel)
                 .unlockedBy("has_biosteel", has(ModItems.biosteel))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.biosteelBoots)
                 .pattern("B B")
                 .pattern("B B")
                 .define('B', ModItems.biosteel)
                 .unlockedBy("has_biosteel", has(ModItems.biosteel))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.hazmatHelmet)
                 .pattern("BBB")
                 .pattern("B B")
                 .define('B', ModItems.hazmatLining)
                 .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.hazmatChestplate)
                 .pattern("B B")
@@ -123,7 +125,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .pattern("BBB")
                 .define('B', ModItems.hazmatLining)
                 .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.hazmatLeggings)
                 .pattern("BBB")
@@ -131,14 +133,14 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .pattern("B B")
                 .define('B', ModItems.hazmatLining)
                 .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.hazmatBoots)
                 .pattern("B B")
                 .pattern("B B")
                 .define('B', ModItems.hazmatLining)
                 .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.replikaHelmetFrame)
                 .pattern("BDB")
@@ -146,7 +148,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('B', ModItems.replikaSkin)
                 .define('D', Items.DIAMOND)
                 .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.replikaChestplateFrame)
                 .pattern("B B")
@@ -155,7 +157,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('B', ModItems.replikaSkin)
                 .define('D', Items.DIAMOND)
                 .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.replikaLeggingsFrame)
                 .pattern("BDB")
@@ -164,7 +166,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('B', ModItems.replikaSkin)
                 .define('D', Items.DIAMOND)
                 .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                .save(exporter);
+                .save(output);
 
         shaped(RecipeCategory.COMBAT, ModItems.replikaBootsFrame)
                 .pattern("D D")
@@ -172,13 +174,15 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('B', ModItems.replikaSkin)
                 .define('D', Items.DIAMOND)
                 .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                .save(exporter);
+                .save(output);
 
         shapeless(RecipeCategory.FOOD, ModItems.biomash)
                 .requires(ModItems.biomass)
                 .requires(Items.BOWL)
                 .unlockedBy("has_biomass", has(ModItems.biomass))
-                .save(exporter);
+                .save(output);
+            }
+        };
     }
 
     @Override

@@ -1,15 +1,13 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.blay09.mods.replikaentropie.menu.EntropicDataMinerMenu;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -18,6 +16,8 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmMenuProvider {
+public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmMenuProvider<EntropicDataMinerMenu.Data> {
 
     private final List<DataMinedEvent> capturedEvents = new ArrayList<>();
     private final Set<String> capturedEventKeys = new HashSet<>();
@@ -35,7 +35,7 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmMen
     }
 
     public EntropicDataMinerBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.entropicDataMiner.get(), pos, blockState);
+        super(ModBlockEntities.entropicDataMiner.value(), pos, blockState);
     }
 
     @Override
@@ -53,8 +53,13 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmMen
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-        createMenuData(player).write(buf);
+    public EntropicDataMinerMenu.Data getScreenOpeningData(ServerPlayer player) {
+        return createMenuData(player);
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, EntropicDataMinerMenu.Data> getScreenStreamCodec() {
+        return EntropicDataMinerMenu.Data.STREAM_CODEC;
     }
 
     public void addEvent(DataMinedEvent event) {
@@ -88,30 +93,22 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmMen
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-
+    protected void loadAdditional(ValueInput input) {
         capturedEvents.clear();
         capturedEventKeys.clear();
-        final var list = tag.getList("Events", Tag.TAG_COMPOUND);
-        for (final var item : list) {
-            if (item instanceof CompoundTag itemCompound) {
-                final var event = DataMinedEvent.of(itemCompound);
-                capturedEvents.add(event);
-                capturedEventKeys.add(event.asKey());
-            }
+        final var list = input.listOrEmpty("Events", DataMinedEvent.CODEC);
+        for (final var event : list) {
+            capturedEvents.add(event);
+            capturedEventKeys.add(event.asKey());
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-
-        final var list = new ListTag();
+    protected void saveAdditional(ValueOutput output) {
+        final var list = output.list("Events", DataMinedEvent.CODEC);
         for (final var event : capturedEvents) {
-            list.add(event.save(new CompoundTag()));
+            list.add(event);
         }
-        tag.put("Events", list);
     }
 
 }

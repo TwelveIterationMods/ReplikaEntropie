@@ -1,9 +1,0 @@
-{
-  "type": "replikaentropie:recycler",
-  "biomass": 0.1,
-  "fragments": 0.0,
-  "ingredient": {
-    "item": "minecraft:cherry_sapling"
-  },
-  "scrap": 0.0
-}

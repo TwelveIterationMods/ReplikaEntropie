@@ -1,20 +1,21 @@
 package net.blay09.mods.replikaentropie.client.gui.components;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class NonogramHelpButton extends Button {
 
-    private static final ResourceLocation TEXTURE = id("textures/gui/container/nonogram.png");
+    private static final Identifier TEXTURE = id("textures/gui/container/nonogram.png");
 
     public NonogramHelpButton(int x, int y, int size) {
-        super(x, y, size, size, Component.empty(), it -> {
+        super(x, y, size, size, Component.empty(), _ -> {
         }, Button.DEFAULT_NARRATION);
 
         final var tooltip = Component.literal("")
@@ -24,7 +25,7 @@ public class NonogramHelpButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.blit(TEXTURE, getX(), getY(), 37, 136, 16, 16);
+    protected void extractContents(GuiGraphicsExtractor graphics, int i, int i1, float v) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), 37, 136, 16, 16, 256, 256);
     }
 }

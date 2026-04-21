@@ -2,17 +2,24 @@ package net.blay09.mods.replikaentropie.network.protocol;
 
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
-public record AnalyzePosMessage(BlockPos pos) {
+import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
-    public static void encode(AnalyzePosMessage message, FriendlyByteBuf buf) {
-        buf.writeBlockPos(message.pos);
-    }
+public record AnalyzePosMessage(BlockPos pos) implements CustomPacketPayload {
+    public static final Type<AnalyzePosMessage> TYPE = new Type<>(id("analyze_pos"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, AnalyzePosMessage> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC,
+            AnalyzePosMessage::pos,
+            AnalyzePosMessage::new
+    );
 
-    public static AnalyzePosMessage decode(FriendlyByteBuf buf) {
-        return new AnalyzePosMessage(buf.readBlockPos());
+    @Override
+    public Type<AnalyzePosMessage> type() {
+        return TYPE;
     }
 
     public static void handle(ServerPlayer player, AnalyzePosMessage message) {
@@ -20,7 +27,7 @@ public record AnalyzePosMessage(BlockPos pos) {
         final var level = player.level();
         final var pos = message.pos;
         final var state = level.getBlockState(pos);
-        final var itemStack = state.getBlock().getCloneItemStack(level, pos, state);
+        final var itemStack = state.getCloneItemStack(level, pos, false);
         Analyzer.analyzeItem(player, itemStack);
     }
 

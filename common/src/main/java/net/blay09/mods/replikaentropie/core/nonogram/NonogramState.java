@@ -3,17 +3,20 @@ package net.blay09.mods.replikaentropie.core.nonogram;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public record NonogramState(int width, int height, int[] marks) {
+    public static final StreamCodec<RegistryFriendlyByteBuf, NonogramState> STREAM_CODEC = StreamCodec.of(NonogramState::write, NonogramState::read);
 
     public NonogramState(int width, int height) {
         this(width, height, new int[width * height]);
     }
 
     public static NonogramState read(CompoundTag compound) {
-        final var width = compound.getInt("Width");
-        final var height = compound.getInt("Height");
-        final var marks = compound.getIntArray("Marks");
+        final var width = compound.getIntOr("Width", 10);
+        final var height = compound.getIntOr("Height", 10);
+        final var marks = compound.getIntArray("Marks").orElseGet(() -> new int[width * height]);
         return new NonogramState(width, height, marks);
     }
 

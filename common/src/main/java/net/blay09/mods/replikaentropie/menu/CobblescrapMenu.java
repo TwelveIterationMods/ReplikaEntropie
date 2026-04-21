@@ -21,7 +21,7 @@ public class CobblescrapMenu extends AbstractScrapGeneratorMenu {
     }
 
     public CobblescrapMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
-        super(ModMenus.cobblescrap.get(), containerId, playerInventory, container, data);
+        super(ModMenus.cobblescrap.value(), containerId, playerInventory, container, data);
 
         checkContainerSize(container, 2);
 

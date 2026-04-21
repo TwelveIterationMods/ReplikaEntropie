@@ -1,9 +1,0 @@
-{
-  "type": "replikaentropie:recycler",
-  "biomass": 0.1,
-  "fragments": 0.1,
-  "ingredient": {
-    "item": "minecraft:chorus_fruit"
-  },
-  "scrap": 0.0
-}

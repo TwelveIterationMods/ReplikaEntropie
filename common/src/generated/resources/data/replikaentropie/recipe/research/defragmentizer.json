@@ -1,0 +1,18 @@
+{
+  "type": "replikaentropie:research",
+  "data": 5,
+  "fragments": 2,
+  "hardDependencies": [
+    "replikaentropie:research/fragments",
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "id": "replikaentropie:defragmentizer"
+  },
+  "nonogram": "replikaentropie:defragmentizer",
+  "research_type": "assembler",
+  "sort_order": 2600,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/defragmentizer"
+  ]
+}

@@ -1,17 +1,24 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.SubContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
+import net.blay09.mods.replikaentropie.component.AssemblyTicket;
+import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.AssemblerMenu;
 import net.blay09.mods.replikaentropie.recipe.AssemblerRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,8 +29,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
-public class AssemblerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider {
+public class AssemblerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
     private final DefaultContainer backingContainer = new DefaultContainer(7) {
         @Override
@@ -69,7 +78,7 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
     };
 
     public AssemblerBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.assembler.get(), pos, state);
+        super(ModBlockEntities.assembler.value(), pos, state);
     }
 
     @Override
@@ -80,6 +89,16 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
         return new AssemblerMenu(id, inv, backingContainer, dataAccess);
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+        return Unit.STREAM_CODEC.cast();
+    }
+
+    @Override
+    public Unit getScreenOpeningData(ServerPlayer player) {
+        return Unit.INSTANCE;
     }
 
     @Override
@@ -98,20 +117,24 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
 
     private void serverTick(Level level) {
         final var ticketStack = ticketContainer.getItem(0);
-        if (ticketStack.isEmpty() || !ticketStack.hasTag()) {
+        if (ticketStack.isEmpty()) {
             processingTicks = 0;
             return;
         }
 
-        final var itemData = ticketStack.getTag();
-        final var recipeIdString = itemData != null ? itemData.getString("ReplikaEntropieAssemblerResult") : null;
-        if (recipeIdString == null || recipeIdString.isEmpty()) {
+        final var ticketData = ticketStack.get(ModDataComponents.assemblyTicket());
+        if (ticketData == null || ticketData.recipeId().isEmpty()) {
             processingTicks = 0;
             return;
         }
 
-        final var recipe = level.getRecipeManager().byKey(new ResourceLocation(recipeIdString)).orElse(null);
-        if (!(recipe instanceof AssemblerRecipe assemblerRecipe)) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            processingTicks = 0;
+            return;
+        }
+
+        final var recipe = serverLevel.recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, ticketData.recipeId().get())).orElse(null);
+        if (recipe == null || !(recipe.value() instanceof AssemblerRecipe assemblerRecipe)) {
             processingTicks = 0;
             return;
         }
@@ -124,7 +147,7 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
         final var resultStack = assemblerRecipe.assemble(inputContainer, level.registryAccess());
         final var output = resultContainer.getItem(0);
         if (!output.isEmpty()) {
-            if (!ItemStack.isSameItemSameTags(output, resultStack)
+            if (!ItemStack.isSameItemSameComponents(output, resultStack)
                     || output.getCount() + resultStack.getCount() >= output.getMaxStackSize()) {
                 processingTicks = 0;
                 return;
@@ -149,14 +172,14 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
                 }
             }
 
-            final var usesLeft = itemData.getInt("ReplikaEntropieAssemblerUsesLeft");
+            final var usesLeft = ticketData.usesLeft();
             if (usesLeft == 1) {
                 ticketStack.shrink(1);
                 if (ticketStack.isEmpty()) {
                     ticketContainer.setItem(0, ItemStack.EMPTY);
                 }
             } else if (usesLeft > 0) {
-                itemData.putInt("ReplikaEntropieAssemblerUsesLeft", usesLeft - 1);
+                ticketStack.set(ModDataComponents.assemblyTicket(), new AssemblyTicket(ticketData.recipeId(), usesLeft - 1, ticketData.showHint()));
             }
 
             if (output.isEmpty()) {
@@ -171,16 +194,14 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        ContainerHelper.loadAllItems(tag, backingContainer.getItems());
-        processingTicks = tag.getInt("ProcessingTicks");
+    protected void loadAdditional(ValueInput input) {
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
+        processingTicks = input.getIntOr("ProcessingTicks", 0);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.putInt("ProcessingTicks", processingTicks);
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
+        output.putInt("ProcessingTicks", processingTicks);
     }
 }

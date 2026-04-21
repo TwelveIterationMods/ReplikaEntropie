@@ -1,0 +1,27 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 9,
+      "ingredient": "minecraft:iron_ingot"
+    },
+    {
+      "count": 4,
+      "ingredient": "replikaentropie:biomass"
+    },
+    {
+      "count": 4,
+      "ingredient": "minecraft:glass"
+    },
+    {
+      "count": 3,
+      "ingredient": "minecraft:dirt"
+    },
+    {
+      "ingredient": "minecraft:water_bucket"
+    }
+  ],
+  "result": {
+    "id": "replikaentropie:biomass_incubator"
+  }
+}

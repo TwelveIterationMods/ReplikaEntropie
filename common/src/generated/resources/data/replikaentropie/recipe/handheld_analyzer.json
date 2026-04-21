@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": "minecraft:glass",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "IIG",
+    "IRI",
+    "II "
+  ],
+  "result": {
+    "id": "replikaentropie:handheld_analyzer"
+  }
+}

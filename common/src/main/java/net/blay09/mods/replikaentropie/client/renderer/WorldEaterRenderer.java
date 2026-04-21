@@ -1,41 +1,78 @@
 package net.blay09.mods.replikaentropie.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.math.Axis;
 import net.blay09.mods.replikaentropie.block.entity.WorldEaterBlockEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEntity> {
+public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEntity, WorldEaterRenderer.State> {
 
-    private final BlockRenderDispatcher blockRenderer;
+    private final BlockModelResolver blockModelResolver;
+    private final BlockDisplayContext blockDisplayContext = BlockDisplayContext.create();
 
     public WorldEaterRenderer(BlockEntityRendererProvider.Context context) {
-        blockRenderer = context.getBlockRenderDispatcher();
+        blockModelResolver = context.blockModelResolver();
     }
 
     @Override
-    public void render(WorldEaterBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void extractRenderState(WorldEaterBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
+        state.shouldRender = false;
+        for (final var block : state.blocks) {
+            block.clear();
+        }
+
         final var level = blockEntity.getLevel();
         if (level == null) {
             return;
         }
 
         final var pos = blockEntity.getBlockPos();
-        final var state = blockEntity.getBlockState();
-        final var facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-        if (!Block.shouldRenderFace(state, level, pos, facing, pos.relative(facing))) {
+        final var blockState = blockEntity.getBlockState();
+        final var facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        if (!Block.shouldRenderFace(blockState, level.getBlockState(pos.relative(facing)), facing)) {
             return;
         }
 
+        state.shouldRender = true;
+        state.facing = facing;
+
         final var container = blockEntity.getPreviewContainer();
+        for (int i = 0; i < container.getContainerSize() && i < state.blocks.length; i++) {
+            final var itemStack = container.getItem(i);
+            if (itemStack.isEmpty()) {
+                continue;
+            }
+
+            final var block = Block.byItem(itemStack.getItem());
+            blockModelResolver.update(state.blocks[i], block.defaultBlockState(), blockDisplayContext);
+        }
+    }
+
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        if (!state.shouldRender) {
+            return;
+        }
 
         final var columns = 5;
         final var rows = 3;
@@ -49,18 +86,14 @@ public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEn
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
         poseStack.translate(0f, 0f, 0.38f);
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
                 final var index = row * columns + col;
-                if (index >= container.getContainerSize()) {
-                    continue;
-                }
-
-                final var itemStack = container.getItem(index);
-                if (itemStack.isEmpty()) {
+                final var block = state.blocks[index];
+                if (block.isEmpty()) {
                     continue;
                 }
 
@@ -73,21 +106,22 @@ public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEn
                 poseStack.scale(scale, scale, scale);
                 poseStack.translate(-0.5f, -0.5f, -0.5f);
 
-                final var block = Block.byItem(itemStack.getItem());
-                final var blockState = block.defaultBlockState();
-                blockRenderer.renderSingleBlock(blockState, poseStack, buffer, packedLight, packedOverlay);
-
-                final var progress = 0; // POSTJAM implement progress rendering of world eater
-                if (progress > 0) {
-                    final var renderBuffers = Minecraft.getInstance().renderBuffers();
-                    final var consumer = new SheetedDecalTextureGenerator(renderBuffers.crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress)), poseStack.last().pose(), poseStack.last().normal(), 1f);
-                    blockRenderer.renderBreakingTexture(level.getBlockState(pos), pos, level, poseStack, consumer);
-                }
+                block.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
                 poseStack.popPose();
             }
         }
 
         poseStack.popPose();
+    }
+
+    public static class State extends BlockEntityRenderState {
+        public final BlockModelRenderState[] blocks = new BlockModelRenderState[]{
+                new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(),
+                new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(),
+                new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState()
+        };
+        public boolean shouldRender;
+        public Direction facing = Direction.NORTH;
     }
 }

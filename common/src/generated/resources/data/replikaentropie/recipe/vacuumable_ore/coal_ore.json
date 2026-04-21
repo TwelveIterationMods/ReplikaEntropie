@@ -1,0 +1,5 @@
+{
+  "type": "replikaentropie:vacuumable_ore",
+  "empty_block": "minecraft:stone",
+  "ingredient": "minecraft:coal_ore"
+}

@@ -1,9 +1,7 @@
 package net.blay09.mods.replikaentropie.core.burst;
 
-import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.event.PlayerLoginEvent;
-import net.blay09.mods.balm.api.event.TickPhase;
-import net.blay09.mods.balm.api.event.TickType;
+import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
+import net.blay09.mods.balm.platform.event.callback.ServerTickCallback;
 import net.minecraft.world.entity.player.Player;
 
 public class BurstEnergy {
@@ -15,15 +13,13 @@ public class BurstEnergy {
     private static final LocalBurstEnergyManager localManager = new LocalBurstEnergyManager();
     private static final AuthorativeBurstEnergyManager persistentManager = new AuthorativeBurstEnergyManager();
 
-    public static void initialize(BalmEvents events) {
-        events.onTickEvent(TickType.ServerPlayer, TickPhase.End, player -> {
+    public static void initialize() {
+        ServerTickCallback.ServerPlayerTick.AFTER.register(player -> {
             recharge(player);
             persistentManager.syncIfDirty(player);
         });
 
-        events.onEvent(PlayerLoginEvent.class, event -> {
-            persistentManager.sync(event.getPlayer());
-        });
+        ServerPlayerCallback.Join.EVENT.register(persistentManager::sync);
     }
 
     public static LocalBurstEnergyManager getLocalManager() {

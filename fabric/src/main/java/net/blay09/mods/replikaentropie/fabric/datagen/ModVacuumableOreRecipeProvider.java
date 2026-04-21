@@ -1,50 +1,57 @@
 package net.blay09.mods.replikaentropie.fabric.datagen;
 
-import com.google.gson.JsonObject;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
-import net.blay09.mods.replikaentropie.recipe.ModRecipes;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.blay09.mods.replikaentropie.recipe.VacuumableOreRecipe;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 public class ModVacuumableOreRecipeProvider extends FabricRecipeProvider {
-    public ModVacuumableOreRecipeProvider(FabricDataOutput output) {
-        super(output);
+    public ModVacuumableOreRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> exporter) {
-        vacuumOre(Ingredient.of(Items.COAL_ORE), Blocks.STONE).save(exporter, "coal_ore");
-        vacuumOre(Ingredient.of(Items.IRON_ORE), Blocks.STONE).save(exporter, "iron_ore");
-        vacuumOre(Ingredient.of(Items.COPPER_ORE), Blocks.STONE).save(exporter, "copper_ore");
-        vacuumOre(Ingredient.of(Items.GOLD_ORE), Blocks.STONE).save(exporter, "gold_ore");
-        vacuumOre(Ingredient.of(Items.REDSTONE_ORE), Blocks.STONE).save(exporter, "redstone_ore");
-        vacuumOre(Ingredient.of(Items.LAPIS_ORE), Blocks.STONE).save(exporter, "lapis_ore");
-        vacuumOre(Ingredient.of(Items.DIAMOND_ORE), Blocks.STONE).save(exporter, "diamond_ore");
-        vacuumOre(Ingredient.of(Items.EMERALD_ORE), Blocks.STONE).save(exporter, "emerald_ore");
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        return new RecipeProvider(registries, output) {
+            @Override
+            public void buildRecipes() {
+        vacuumOre(Ingredient.of(Items.COAL_ORE), Blocks.STONE).save(output, "coal_ore");
+        vacuumOre(Ingredient.of(Items.IRON_ORE), Blocks.STONE).save(output, "iron_ore");
+        vacuumOre(Ingredient.of(Items.COPPER_ORE), Blocks.STONE).save(output, "copper_ore");
+        vacuumOre(Ingredient.of(Items.GOLD_ORE), Blocks.STONE).save(output, "gold_ore");
+        vacuumOre(Ingredient.of(Items.REDSTONE_ORE), Blocks.STONE).save(output, "redstone_ore");
+        vacuumOre(Ingredient.of(Items.LAPIS_ORE), Blocks.STONE).save(output, "lapis_ore");
+        vacuumOre(Ingredient.of(Items.DIAMOND_ORE), Blocks.STONE).save(output, "diamond_ore");
+        vacuumOre(Ingredient.of(Items.EMERALD_ORE), Blocks.STONE).save(output, "emerald_ore");
 
-        vacuumOre(Ingredient.of(Items.DEEPSLATE_COAL_ORE), Blocks.DEEPSLATE).save(exporter, "deepslate_coal_ore");
-        vacuumOre(Ingredient.of(Items.DEEPSLATE_IRON_ORE), Blocks.DEEPSLATE).save(exporter, "deepslate_iron_ore");
-        vacuumOre(Ingredient.of(Items.DEEPSLATE_COPPER_ORE), Blocks.DEEPSLATE).save(exporter, "deepslate_copper_ore");
-        vacuumOre(Ingredient.of(Items.DEEPSLATE_GOLD_ORE), Blocks.DEEPSLATE).save(exporter, "deepslate_gold_ore");
-        vacuumOre(Ingredient.of(Items.DEEPSLATE_REDSTONE_ORE), Blocks.DEEPSLATE).save(exporter, "deepslate_redstone_ore");
-        vacuumOre(Ingredient.of(Items.DEEPSLATE_LAPIS_ORE), Blocks.DEEPSLATE).save(exporter, "deepslate_lapis_ore");
-        vacuumOre(Ingredient.of(Items.DEEPSLATE_DIAMOND_ORE), Blocks.DEEPSLATE).save(exporter, "deepslate_diamond_ore");
-        vacuumOre(Ingredient.of(Items.DEEPSLATE_EMERALD_ORE), Blocks.DEEPSLATE).save(exporter, "deepslate_emerald_ore");
+        vacuumOre(Ingredient.of(Items.DEEPSLATE_COAL_ORE), Blocks.DEEPSLATE).save(output, "deepslate_coal_ore");
+        vacuumOre(Ingredient.of(Items.DEEPSLATE_IRON_ORE), Blocks.DEEPSLATE).save(output, "deepslate_iron_ore");
+        vacuumOre(Ingredient.of(Items.DEEPSLATE_COPPER_ORE), Blocks.DEEPSLATE).save(output, "deepslate_copper_ore");
+        vacuumOre(Ingredient.of(Items.DEEPSLATE_GOLD_ORE), Blocks.DEEPSLATE).save(output, "deepslate_gold_ore");
+        vacuumOre(Ingredient.of(Items.DEEPSLATE_REDSTONE_ORE), Blocks.DEEPSLATE).save(output, "deepslate_redstone_ore");
+        vacuumOre(Ingredient.of(Items.DEEPSLATE_LAPIS_ORE), Blocks.DEEPSLATE).save(output, "deepslate_lapis_ore");
+        vacuumOre(Ingredient.of(Items.DEEPSLATE_DIAMOND_ORE), Blocks.DEEPSLATE).save(output, "deepslate_diamond_ore");
+        vacuumOre(Ingredient.of(Items.DEEPSLATE_EMERALD_ORE), Blocks.DEEPSLATE).save(output, "deepslate_emerald_ore");
 
-        vacuumOre(Ingredient.of(Items.NETHER_QUARTZ_ORE), Blocks.NETHERRACK).save(exporter, "nether_quartz_ore");
-        vacuumOre(Ingredient.of(Items.NETHER_GOLD_ORE), Blocks.NETHERRACK).save(exporter, "nether_gold_ore");
+        vacuumOre(Ingredient.of(Items.NETHER_QUARTZ_ORE), Blocks.NETHERRACK).save(output, "nether_quartz_ore");
+        vacuumOre(Ingredient.of(Items.NETHER_GOLD_ORE), Blocks.NETHERRACK).save(output, "nether_gold_ore");
 
-        vacuumOre(Ingredient.of(Items.ANCIENT_DEBRIS), Blocks.NETHERRACK).save(exporter, "ancient_debris");
+        vacuumOre(Ingredient.of(Items.ANCIENT_DEBRIS), Blocks.NETHERRACK).save(output, "ancient_debris");
+            }
+        };
     }
 
     private VacuumableOreRecipeBuilder vacuumOre(Ingredient ingredient, Block emptyBlock) {
@@ -57,38 +64,9 @@ public class ModVacuumableOreRecipeProvider extends FabricRecipeProvider {
     }
 
     public record VacuumableOreRecipeBuilder(Ingredient ingredient, Block emptyBlock) {
-        public void save(Consumer<FinishedRecipe> exporter, String name) {
-            final var id = new ResourceLocation(ReplikaEntropie.MOD_ID, "vacuumable_ore/" + name);
-            exporter.accept(new VacuumableOreFinishedRecipe(id, ingredient, emptyBlock));
-        }
-    }
-
-    public record VacuumableOreFinishedRecipe(ResourceLocation id, Ingredient ingredient,
-                                              Block emptyBlock) implements FinishedRecipe {
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            json.add("ingredient", ingredient.toJson());
-            json.addProperty("empty_block", BuiltInRegistries.BLOCK.getKey(emptyBlock).toString());
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return id;
-        }
-
-        @Override
-        public RecipeSerializer<?> getType() {
-            return ModRecipes.vacuumableOreSerializer;
-        }
-
-        @Override
-        public JsonObject serializeAdvancement() {
-            return null;
-        }
-
-        @Override
-        public ResourceLocation getAdvancementId() {
-            return null;
+        public void save(RecipeOutput output, String name) {
+            final var id = ReplikaEntropie.id("vacuumable_ore/" + name);
+            output.accept(ResourceKey.create(Registries.RECIPE, id), new VacuumableOreRecipe(ingredient, emptyBlock), null);
         }
     }
 }

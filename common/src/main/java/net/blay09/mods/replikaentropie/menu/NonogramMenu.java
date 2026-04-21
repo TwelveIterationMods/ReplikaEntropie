@@ -4,23 +4,21 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramClueProvider;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramClues;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.DataSlot;
 
 public class NonogramMenu extends AbstractNonogramMenu {
 
     public record Data(NonogramClues clues, NonogramState state) implements NonogramClueProvider {
-        public static Data read(FriendlyByteBuf buf) {
-            final var clues = NonogramClues.read(buf);
-            final var state = NonogramState.read(buf);
-            return new Data(clues, state);
-        }
-
-        public void write(FriendlyByteBuf buf) {
-            clues.write(buf);
-            NonogramState.write(buf, state);
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                NonogramClues.STREAM_CODEC,
+                Data::clues,
+                NonogramState.STREAM_CODEC,
+                Data::state,
+                Data::new
+        );
 
         @Override
         public boolean validate(NonogramState nonogramState) {
@@ -40,7 +38,7 @@ public class NonogramMenu extends AbstractNonogramMenu {
     }
 
     public NonogramMenu(int containerId, Inventory inventory, NonogramClueProvider clues, NonogramState nonogramState) {
-        super(ModMenus.nonogram.get(), containerId);
+        super(ModMenus.nonogram.value(), containerId);
         this.playerInventory = inventory;
         this.blues = clues;
         this.nonogramState = nonogramState;
@@ -87,4 +85,3 @@ public class NonogramMenu extends AbstractNonogramMenu {
         return complete.get() == 1;
     }
 }
-

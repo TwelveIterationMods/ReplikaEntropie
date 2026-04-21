@@ -31,7 +31,7 @@ public class NullphaserItem extends Item {
             final var clickedPos = context.getClickedPos();
             tryTeleport(serverLevel, serverPlayer, clickedPos, oppositeFace);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private void tryTeleport(ServerLevel level, ServerPlayer player, BlockPos pos, Direction direction) {

@@ -6,10 +6,11 @@ import net.blay09.mods.replikaentropie.client.gui.components.IconButton;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.blay09.mods.replikaentropie.menu.EntropicDataMinerMenu;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -18,9 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
+
 public class EntropicDataMinerScreen extends AbstractContainerScreen<EntropicDataMinerMenu> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("replikaentropie", "textures/gui/container/entropic_data_miner.png");
+    private static final Identifier TEXTURE = id("textures/gui/container/entropic_data_miner.png");
 
     private static final int MAX_EVENTS = 5;
     private static final int DOWNLOAD_TICKS = 15;
@@ -29,9 +32,7 @@ public class EntropicDataMinerScreen extends AbstractContainerScreen<EntropicDat
     private final Map<DataMinedEvent, Integer> downloadingEvents = new HashMap<>();
 
     public EntropicDataMinerScreen(EntropicDataMinerMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageWidth = 210;
-        imageHeight = 135;
+        super(menu, playerInventory, title, 210, 135);
     }
 
     @Override
@@ -59,13 +60,6 @@ public class EntropicDataMinerScreen extends AbstractContainerScreen<EntropicDat
                 .filter(event -> !menu.isDownloaded(event) && !visibleEvents.contains(event))
                 .limit(num)
                 .forEach(visibleEvents::add);
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -99,20 +93,21 @@ public class EntropicDataMinerScreen extends AbstractContainerScreen<EntropicDat
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
-        guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         for (int i = 0; i < visibleEvents.size(); i++) {
             final var x = leftPos + 40;
             final var y = topPos + 24 + i * 19;
             final var event = visibleEvents.get(i);
             if (!event.icon().isEmpty()) {
-                guiGraphics.renderItem(event.icon(), x, y);
+                graphics.item(event.icon(), x, y);
             }
 
             final var eventLabel = getComponentForEvent(event);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            ExtendedGuiGraphics.renderScrollingString(guiGraphics, font, eventLabel, x + 20, y, x + 20 + 112, y + 18, 0xFF404040);
+            ExtendedGuiGraphics.renderScrollingString(graphics, font, eventLabel, x + 20, y, x + 20 + 112, y + 18, 0xFF404040);
 
             if (downloadingEvents.containsKey(event)) {
                 final var downloadProgress = downloadingEvents.get(event);
@@ -122,22 +117,22 @@ public class EntropicDataMinerScreen extends AbstractContainerScreen<EntropicDat
                 final var barWidth = 113;
                 final var barHeight = 2;
 
-                guiGraphics.fill(barX, barY, barX + barWidth, barY + barHeight, 0xFF404040);
+                graphics.fill(barX, barY, barX + barWidth, barY + barHeight, 0xFF404040);
                 final var progressWidth = (int) (barWidth * progress);
-                guiGraphics.fill(barX, barY, barX + progressWidth, barY + barHeight, 0xFF00FF00);
+                graphics.fill(barX, barY, barX + progressWidth, barY + barHeight, 0xFF00FF00);
             }
         }
 
         if (visibleEvents.isEmpty()) {
             final var noEventsLabel = Component.translatable("gui.replikaentropie.entropic_data_miner.no_events");
             final var stringWidth = font.width(noEventsLabel);
-            guiGraphics.drawString(font, noEventsLabel, leftPos + 38 + 138 / 2 - stringWidth / 2, topPos + 29, 0xFF404040, false);
+            graphics.text(font, noEventsLabel, leftPos + 38 + 138 / 2 - stringWidth / 2, topPos + 29, 0xFF404040, false);
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, title, 6, 6, 0xFF404040, false);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(font, title, 6, 6, 0xFF404040, false);
     }
 
     private Component getComponentForEvent(DataMinedEvent event) {

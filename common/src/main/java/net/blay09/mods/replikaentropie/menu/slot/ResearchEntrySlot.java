@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.menu.slot;
 
-import net.blay09.mods.replikaentropie.container.SingleItemContainer;
+import net.blay09.mods.balm.world.ticks.DefaultContainerSingleItem;
 import net.blay09.mods.replikaentropie.menu.ResearchMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -12,12 +12,12 @@ public class ResearchEntrySlot extends ReadonlySlot {
     private ItemStack icon = ItemStack.EMPTY;
 
     public ResearchEntrySlot(int x, int y) {
-        super(new SingleItemContainer(), 0, x, y);
+        super(new DefaultContainerSingleItem(), 0, x, y);
     }
 
     public void setResearchEntry(@Nullable ResearchMenu.StatefulResearchEntry researchEntry) {
         this.researchEntry = researchEntry;
-        icon = researchEntry != null ? researchEntry.recipe().icon().copy() : ItemStack.EMPTY;
+        icon = researchEntry != null ? researchEntry.recipe().icon().create() : ItemStack.EMPTY;
     }
 
     @Override
@@ -35,4 +35,3 @@ public class ResearchEntrySlot extends ReadonlySlot {
         return researchEntry != null;
     }
 }
-

@@ -1,0 +1,8 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 2,
+  "result": {
+    "id": "minecraft:bone_meal"
+  },
+  "sortOrder": 700
+}

@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.menu.slot;
 
-import net.blay09.mods.replikaentropie.container.SingleItemContainer;
+import net.blay09.mods.balm.world.ticks.DefaultContainerSingleItem;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,7 +21,7 @@ public class ResearchCostSlot extends ReadonlySlot {
     private int available;
 
     public ResearchCostSlot(int x, int y, Type type) {
-        super(new SingleItemContainer(), 0, x, y);
+        super(new DefaultContainerSingleItem(), 0, x, y);
         this.type = type;
     }
 
@@ -32,12 +32,12 @@ public class ResearchCostSlot extends ReadonlySlot {
     public void setCost(int cost) {
         this.cost = cost;
         if (cost > 0) {
-            clientStack = new ItemStack(switch (type) {
-                case DATA -> ModItems.data;
-                case SCRAP -> ModItems.scrap;
-                case BIOMASS -> ModItems.biomass;
-                case FRAGMENTS -> ModItems.fragments;
-            }, cost);
+            clientStack = switch (type) {
+                case DATA -> ModItems.data.createStack(cost);
+                case SCRAP -> ModItems.scrap.createStack(cost);
+                case BIOMASS -> ModItems.biomass.createStack(cost);
+                case FRAGMENTS -> ModItems.fragments.createStack(cost);
+            };
         } else {
             clientStack = ItemStack.EMPTY;
         }

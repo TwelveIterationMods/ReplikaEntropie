@@ -1,10 +1,14 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.replikaentropie.menu.CobblescrapMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +45,7 @@ public class CobblescrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
     };
 
     public CobblescrapBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.cobblescrap.get(), blockPos, blockState);
+        super(ModBlockEntities.cobblescrap.value(), blockPos, blockState);
     }
 
     @Override
@@ -92,7 +96,7 @@ public class CobblescrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
     }
 
     public BalmMenuProvider getMenuProvider() {
-        return new BalmMenuProvider() {
+        return new BalmMenuProvider<Unit>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.replikaentropie.cobblescrap");
@@ -101,6 +105,16 @@ public class CobblescrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
             @Override
             public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
                 return new CobblescrapMenu(containerId, inventory, backingContainer, dataAccess);
+            }
+
+            @Override
+            public Unit getScreenOpeningData(ServerPlayer player) {
+                return Unit.INSTANCE;
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+                return Unit.STREAM_CODEC.cast();
             }
         };
     }

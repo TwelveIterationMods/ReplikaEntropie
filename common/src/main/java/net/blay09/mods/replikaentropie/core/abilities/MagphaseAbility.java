@@ -1,22 +1,19 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.event.TickPhase;
-import net.blay09.mods.balm.api.event.TickType;
+import net.blay09.mods.balm.platform.event.callback.ServerTickCallback;
 import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
 import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +28,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class MagphaseAbility implements Ability {
 
     public static final MagphaseAbility INSTANCE = new MagphaseAbility();
-    public static final ResourceLocation ID = id("magphase");
+    public static final Identifier ID = id("magphase");
     private static final Map<BlockGetter, Set<BlockPos>> magphasedPositionsByLevel = new WeakHashMap<>();
 
     private record Magphaseable(float burstCost) {
@@ -43,7 +40,7 @@ public class MagphaseAbility implements Ability {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 
@@ -80,12 +77,12 @@ public class MagphaseAbility implements Ability {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorItem.Type.BOOTS, ModItems.magphasers);
+        return ReplikaArmor.hasPart(player, ArmorType.BOOTS, ModItems.magphasers);
     }
 
-    public static void initialize(BalmEvents events) {
+    public static void initialize() {
         // Reset magphased positions globally every tick, before applying new magphase in ability tick
-        Balm.getEvents().onTickEvent(TickType.ServerLevel, TickPhase.Start, MagphaseAbility::resetMagphasedPositions);
+        ServerTickCallback.ServerLevelTick.BEFORE.register(MagphaseAbility::resetMagphasedPositions);
     }
 
     @Nullable

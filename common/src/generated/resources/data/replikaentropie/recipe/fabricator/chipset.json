@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:fabricator",
+  "fragments": 1,
+  "result": {
+    "id": "replikaentropie:chipset"
+  },
+  "scrap": 2,
+  "sortOrder": 200
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    "replikaentropie:damaged_chipset",
+    "minecraft:redstone",
+    "minecraft:string"
+  ],
+  "result": {
+    "id": "replikaentropie:chipset"
+  }
+}

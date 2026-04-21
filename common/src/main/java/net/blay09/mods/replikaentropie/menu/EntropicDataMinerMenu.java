@@ -5,6 +5,9 @@ import net.blay09.mods.replikaentropie.block.entity.EntropicDataMinerBlockEntity
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -15,27 +18,39 @@ import java.util.*;
 public class EntropicDataMinerMenu extends AbstractContainerMenu {
 
     public record Data(List<DataMinedEvent> events, Set<String> downloadedEvents) {
-        public static Data read(FriendlyByteBuf buf) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                EventDownloadState.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                Data::eventDownloadStates,
+                Data::fromEventDownloadStates
+        );
+
+        private static Data fromEventDownloadStates(List<EventDownloadState> eventStates) {
             final var events = new ArrayList<DataMinedEvent>();
             final var downloadedEvents = new HashSet<String>();
-            final var size = buf.readVarInt();
-            for (int i = 0; i < size; i++) {
-                final var event = DataMinedEvent.read(buf);
-                events.add(event);
-                if (buf.readBoolean()) {
-                    downloadedEvents.add(event.asKey());
+            for (final var eventState : eventStates) {
+                events.add(eventState.event());
+                if (eventState.downloaded()) {
+                    downloadedEvents.add(eventState.event().asKey());
                 }
             }
             return new Data(events, downloadedEvents);
         }
 
-        public void write(FriendlyByteBuf buf) {
-            buf.writeVarInt(events.size());
-            for (final var event : events) {
-                event.write(buf);
-                buf.writeBoolean(downloadedEvents.contains(event.asKey()));
-            }
+        private List<EventDownloadState> eventDownloadStates() {
+            return events.stream()
+                    .map(event -> new EventDownloadState(event, downloadedEvents.contains(event.asKey())))
+                    .toList();
         }
+    }
+
+    private record EventDownloadState(DataMinedEvent event, boolean downloaded) {
+        private static final StreamCodec<RegistryFriendlyByteBuf, EventDownloadState> STREAM_CODEC = StreamCodec.composite(
+                DataMinedEvent.STREAM_CODEC,
+                EventDownloadState::event,
+                ByteBufCodecs.BOOL,
+                EventDownloadState::downloaded,
+                EventDownloadState::new
+        );
     }
 
     protected final ContainerLevelAccess access;
@@ -47,7 +62,7 @@ public class EntropicDataMinerMenu extends AbstractContainerMenu {
     }
 
     public EntropicDataMinerMenu(int containerId, Data data, ContainerLevelAccess access) {
-        super(ModMenus.entropicDataMiner.get(), containerId);
+        super(ModMenus.entropicDataMiner.value(), containerId);
         this.access = access;
         events.addAll(data.events);
         events.sort(Comparator.comparing(DataMinedEvent::timestamp).reversed());

@@ -1,104 +1,86 @@
 package net.blay09.mods.replikaentropie.block;
 
-import net.blay09.mods.balm.api.block.BalmBlocks;
-import net.blay09.mods.balm.api.item.BalmItems;
+import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
+import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.replikaentropie.item.FragmentalWasteItem;
-import net.blay09.mods.replikaentropie.item.ModItems;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
-import static net.blay09.mods.balm.api.block.BalmBlocks.blockProperties;
-import static net.blay09.mods.balm.api.item.BalmItems.itemProperties;
-import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
+public class ModBlocks {
 
- public class ModBlocks {
+    public static DeferredBlock replikaWorkbench;
+    public static DeferredBlock entropicDataMiner;
+    public static DeferredBlock fabricator;
+    public static DeferredBlock assembler;
+    public static DeferredBlock fragmentalWaste;
+    public static DeferredBlock biomassIncubator;
+    public static DeferredBlock biomassHarvester;
+    public static DeferredBlock cobblescrap;
+    public static DeferredBlock lavascrap;
+    public static DeferredBlock worldEater;
+    public static DeferredBlock defragmentizer;
+    public static DeferredBlock fragmentAccelerator;
+    public static DeferredBlock chaosEngine;
+    public static DeferredBlock recycler;
 
-    public static Block replikaWorkbench;
-    public static Block entropicDataMiner;
-    public static Block fabricator;
-    public static Block assembler;
-    public static Block fragmentalWaste;
-    public static Block biomassIncubator;
-    public static Block biomassHarvester;
-    public static Block cobblescrap;
-    public static Block lavascrap;
-    public static Block worldEater;
-    public static Block defragmentizer;
-    public static Block fragmentAccelerator;
-    public static Block chaosEngine;
-    public static Block recycler;
+    public static void initialize(BalmBlockRegistrar blocks) {
+        blocks.enableBlockDescriptionPrefixForItems();
 
-    public static void initialize(BalmBlocks blocks) {
-        blocks.register(
-                (identifier) -> replikaWorkbench = new ReplikaWorkbenchBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("replika_workbench"));
+        replikaWorkbench = blocks.register("replika_workbench", ReplikaWorkbenchBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> entropicDataMiner = new EntropicDataMinerBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("entropic_data_miner"));
+        entropicDataMiner = blocks.register("entropic_data_miner", EntropicDataMinerBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> fabricator = new FabricatorBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("fabricator"));
+        fabricator = blocks.register("fabricator", FabricatorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> assembler = new AssemblerBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("assembler"));
+        assembler = blocks.register("assembler", AssemblerBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> fragmentalWaste = new FragmentalWasteBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                (block, identifier) -> new FragmentalWasteItem(block, itemProperties(identifier)),
-                id("fragmental_waste"));
+        fragmentalWaste = blocks.register("fragmental_waste", FragmentalWasteBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withItem(FragmentalWasteItem::new)
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> biomassIncubator = new BiomassIncubatorBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("biomass_incubator"));
+        biomassIncubator = blocks.register("biomass_incubator", BiomassIncubatorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> biomassHarvester = new BiomassHarvesterBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("biomass_harvester"));
+        biomassHarvester = blocks.register("biomass_harvester", BiomassHarvesterBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> cobblescrap = new CobblescrapBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("cobblescrap"));
+        cobblescrap = blocks.register("cobblescrap", CobblescrapBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> lavascrap = new LavaScrapBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("lavascrap"));
+        lavascrap = blocks.register("lavascrap", LavaScrapBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> worldEater = new WorldEaterBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("world_eater"));
+        worldEater = blocks.register("world_eater", WorldEaterBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> defragmentizer = new DefragmentizerBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("defragmentizer"));
+        defragmentizer = blocks.register("defragmentizer", DefragmentizerBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> fragmentAccelerator = new FragmentAcceleratorBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("fragment_accelerator"));
+        fragmentAccelerator = blocks.register("fragment_accelerator", FragmentAcceleratorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> chaosEngine = new ChaosEngineBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("chaos_engine"));
+        chaosEngine = blocks.register("chaos_engine", ChaosEngineBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
 
-        blocks.register(
-                (identifier) -> recycler = new RecyclerBlock(blockProperties(identifier).mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)),
-                BalmItems::blockItem,
-                id("recycler"));
+        recycler = blocks.register("recycler", RecyclerBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
     }
 }

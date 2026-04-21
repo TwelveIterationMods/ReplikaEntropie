@@ -1,0 +1,18 @@
+{
+  "type": "replikaentropie:research",
+  "biomass": 2,
+  "data": 12,
+  "hardDependencies": [
+    "replikaentropie:research/burst_energy"
+  ],
+  "icon": {
+    "id": "replikaentropie:spring_boots"
+  },
+  "nonogram": "replikaentropie:spring_boots",
+  "research_type": "assembler",
+  "scrap": 8,
+  "sort_order": 1900,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/spring_boots"
+  ]
+}

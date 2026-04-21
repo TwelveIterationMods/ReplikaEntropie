@@ -3,24 +3,31 @@ package net.blay09.mods.replikaentropie.network.protocol;
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public record AnalyzedItemsMessage(boolean reset, List<Item> items) {
+import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
-    public static void encode(AnalyzedItemsMessage message, FriendlyByteBuf buf) {
-        buf.writeBoolean(message.reset);
-        buf.writeCollection(message.items, (it, item) -> it.writeId(BuiltInRegistries.ITEM, item));
-    }
+public record AnalyzedItemsMessage(boolean reset, List<Item> items) implements CustomPacketPayload {
+    public static final Type<AnalyzedItemsMessage> TYPE = new Type<>(id("analyzed_items"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, AnalyzedItemsMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL,
+            AnalyzedItemsMessage::reset,
+            ByteBufCodecs.idMapper(BuiltInRegistries.ITEM).apply(ByteBufCodecs.list()),
+            AnalyzedItemsMessage::items,
+            AnalyzedItemsMessage::new
+    );
 
-    public static AnalyzedItemsMessage decode(FriendlyByteBuf buf) {
-        final var reset = buf.readBoolean();
-        final var items = buf.readList((it) -> it.readById(BuiltInRegistries.ITEM));
-        return new AnalyzedItemsMessage(reset, items);
+    @Override
+    public Type<AnalyzedItemsMessage> type() {
+        return TYPE;
     }
 
     public static void handle(Player player, AnalyzedItemsMessage message) {

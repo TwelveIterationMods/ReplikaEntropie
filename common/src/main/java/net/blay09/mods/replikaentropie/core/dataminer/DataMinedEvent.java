@@ -1,27 +1,61 @@
 package net.blay09.mods.replikaentropie.core.dataminer;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Skeleton;
-import net.minecraft.world.entity.monster.WitherSkeleton;
-import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.entity.monster.skeleton.Skeleton;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PlayerHeadItem;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.IntFunction;
 
 public record DataMinedEvent(Type type, long timestamp, int dataMined, @Nullable String variant, ItemStack icon,
                              @Nullable Component label) {
+    public static final Codec<DataMinedEvent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Type.CODEC.optionalFieldOf("type", Type.UNKNOWN).forGetter(DataMinedEvent::type),
+            Codec.LONG.optionalFieldOf("timestamp", 0L).forGetter(DataMinedEvent::timestamp),
+            Codec.INT.optionalFieldOf("dataMined", 0).forGetter(DataMinedEvent::dataMined),
+            Codec.STRING.optionalFieldOf("variant").forGetter(event -> Optional.ofNullable(event.variant)),
+            ItemStack.OPTIONAL_CODEC.optionalFieldOf("icon", ItemStack.EMPTY).forGetter(DataMinedEvent::icon),
+            ComponentSerialization.CODEC.optionalFieldOf("label").forGetter(event -> Optional.ofNullable(event.label))
+    ).apply(instance, DataMinedEvent::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, DataMinedEvent> STREAM_CODEC = StreamCodec.composite(
+            Type.STREAM_CODEC,
+            DataMinedEvent::type,
+            ByteBufCodecs.LONG,
+            DataMinedEvent::timestamp,
+            ByteBufCodecs.VAR_INT,
+            DataMinedEvent::dataMined,
+            ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8).map(optional -> optional.orElse(null), Optional::ofNullable),
+            DataMinedEvent::variant,
+            ItemStack.OPTIONAL_STREAM_CODEC,
+            DataMinedEvent::icon,
+            ComponentSerialization.OPTIONAL_STREAM_CODEC.map(optional -> optional.orElse(null), Optional::ofNullable),
+            DataMinedEvent::label,
+            DataMinedEvent::new
+    );
+
+    private DataMinedEvent(Type type, long timestamp, int dataMined, Optional<String> variant, ItemStack icon, Optional<Component> label) {
+        this(type, timestamp, dataMined, variant.orElse(null), icon, label.orElse(null));
+    }
 
     public static DataMinedEvent of(Type type, String variant, ItemStack icon) {
         return new DataMinedEvent(type, System.currentTimeMillis(), type.getDefaultDataMined(), variant, icon, icon.getHoverName());
@@ -29,26 +63,6 @@ public record DataMinedEvent(Type type, long timestamp, int dataMined, @Nullable
 
     public static DataMinedEvent of(Type type, String variant, ItemStack icon, Component label) {
         return new DataMinedEvent(type, System.currentTimeMillis(), type.getDefaultDataMined(), variant, icon, label);
-    }
-
-    public static DataMinedEvent of(CompoundTag compoundTag) {
-        final var type = Type.BY_ID.apply(compoundTag.getInt("type"));
-        final var timestamp = compoundTag.getLong("timestamp");
-        final var dataMined = compoundTag.getInt("dataMined");
-        final var variant = compoundTag.getString("variant");
-        final var icon = compoundTag.contains("icon") ? ItemStack.of(compoundTag.getCompound("icon")) : ItemStack.EMPTY;
-        final var label = compoundTag.contains("label") ? Component.Serializer.fromJson(compoundTag.getString("label")) : null;
-        return new DataMinedEvent(type, timestamp, dataMined, variant, icon, label);
-    }
-
-    public static DataMinedEvent read(FriendlyByteBuf buf) {
-        final var type = buf.readEnum(DataMinedEvent.Type.class);
-        final var timestamp = buf.readLong();
-        final var dataMined = buf.readVarInt();
-        final var variant = buf.readNullable(FriendlyByteBuf::readUtf);
-        final var icon = buf.readItem();
-        final var label = buf.readNullable(FriendlyByteBuf::readComponent);
-        return new DataMinedEvent(type, timestamp, dataMined, variant, icon, label);
     }
 
     public static DataMinedEvent ofEntity(Type type, Entity entity) {
@@ -62,45 +76,20 @@ public record DataMinedEvent(Type type, long timestamp, int dataMined, @Nullable
         return of(type, variant, itemStack.copy(), itemStack.getHoverName());
     }
 
-    public void write(FriendlyByteBuf buf) {
-        buf.writeEnum(type);
-        buf.writeLong(timestamp);
-        buf.writeVarInt(dataMined);
-        buf.writeNullable(variant, FriendlyByteBuf::writeUtf);
-        buf.writeItem(icon);
-        buf.writeNullable(label, FriendlyByteBuf::writeComponent);
-    }
-
-    public CompoundTag save(CompoundTag compoundTag) {
-        compoundTag.putInt("type", type.ordinal());
-        compoundTag.putLong("timestamp", timestamp);
-        compoundTag.putInt("dataMined", dataMined);
-        if (variant != null) {
-            compoundTag.putString("variant", variant);
-        }
-        if (!icon.isEmpty()) {
-            compoundTag.put("icon", icon.save(new CompoundTag()));
-        }
-        if (label != null) {
-            compoundTag.putString("label", Component.Serializer.toJson(label));
-        }
-        return compoundTag;
-    }
-
     public String asKey() {
         return type().ordinal() + ":" + (variant() == null ? "" : variant());
     }
 
     public static ItemStack createPlayerIcon(Player player) {
         final var itemStack = new ItemStack(Items.PLAYER_HEAD);
-        final var name = player.getGameProfile().getName();
-        itemStack.getOrCreateTag().putString(PlayerHeadItem.TAG_SKULL_OWNER, name);
+        final var name = player.getGameProfile().name();
+        itemStack.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved(name));
         return itemStack;
     }
 
     public static String getEntityVariant(Entity entity) {
         if (entity instanceof Player player) {
-            return player.getGameProfile().getName();
+            return player.getGameProfile().name();
         } else {
             final var entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
             return entityTypeId.toString();
@@ -158,6 +147,8 @@ public record DataMinedEvent(Type type, long timestamp, int dataMined, @Nullable
         CHAT(1); // POSTJAM
 
         public static final IntFunction<Type> BY_ID = ByIdMap.continuous(Enum::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+        public static final Codec<Type> CODEC = Codec.INT.xmap(BY_ID::apply, Type::ordinal);
+        public static final StreamCodec<RegistryFriendlyByteBuf, Type> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Type::ordinal).cast();
 
         private final int defaultDataMined;
 

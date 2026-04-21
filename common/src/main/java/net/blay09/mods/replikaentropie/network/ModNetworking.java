@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.network;
 
-import net.blay09.mods.balm.api.network.BalmNetworking;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.replikaentropie.network.protocol.*;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
@@ -8,15 +8,15 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class ModNetworking {
 
     public static void initialize(BalmNetworking networking) {
-        networking.registerClientboundPacket(id("analyzed_items"), AnalyzedItemsMessage.class, AnalyzedItemsMessage::encode, AnalyzedItemsMessage::decode, AnalyzedItemsMessage::handle);
-        networking.registerClientboundPacket(id("analyzed_players"), AnalyzedPlayersMessage.class, AnalyzedPlayersMessage::encode, AnalyzedPlayersMessage::decode, AnalyzedPlayersMessage::handle);
-        networking.registerClientboundPacket(id("analyzed_entities"), AnalyzedEntitiesMessage.class, AnalyzedEntitiesMessage::encode, AnalyzedEntitiesMessage::decode, AnalyzedEntitiesMessage::handle);
-        networking.registerServerboundPacket(id("analyze_pos"), AnalyzePosMessage.class, AnalyzePosMessage::encode, AnalyzePosMessage::decode, AnalyzePosMessage::handle);
-        networking.registerServerboundPacket(id("analyze_entity"), AnalyzeEntityMessage.class, AnalyzeEntityMessage::encode, AnalyzeEntityMessage::decode, AnalyzeEntityMessage::handle);
-        networking.registerClientboundPacket(id("data_collected"), DataCollectedMessage.class, DataCollectedMessage::encode, DataCollectedMessage::decode, DataCollectedMessage::handle);
-        networking.registerClientboundPacket(id("burst_energy"), BurstEnergyMessage.class, BurstEnergyMessage::encode, BurstEnergyMessage::decode, BurstEnergyMessage::handle);
-        networking.registerClientboundPacket(id("ability_state"), AbilityStateMessage.class, AbilityStateMessage::encode, AbilityStateMessage::decode, AbilityStateMessage::handle);
-        networking.registerServerboundPacket(id("toggle_ability"), ToggleAbilityMessage.class, ToggleAbilityMessage::encode, ToggleAbilityMessage::decode, ToggleAbilityMessage::handle);
-        networking.registerServerboundPacket(id("nonogram_mark"), NonogramMarkMessage.class, NonogramMarkMessage::encode, NonogramMarkMessage::decode, NonogramMarkMessage::handle);
+        networking.registerClientboundPacket(AnalyzedItemsMessage.TYPE, AnalyzedItemsMessage.class, AnalyzedItemsMessage.STREAM_CODEC, AnalyzedItemsMessage::handle);
+        networking.registerClientboundPacket(AnalyzedPlayersMessage.TYPE, AnalyzedPlayersMessage.class, AnalyzedPlayersMessage.STREAM_CODEC, AnalyzedPlayersMessage::handle);
+        networking.registerClientboundPacket(AnalyzedEntitiesMessage.TYPE, AnalyzedEntitiesMessage.class, AnalyzedEntitiesMessage.STREAM_CODEC, AnalyzedEntitiesMessage::handle);
+        networking.registerServerboundPacket(AnalyzePosMessage.TYPE, AnalyzePosMessage.class, AnalyzePosMessage.STREAM_CODEC, AnalyzePosMessage::handle);
+        networking.registerServerboundPacket(AnalyzeEntityMessage.TYPE, AnalyzeEntityMessage.class, AnalyzeEntityMessage.STREAM_CODEC, AnalyzeEntityMessage::handle);
+        networking.registerClientboundPacket(DataCollectedMessage.TYPE, DataCollectedMessage.class, DataCollectedMessage.STREAM_CODEC, DataCollectedMessage::handle);
+        networking.registerClientboundPacket(BurstEnergyMessage.TYPE, BurstEnergyMessage.class, BurstEnergyMessage.STREAM_CODEC, BurstEnergyMessage::handle);
+        networking.registerClientboundPacket(AbilityStateMessage.TYPE, AbilityStateMessage.class, AbilityStateMessage.STREAM_CODEC, AbilityStateMessage::handle);
+        networking.registerServerboundPacket(ToggleAbilityMessage.TYPE, ToggleAbilityMessage.class, ToggleAbilityMessage.STREAM_CODEC, ToggleAbilityMessage::handle);
+        networking.registerServerboundPacket(NonogramMarkMessage.TYPE, NonogramMarkMessage.class, NonogramMarkMessage.STREAM_CODEC, NonogramMarkMessage::handle);
     }
 }

@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:fabricator",
+  "fragments": 2,
+  "result": {
+    "id": "minecraft:gunpowder"
+  },
+  "scrap": 2,
+  "sortOrder": 1000
+}

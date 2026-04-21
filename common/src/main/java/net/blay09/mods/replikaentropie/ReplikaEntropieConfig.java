@@ -1,11 +1,8 @@
 package net.blay09.mods.replikaentropie;
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.config.reflection.Comment;
-import net.blay09.mods.balm.api.config.reflection.Config;
-import net.blay09.mods.balm.api.config.reflection.NestedType;
-
-import java.util.List;
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.config.reflection.Comment;
+import net.blay09.mods.balm.platform.config.reflection.Config;
 
 @Config(ReplikaEntropie.MOD_ID)
 public class ReplikaEntropieConfig {
@@ -14,6 +11,6 @@ public class ReplikaEntropieConfig {
     public int exampleInt = 1234;
 
     public static ReplikaEntropieConfig getActive() {
-        return Balm.getConfig().getActiveConfig(ReplikaEntropieConfig.class);
+        return Balm.config().getActiveConfig(ReplikaEntropieConfig.class);
     }
 }

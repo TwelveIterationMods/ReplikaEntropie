@@ -31,7 +31,7 @@ public class RecyclerMenu extends AbstractContainerMenu {
     }
 
     public RecyclerMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
-        this(ModMenus.recycler.get(), containerId, playerInventory, container, data);
+        this(ModMenus.recycler.value(), containerId, playerInventory, container, data);
     }
 
     public RecyclerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory playerInventory, Container container, ContainerData data) {

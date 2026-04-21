@@ -27,7 +27,7 @@ public class BiomassHarvesterMenu extends AbstractContainerMenu {
     }
 
     public BiomassHarvesterMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
-        super(ModMenus.biomassHarvester.get(), containerId);
+        super(ModMenus.biomassHarvester.value(), containerId);
         this.playerInventory = playerInventory;
         this.container = container;
         checkContainerSize(container, 5);

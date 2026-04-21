@@ -1,13 +1,16 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.SubContainer;
-import net.blay09.mods.balm.api.fluid.FluidTank;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.balm.platform.fluid.DefaultFluidTank;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.replikaentropie.menu.LavascrapMenu;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -18,14 +21,16 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
 
     private final Container waterInputContainer = new SubContainer(backingContainer, 2, 3);
     private final Container lavaInputContainer = new SubContainer(backingContainer, 3, 4);
 
-    private final FluidTank waterTank = new FluidTank(3000);
-    private final FluidTank lavaTank = new FluidTank(3000);
+    private final DefaultFluidTank waterTank = new DefaultFluidTank(3000);
+    private final DefaultFluidTank lavaTank = new DefaultFluidTank(3000);
 
     private final ContainerData dataAccess = new ContainerData() {
         @Override
@@ -55,7 +60,7 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
     };
 
     public LavascrapBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.lavascrap.get(), blockPos, blockState);
+        super(ModBlockEntities.lavascrap.value(), blockPos, blockState);
     }
 
     @Override
@@ -127,21 +132,19 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        waterTank.deserialize(tag.getCompound("WaterTank"));
-        lavaTank.deserialize(tag.getCompound("LavaTank"));
+    protected void loadAdditional(ValueInput input) {
+        input.child("WaterTank").ifPresent(waterTank::deserialize);
+        input.child("LavaTank").ifPresent(lavaTank::deserialize);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.put("WaterTank", waterTank.serialize());
-        tag.put("LavaTank", lavaTank.serialize());
+    protected void saveAdditional(ValueOutput output) {
+        waterTank.serialize(output.child("WaterTank"));
+        lavaTank.serialize(output.child("LavaTank"));
     }
 
-    public BalmMenuProvider getMenuProvider() {
-        return new BalmMenuProvider() {
+    public BalmMenuProvider<Unit> getMenuProvider() {
+        return new BalmMenuProvider<>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.replikaentropie.lavascrap");
@@ -150,6 +153,16 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
             @Override
             public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
                 return new LavascrapMenu(containerId, inventory, backingContainer, dataAccess);
+            }
+
+            @Override
+            public Unit getScreenOpeningData(ServerPlayer player) {
+                return Unit.INSTANCE;
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+                return Unit.STREAM_CODEC.cast();
             }
         };
     }

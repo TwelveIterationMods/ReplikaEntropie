@@ -1,25 +1,25 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
-import net.blay09.mods.replikaentropie.client.gui.components.ProgressRenderer;
-import net.blay09.mods.replikaentropie.client.gui.components.SimpleProgressRenderer;
+import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
+import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
 import net.blay09.mods.replikaentropie.menu.DefragmentizerMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class DefragmentizerScreen extends AbstractContainerScreen<DefragmentizerMenu> {
-    private static final ResourceLocation BACKGROUND = id("textures/gui/container/defragmentizer.png");
+    private static final Identifier BACKGROUND = id("textures/gui/container/defragmentizer.png");
     private final ProgressRenderer[] processingRenderers = new ProgressRenderer[4];
     private final ProgressRenderer[] fractionalRenderers = new ProgressRenderer[4];
 
     public DefragmentizerScreen(DefragmentizerMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
+        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 207);
 
-        imageHeight = 207;
         inventoryLabelY = imageHeight - 94;
 
         for (int i = 0; i < 4; i++) {
@@ -36,20 +36,13 @@ public class DefragmentizerScreen extends AbstractContainerScreen<Defragmentizer
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         for (int i = 0; i < 4; i++) {
             processingRenderers[i].render(guiGraphics, leftPos, topPos, menu.getProcessingProgress(i));
             fractionalRenderers[i].render(guiGraphics, leftPos, topPos, menu.getFractionalFragments(i));
         }
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
 }

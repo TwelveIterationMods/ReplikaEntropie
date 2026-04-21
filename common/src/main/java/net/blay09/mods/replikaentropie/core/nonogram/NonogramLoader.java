@@ -2,7 +2,7 @@ package net.blay09.mods.replikaentropie.core.nonogram;
 
 import com.google.gson.Gson;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class NonogramLoader implements ResourceManagerReloadListener {
     private static final Gson gson = new Gson();
     private static final FileToIdConverter JSONS = FileToIdConverter.json("replikaentropie_nonogram");
 
-    private static final Map<ResourceLocation, Nonogram> nonograms = new HashMap<>();
+    private static final Map<Identifier, Nonogram> nonograms = new HashMap<>();
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
@@ -42,18 +42,18 @@ public class NonogramLoader implements ResourceManagerReloadListener {
         for (final var entry : JSONS.listMatchingResources(resourceManager).entrySet()) {
             try (final var reader = entry.getValue().openAsReader()) {
                 final var nonogram = gson.fromJson(reader, JsonNonogram.class);
-                nonograms.put(new ResourceLocation(entry.getKey().getNamespace(), entry.getKey().getPath().replace("replikaentropie_nonogram/", "").replace(".json", "")), Nonogram.ofGrid(nonogram.width, nonogram.height, nonogram.grid));
+                nonograms.put(Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), entry.getKey().getPath().replace("replikaentropie_nonogram/", "").replace(".json", "")), Nonogram.ofGrid(nonogram.width, nonogram.height, nonogram.grid));
             } catch (Exception e) {
                 logger.error("Parsing error loading Replika Entropie nonogram file at {}", entry.getKey(), e);
             }
         }
     }
 
-    public static Optional<Nonogram> getNonogram(ResourceLocation id) {
+    public static Optional<Nonogram> getNonogram(Identifier id) {
         return Optional.ofNullable(nonograms.get(id));
     }
 
-    public static Set<ResourceLocation> getNonogramIds() {
+    public static Set<Identifier> getNonogramIds() {
         return nonograms.keySet();
     }
 

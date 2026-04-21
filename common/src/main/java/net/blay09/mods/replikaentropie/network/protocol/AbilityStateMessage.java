@@ -1,23 +1,30 @@
 package net.blay09.mods.replikaentropie.network.protocol;
 
 import net.blay09.mods.replikaentropie.core.abilities.AbilityManager;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
-public record AbilityStateMessage(ResourceLocation id, boolean active, float burstCost) {
-    
-    public static void encode(AbilityStateMessage message, FriendlyByteBuf buf) {
-        buf.writeResourceLocation(message.id);
-        buf.writeBoolean(message.active);
-        buf.writeFloat(message.burstCost);
-    }
-    
-    public static AbilityStateMessage decode(FriendlyByteBuf buf) {
-        final var id = buf.readResourceLocation();
-        final var active = buf.readBoolean();
-        final var burstCost = buf.readFloat();
-        return new AbilityStateMessage(id, active, burstCost);
+import net.blay09.mods.replikaentropie.ReplikaEntropie;
+
+public record AbilityStateMessage(Identifier id, boolean active, float burstCost) implements CustomPacketPayload {
+    public static final Type<AbilityStateMessage> TYPE = new Type<>(ReplikaEntropie.id("ability_state"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, AbilityStateMessage> STREAM_CODEC = StreamCodec.composite(
+            Identifier.STREAM_CODEC,
+            AbilityStateMessage::id,
+            ByteBufCodecs.BOOL,
+            AbilityStateMessage::active,
+            ByteBufCodecs.FLOAT,
+            AbilityStateMessage::burstCost,
+            AbilityStateMessage::new
+    );
+
+    @Override
+    public Type<AbilityStateMessage> type() {
+        return TYPE;
     }
     
     public static void handle(Player player, AbilityStateMessage message) {

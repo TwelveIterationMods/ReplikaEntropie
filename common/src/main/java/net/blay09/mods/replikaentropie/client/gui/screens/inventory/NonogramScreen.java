@@ -1,18 +1,19 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.client.gui.ExtendedGuiGraphics;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.AbstractNonogramMenu;
 import net.blay09.mods.replikaentropie.network.protocol.NonogramMarkMessage;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +23,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu> {
 
-    private static final ResourceLocation BACKGROUND = id("textures/gui/container/nonogram.png");
+    private static final Identifier BACKGROUND = id("textures/gui/container/nonogram.png");
     private static final int BACKGROUND_WIDTH = 135;
     private static final int BACKGROUND_HEIGHT = 135;
 
@@ -43,9 +44,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
     private NonogramHelpButton helpButton;
 
     public NonogramScreen(AbstractNonogramMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        this.imageWidth = PADDING_LEFT + PADDING_RIGHT + CELL_SIZE * menu.getClues().width();
-        this.imageHeight = PADDING_TOP + PADDING_BOTTOM + CELL_SIZE * menu.getClues().height();
+        super(menu, playerInventory, title, PADDING_LEFT + PADDING_RIGHT + CELL_SIZE * menu.getClues().width(), PADDING_TOP + PADDING_BOTTOM + CELL_SIZE * menu.getClues().height());
     }
 
     @Override
@@ -57,8 +56,8 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        ExtendedGuiGraphics.blitNineSlicedTilingFill(guiGraphics, BACKGROUND, leftPos, topPos, imageWidth, imageHeight, PADDING_LEFT, PADDING_TOP, PADDING_RIGHT, PADDING_BOTTOM, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0, 0);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        ExtendedGuiGraphics.blitNineSlicedTilingFill(graphics, BACKGROUND, leftPos, topPos, imageWidth, imageHeight, PADDING_LEFT, PADDING_TOP, PADDING_RIGHT, PADDING_BOTTOM, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0, 0);
 
         final var state = menu.getNonogramState();
         for (int column = 0; column < state.width(); column++) {
@@ -67,14 +66,14 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
                 final var cellY = topPos + PADDING_TOP + row * CELL_SIZE;
                 final var mark = state.mark(column, row);
                 switch (mark) {
-                    case 1 -> guiGraphics.blit(BACKGROUND, cellX, cellY, 135, 0, 18, 18);
-                    case -1 -> guiGraphics.blit(BACKGROUND, cellX, cellY, 135, 18, 18, 18);
+                    case 1 -> graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, cellX, cellY, 135, 0, 18, 18, 256, 256);
+                    case -1 -> graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, cellX, cellY, 135, 18, 18, 18, 256, 256);
                 }
                 if ((column + 1) % 5 == 0) {
-                    guiGraphics.blit(BACKGROUND, cellX, cellY, 0, 135, 18, 18);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, cellX, cellY, 0, 135, 18, 18, 256, 256);
                 }
                 if ((row + 1) % 5 == 0) {
-                    guiGraphics.blit(BACKGROUND, cellX, cellY, 18, 135, 18, 18);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, cellX, cellY, 18, 135, 18, 18, 256, 256);
                 }
             }
         }
@@ -83,33 +82,25 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
         final var errors = menu.getErrors();
 
         for (int column = 0; column < clues.width(); column++) {
-            if (errors.erroredColumns().contains(column)) {
-                guiGraphics.setColor(1f, 0.21f, 0.21f, 1f);
-            } else {
-                guiGraphics.setColor(0.21f, 0.21f, 0.21f, 1f);
-            }
+            final int color = errors.erroredColumns().contains(column) ? 0xFFFF3636 : 0x363636;
             final var x = leftPos + PADDING_LEFT + column * CELL_SIZE + 1;
             var y = topPos + PADDING_TOP - 6;
             final var columnClues = clues.columnClues(column);
             for (int i = columnClues.length - 1; i >= 0; i--) {
                 final var clue = columnClues[i];
-                guiGraphics.blit(BACKGROUND, x, y, 135, 36 + clue * 5, 16, 5);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, x, y, 135, 36 + clue * 5, 16, 5, 256, 256, color);
                 y -= 5;
             }
         }
 
         for (int row = 0; row < clues.height(); row++) {
-            if (errors.erroredRows().contains(row)) {
-                guiGraphics.setColor(1f, 0.21f, 0.21f, 1f);
-            } else {
-                guiGraphics.setColor(0.21f, 0.21f, 0.21f, 1f);
-            }
+            final int color = errors.erroredRows().contains(row) ? 0xFFFF3636 : 0x363636;
             var x = leftPos + PADDING_LEFT - 6;
             final var y = topPos + PADDING_TOP + row * CELL_SIZE + 1;
             final var rowClues = clues.rowClues(row);
             for (int i = rowClues.length - 1; i >= 0; i--) {
                 final var clue = rowClues[i];
-                guiGraphics.blit(BACKGROUND, x, y, 153 + clue * 5, 0, 5, 16);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, x, y, 153 + clue * 5, 0, 5, 16, 256, 256, color);
                 x -= 5;
             }
         }
@@ -119,22 +110,16 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
             final var completedState = menu.getNonogramState();
             final var alpha = Math.min(1f, completionFadeTime / 20f);
             if (alpha > 0.02f) {
-                RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
-
                 for (int column = 0; column < completedState.width(); column++) {
                     for (int row = 0; row < completedState.height(); row++) {
                         final var cellX = leftPos + PADDING_LEFT + column * CELL_SIZE;
                         final var cellY = topPos + PADDING_TOP + row * CELL_SIZE;
                         final var mark = completedState.mark(column, row);
-                        guiGraphics.blit(BACKGROUND, cellX, cellY, (mark == 1) ? 54 : 72, 135, 18, 18);
+                        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, cellX, cellY, (mark == 1) ? 54 : 72, 135, 18, 18, 256, 256);
                     }
                 }
-
-                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             }
         }
-
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 
     private boolean overlapsClues(int x, int y, int width, int height) {
@@ -163,7 +148,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         // We try to place the title in the left, center, or right, moving it to avoid colliding with clues
         // Worst case we don't render it at all, getting the full 10 rows is more important
         final var titleWidth = font.width(title);
@@ -185,13 +170,12 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
             }
 
             if (effectiveTitleLabelX != -1) {
-                guiGraphics.drawString(font, title, effectiveTitleLabelX, y, 0xFF404040, false);
+                guiGraphics.text(font, title, effectiveTitleLabelX, y, 0xFF404040, false);
             }
         }
 
         // Success notification
         if (menu.isCompleted()) {
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             final var message = Component.translatable("gui.replikaentropie.nonogram.complete")
                     .withStyle(ChatFormatting.GREEN);
             final var messageWidth = font.width(message);
@@ -212,25 +196,25 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
             final int bgAlpha = ((int) (fadeProgress * 0.4f * 255f)) & 0xFF;
             if (alpha > 5) {
                 guiGraphics.fill(boxLeft, boxTop, boxRight, boxBottom, bgAlpha << 24);
-                guiGraphics.drawCenteredString(font, message, centerX, centerY, (alpha << 24) | 0x21C45A);
+                guiGraphics.centeredText(font, message, centerX, centerY, (alpha << 24) | 0x21C45A);
             }
         }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         final var state = menu.getNonogramState();
         final var gridStartX = leftPos + PADDING_LEFT;
         final var gridStartY = topPos + PADDING_TOP;
         final var gridEndX = gridStartX + state.width() * CELL_SIZE;
         final var gridEndY = gridStartY + state.height() * CELL_SIZE;
-        if (mouseX >= gridStartX && mouseY >= gridStartY && mouseX < gridEndX && mouseY < gridEndY) {
-            final var relativeMouseX = (int) mouseX - gridStartX;
-            final var relativeMouseY = (int) mouseY - gridStartY;
+        if (event.x() >= gridStartX && event.y() >= gridStartY && event.x() < gridEndX && event.y() < gridEndY) {
+            final var relativeMouseX = (int) event.x() - gridStartX;
+            final var relativeMouseY = (int) event.y() - gridStartY;
             final var column = relativeMouseX / CELL_SIZE;
             final var row = relativeMouseY / CELL_SIZE;
             final var markCurrent = state.mark(column, row);
-            final var markToPlace = button == 0 ? 1 : -1;
+            final var markToPlace = event.button() == 0 ? 1 : -1;
             dragOnlyAffects = markCurrent;
             dragErases = (markCurrent == markToPlace);
             if (dragErases) {
@@ -238,17 +222,17 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
             } else {
                 mark(column, row, markToPlace);
             }
-            draggingButton = button;
+            draggingButton = event.button();
             return true;
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (draggingButton == -1 || button != draggingButton) {
-            return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
+        if (draggingButton == -1 || event.button() != draggingButton) {
+            return super.mouseDragged(event, dx, dy);
         }
 
         final var state = menu.getNonogramState();
@@ -256,9 +240,9 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
         final var gridStartY = topPos + PADDING_TOP;
         final var gridEndX = gridStartX + state.width() * CELL_SIZE;
         final var gridEndY = gridStartY + state.height() * CELL_SIZE;
-        if (mouseX >= gridStartX && mouseY >= gridStartY && mouseX < gridEndX && mouseY < gridEndY) {
-            final var relativeMouseX = (int) mouseX - gridStartX;
-            final var relativeMouseY = (int) mouseY - gridStartY;
+        if (event.x() >= gridStartX && event.y() >= gridStartY && event.x() < gridEndX && event.y() < gridEndY) {
+            final var relativeMouseX = (int) event.x() - gridStartX;
+            final var relativeMouseY = (int) event.y() - gridStartY;
             final var column = relativeMouseX / CELL_SIZE;
             final var row = relativeMouseY / CELL_SIZE;
             final var currentMark = state.mark(column, row);
@@ -268,31 +252,31 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
                 }
             } else {
                 if (currentMark == dragOnlyAffects) {
-                    final var markToPlace = button == 0 ? 1 : -1;
+                    final var markToPlace = event.button() == 0 ? 1 : -1;
                     mark(column, row, markToPlace);
                 }
             }
             return true;
         }
 
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(event, dx, dy);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (button == draggingButton) {
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (event.button() == draggingButton) {
             draggingButton = -1;
             dragOnlyAffects = 0;
             dragErases = false;
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         if (minecraft != null
-                && minecraft.options.keyInventory.matches(keyCode, scanCode)
-                || (keyCode == InputConstants.KEY_ESCAPE && this.shouldCloseOnEsc())) {
+                && minecraft.options.keyInventory.matches(event)
+                || (event.isEscape() && this.shouldCloseOnEsc())) {
             onClose();
             if (minecraft != null
                     && minecraft.player != null
@@ -302,11 +286,11 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
             }
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (menu.isCompleted()) {
             if (!completionSoundPlayed) {
                 minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.PLAYER_LEVELUP, 0f));
@@ -318,15 +302,13 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
             completionFadeTime = 0;
         }
 
-        renderBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        renderTooltip(guiGraphics, mouseX, mouseY);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     public void mark(int column, int row, int mark) {
         if (!menu.isCompleted()) {
             menu.mark(column, row, mark);
-            Balm.getNetworking().sendToServer(new NonogramMarkMessage(menu.containerId, column, row, mark));
+            Balm.networking().sendToServer(new NonogramMarkMessage(menu.containerId, column, row, mark));
         }
     }
 }

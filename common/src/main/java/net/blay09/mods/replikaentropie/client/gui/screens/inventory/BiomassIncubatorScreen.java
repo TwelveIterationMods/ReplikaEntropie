@@ -1,20 +1,21 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
-import net.blay09.mods.replikaentropie.client.gui.components.ProgressRenderer;
-import net.blay09.mods.replikaentropie.client.gui.components.SegmentedProgressRenderer;
-import net.blay09.mods.replikaentropie.client.gui.components.SimpleProgressRenderer;
+import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
+import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
+import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
 import net.blay09.mods.replikaentropie.menu.BiomassIncubatorMenu;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncubatorMenu> {
-    private static final ResourceLocation BACKGROUND = id("textures/gui/container/biomass_incubator.png");
+    private static final Identifier BACKGROUND = id("textures/gui/container/biomass_incubator.png");
 
     private final ProgressRenderer waterTank = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(26, 23).size(16, 48).uv(183, 30);
     private final SegmentedProgressRenderer wateringProgressRenderer;
@@ -22,9 +23,8 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
     private final ProgressRenderer fractionalBiomass = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(147, 75).size(3, 26).uv(176, 0);
 
     public BiomassIncubatorScreen(BiomassIncubatorMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
+        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 203);
 
-        imageHeight = 203;
         inventoryLabelY = imageHeight - 94;
 
         wateringProgressRenderer = new SegmentedProgressRenderer(BACKGROUND, 256, 256)
@@ -50,30 +50,28 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractContents(graphics, mouseX, mouseY, a);
 
         for (final var slot : menu.slots) {
             if (slot instanceof ReadonlySlot) {
-                guiGraphics.blit(BACKGROUND, leftPos + slot.x, topPos + slot.y, 300, 183, 14, 16, 16, 256, 256);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos + slot.x, topPos + slot.y, 183, 14, 16, 16, 256, 256);
             }
         }
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
-        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
-        waterTank.render(guiGraphics, leftPos, topPos, menu.getWaterTankProgress());
-        wateringProgressRenderer.render(guiGraphics, leftPos, topPos, menu.getWateringProgress());
+        waterTank.render(graphics, leftPos, topPos, menu.getWaterTankProgress());
+        wateringProgressRenderer.render(graphics, leftPos, topPos, menu.getWateringProgress());
 
         for (int i = 0; i < 3; i++) {
-            growthProgressRenderers[i].render(guiGraphics, leftPos, topPos, menu.getGrowthProgress(i));
+            growthProgressRenderers[i].render(graphics, leftPos, topPos, menu.getGrowthProgress(i));
         }
 
-        fractionalBiomass.render(guiGraphics, leftPos, topPos, menu.getFractionalBiomass());
+        fractionalBiomass.render(graphics, leftPos, topPos, menu.getFractionalBiomass());
     }
 
 }

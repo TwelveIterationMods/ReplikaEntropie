@@ -4,14 +4,14 @@ import net.blay09.mods.replikaentropie.core.nonogram.NonogramClueProvider;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
 import net.blay09.mods.replikaentropie.core.research.Research;
 import net.blay09.mods.replikaentropie.core.research.ResearchState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class NonogramResearchMenu extends NonogramMenu {
 
-    private final ResourceLocation researchId;
+    private final Identifier researchId;
 
-    public NonogramResearchMenu(int containerId, Inventory inventory, NonogramClueProvider clues, NonogramState nonogramState, ResourceLocation researchId) {
+    public NonogramResearchMenu(int containerId, Inventory inventory, NonogramClueProvider clues, NonogramState nonogramState, Identifier researchId) {
         super(containerId, inventory, clues, nonogramState);
         this.researchId = researchId;
     }

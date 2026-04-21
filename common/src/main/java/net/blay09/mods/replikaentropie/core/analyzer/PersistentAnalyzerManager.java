@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.core.analyzer;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.blay09.mods.replikaentropie.item.ModItems;
@@ -10,7 +10,7 @@ import net.blay09.mods.replikaentropie.network.protocol.AnalyzedPlayersMessage;
 import net.blay09.mods.replikaentropie.network.protocol.DataCollectedMessage;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -27,8 +27,8 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
     private static final String DOWNLOADED_EVENTS = "downloadedEvents";
 
     private CompoundTag getPersistentData(Player player) {
-        final var data = Balm.getHooks().getPersistentData(player);
-        final var modData = data.getCompound(ReplikaEntropie.MOD_ID);
+        final var data = Balm.hooks().getPersistentData(player);
+        final var modData = data.getCompoundOrEmpty(ReplikaEntropie.MOD_ID);
         if (modData.isEmpty()) {
             data.put(ReplikaEntropie.MOD_ID, modData);
         }
@@ -52,17 +52,17 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
         final var itemId = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
 
         final var data = getPersistentData(player);
-        final var analyzedItems = data.getCompound(ANALYZED_ITEMS);
+        final var analyzedItems = data.getCompoundOrEmpty(ANALYZED_ITEMS);
         analyzedItems.putBoolean(itemId.toString(), true);
         data.put(ANALYZED_ITEMS, analyzedItems);
 
-        Balm.getNetworking().sendTo(player, new AnalyzedItemsMessage(false, List.of(itemStack.getItem())));
+        Balm.networking().sendTo(player, new AnalyzedItemsMessage(false, List.of(itemStack.getItem())));
     }
 
     @Override
     public boolean isAnalyzed(Player player, ItemStack itemStack) {
         final var itemId = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
-        final var analyzedItems = getPersistentData(player).getCompound(ANALYZED_ITEMS);
+        final var analyzedItems = getPersistentData(player).getCompoundOrEmpty(ANALYZED_ITEMS);
         return analyzedItems.contains(itemId.toString());
     }
 
@@ -74,29 +74,29 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
 
         final var data = getPersistentData(player);
         if (entity instanceof Player targetPlayer) {
-            final var analyzedPlayers = data.getCompound(ANALYZED_PLAYERS);
+            final var analyzedPlayers = data.getCompoundOrEmpty(ANALYZED_PLAYERS);
             analyzedPlayers.putBoolean(targetPlayer.getUUID().toString(), true);
             data.put(ANALYZED_PLAYERS, analyzedPlayers);
 
-            Balm.getNetworking().sendTo(player, new AnalyzedPlayersMessage(false, List.of(targetPlayer.getUUID())));
+            Balm.networking().sendTo(player, new AnalyzedPlayersMessage(false, List.of(targetPlayer.getUUID())));
         } else {
             final var entityType = entity.getType();
             final var entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
-            final var analyzedEntities = data.getCompound(ANALYZED_ENTITIES);
+            final var analyzedEntities = data.getCompoundOrEmpty(ANALYZED_ENTITIES);
             analyzedEntities.putBoolean(entityTypeId.toString(), true);
             data.put(ANALYZED_ENTITIES, analyzedEntities);
 
-            Balm.getNetworking().sendTo(player, new AnalyzedEntitiesMessage(false, List.of(entityType)));
+            Balm.networking().sendTo(player, new AnalyzedEntitiesMessage(false, List.of(entityType)));
         }
     }
 
     @Override
     public void grantData(Player player, int amount) {
         final var data = getPersistentData(player);
-        final var dataCollected = data.getInt("PersonalDataCollected");
+        final var dataCollected = data.getIntOr("PersonalDataCollected", 0);
         data.putInt("PersonalDataCollected", dataCollected + amount);
         if (amount > 0) {
-            Balm.getNetworking().sendTo(player, new DataCollectedMessage(amount, dataCollected + amount));
+            Balm.networking().sendTo(player, new DataCollectedMessage(amount, dataCollected + amount));
         }
     }
 
@@ -104,37 +104,37 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
     public boolean isAnalyzed(Player player, Entity entity) {
         final var data = getPersistentData(player);
         if (entity instanceof Player targetPlayer) {
-            final var analyzedPlayers = data.getCompound(ANALYZED_PLAYERS);
+            final var analyzedPlayers = data.getCompoundOrEmpty(ANALYZED_PLAYERS);
             return analyzedPlayers.contains(targetPlayer.getUUID().toString());
         } else {
             final var entityType = entity.getType();
             final var entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
-            final var analyzedEntities = data.getCompound(ANALYZED_ENTITIES);
+            final var analyzedEntities = data.getCompoundOrEmpty(ANALYZED_ENTITIES);
             return analyzedEntities.contains(entityTypeId.toString());
         }
     }
 
     public void sendAllToPlayer(ServerPlayer player) {
         final var data = getPersistentData(player);
-        final var analyzedItemIds = data.getCompound(ANALYZED_ITEMS);
-        final var analyzedItems = analyzedItemIds.getAllKeys().stream()
-                .map(ResourceLocation::new)
-                .map(BuiltInRegistries.ITEM::get)
+        final var analyzedItemIds = data.getCompoundOrEmpty(ANALYZED_ITEMS);
+        final var analyzedItems = analyzedItemIds.keySet().stream()
+                .map(Identifier::parse)
+                .map(BuiltInRegistries.ITEM::getValue)
                 .toList();
-        Balm.getNetworking().sendTo(player, new AnalyzedItemsMessage(true, analyzedItems));
+        Balm.networking().sendTo(player, new AnalyzedItemsMessage(true, analyzedItems));
 
-        final var analyzedPlayerIds = data.getCompound(ANALYZED_PLAYERS);
-        final var analyzedPlayers = analyzedPlayerIds.getAllKeys().stream()
+        final var analyzedPlayerIds = data.getCompoundOrEmpty(ANALYZED_PLAYERS);
+        final var analyzedPlayers = analyzedPlayerIds.keySet().stream()
                 .map(UUID::fromString)
                 .toList();
-        Balm.getNetworking().sendTo(player, new AnalyzedPlayersMessage(true, analyzedPlayers));
+        Balm.networking().sendTo(player, new AnalyzedPlayersMessage(true, analyzedPlayers));
 
-        final var analyzedEntityIds = data.getCompound(ANALYZED_ENTITIES);
-        final var analyzedEntities = analyzedEntityIds.getAllKeys().stream()
-                .map(ResourceLocation::new)
-                .map(BuiltInRegistries.ENTITY_TYPE::get)
+        final var analyzedEntityIds = data.getCompoundOrEmpty(ANALYZED_ENTITIES);
+        final var analyzedEntities = analyzedEntityIds.keySet().stream()
+                .map(Identifier::parse)
+                .map(BuiltInRegistries.ENTITY_TYPE::getValue)
                 .toList();
-        Balm.getNetworking().sendTo(player, new AnalyzedEntitiesMessage(true, analyzedEntities));
+        Balm.networking().sendTo(player, new AnalyzedEntitiesMessage(true, analyzedEntities));
     }
 
     @Override
@@ -143,47 +143,47 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
         data.remove(ANALYZED_ITEMS);
         data.remove(ANALYZED_PLAYERS);
         data.remove(ANALYZED_ENTITIES);
-        Balm.getNetworking().sendTo(player, new AnalyzedItemsMessage(true, List.of()));
-        Balm.getNetworking().sendTo(player, new AnalyzedPlayersMessage(true, List.of()));
-        Balm.getNetworking().sendTo(player, new AnalyzedEntitiesMessage(true, List.of()));
+        Balm.networking().sendTo(player, new AnalyzedItemsMessage(true, List.of()));
+        Balm.networking().sendTo(player, new AnalyzedPlayersMessage(true, List.of()));
+        Balm.networking().sendTo(player, new AnalyzedEntitiesMessage(true, List.of()));
     }
 
     @Override
     public void resetAnalyzedItems(Player player) {
         final var data = getPersistentData(player);
         data.remove(ANALYZED_ITEMS);
-        Balm.getNetworking().sendTo(player, new AnalyzedItemsMessage(true, List.of()));
+        Balm.networking().sendTo(player, new AnalyzedItemsMessage(true, List.of()));
     }
 
     @Override
     public void resetAnalyzedPlayers(Player player) {
         final var data = getPersistentData(player);
         data.remove(ANALYZED_PLAYERS);
-        Balm.getNetworking().sendTo(player, new AnalyzedPlayersMessage(true, List.of()));
+        Balm.networking().sendTo(player, new AnalyzedPlayersMessage(true, List.of()));
     }
 
     @Override
     public void resetAnalyzedEntities(Player player) {
         final var data = getPersistentData(player);
         data.remove(ANALYZED_ENTITIES);
-        Balm.getNetworking().sendTo(player, new AnalyzedEntitiesMessage(true, List.of()));
+        Balm.networking().sendTo(player, new AnalyzedEntitiesMessage(true, List.of()));
     }
 
     @Override
     public int getDataCollected(Player player) {
         final var data = getPersistentData(player);
-        return data.getInt("PersonalDataCollected");
+        return data.getIntOr("PersonalDataCollected", 0);
     }
 
     public boolean isDataMinedEventDownloaded(Player player, DataMinedEvent event) {
         final var data = getPersistentData(player);
-        final var downloaded = data.getCompound(DOWNLOADED_EVENTS);
-        return downloaded.getBoolean(event.asKey());
+        final var downloaded = data.getCompoundOrEmpty(DOWNLOADED_EVENTS);
+        return downloaded.getBooleanOr(event.asKey(), false);
     }
 
     public void downloadDataMinedEvent(Player player, DataMinedEvent event) {
         final var data = getPersistentData(player);
-        final var downloaded = data.getCompound(DOWNLOADED_EVENTS);
+        final var downloaded = data.getCompoundOrEmpty(DOWNLOADED_EVENTS);
         downloaded.putBoolean(event.asKey(), true);
         data.put(DOWNLOADED_EVENTS, downloaded);
 

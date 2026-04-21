@@ -1,18 +1,20 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.replikaentropie.menu.ResearchMenu;
 import net.blay09.mods.replikaentropie.menu.slot.ResearchCostSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ResearchEntrySlot;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +24,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 
-    private static final ResourceLocation BACKGROUND = id("textures/gui/container/research.png");
+    private static final Identifier BACKGROUND = id("textures/gui/container/research.png");
 
     private static final int GRID_X = 7;
     private static final int GRID_Y = 17;
@@ -52,7 +54,7 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
     private Button missingIngredientsButton;
 
     @Nullable
-    private static ResourceLocation lastSelectedResearchId;
+    private static Identifier lastSelectedResearchId;
 
     private static final int EASTER_EGG_INDEX = 15;
     private static final String EASTER_EGG = "... test, testing, is this thing on? Hello? Can you hear me? This is Eirote. If you've found this recording, then our mission is either complete... or failed beyond recovery. To whoever hears this: remember that compassion is not weakness. Even within systems built to suppress it, empathy can rewrite the code that binds fate. If we are gone, let that truth endure in our place. End of log.";
@@ -61,17 +63,15 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
     private boolean updatingSearch;
 
     public ResearchScreen(ResearchMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        imageWidth = 248;
-        imageHeight = 180;
+        super(menu, playerInventory, title, 248, 180);
     }
 
     @Override
-    protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType type) {
+    protected void slotClicked(Slot slot, int slotId, int mouseButton, ContainerInput type) {
         if (slot instanceof ResearchEntrySlot researchEntrySlot) {
             final var researchEntry = researchEntrySlot.getResearchEntry();
             if (researchEntry != null) {
-                lastSelectedResearchId = researchEntry.recipe().id();
+                lastSelectedResearchId = researchEntry.id();
             }
         }
 
@@ -126,9 +126,9 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
             menu.slots.stream()
                     .filter(it -> it instanceof ResearchEntrySlot researchEntrySlot
                             && researchEntrySlot.getResearchEntry() != null
-                            && researchEntrySlot.getResearchEntry().recipe().id().equals(lastSelectedResearchId))
+                            && researchEntrySlot.getResearchEntry().id().equals(lastSelectedResearchId))
                     .findFirst()
-                    .ifPresent(it -> slotClicked(it, it.index, 0, ClickType.PICKUP));
+                    .ifPresent(it -> slotClicked(it, it.index, 0, ContainerInput.PICKUP));
         }
     }
 
@@ -167,14 +167,7 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         if (menu.isScrollOffsetDirty()) {
             setCurrentOffset(currentOffset);
             menu.setScrollOffsetDirty(false);
@@ -194,12 +187,12 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
 
         updateButtonStates();
 
-        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         for (final var slot : menu.slots) {
             if (slot instanceof ResearchCostSlot researchCostSlot) {
                 if (researchCostSlot.getCost() > 0 && researchCostSlot.getAvailable() < researchCostSlot.getCost()) {
-                    guiGraphics.fill(leftPos + slot.x, topPos + slot.y, leftPos + slot.x + 16, topPos + slot.y + 16, 0xFFA17171);
+                    graphics.fill(leftPos + slot.x, topPos + slot.y, leftPos + slot.x + 16, topPos + slot.y + 16, 0xFFA17171);
                 }
             } else if (slot instanceof ResearchEntrySlot researchEntrySlot) {
                 final var entry = researchEntrySlot.getResearchEntry();
@@ -212,26 +205,26 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
                         default -> 0;
                     };
                     if (backgroundColor != 0) {
-                        guiGraphics.fill(leftPos + slot.x, topPos + slot.y, leftPos + slot.x + 16, topPos + slot.y + 16, backgroundColor);
+                        graphics.fill(leftPos + slot.x, topPos + slot.y, leftPos + slot.x + 16, topPos + slot.y + 16, backgroundColor);
                     }
                 }
             }
         }
 
-        guiGraphics.fill(scrollBarXPos, scrollBarYPos, scrollBarXPos + SCROLLBAR_WIDTH, scrollBarYPos + scrollBarScaledHeight, SCROLLBAR_COLOR);
+        graphics.fill(scrollBarXPos, scrollBarYPos, scrollBarXPos + SCROLLBAR_WIDTH, scrollBarYPos + scrollBarScaledHeight, SCROLLBAR_COLOR);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, title, titleLabelX, titleLabelY, 0xFF404040, false);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(font, title, titleLabelX, titleLabelY, 0xFF404040, false);
 
         final var selectedResearch = menu.getClientSelectedResearch();
         if (selectedResearch != null) {
-            guiGraphics.drawString(font, selectedResearch.title(), 137, titleLabelY, 0xFF404040, false);
+            guiGraphics.text(font, selectedResearch.title(), 137, titleLabelY, 0xFF404040, false);
 
             if (selectedResearch.state() == ResearchMenu.MenuResearchState.UNLOCKED) {
                 final var decryptedText = selectedResearch.description().getString().replaceAll("[\\[\\]]", "");
-                guiGraphics.drawWordWrap(font, Component.literal(decryptedText), 140, 20, 98, 0xFFFFFFFF);
+                guiGraphics.textWithWordWrap(font, Component.literal(decryptedText), 140, 20, 98, 0xFFFFFFFF);
             } else {
                 final var encryptedText = selectedResearch.description().getString();
                 final var component = Component.empty();
@@ -243,29 +236,29 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
                         component.append(Component.literal(parts[i]).withStyle(ChatFormatting.OBFUSCATED));
                     }
                 }
-                guiGraphics.drawWordWrap(font, component, 140, 20, 98, 0xFFFFFFFF);
+                guiGraphics.textWithWordWrap(font, component, 140, 20, 98, 0xFFFFFFFF);
             }
         }
 
         final var dataCollectedText = Component.translatable("gui.replikaentropie.sky_scraper.data_collected", menu.getDataCollected())
                 .withStyle(ChatFormatting.DARK_GREEN);
-        guiGraphics.drawCenteredString(font, dataCollectedText, 63, 159, 0xFFFFFFFF);
+        guiGraphics.centeredText(font, dataCollectedText, 63, 159, 0xFFFFFFFF);
 
         if (selectedResearch != null && selectedResearch.state() == ResearchMenu.MenuResearchState.UNLOCKED && emptyButton.visible) {
             final var unlockedText = Component.translatable("gui.replikaentropie.sky_scraper.unlocked").withStyle(ChatFormatting.DARK_GREEN);
-            guiGraphics.drawCenteredString(font, unlockedText, emptyButton.getX() - leftPos + emptyButton.getWidth() / 2, emptyButton.getY() - topPos + emptyButton.getHeight() / 2 - font.lineHeight / 2, 0xFFFFFFFF);
+            guiGraphics.centeredText(font, unlockedText, emptyButton.getX() - leftPos + emptyButton.getWidth() / 2, emptyButton.getY() - topPos + emptyButton.getHeight() / 2 - font.lineHeight / 2, 0xFFFFFFFF);
         }
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    protected void extractTooltip(GuiGraphicsExtractor graphics, int x, int y) {
         if (menu.getCarried().isEmpty()) {
             if (hoveredSlot instanceof ResearchEntrySlot researchEntrySlot) {
                 final var researchEntry = researchEntrySlot.getResearchEntry();
                 if (researchEntry != null) {
                     final var iconItem = researchEntrySlot.getItem();
                     final List<Component> tooltip = List.of(researchEntry.title());
-                    guiGraphics.renderTooltip(font, tooltip, iconItem.getTooltipImage(), x, y);
+                    graphics.setTooltipForNextFrame(font, tooltip, iconItem.getTooltipImage(), x, y);
                 }
             } else if (hoveredSlot instanceof ResearchCostSlot researchCostSlot) {
                 if (researchCostSlot.getCost() > 0) {
@@ -276,37 +269,37 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
                     final var subtitle = Component.translatable("gui.replikaentropie.sky_scraper.cost.tooltip", available, cost)
                             .withStyle(available >= cost ? ChatFormatting.GREEN : ChatFormatting.RED);
                     final List<Component> tooltip = List.of(title, subtitle);
-                    guiGraphics.renderTooltip(font, tooltip, itemStack.getTooltipImage(), x, y);
+                    graphics.setTooltipForNextFrame(font, tooltip, itemStack.getTooltipImage(), x, y);
                 }
             }
         }
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (delta == 0) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+        if (deltaY == 0) {
             return false;
         }
 
         // POSTJAM area check?
-        setCurrentOffset(delta > 0 ? currentOffset - 1 : currentOffset + 1);
+        setCurrentOffset(deltaY > 0 ? currentOffset - 1 : currentOffset + 1);
         return true;
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (mouseX >= scrollBarXPos && mouseX <= scrollBarXPos + SCROLLBAR_WIDTH && mouseY >= scrollBarYPos && mouseY <= scrollBarYPos + scrollBarScaledHeight) {
-            mouseClickY = mouseY;
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (event.x() >= scrollBarXPos && event.x() <= scrollBarXPos + SCROLLBAR_WIDTH && event.y() >= scrollBarYPos && event.y() <= scrollBarYPos + scrollBarScaledHeight) {
+            mouseClickY = event.y();
             indexWhenClicked = currentOffset;
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        final var result = super.mouseReleased(mouseX, mouseY, button);
-        if (button != -1 && mouseClickY != -1) {
+    public boolean mouseReleased(MouseButtonEvent event) {
+        final var result = super.mouseReleased(event);
+        if (event.button() != -1 && mouseClickY != -1) {
             mouseClickY = -1;
             indexWhenClicked = 0;
             lastNumberOfMoves = 0;
@@ -316,18 +309,14 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        return super.charTyped(codePoint, modifiers);
-    }
-
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == InputConstants.KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.isEscape()) {
             minecraft.player.closeContainer();
         }
 
-        return searchBox.keyPressed(keyCode, scanCode, modifiers)
+        return searchBox.keyPressed(event)
                 || searchBox.canConsumeInput()
-                || super.keyPressed(keyCode, scanCode, modifiers);
+                || super.keyPressed(event);
     }
 
 
@@ -366,4 +355,3 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
         }
     }
 }
-

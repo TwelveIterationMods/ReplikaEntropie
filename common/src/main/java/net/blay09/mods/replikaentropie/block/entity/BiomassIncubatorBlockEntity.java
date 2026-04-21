@@ -1,12 +1,13 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.SubContainer;
-import net.blay09.mods.balm.api.fluid.BalmFluidTankProvider;
-import net.blay09.mods.balm.api.fluid.FluidTank;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.balm.common.BalmBlockEntity;
+import net.blay09.mods.balm.platform.fluid.BalmFluidTankProvider;
+import net.blay09.mods.balm.platform.fluid.DefaultFluidTank;
+import net.blay09.mods.balm.platform.fluid.FluidTank;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
+import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.BiomassIncubatorMenu;
 import net.blay09.mods.replikaentropie.recipe.BiomassIncubatorRecipe;
@@ -14,8 +15,12 @@ import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,10 +30,13 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
-public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements BalmContainerProvider, BalmFluidTankProvider, BalmMenuProvider {
+public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmFluidTankProvider, BalmMenuProvider<Unit> {
 
     private static final int WATERING_TICKS = 100;
     private static final int GROWTH_TICKS = 200;
@@ -70,7 +78,7 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
             isSyncDirty = true;
         }
     };
-    private final FluidTank waterTank = new FluidTank(3000);
+    private final DefaultFluidTank waterTank = new DefaultFluidTank(3000);
 
     private final int[] growthTicks = new int[3];
     private final FractionalResource biomass = new FractionalResource(resultContainer, 0, ModItems.biomass);
@@ -109,7 +117,7 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
     };
 
     public BiomassIncubatorBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.biomassIncubator.get(), blockPos, blockState);
+        super(ModBlockEntities.biomassIncubator.value(), blockPos, blockState);
 
         soilContainer.setItem(0, new ItemStack(Items.DIRT));
         soilContainer.setItem(1, new ItemStack(Items.DIRT));
@@ -126,7 +134,7 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
     private void broadcastChanges() {
         ticksSinceSync++;
         if (isSyncDirty || (ticksSinceSync >= 10 && isGrowing())) {
-            sync();
+            BalmBlockEntityUtils.sync(this);
             isSyncDirty = false;
             ticksSinceSync = 0;
         }
@@ -236,41 +244,40 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-
+    protected void loadAdditional(ValueInput input) {
         backingContainer.getItems().clear();
-        ContainerHelper.loadAllItems(tag, backingContainer.getItems());
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
         soilContainer.getItems().clear();
-        ContainerHelper.loadAllItems(tag.getCompound("Soil"), soilContainer.getItems());
-        waterTank.deserialize(tag.getCompound("WaterTank"));
+        input.child("Soil").ifPresent(child -> ContainerHelper.loadAllItems(child, soilContainer.getItems()));
+        input.child("WaterTank").ifPresent(waterTank::deserialize);
 
-        wateringTicks = tag.getInt("WateringTicks");
+        wateringTicks = input.getIntOr("WateringTicks", 0);
         for (int i = 0; i < 3; i++) {
-            waterUsesRemaining[i] = tag.getInt("WaterUsesRemaining" + i);
+            waterUsesRemaining[i] = input.getIntOr("WaterUsesRemaining" + i, 0);
         }
         for (int i = 0; i < 3; i++) {
-            growthTicks[i] = tag.getInt("GrowthTicks" + i);
+            growthTicks[i] = input.getIntOr("GrowthTicks" + i, 0);
         }
 
-        biomass.setFractionalAmount(tag.getFloat("FractionalBiomass"));
+        biomass.setFractionalAmount(input.getFloatOr("FractionalBiomass", 0));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.put("WaterTank", waterTank.serialize());
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
+        waterTank.serialize(output.child("WaterTank"));
 
-        tag.putInt("WateringTicks", wateringTicks);
+        output.putInt("WateringTicks", wateringTicks);
         for (int i = 0; i < 3; i++) {
-            tag.putInt("WaterUsesRemaining" + i, waterUsesRemaining[i]);
+            output.putInt("WaterUsesRemaining" + i, waterUsesRemaining[i]);
         }
         for (int i = 0; i < 3; i++) {
-            tag.putInt("GrowthTicks" + i, growthTicks[i]);
+            output.putInt("GrowthTicks" + i, growthTicks[i]);
         }
 
-        tag.putFloat("FractionalBiomass", biomass.getFractionalAmount());
+        output.putFloat("FractionalBiomass", biomass.getFractionalAmount());
+
+        ContainerHelper.saveAllItems(output.child("Soil"), soilContainer.getItems());
     }
 
     @Override
@@ -281,6 +288,16 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
         return new BiomassIncubatorMenu(containerId, inventory, backingContainer, soilContainer, dataAccess);
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+        return Unit.STREAM_CODEC.cast();
+    }
+
+    @Override
+    public Unit getScreenOpeningData(ServerPlayer player) {
+        return Unit.INSTANCE;
     }
 
     @Override
@@ -300,17 +317,6 @@ public class BiomassIncubatorBlockEntity extends BalmBlockEntity implements Balm
     @Override
     public FluidTank getFluidTank() {
         return waterTank;
-    }
-
-    @Override
-    protected void writeUpdateTag(CompoundTag tag) {
-        super.writeUpdateTag(tag);
-
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.put("Soil", ContainerHelper.saveAllItems(new CompoundTag(), soilContainer.getItems()));
-        for (int i = 0; i < 3; i++) {
-            tag.putInt("GrowthTicks" + i, growthTicks[i]);
-        }
     }
 
     public Container getSoilContainer() {

@@ -2,23 +2,22 @@ package net.blay09.mods.replikaentropie.core.abilities;
 
 import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
 import net.blay09.mods.replikaentropie.item.ModItems;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class JumpBoostAbility implements Ability {
 
     public static final JumpBoostAbility INSTANCE = new JumpBoostAbility();
-    public static final ResourceLocation ID = id("jump_boost");
+    public static final Identifier ID = id("jump_boost");
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 
@@ -29,23 +28,23 @@ public class JumpBoostAbility implements Ability {
 
     @Override
     public void tick(Player player) {
-        if (!player.level().isClientSide) {
-            if (!player.hasEffect(MobEffects.JUMP)) {
-                player.addEffect(new MobEffectInstance(MobEffects.JUMP, -1, 2, false, false));
+        if (!player.level().isClientSide()) {
+            if (!player.hasEffect(MobEffects.JUMP_BOOST)) {
+                player.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, -1, 2, false, false));
             }
         }
     }
 
     @Override
     public void deactivate(Player player) {
-        if (!player.level().isClientSide) {
-            player.removeEffect(MobEffects.JUMP);
+        if (!player.level().isClientSide()) {
+            player.removeEffect(MobEffects.JUMP_BOOST);
         }
     }
 
     @Override
     public boolean isAvailable(ServerPlayer player) {
-        return ReplikaArmor.hasPart(player, ArmorItem.Type.BOOTS, ModItems.springBoots)
+        return ReplikaArmor.hasPart(player, ArmorType.BOOTS, ModItems.springBoots)
                 && AbilityManager.canAffordBurst(player, this);
     }
 

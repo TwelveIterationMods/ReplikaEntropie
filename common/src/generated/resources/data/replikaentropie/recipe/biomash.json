@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "replikaentropie:biomass",
+    "minecraft:bowl"
+  ],
+  "result": {
+    "id": "replikaentropie:biomash"
+  }
+}

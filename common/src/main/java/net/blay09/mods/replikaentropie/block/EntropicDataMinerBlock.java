@@ -1,6 +1,7 @@
 package net.blay09.mods.replikaentropie.block;
 
-import net.blay09.mods.balm.api.Balm;
+import com.mojang.serialization.MapCodec;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.block.entity.EntropicDataMinerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +24,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class EntropicDataMinerBlock extends BaseEntityBlock {
+    public static final MapCodec<EntropicDataMinerBlock> CODEC = simpleCodec(EntropicDataMinerBlock::new);
 
     public static final VoxelShape[] SHAPES = new VoxelShape[]{
             Shapes.or(
@@ -56,6 +58,11 @@ public class EntropicDataMinerBlock extends BaseEntityBlock {
     }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(BlockStateProperties.HORIZONTAL_FACING);
@@ -77,10 +84,10 @@ public class EntropicDataMinerBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof EntropicDataMinerBlockEntity blockEntity) {
-                Balm.getNetworking().openMenu(player, blockEntity);
+                Balm.networking().openMenu(player, blockEntity);
             }
         }
         return InteractionResult.CONSUME;

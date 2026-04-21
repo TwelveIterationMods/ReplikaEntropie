@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.core.burst;
 
-import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.network.protocol.BurstEnergyMessage;
 import net.minecraft.nbt.CompoundTag;
@@ -21,7 +21,7 @@ public class AuthorativeBurstEnergyManager implements BurstEnergyManager {
         }
 
         final var data = getPersistentData(player);
-        float energy = data.contains(ENERGY_KEY) ? data.getFloat(ENERGY_KEY) : BurstEnergy.MAX_ENERGY;
+        float energy = data.getFloatOr(ENERGY_KEY, BurstEnergy.MAX_ENERGY);
 
         if (energy >= amount) {
             energy -= amount;
@@ -35,7 +35,7 @@ public class AuthorativeBurstEnergyManager implements BurstEnergyManager {
     @Override
     public float getEnergy(Player player) {
         final var data = getPersistentData(player);
-        return data.contains(ENERGY_KEY) ? data.getFloat(ENERGY_KEY) : BurstEnergy.MAX_ENERGY;
+        return data.getFloatOr(ENERGY_KEY, BurstEnergy.MAX_ENERGY);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AuthorativeBurstEnergyManager implements BurstEnergyManager {
     @Override
     public int getRechargeCooldown(Player player) {
         final var data = getPersistentData(player);
-        return data.getInt(REGEN_COOLDOWN_KEY);
+        return data.getIntOr(REGEN_COOLDOWN_KEY, 0);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class AuthorativeBurstEnergyManager implements BurstEnergyManager {
     public void syncIfDirty(ServerPlayer player) {
         if (player.tickCount % SYNC_INTERVAL == 0) {
             final var data = getPersistentData(player);
-            final var currentEnergy = data.contains(ENERGY_KEY) ? data.getFloat(ENERGY_KEY) : BurstEnergy.MAX_ENERGY;
-            final var lastSyncedEnergy = data.getFloat(LAST_SYNCED_ENERGY_KEY);
+            final var currentEnergy = data.getFloatOr(ENERGY_KEY, BurstEnergy.MAX_ENERGY);
+            final var lastSyncedEnergy = data.getFloatOr(LAST_SYNCED_ENERGY_KEY, 0f);
             if (currentEnergy != lastSyncedEnergy) {
                 data.putFloat(LAST_SYNCED_ENERGY_KEY, currentEnergy);
                 sync(player);
@@ -70,12 +70,12 @@ public class AuthorativeBurstEnergyManager implements BurstEnergyManager {
 
     public void sync(ServerPlayer player) {
         final var energy = getEnergy(player);
-        Balm.getNetworking().sendTo(player, new BurstEnergyMessage(energy));
+        Balm.networking().sendTo(player, new BurstEnergyMessage(energy));
     }
 
     private CompoundTag getPersistentData(Player player) {
-        final var data = Balm.getHooks().getPersistentData(player);
-        final var modData = data.getCompound(ReplikaEntropie.MOD_ID);
+        final var data = Balm.hooks().getPersistentData(player);
+        final var modData = data.getCompoundOrEmpty(ReplikaEntropie.MOD_ID);
         if (modData.isEmpty()) {
             data.put(ReplikaEntropie.MOD_ID, modData);
         }

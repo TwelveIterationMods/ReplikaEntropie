@@ -2,23 +2,42 @@ package net.blay09.mods.replikaentropie.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import it.unimi.dsi.fastutil.HashCommon;
 import net.blay09.mods.replikaentropie.block.entity.FragmentAcceleratorBlockEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-public class FragmentAcceleratorRenderer implements BlockEntityRenderer<FragmentAcceleratorBlockEntity> {
+import java.util.ArrayList;
+import java.util.List;
 
-    private final ItemRenderer itemRenderer;
+public class FragmentAcceleratorRenderer implements BlockEntityRenderer<FragmentAcceleratorBlockEntity, FragmentAcceleratorRenderer.State> {
+
+    private final ItemModelResolver itemModelResolver;
 
     public FragmentAcceleratorRenderer(BlockEntityRendererProvider.Context context) {
-        this.itemRenderer = context.getItemRenderer();
+        this.itemModelResolver = context.itemModelResolver();
     }
 
     @Override
-    public void render(FragmentAcceleratorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void extractRenderState(FragmentAcceleratorBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
+        state.items.clear();
+
         if (!blockEntity.isClientSpinning()) {
             return;
         }
@@ -30,6 +49,7 @@ public class FragmentAcceleratorRenderer implements BlockEntityRenderer<Fragment
         final var scale = 0.375f;
 
         final var angle = blockEntity.getClientAngle();
+        final var seed = HashCommon.long2int(blockEntity.getBlockPos().asLong());
         for (int i = 0; i < segments; i++) {
             final var itemStack = inputs.getItem(i);
             if (itemStack.isEmpty()) {
@@ -41,23 +61,28 @@ public class FragmentAcceleratorRenderer implements BlockEntityRenderer<Fragment
             final var x = 0.5f + (float) Math.cos(slotRad) * radius;
             final var z = 0.5f + (float) Math.sin(slotRad) * radius;
 
+            final var itemState = new ItemStackRenderState();
+            itemModelResolver.updateForTopItem(itemState, itemStack, ItemDisplayContext.GROUND, blockEntity.getLevel(), null, seed + i);
+            state.items.add(new ItemRenderState(itemState, x, baseY, z, 180f - slotAngle, scale));
+        }
+    }
+
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        for (final var item : state.items) {
             poseStack.pushPose();
-            poseStack.translate(x, baseY, z);
-            poseStack.mulPose(Axis.YP.rotationDegrees(180f - slotAngle));
-            poseStack.scale(scale, scale, scale);
-
-            itemRenderer.renderStatic(
-                    itemStack,
-                    ItemDisplayContext.GROUND,
-                    packedLight,
-                    packedOverlay,
-                    poseStack,
-                    buffer,
-                    blockEntity.getLevel(),
-                    0
-            );
-
+            poseStack.translate(item.x, item.y, item.z);
+            poseStack.mulPose(Axis.YP.rotationDegrees(item.yRot));
+            poseStack.scale(item.scale, item.scale, item.scale);
+            item.item.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
         }
+    }
+
+    public static class State extends BlockEntityRenderState {
+        public final List<ItemRenderState> items = new ArrayList<>();
+    }
+
+    public record ItemRenderState(ItemStackRenderState item, float x, float y, float z, float yRot, float scale) {
     }
 }

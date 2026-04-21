@@ -1,0 +1,18 @@
+{
+  "type": "replikaentropie:research",
+  "data": 10,
+  "fragments": 4,
+  "hardDependencies": [
+    "replikaentropie:research/burst_energy"
+  ],
+  "icon": {
+    "id": "replikaentropie:slowphasers"
+  },
+  "nonogram": "replikaentropie:slowphasers",
+  "research_type": "assembler",
+  "scrap": 4,
+  "sort_order": 1500,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/slowphasers"
+  ]
+}

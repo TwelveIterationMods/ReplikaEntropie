@@ -1,0 +1,8 @@
+{
+  "type": "replikaentropie:fabricator",
+  "result": {
+    "id": "minecraft:flint"
+  },
+  "scrap": 1,
+  "sortOrder": 800
+}

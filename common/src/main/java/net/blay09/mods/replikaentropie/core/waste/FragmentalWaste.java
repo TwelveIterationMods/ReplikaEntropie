@@ -1,10 +1,8 @@
 package net.blay09.mods.replikaentropie.core.waste;
 
-import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.event.PlayerOpenMenuEvent;
+import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.item.HazmatArmorItem;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,20 +27,20 @@ public class FragmentalWaste {
     private static final int CONTAMINATION_DURATION = 100;
     private static final int CONTAMINATION_RENEW_PERIOD = 30;
 
-    public static void initialize(BalmEvents events) {
-        events.onEvent(PlayerOpenMenuEvent.class, (event) -> {
-            for (final var itemStack : event.getMenu().getItems()) {
+    public static void initialize() {
+        ServerPlayerCallback.OpenMenu.EVENT.register(((player, menu) -> {
+            for (final var itemStack : menu.getItems()) {
                 if (itemStack.is(ModBlocks.fragmentalWaste.asItem())) {
-                    applyWasteAroundEntity(event.getPlayer());
+                    applyWasteAroundEntity(player);
                     break;
                 }
             }
 
-            event.getMenu().addSlotListener(new ContainerListener() {
+            menu.addSlotListener(new ContainerListener() {
                 @Override
                 public void slotChanged(AbstractContainerMenu menu, int slotId, ItemStack itemStack) {
                     if (itemStack.is(ModBlocks.fragmentalWaste.asItem())) {
-                        applyWasteAroundEntity(event.getPlayer());
+                        applyWasteAroundEntity(player);
                     }
                 }
 
@@ -50,7 +48,7 @@ public class FragmentalWaste {
                 public void dataChanged(AbstractContainerMenu abstractContainerMenu, int i, int i1) {
                 }
             });
-        });
+        }));
     }
 
     public static void applyWasteAroundEntity(Entity source) {
@@ -83,7 +81,7 @@ public class FragmentalWaste {
     }
 
     public static DamageSource damageSource(Level level) {
-        final var damageTypes = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
-        return new DamageSource(damageTypes.getHolderOrThrow(FRAGMENTAL_WASTE_DAMAGE_TYPE));
+        final var damageTypes = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE);
+        return new DamageSource(damageTypes.getOrThrow(FRAGMENTAL_WASTE_DAMAGE_TYPE));
     }
 }

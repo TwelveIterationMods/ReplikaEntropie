@@ -4,6 +4,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 public class FractionalResource {
 
@@ -19,6 +20,10 @@ public class FractionalResource {
         this.item = item;
     }
 
+    public FractionalResource(Container container, int slot, ItemLike item) {
+        this(container, slot, item.asItem());
+    }
+
     public void add(float amount) {
         fractionalAmount += amount;
         produceItems();
@@ -31,7 +36,7 @@ public class FractionalResource {
 
     private void produceItems() {
         final var currentItemStack = container.getItem(slot);
-        var space = item.getMaxStackSize();
+        var space = item.getDefaultMaxStackSize(); // TODO get actual max stack size
         if (currentItemStack.is(item)) {
             space = Math.max(0, space - currentItemStack.getCount());
         } else if (!currentItemStack.isEmpty()) {

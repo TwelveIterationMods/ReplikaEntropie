@@ -2,12 +2,12 @@ package net.blay09.mods.replikaentropie.container;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.core.RegistryAccess;
+import net.blay09.mods.replikaentropie.recipe.PreviewableRecipe;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 
-public class RecipeContainer<TRecipe extends Recipe<?>> extends SimpleContainer {
+public class RecipeContainer<TRecipe extends Recipe<?> & PreviewableRecipe> extends SimpleContainer {
 
     private final Int2ObjectMap<TRecipe> recipes = new Int2ObjectOpenHashMap<>();
 
@@ -15,10 +15,10 @@ public class RecipeContainer<TRecipe extends Recipe<?>> extends SimpleContainer 
         super(size);
     }
 
-    public void setRecipe(RegistryAccess registryAccess, int slot, @Nullable TRecipe recipe) {
+    public void setRecipe(int slot, @Nullable TRecipe recipe) {
         if (recipe != null) {
             recipes.put(slot, recipe);
-            setItem(slot, recipe.getResultItem(registryAccess));
+            setItem(slot, recipe.previewResultItem());
         } else {
             recipes.remove(slot);
         }

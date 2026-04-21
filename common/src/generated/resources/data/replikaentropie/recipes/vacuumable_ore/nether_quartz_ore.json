@@ -1,7 +1,0 @@
-{
-  "type": "replikaentropie:vacuumable_ore",
-  "empty_block": "minecraft:netherrack",
-  "ingredient": {
-    "item": "minecraft:nether_quartz_ore"
-  }
-}

@@ -1,7 +1,7 @@
 package net.blay09.mods.replikaentropie.core.research;
 
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -20,19 +20,19 @@ public class Research {
         return player.isLocalPlayer() ? localManager : persistentManager;
     }
 
-    public static ResearchState getResearchState(Player player, ResourceLocation id) {
+    public static ResearchState getResearchState(Player player, Identifier id) {
         return getManager(player).getResearchState(player, id);
     }
 
-    public static Optional<NonogramState> getNonogramState(Player player, ResourceLocation id) {
+    public static Optional<NonogramState> getNonogramState(Player player, Identifier id) {
         return getManager(player).getNonogramState(player, id);
     }
 
-    public static void updateResearch(Player player, ResourceLocation id, ResearchState state) {
+    public static void updateResearch(Player player, Identifier id, ResearchState state) {
         getManager(player).updateResearch(player, id, state);
     }
 
-    public static void updateNonogram(Player player, ResourceLocation id, NonogramState state) {
+    public static void updateNonogram(Player player, Identifier id, NonogramState state) {
         getManager(player).updateNonogram(player, id, state);
     }
 

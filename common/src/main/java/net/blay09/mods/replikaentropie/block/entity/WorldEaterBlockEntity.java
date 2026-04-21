@@ -1,16 +1,20 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.balm.common.BalmBlockEntity;
+import com.mojang.serialization.Codec;
+import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.WorldEaterMenu;
 import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,13 +23,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class WorldEaterBlockEntity extends BalmBlockEntity implements BalmContainerProvider, BalmMenuProvider {
+public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
     private static final int SCANNING_TICKS = 200;
     private static final int DESTROY_TICKS = 100;
@@ -89,7 +96,7 @@ public class WorldEaterBlockEntity extends BalmBlockEntity implements BalmContai
     };
 
     public WorldEaterBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.worldEater.get(), pos, blockState);
+        super(ModBlockEntities.worldEater.value(), pos, blockState);
     }
 
     @Override
@@ -100,6 +107,16 @@ public class WorldEaterBlockEntity extends BalmBlockEntity implements BalmContai
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
         return new WorldEaterMenu(containerId, inventory, previewContainer, backingContainer, dataAccess);
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+        return Unit.STREAM_CODEC.cast();
+    }
+
+    @Override
+    public Unit getScreenOpeningData(ServerPlayer player) {
+        return Unit.INSTANCE;
     }
 
     @Override
@@ -118,7 +135,7 @@ public class WorldEaterBlockEntity extends BalmBlockEntity implements BalmContai
 
     private void broadcastChanges() {
         if (isSyncDirty) {
-            sync();
+            BalmBlockEntityUtils.sync(this);
             isSyncDirty = false;
         }
     }
@@ -165,7 +182,7 @@ public class WorldEaterBlockEntity extends BalmBlockEntity implements BalmContai
                             final var targetState = level.getBlockState(targetPos);
                             if (isQuestionablyEdibleBlock(level, targetPos, targetState)) {
                                 level.removeBlock(targetPos, false);
-                                scrap.add(level.random.nextFloat() * 0.5f);
+                                scrap.add(level.getRandom().nextFloat() * 0.5f);
                             }
                             previewContainer.setItem(currentDestroySlot, ItemStack.EMPTY);
                         }
@@ -241,44 +258,38 @@ public class WorldEaterBlockEntity extends BalmBlockEntity implements BalmContai
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        ContainerHelper.loadAllItems(tag, backingContainer.getItems());
+    protected void loadAdditional(ValueInput input) {
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
         try {
-            state = State.valueOf(tag.getString("State"));
+            state = input.getString("State").map(State::valueOf).orElse(State.IDLE); // TODO State.CODEC
         } catch (IllegalArgumentException e) {
             state = State.IDLE;
         }
-        stateTicks = tag.getInt("StateTicks");
-        currentDestroySlot = tag.getInt("CurrentDestroySlot");
-        scrap.setFractionalAmount(tag.getFloat("FractionalScrap"));
+        stateTicks = input.getIntOr("StateTicks", 0);
+        currentDestroySlot = input.getIntOr("CurrentDestroySlot", 0);
+        scrap.setFractionalAmount(input.getFloatOr("FractionalScrap", 0f));
 
         scannedPositions.clear();
-        final var scannedPositionsArray = tag.getLongArray("ScannedPositions");
-        for (int i = 0; i < scannedPositionsArray.length; i++) {
-            scannedPositions.put(i, BlockPos.of(scannedPositionsArray[i]));
+        final var scannedPositionsArray = input.listOrEmpty("ScannedPositions", Codec.LONG);
+        int i = 0;
+        for (final var longPos : scannedPositionsArray) {
+            scannedPositions.put(i, BlockPos.of(longPos));
+            i++;
         }
 
         previewContainer.getItems().clear();
-        final var previewTag = tag.getCompound("Preview");
-        ContainerHelper.loadAllItems(previewTag, previewContainer.getItems());
+        input.child("Preview").ifPresent(child -> ContainerHelper.loadAllItems(child, previewContainer.getItems()));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, backingContainer.getItems());
-        tag.putString("State", state.name());
-        tag.putInt("StateTicks", stateTicks);
-        tag.putInt("CurrentDestroySlot", currentDestroySlot);
-        tag.putFloat("FractionalScrap", scrap.getFractionalAmount());
-        tag.putLongArray("ScannedPositions", scannedPositions.values().stream().map(BlockPos::asLong).toList());
-    }
-
-    @Override
-    protected void writeUpdateTag(CompoundTag tag) {
-        final var previewTag = new CompoundTag();
-        ContainerHelper.saveAllItems(previewTag, previewContainer.getItems());
-        tag.put("Preview", previewTag);
+    protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
+        output.putString("State", state.name());
+        output.putInt("StateTicks", stateTicks);
+        output.putInt("CurrentDestroySlot", currentDestroySlot);
+        output.putFloat("FractionalScrap", scrap.getFractionalAmount());
+        final var scannedPositionsArray = output.list("ScannedPositions", Codec.LONG);
+        scannedPositions.values().stream().map(BlockPos::asLong).forEach(scannedPositionsArray::add);
+        ContainerHelper.saveAllItems(output.child("Preview"), previewContainer.getItems());
     }
 }
