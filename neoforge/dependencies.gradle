@@ -1,5 +1,5 @@
 dependencies {
-    implementation(libs.balmForge) {
+    implementation(libs.balmNeoForge) {
         changing = libs.versions.balm.get().endsWith("SNAPSHOT")
     }
 }
