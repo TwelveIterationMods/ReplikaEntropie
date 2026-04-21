@@ -1,27 +1,20 @@
 plugins {
     id 'multiloader-common'
-    id 'net.neoforged.moddev.legacyforge'
+    alias libs.plugins.modDevGradle
 }
 
-base {
-    archivesName = "${mod_id}-common-${minecraft_version}"
-}
-
-legacyForge {
-    mcpVersion = minecraft_version
+neoForge {
+    neoFormVersion = libs.neoForm.get().version
     // Automatically enable AccessTransformers if the file exists
     def at = file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
-        accessTransformers = ["src/main/resources/META-INF/accesstransformer.cfg"]
+        accessTransformers.from(at.absolutePath)
     }
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
+    parchment.parchmentArtifact = libs.parchment.get().toString()
 }
 
 dependencies {
-    compileOnly "org.spongepowered:mixin:$mixin_version"
+    compileOnly libs.mixin
 }
 
 apply from: rootProject.file('repositories.gradle')
@@ -56,10 +49,3 @@ artifacts {
     commonGeneratedResources sourceSets.generated.resources.sourceDirectories.singleFile
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src/shell/java'
-        }
-    }
-}

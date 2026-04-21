@@ -2,60 +2,51 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
     id 'multiloader-loader'
-    alias libs.plugins.fabricLoom
+    alias libs.plugins.modDevGradle
     alias libs.plugins.curseForgeGradle
     alias libs.plugins.modrinthMinotaur
 }
 
-dependencies {
-    minecraft libs.minecraft
-    implementation libs.fabricLoader
-    implementation libs.fabricApi
+neoForge {
+    version = libs.neoForge.get().version
+    // Automatically enable neoforge AccessTransformers if the file exists
+    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+
+    parchment.parchmentArtifact = libs.parchment.get().toString()
+
+    runs {
+        configureEach {
+            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})"
+        }
+
+        client {
+            client()
+        }
+
+        server {
+            server()
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
 }
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 apply from: rootProject.file('repositories.gradle')
 apply from: 'dependencies.gradle'
 
-loom {
-    def aw = project(":common").file("src/main/resources/${mod_id}.classtweaker")
-    if (aw.exists()) {
-        accessWidenerPath.set(aw)
-    }
-
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
-
-    runs {
-        client {
-            client()
-            setConfigName("fabric Client")
-            ideConfigGenerated(true)
-            runDir("runs/client")
-        }
-        server {
-            server()
-            setConfigName("fabric Server")
-            ideConfigGenerated(true)
-            runDir("runs/server")
-        }
-        data {
-            inherit client
-            setConfigName("fabric Data")
-            ideConfigGenerated(true)
-            runDir("build/datagen")
-
-            vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${project(":common").file("src/generated/resources")}"
-            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
-        }
-    }
-}
-
-
 tasks.register('curseforge', TaskPublishCurseForge) {
     dependsOn('build')
-    description = 'Publishes the Fabric build to CurseForge.'
+    description = 'Publishes the NeoForge build to CurseForge.'
     group = 'publishing'
 
     apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
@@ -67,11 +58,11 @@ tasks.register('curseforge', TaskPublishCurseForge) {
     if (projectId) {
         def mainFile = upload(findProperty("curseforge_project_id"), jar.archiveFile.get().asFile)
         mainFile.changelog = rootProject.file('CHANGELOG.md').text
-        mainFile.addRequirement("fabric-api")
         mainFile.addRequirement("balm")
         mainFile.addGameVersion(libs.minecraft.get().version)
         mainFile.releaseType = "release"
         project.findProperty("curseforge_environments")?.split(",")?.toList()?.each { mainFile.addEnvironment(it) }
+        mainFile.addModLoader("NeoForge")
     }
 }
 
@@ -79,13 +70,26 @@ modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
     projectId = findProperty("modrinth_project_id")
     versionType = "release"
-    versionNumber = project.version + "+fabric-" + libs.minecraft.get().version
+    versionNumber = project.version + "+neoforge-" + libs.minecraft.get().version
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = [libs.minecraft.get().version]
-    loaders = ['fabric']
+    loaders = ['neoforge']
     dependencies {
-        required.project "fabric-api"
         required.project "balm"
+    }
+}
+
+def neoForgeSnapshotUrl = findProperty("neoforge_snapshot_url")
+if (neoForgeSnapshotUrl != null && !neoForgeSnapshotUrl.isBlank()) {
+    repositories {
+        maven {
+            name = 'Maven for NeoForge Snapshots'
+            url = neoForgeSnapshotUrl
+            content {
+                includeModule('net.neoforged', 'neoforge')
+                includeModule('net.neoforged', 'testframework')
+            }
+        }
     }
 }
