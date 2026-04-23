@@ -9,6 +9,7 @@ import net.blay09.mods.replikaentropie.network.protocol.AnalyzeEntityMessage;
 import net.blay09.mods.replikaentropie.network.protocol.AnalyzePosMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -157,11 +158,11 @@ public class HandheldAnalyzerClient {
             int top = (screenHeight - overlayHeight) / 2;
             int right = left + overlayWidth;
             int bottom = top + overlayHeight;
-            // TODO see vanilla code again for port graphics.blit(ANALYZER_OVERLAY, left, top, -90, 0f, 0f, overlayWidth, overlayHeight, overlayWidth, overlayHeight);
-            // TODO see vanilla code again for port graphics.fill(0, bottom, screenWidth, screenHeight, -90, 0xFF000000);
-            // TODO see vanilla code again for port graphics.fill(0, 0, screenWidth, top, -90, 0xFF000000);
-            // TODO see vanilla code again for port graphics.fill(0, top, left, bottom, -90, 0xFF000000);
-            // TODO see vanilla code again for port graphics.fill(right, top, screenWidth, bottom, -90, 0xFF000000);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, ANALYZER_OVERLAY, left, top, 0f, 0f, overlayWidth, overlayHeight, overlayWidth, overlayHeight);
+            graphics.fill(RenderPipelines.GUI, 0, bottom, screenWidth, screenHeight, 0xFF000000);
+            graphics.fill(RenderPipelines.GUI, 0, 0, screenWidth, top, 0xFF000000);
+            graphics.fill(RenderPipelines.GUI, 0, top, left, bottom, 0xFF000000);
+            graphics.fill(RenderPipelines.GUI, right, top, screenWidth, bottom, 0xFF000000);
 
             if (minecraft.hitResult instanceof BlockHitResult blockHitResult) {
                 final var level = minecraft.level;

@@ -15,6 +15,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -53,7 +54,7 @@ public class FabricatorScreen extends AbstractContainerScreen<FabricatorMenu> {
             }
         }
 
-        graphics.blit(BACKGROUND, leftPos + 145, topPos + 46, 145, 46, 18, 4, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos + 145, topPos + 46, 145, 46, 18, 4, 256, 256);
     }
 
     @Override
@@ -88,6 +89,7 @@ public class FabricatorScreen extends AbstractContainerScreen<FabricatorMenu> {
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (hoveredSlot instanceof FabricatorRecipeSlot recipeSlot) {
+            // TODO This needs to be updated so it works on RecipeDisplays instead of Recipes
             final var containerSlot = recipeSlot.getContainerSlot();
             if (recipeSlot.container instanceof RecipeContainer<?> recipeContainer) {
                 @SuppressWarnings("unchecked") final var recipe = ((RecipeContainer<FabricatorRecipe>) recipeContainer).getRecipe(containerSlot);
@@ -111,7 +113,9 @@ public class FabricatorScreen extends AbstractContainerScreen<FabricatorMenu> {
                         tooltip.add(Component.translatable("gui.replikaentropie.fabricator.tooltip.free").withStyle(ChatFormatting.GREEN));
                     }
 
-                    graphics.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY);
+                    if (menu.getCarried().isEmpty()) {
+                        graphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY);
+                    }
                 }
             }
         } else {

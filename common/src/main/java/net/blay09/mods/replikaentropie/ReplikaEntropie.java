@@ -27,6 +27,12 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
+    // TODO Recycler should have some better output indicator, the output bar is easy to miss right now
+    // TODO a way to skip research, e.g. an Auto Decrypter Tool. Maybe a sidebar with all tools that can be dropped onto the nonogram.
+    // TODO Sheep and Pig gave me no data?
+    // TODO Introduce Entropic Energy
+    // TODO Biomass Incubator should do a single crop, and do biomass as secondary step
+
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 
     public static final String MOD_ID = "replikaentropie";

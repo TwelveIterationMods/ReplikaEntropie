@@ -244,7 +244,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
         }
 
         if (!infiniteQueue.isEmpty()) {
-            return infiniteQueue.get(infiniteQueueIndex);
+            return infiniteQueue.get(infiniteQueueIndex % infiniteQueue.size());
         }
 
         return null;

@@ -5,6 +5,7 @@ import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
 import net.blay09.mods.replikaentropie.menu.CobblescrapMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,7 +31,7 @@ public class CobblescrapScreen extends AbstractContainerScreen<CobblescrapMenu> 
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractBackground(graphics, mouseX, mouseY, a);
 
-        graphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         final var inputProgress = menu.getInputProcessingProgress();
         inputProgressLeftRenderer.render(graphics, leftPos, topPos, inputProgress);
