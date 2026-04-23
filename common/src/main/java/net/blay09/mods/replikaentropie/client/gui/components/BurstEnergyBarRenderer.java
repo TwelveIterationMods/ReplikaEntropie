@@ -5,6 +5,7 @@ import net.blay09.mods.balm.client.platform.event.callback.RenderCallback;
 import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
@@ -54,11 +55,11 @@ public class BurstEnergyBarRenderer {
         final var barWidth = 81;
         final var x = guiGraphics.guiWidth() / 2 - barWidth / 2;
         final var y = guiGraphics.guiHeight() - 62;
-        guiGraphics.blit(BURST_BAR_TEXTURE, x, y, 0, 0, barWidth, 9, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BURST_BAR_TEXTURE, x, y, 0, 0, barWidth, 9, 256, 256);
 
         final var fillWidth = (int) ((energy / maxEnergy) * 79);
         if (fillWidth > 0) {
-            guiGraphics.blit(BURST_BAR_TEXTURE, x + 1, y + 1, 0, 9, fillWidth, 7, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BURST_BAR_TEXTURE, x + 1, y + 1, 0, 9, fillWidth, 7, 256, 256);
         }
     }
 }

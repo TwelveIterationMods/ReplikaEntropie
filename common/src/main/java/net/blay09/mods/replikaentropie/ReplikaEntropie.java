@@ -42,6 +42,15 @@ public class ReplikaEntropie {
     // TODO Maybe have the Entropic Data Miner create Data items instead of downloadable list items
     // TODO not the biggest fan of the Fabricator yet. It feels odd to turn Scrap into Hazmat Lining.
     // TODO Armor is not rendering (hazmat)
+    // TODO Fragment Accelerator should require Waste Barrels.
+    // TODO Purification Panel - a horizontal double block frame that you can walk through to get rid of status effects
+    // TODO Purify Fragmental Waste barrels by throwing them through a purification panel. One at a time, and needs to pass through multiple times.
+    // TODO The Burst Drill sucks. Redesign it.
+    // TODO Broken culling in Replika Workbench
+    // TODO Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
+    // TODO Introduce durability (energy-based) for all items. Burst still exists, and can be separately upgraded. Essentialy, durability recharges the burst, while burst determines use duration at a time.
+    // TODO Stompers not working
+    // TODO Remove Replika Frame
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 
