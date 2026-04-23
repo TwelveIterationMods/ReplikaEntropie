@@ -29,8 +29,7 @@ public class ReplikaEntropie {
 
     // Stability
     // - Fix up the commands, take player and require GM
-    // - Stompers not working
-    // - Model log spam
+    // - all armor leg textures are in the wrong place
 
     // Rework Blocks
     // - World Eater should do have an intermediate output buffer, so it can be used as a Quarry

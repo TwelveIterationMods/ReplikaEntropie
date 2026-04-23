@@ -1,7 +1,7 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"textures": {
 		"1": "replikaentropie:block/fragment_accelerator",
 		"2": "replikaentropie:block/machine_top",
