@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 public class ReplikaEntropie {
 
     // Stability
-    // - Fix up the commands, take player and require GM
     // - all armor leg textures are in the wrong place
 
     // Rework Blocks

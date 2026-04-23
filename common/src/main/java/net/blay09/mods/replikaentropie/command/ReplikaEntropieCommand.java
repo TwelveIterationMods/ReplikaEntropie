@@ -21,6 +21,7 @@ import net.blay09.mods.replikaentropie.recipe.ResearchRecipe;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.commands.arguments.ResourceKeyArgument;
 import net.minecraft.commands.synchronization.SuggestionProviders;
@@ -34,8 +35,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+
+import java.util.Collection;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -58,14 +60,16 @@ public class ReplikaEntropieCommand {
                                 .executes(ReplikaEntropieCommand::resetEvents)))
                 .then(Commands.literal("research")
                         .then(Commands.literal("unlock")
-                                .then(Commands.argument("id", ResourceKeyArgument.key(Registries.RECIPE))
-                                        .executes(ctx -> researchUnlock(ctx, ResourceKeyArgument.getRecipe(ctx, "id"))))
-                                .then(Commands.literal("all").executes(ReplikaEntropieCommand::researchUnlockAll))
+                                .then(Commands.argument("targets", EntityArgument.players())
+                                        .then(Commands.argument("id", ResourceKeyArgument.key(Registries.RECIPE))
+                                                .executes(ctx -> researchUnlock(ctx, EntityArgument.getPlayers(ctx, "targets"), ResourceKeyArgument.getRecipe(ctx, "id"))))
+                                        .then(Commands.literal("all").executes(ctx -> researchUnlockAll(ctx, EntityArgument.getPlayers(ctx, "targets")))))
                         )
                         .then(Commands.literal("reset")
-                                .then(Commands.argument("id", IdentifierArgument.id())
-                                        .executes(ctx -> researchReset(ctx, ResourceKeyArgument.getRecipe(ctx, "id"))))
-                                .then(Commands.literal("all").executes(ReplikaEntropieCommand::researchResetAll))
+                                .then(Commands.argument("targets", EntityArgument.players())
+                                        .then(Commands.argument("id", ResourceKeyArgument.key(Registries.RECIPE))
+                                                .executes(ctx -> researchReset(ctx, EntityArgument.getPlayers(ctx, "targets"), ResourceKeyArgument.getRecipe(ctx, "id"))))
+                                        .then(Commands.literal("all").executes(ctx -> researchResetAll(ctx, EntityArgument.getPlayers(ctx, "targets")))))
                         )
                 )
                 .then(Commands.literal("nonogram")
@@ -107,37 +111,34 @@ public class ReplikaEntropieCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int researchUnlock(CommandContext<CommandSourceStack> context, RecipeHolder<?> recipe) throws CommandSyntaxException {
-        final var player = context.getSource().getPlayerOrException();
+    private static int researchUnlock(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> targets, RecipeHolder<?> recipe) throws CommandSyntaxException {
         if (!(recipe.value() instanceof ResearchRecipe researchRecipe)) {
             throw INVALID_RECIPE.create();
         }
 
         final var researchId = getResearchRecipeId(context, researchRecipe);
-        Research.updateResearch(player, researchId, ResearchState.UNLOCKED);
+        targets.forEach(player -> Research.updateResearch(player, researchId, ResearchState.UNLOCKED));
         context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.unlock", researchId.toString()), false);
-        return Command.SINGLE_SUCCESS;
+        return targets.size();
     }
 
-    private static int researchUnlockAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        final var player = context.getSource().getPlayerOrException();
+    private static int researchUnlockAll(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> targets) {
         final var recipeManager = context.getSource().getLevel().recipeAccess();
-        recipeManager.getRecipes().stream()
+        targets.forEach(player -> recipeManager.getRecipes().stream()
                 .filter(holder -> holder.value().getType() == ModRecipes.research.type())
-                .forEach(holder -> Research.updateResearch(player, holder.id().identifier(), ResearchState.UNLOCKED));
+                .forEach(holder -> Research.updateResearch(player, holder.id().identifier(), ResearchState.UNLOCKED)));
         context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.unlockAll"), false);
-        return Command.SINGLE_SUCCESS;
+        return targets.size();
     }
 
-    private static int researchReset(CommandContext<CommandSourceStack> context, RecipeHolder<?> recipe) throws CommandSyntaxException {
-        final var player = context.getSource().getPlayerOrException();
+    private static int researchReset(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> targets, RecipeHolder<?> recipe) throws CommandSyntaxException {
         if (!(recipe.value() instanceof ResearchRecipe researchRecipe)) {
             throw INVALID_RECIPE.create();
         }
         final var researchId = getResearchRecipeId(context, researchRecipe);
-        Research.updateResearch(player, researchId, ResearchState.NONE);
+        targets.forEach(player -> Research.updateResearch(player, researchId, ResearchState.NONE));
         context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.reset", researchId.toString()), false);
-        return Command.SINGLE_SUCCESS;
+        return targets.size();
     }
 
     private static Identifier getResearchRecipeId(CommandContext<CommandSourceStack> context, ResearchRecipe researchRecipe) throws CommandSyntaxException {
@@ -148,11 +149,10 @@ public class ReplikaEntropieCommand {
                 .orElseThrow(INVALID_RECIPE::create);
     }
 
-    private static int researchResetAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        final var player = context.getSource().getPlayerOrException();
-        Research.resetAllResearch(player);
+    private static int researchResetAll(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> targets) {
+        targets.forEach(Research::resetAllResearch);
         context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.resetAll"), false);
-        return Command.SINGLE_SUCCESS;
+        return targets.size();
     }
 
     private static int createNonogram(CommandContext<CommandSourceStack> context, Identifier id, int width, int height) throws CommandSyntaxException {
