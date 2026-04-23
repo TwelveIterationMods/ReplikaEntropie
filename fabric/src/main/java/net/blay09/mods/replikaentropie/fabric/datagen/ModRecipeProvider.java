@@ -50,6 +50,15 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_chipset", has(ModItems.chipset))
                         .save(output);
 
+                shaped(RecipeCategory.TOOLS, ModItems.automaticHackTool)
+                        .pattern("IC")
+                        .pattern(" R")
+                        .define('I', Items.IRON_INGOT)
+                        .define('C', Items.COPPER_INGOT)
+                        .define('R', Items.REDSTONE_TORCH)
+                        .unlockedBy("has_redstone", has(Items.REDSTONE))
+                        .save(output);
+
                 shaped(RecipeCategory.MISC, ModBlocks.recycler)
                         .pattern("IDI")
                         .pattern("CSC")

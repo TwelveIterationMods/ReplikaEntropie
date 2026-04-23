@@ -7,6 +7,7 @@ import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
@@ -80,7 +81,7 @@ public class ModItems {
         graviliftHarness = items.register("gravilift_harness", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE).durability(-1)).asDeferredItem();
         magphasers = items.register("magphasers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
         nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(-1)).asDeferredItem();
-        automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> it.stacksTo(64)).asDeferredItem();
+        automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> it.durability(16).component(DataComponents.BREAK_SOUND, SoundEvents.ITEM_BREAK)).asDeferredItem();
         burstDrill = items.register("burst_drill", BurstDrillItem::new, it -> it.durability(-1)).asDeferredItem();
         oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(-1)).asDeferredItem();
         metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(-1)).asDeferredItem();

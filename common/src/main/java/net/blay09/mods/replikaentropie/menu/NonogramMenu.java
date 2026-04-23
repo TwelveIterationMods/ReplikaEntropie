@@ -5,10 +5,13 @@ import net.blay09.mods.replikaentropie.core.nonogram.NonogramClueProvider;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramClues;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
 import net.blay09.mods.replikaentropie.item.ModItems;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
 
 import java.util.ArrayList;
@@ -16,7 +19,8 @@ import java.util.Optional;
 
 public class NonogramMenu extends AbstractNonogramMenu {
 
-    public record AutoHackResult(int column, int row, int mark) {}
+    public record AutoHackResult(int column, int row, int mark) {
+    }
 
     public record Data(NonogramClues clues, NonogramState state) implements NonogramClueProvider {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
@@ -115,10 +119,20 @@ public class NonogramMenu extends AbstractNonogramMenu {
             return Optional.empty();
         }
 
-        final var inventory = player.getInventory();
-        final var removed = inventory.clearOrCountMatchingItems(it -> it.is(ModItems.automaticHackTool), 1, inventory);
-        if (removed < 1) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
             return Optional.empty();
+        }
+
+        final var inventory = player.getInventory();
+        for (final var itemStack : inventory.getNonEquipmentItems()) {
+            if (itemStack.is(ModItems.automaticHackTool)) {
+                itemStack.hurtAndBreak(1, serverPlayer.level(), serverPlayer, item -> {
+                    final var soundEvent = item.components().get(DataComponents.BREAK_SOUND);
+                    if (soundEvent != null) {
+                        serverPlayer.level().playSound(null, serverPlayer, soundEvent.value(), SoundSource.PLAYERS, 1f ,1f);
+                    }
+                });
+            }
         }
 
         final var reveal = revealableCells.get(player.getRandom().nextInt(revealableCells.size()));
