@@ -40,6 +40,8 @@ public class ReplikaEntropie {
     // TODO Would be nice to have some better visuals for the World Eater. It's not very obvious what blocks it would target right now.
     // TODO Change the Defragmentizer. Instead of being another convert redstone to fragment machine, make it convert fragments to energy.
     // TODO Maybe have the Entropic Data Miner create Data items instead of downloadable list items
+    // TODO not the biggest fan of the Fabricator yet. It feels odd to turn Scrap into Hazmat Lining.
+    // TODO Armor is not rendering (hazmat)
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 

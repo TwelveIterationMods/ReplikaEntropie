@@ -2,6 +2,7 @@ package net.blay09.mods.replikaentropie.core.analyzer;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
+import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.network.protocol.AnalyzedEntitiesMessage;
@@ -37,12 +38,20 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
 
     @Override
     public void analyzeItem(Player player, ItemStack itemStack) {
+        final var usedScannerItemStack = player.getUseItem();
+        if (itemStack.is(ModBlocks.chaosEngine.asItem()) && usedScannerItemStack.is(ModItems.handheldAnalyzer)) {
+            final var usedScannerItem = usedScannerItemStack.getItem();
+            usedScannerItemStack.shrink(1);
+            player.onEquippedItemBroken(usedScannerItem, player.getUsedItemHand().asEquipmentSlot());
+            return;
+        }
+
         if (isAnalyzed(player, itemStack)) {
             return;
         }
 
         final var dataForItem = ResearchItemRecords.getCollectableData(itemStack);
-        if (player.getUseItem().is(ModItems.handheldAnalyzer)) {
+        if (usedScannerItemStack.is(ModItems.handheldAnalyzer)) {
             grantData(player, dataForItem);
         } else {
             ReplikaEntropie.logger.warn("Tried to analyze item without using an analyzer");

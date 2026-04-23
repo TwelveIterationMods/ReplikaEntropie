@@ -4,6 +4,10 @@ import com.mojang.serialization.MapCodec;
 import net.blay09.mods.replikaentropie.block.entity.ChaosEngineBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -16,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -133,4 +138,11 @@ public class ChaosEngineBlock extends BaseEntityBlock {
                 : createTickerHelper(type, ModBlockEntities.chaosEngine.value(), ChaosEngineBlockEntity::serverTick);
     }
 
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if(level instanceof ServerLevel serverLevel) {
+            player.hurtServer(serverLevel, serverLevel.damageSources().generic(), 1f);
+        }
+        return InteractionResult.SUCCESS;
+    }
 }
