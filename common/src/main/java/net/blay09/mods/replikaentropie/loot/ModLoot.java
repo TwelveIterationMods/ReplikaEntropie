@@ -54,12 +54,13 @@ public class ModLoot {
         lootTables.registerLootModifier(id("damaged_chipsets"), new BalmLootModifier() {
             @Override
             public void apply(LootContext context, List<ItemStack> loot, @Nullable ResourceKey<LootTable> lootTableId) {
-                if (lootTableId != null && DAMAGED_CHIPSET_TARGETS.contains(lootTableId)) {
+                // TODO This should use a loot table instead of hardcoded chance
+                if (lootTableId != null && DAMAGED_CHIPSET_TARGETS.contains(lootTableId.identifier())) {
                     if (context.getRandom().nextFloat() <= DAMAGED_CHIPSET_CHANCE) {
                         loot.add(ModItems.damagedChipset.createStack());
                     }
                 }
-                if (lootTableId != null && CHIPSET_RECIPE_TARGETS.contains(lootTableId)) {
+                if (lootTableId != null && CHIPSET_RECIPE_TARGETS.contains(lootTableId.identifier())) {
                     if (context.getRandom().nextFloat() <= CHIPSET_RECIPE_CHANCE) {
                         final var title = Component.translatable("item.replikaentropie.assembly_ticket.loot.chipset");
                         final var uses = context.getRandom().nextInt(1, 3);

@@ -31,6 +31,8 @@ public class ReplikaEntropie {
     // TODO a way to skip research, e.g. an Auto Decrypter Tool. Maybe a sidebar with all tools that can be dropped onto the nonogram.
     // TODO Sheep and Pig gave me no data?
     // TODO Introduce Entropic Energy
+    // TODO "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
+    // TODO Expand Assembler to nine input slots. That way it can also work as an auto-crafter.
     // TODO Biomass Incubator should do a single crop, and do biomass as secondary step
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
