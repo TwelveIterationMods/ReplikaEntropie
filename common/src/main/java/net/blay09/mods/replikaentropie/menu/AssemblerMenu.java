@@ -24,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 public class AssemblerMenu extends AbstractContainerMenu {
 
     private final Inventory playerInventory;
-    private final Container previewContainer = new SimpleContainer(5);
+    private final Container previewContainer = new SimpleContainer(9);
     private final Container container;
     private final ContainerData data;
     private final QuickMove.Routing quickMove;
@@ -34,19 +34,19 @@ public class AssemblerMenu extends AbstractContainerMenu {
     public static final int DATA_COUNT = 2;
 
     public AssemblerMenu(int id, Inventory playerInventory) {
-        this(id, playerInventory, new SimpleContainer(7), new SimpleContainerData(DATA_COUNT));
+        this(id, playerInventory, new SimpleContainer(11), new SimpleContainerData(DATA_COUNT));
     }
 
     public AssemblerMenu(int id, Inventory playerInventory, Container container, ContainerData data) {
         super(ModMenus.assembler.value(), id);
         this.playerInventory = playerInventory;
         this.container = container;
-        checkContainerSize(container, 7);
+        checkContainerSize(container, 11);
         this.data = data;
         addDataSlots(data);
 
-        addSlot(new OutputSlot(container, 0, 80, 55));
-        addSlot(new AssemblerTicketSlot(container, 1, 19, 55) {
+        addSlot(new OutputSlot(container, 0, 80, 61));
+        addSlot(new AssemblerTicketSlot(container, 1, 19, 61) {
             @Override
             public void setChanged() {
                 super.setChanged();
@@ -55,20 +55,20 @@ public class AssemblerMenu extends AbstractContainerMenu {
         });
 
         for (int i = 0; i < 5; i++) {
-            addSlot(new Slot(container, 2 + i, 44 + i * 18, 84));
+            addSlot(new Slot(container, 2 + i, 44 + i * 18, 99));
         }
 
         for (int i = 0; i < 5; i++) {
-            addSlot(new ReadonlySlot(previewContainer, i, 44 + i * 18, 26));
+            addSlot(new ReadonlySlot(previewContainer, i, 44 + i * 18, 41));
         }
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 125 + i * 18));
+                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 140 + i * 18));
             }
         }
         for (int i = 0; i < 9; i++) {
-            addSlot(new Slot(playerInventory, i, 8 + i * 18, 183));
+            addSlot(new Slot(playerInventory, i, 8 + i * 18, 198));
         }
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)

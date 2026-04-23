@@ -34,7 +34,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class AssemblerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
-    private final DefaultContainer backingContainer = new DefaultContainer(7) {
+    private final DefaultContainer backingContainer = new DefaultContainer(11) {
         @Override
         public void setChanged() {
             AssemblerBlockEntity.this.setChanged();
@@ -52,7 +52,7 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
 
     private final Container resultContainer = new SubContainer(backingContainer, 0, 1);
     private final Container ticketContainer = new SubContainer(backingContainer, 1, 2);
-    private final Container inputContainer = new SubContainer(backingContainer, 2, 7);
+    private final Container inputContainer = new SubContainer(backingContainer, 2, 11);
 
     private static final int PROCESSING_TICKS = 60;
     private int processingTicks;

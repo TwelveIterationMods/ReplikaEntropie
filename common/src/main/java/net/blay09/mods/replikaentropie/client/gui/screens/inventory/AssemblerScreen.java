@@ -35,7 +35,7 @@ public class AssemblerScreen extends AbstractContainerScreen<AssemblerMenu> {
             );
 
     public AssemblerScreen(AssemblerMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 207);
+        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 222);
         inventoryLabelY = imageHeight - 94;
     }
 
