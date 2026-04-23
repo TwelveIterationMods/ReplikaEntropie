@@ -3,7 +3,6 @@ package net.blay09.mods.replikaentropie.block;
 import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
 import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.replikaentropie.item.FragmentalWasteItem;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -25,7 +24,8 @@ public class ModBlocks {
     public static DeferredBlock fragmentAccelerator;
     public static DeferredBlock chaosEngine;
     public static DeferredBlock recycler;
-    public static DeferredBlock kitchenSink;
+    public static DeferredBlock digSpot;
+    public static DeferredBlock waterSink;
     public static DeferredBlock bluePrinter;
     public static DeferredBlock solarSink;
     public static DeferredBlock dataBasedGenerator;
@@ -90,6 +90,10 @@ public class ModBlocks {
                 .asDeferredBlock();
 
         recycler = blocks.register("recycler", RecyclerBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
+
+        digSpot = blocks.register("dig_spot", DigSpotBlock::new, it -> it)
                 .withDefaultItem()
                 .asDeferredBlock();
     }

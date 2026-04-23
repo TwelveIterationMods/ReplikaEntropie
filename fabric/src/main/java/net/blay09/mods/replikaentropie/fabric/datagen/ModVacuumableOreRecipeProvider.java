@@ -65,7 +65,7 @@ public class ModVacuumableOreRecipeProvider extends FabricRecipeProvider {
 
     public record VacuumableOreRecipeBuilder(Ingredient ingredient, Block emptyBlock) {
         public void save(RecipeOutput output, String name) {
-            final var id = ReplikaEntropie.id("vacuumable_ore/" + name);
+            final var id = ReplikaEntropie.id("ore_vacuum/" + name);
             output.accept(ResourceKey.create(Registries.RECIPE, id), new VacuumableOreRecipe(ingredient, emptyBlock), null);
         }
     }

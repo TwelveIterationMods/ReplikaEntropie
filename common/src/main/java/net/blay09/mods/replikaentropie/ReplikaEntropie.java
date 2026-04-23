@@ -27,10 +27,8 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
-    // TODO Metal Detector to find Dig Spots (copy from Little Joys). Contains e.g. damaged chipset, scrap, iron ingot.
     // TODO a way to skip research, e.g. an Auto Decrypter Tool. Maybe a sidebar with all tools that can be dropped onto the nonogram.
     // TODO Sheep and Pig gave me no data?
-    // TODO Introduce Entropic Energy
     // TODO "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
     // TODO Biomass Incubator should do a single crop, and do biomass as an optional secondary step
     // TODO World Eater should do scrap as an optional secondary step, so it can be used as a Quarry
@@ -39,9 +37,8 @@ public class ReplikaEntropie {
     // TODO Maybe have the Entropic Data Miner create Data items instead of downloadable list items
     // TODO not the biggest fan of the Fabricator yet. It feels odd to turn Scrap into Hazmat Lining.
     // TODO Armor is not rendering
-    // TODO Fragment Accelerator should require Waste Barrels.
-    // TODO Purification Panel - a horizontal double block frame that you can walk through to get rid of status effects
-    // TODO Purify Fragmental Waste barrels by throwing them through a purification panel. One at a time, and needs to pass through multiple times.
+    // TODO Decontaminate Fragmental Waste barrels by placing them below a Water Sink (random tick)
+    // TODO Add Fragmental Waste Minecarts so they can be run below Water Sinks for decontamination. Hook Dispenser and Hopper to allow input/output from cart.
     // TODO The Burst Drill sucks. Redesign it.
     // TODO Broken culling in Replika Workbench
     // TODO Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.

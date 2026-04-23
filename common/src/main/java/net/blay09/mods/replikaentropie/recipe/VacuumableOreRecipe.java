@@ -34,7 +34,7 @@ public record VacuumableOreRecipe(Ingredient ingredient, Block emptyBlock) imple
     public static Optional<VacuumableOreRecipe> getRecipe(Level level, BlockState state) {
         final var blockAsItem = new ItemStack(state.getBlock().asItem());
         return level != null && !blockAsItem.isEmpty()
-                ? ModRecipes.vacuumableOre.getRecipeFor(level, new SingleRecipeInput(blockAsItem))
+                ? ModRecipes.oreVacuum.getRecipeFor(level, new SingleRecipeInput(blockAsItem))
                 .map(holder -> holder.value())
                 : Optional.empty();
     }
@@ -70,12 +70,12 @@ public record VacuumableOreRecipe(Ingredient ingredient, Block emptyBlock) imple
 
     @Override
     public RecipeSerializer<VacuumableOreRecipe> getSerializer() {
-        return ModRecipes.vacuumableOre.serializer();
+        return ModRecipes.oreVacuum.serializer();
     }
 
     @Override
     public RecipeType<VacuumableOreRecipe> getType() {
-        return ModRecipes.vacuumableOre.type();
+        return ModRecipes.oreVacuum.type();
     }
 
     @Override
@@ -85,7 +85,7 @@ public record VacuumableOreRecipe(Ingredient ingredient, Block emptyBlock) imple
 
     @Override
     public RecipeBookCategory recipeBookCategory() {
-        return ModRecipes.vacuumableOre.bookCategory();
+        return ModRecipes.oreVacuum.bookCategory();
     }
 
     private static VacuumableOreRecipe fromNetwork(RegistryFriendlyByteBuf buf) {

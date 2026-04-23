@@ -2,6 +2,7 @@ package net.blay09.mods.replikaentropie.loot;
 
 import net.blay09.mods.balm.world.level.storage.loot.BalmLootModifier;
 import net.blay09.mods.balm.world.level.storage.loot.BalmLootTables;
+import net.blay09.mods.replikaentropie.block.entity.DigSpotBlockEntity;
 import net.blay09.mods.replikaentropie.item.AssemblyTicketItem;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.network.chat.Component;
@@ -10,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.Set;
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class ModLoot {
+
+    private static final ThreadLocal<Boolean> isApplyingDigSpotLoot = ThreadLocal.withInitial(() -> false);
 
     private static final Set<Identifier> DAMAGED_CHIPSET_TARGETS = Set.of(
             Identifier.withDefaultNamespace("chests/village/village_temple"),
@@ -51,6 +55,28 @@ public class ModLoot {
     private static final float CHIPSET_RECIPE_CHANCE = 0.2f;
 
     public static void initialize(BalmLootTables lootTables) {
+        lootTables.registerLootModifier(id("dig_spots"), new BalmLootModifier() {
+            @Override
+            public void apply(LootContext context, List<ItemStack> loot, @Nullable ResourceKey<LootTable> lootTableId) {
+                if (isApplyingDigSpotLoot.get()) {
+                    return;
+                }
+
+                final var blockEntity = context.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+                if (!(blockEntity instanceof DigSpotBlockEntity digSpotBlockEntity) || digSpotBlockEntity.getLootTable() == null) {
+                    return;
+                }
+
+                isApplyingDigSpotLoot.set(true);
+                try {
+                    final var digSpotLootTable = context.getLevel().getServer().reloadableRegistries().getLootTable(digSpotBlockEntity.getLootTable());
+                    digSpotLootTable.getRandomItems(context, loot::add);
+                } finally {
+                    isApplyingDigSpotLoot.set(false);
+                }
+            }
+        });
+
         lootTables.registerLootModifier(id("damaged_chipsets"), new BalmLootModifier() {
             @Override
             public void apply(LootContext context, List<ItemStack> loot, @Nullable ResourceKey<LootTable> lootTableId) {

@@ -17,6 +17,7 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators generators) {
+        generators.createNonTemplateModelBlock(ModBlocks.digSpot.asBlock());
         generators.createNonTemplateHorizontalBlock(ModBlocks.replikaWorkbench.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.entropicDataMiner.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.recycler.value());
@@ -73,6 +74,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.skyScraper.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
         generators.generateFlatItem(ModItems.nullphaser.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
         generators.generateFlatItem(ModItems.oreVacuum.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        generators.generateFlatItem(ModItems.metalDetector.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
         generators.generateFlatItem(ModItems.burstDrill.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
 
         generators.generateFlatItem(ModItems.biosteelHelmet.asItem(), ModelTemplates.FLAT_ITEM);

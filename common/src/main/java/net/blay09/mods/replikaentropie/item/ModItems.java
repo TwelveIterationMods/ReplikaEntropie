@@ -81,6 +81,7 @@ public class ModItems {
         nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(-1)).asDeferredItem();
         burstDrill = items.register("burst_drill", BurstDrillItem::new, it -> it.durability(-1)).asDeferredItem();
         oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(-1)).asDeferredItem();
+        metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(-1)).asDeferredItem();
         slowphasers = items.register("slowphasers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
         stompers = items.register("stompers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
         springBoots = items.register("spring_boots", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
@@ -136,6 +137,7 @@ public class ModItems {
                     output.accept(ModBlocks.replikaWorkbench);
                     output.accept(burstDrill);
                     output.accept(oreVacuum);
+                    output.accept(metalDetector);
                     output.accept(nullphaser);
                     output.accept(nightVisionGoggles);
                     output.accept(brightVisionGoggles);

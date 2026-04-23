@@ -1,5 +1,5 @@
 {
-  "type": "replikaentropie:vacuumable_ore",
+  "type": "replikaentropie:ore_vacuum",
   "empty_block": "minecraft:deepslate",
   "ingredient": "minecraft:deepslate_copper_ore"
 }

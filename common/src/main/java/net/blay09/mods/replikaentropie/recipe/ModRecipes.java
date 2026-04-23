@@ -10,7 +10,8 @@ public class ModRecipes {
     public static DeferredRecipeType<SingleRecipeInput, RecyclerRecipe> recycler;
     public static DeferredRecipeType<RecipeInput, FabricatorRecipe> fabricator;
     public static DeferredRecipeType<SingleRecipeInput, BiomassIncubatorRecipe> biomassIncubator;
-    public static DeferredRecipeType<SingleRecipeInput, VacuumableOreRecipe> vacuumableOre;
+    public static DeferredRecipeType<SingleRecipeInput, VacuumableOreRecipe> oreVacuum;
+    public static DeferredRecipeType<RecipeInput, MetalDetectorRecipe> metalDetector;
     public static DeferredRecipeType<RecipeInput, AssemblerRecipe> assembler;
     public static DeferredRecipeType<RecipeInput, ResearchRecipe> research;
 
@@ -30,8 +31,13 @@ public class ModRecipes {
                 .withRecipeBookCategory()
                 .asDeferredRecipeType();
 
-        vacuumableOre = recipes.register("vacuumable_ore", VacuumableOreRecipe.class)
+        oreVacuum = recipes.register("ore_vacuum", VacuumableOreRecipe.class)
                 .withSerializer(VacuumableOreRecipe::serializer)
+                .withRecipeBookCategory()
+                .asDeferredRecipeType();
+
+        metalDetector = recipes.register("metal_detector", MetalDetectorRecipe.class)
+                .withSerializer(MetalDetectorRecipe::serializer)
                 .withRecipeBookCategory()
                 .asDeferredRecipeType();
 
