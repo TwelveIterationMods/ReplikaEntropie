@@ -4,6 +4,9 @@ import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
+import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
+import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
+import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.replikaentropie.component.AssemblyTicket;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.item.ModItems;
@@ -25,6 +28,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,7 +36,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public class AssemblerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
+public class AssemblerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
+
+    private static final int PROCESSING_TICKS = 60;
+    private static final int ENERGY_CAPACITY = 10000;
+    private static final int ENERGY_INPUT_RATE = 1000;
+    private static final int ENERGY_COST_PER_TICK = 10;
 
     private final DefaultContainer backingContainer = new DefaultContainer(11) {
         @Override
@@ -54,7 +63,13 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
     private final Container ticketContainer = new SubContainer(backingContainer, 1, 2);
     private final Container inputContainer = new SubContainer(backingContainer, 2, 11);
 
-    private static final int PROCESSING_TICKS = 60;
+    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+        @Override
+        public void setChanged() {
+            AssemblerBlockEntity.this.setChanged();
+        }
+    };
+
     private int processingTicks;
 
     private final ContainerData dataAccess = new ContainerData() {
@@ -63,6 +78,8 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
             return switch (index) {
                 case AssemblerMenu.DATA_PROCESSING_TIME -> processingTicks;
                 case AssemblerMenu.DATA_MAX_PROCESSING_TIME -> PROCESSING_TICKS;
+                case AssemblerMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
+                case AssemblerMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
                 default -> 0;
             };
         }
@@ -88,7 +105,7 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-        return new AssemblerMenu(id, inv, backingContainer, dataAccess);
+        return new AssemblerMenu(id, inv, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
     }
 
     @Override
@@ -109,6 +126,16 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
     @Override
     public Container getContainer(Direction side) {
         return side == Direction.DOWN ? resultContainer : backingContainer;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage(Direction side) {
+        return energyStorage;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, AssemblerBlockEntity assembler) {
@@ -154,6 +181,11 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
             }
         }
 
+        if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK) {
+            return;
+        }
+
+        energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_TICK);
         processingTicks++;
         if (processingTicks >= PROCESSING_TICKS) {
             for (final var countedIngredient : assemblerRecipe.ingredients()) {
@@ -197,11 +229,13 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
     protected void loadAdditional(ValueInput input) {
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
         processingTicks = input.getIntOr("ProcessingTicks", 0);
+        energyStorage.deserialize(input);
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
         ContainerHelper.saveAllItems(output, backingContainer.getItems());
         output.putInt("ProcessingTicks", processingTicks);
+        energyStorage.serialize(output);
     }
 }

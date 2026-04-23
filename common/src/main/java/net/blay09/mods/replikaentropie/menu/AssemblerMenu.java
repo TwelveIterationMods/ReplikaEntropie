@@ -1,7 +1,9 @@
 package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
+import net.blay09.mods.replikaentropie.block.entity.AssemblerBlockEntity;
 import net.blay09.mods.replikaentropie.item.ModItems;
+import net.blay09.mods.replikaentropie.menu.MakeshiftPoweredMenu;
 import net.blay09.mods.replikaentropie.menu.slot.AssemblerTicketSlot;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
@@ -17,32 +19,38 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class AssemblerMenu extends AbstractContainerMenu {
+public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
     private final Inventory playerInventory;
     private final Container previewContainer = new SimpleContainer(9);
     private final Container container;
     private final ContainerData data;
+    private final ContainerLevelAccess access;
     private final QuickMove.Routing quickMove;
 
     public static final int DATA_PROCESSING_TIME = 0;
     public static final int DATA_MAX_PROCESSING_TIME = 1;
-    public static final int DATA_COUNT = 2;
+    public static final int DATA_CURRENT_POWER = 2;
+    public static final int DATA_MAX_POWER = 3;
+    public static final int DATA_COUNT = 4;
 
     public AssemblerMenu(int id, Inventory playerInventory) {
-        this(id, playerInventory, new SimpleContainer(11), new SimpleContainerData(DATA_COUNT));
+        this(id, playerInventory, new SimpleContainer(11), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
-    public AssemblerMenu(int id, Inventory playerInventory, Container container, ContainerData data) {
+    public AssemblerMenu(int id, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.assembler.value(), id);
         this.playerInventory = playerInventory;
         this.container = container;
         checkContainerSize(container, 11);
         this.data = data;
+        this.access = access;
         addDataSlots(data);
 
         addSlot(new OutputSlot(container, 0, 98, 63));
@@ -117,6 +125,25 @@ public class AssemblerMenu extends AbstractContainerMenu {
         final var processingTime = data.get(DATA_PROCESSING_TIME);
         final var maxProcessingTime = data.get(DATA_MAX_PROCESSING_TIME);
         return maxProcessingTime > 0 ? Mth.clamp(processingTime / (float) maxProcessingTime, 0f, 1f) : 0;
+    }
+
+    public float getPowerProgress() {
+        final var maxPower = data.get(DATA_MAX_POWER);
+        if (maxPower <= 0) {
+            return 0f;
+        }
+
+        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
+    }
+
+    @Override
+    public void convertClickToPower() {
+        access.execute((level, pos) -> {
+            final BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof AssemblerBlockEntity assembler) {
+                assembler.getEnergyStorage().fill(250, false);
+            }
+        });
     }
 
     private void updatePreviewFromTicket() {

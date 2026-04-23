@@ -1,14 +1,12 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
-import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
+import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
+import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.RecyclerMenu;
-import net.blay09.mods.replikaentropie.network.protocol.MakeshiftPsuMessage;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -20,8 +18,6 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/recycler.png");
     private static final Identifier LEFT_WING = id("left_wing");
-    private static final Identifier ENERGY_BAR = id("energy_bar");
-    private static final WidgetSprites MAKESHIFT_PSU_BUTTON = new WidgetSprites(id("makeshift_psu_button"), id("makeshift_psu_button_highlighted"));
 
     private final SegmentedProgressRenderer topProgressRenderer = new SegmentedProgressRenderer(BACKGROUND, 256, 256)
             .addInvisibleSegment(28)
@@ -38,6 +34,7 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
     private final ProgressRenderer fractionalScrapRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(130, 19).size(3, 26).uv(176, 0);
     private final ProgressRenderer fractionalBiomassRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(130, 50).size(3, 26).uv(176, 0);
     private final ProgressRenderer fractionalFragmentsRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(130, 81).size(3, 26).uv(176, 0);
+    private final EnergyBar energyBar = new EnergyBar(-23, 5);
 
     public RecyclerScreen(RecyclerMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 206);
@@ -48,9 +45,7 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
     protected void init() {
         super.init();
 
-        addRenderableWidget(new ImageButton(leftPos - 25, topPos + 96, 20, 20, MAKESHIFT_PSU_BUTTON,
-                _ -> Balm.networking().sendToServer(new MakeshiftPsuMessage(menu.containerId)),
-                Component.translatable("gui.replikaentropie.makeshift_psu")));
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 96, menu.containerId));
     }
 
     @Override
@@ -72,9 +67,6 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 1, 24, 90);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 92, 28, 28);
 
-        final var energyHeight = (int) (menu.getPowerProgress() * 82);
-        if (energyHeight > 0) {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENERGY_BAR, leftPos - 23, topPos + 5, 16, energyHeight);
-        }
+        energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 }

@@ -169,12 +169,11 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
             return;
         }
 
-        int drained = energyStorage.drain(ENERGY_COST_PER_TICK, true);
-        if (drained < ENERGY_COST_PER_TICK) {
+        if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK) {
             return;
         }
 
-        energyStorage.drain(ENERGY_COST_PER_TICK, false);
+        energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_TICK);
         processingTicks++;
         if (processingTicks >= PROCESSING_TICKS) {
             inputStack.shrink(1);

@@ -1,6 +1,8 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
 import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
+import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
+import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.AssemblerMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -13,6 +15,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class AssemblerScreen extends AbstractContainerScreen<AssemblerMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/assembler.png");
+    private static final Identifier LEFT_WING = id("left_wing");
 
     private final SegmentedProgressRenderer progressRenderer = new SegmentedProgressRenderer(BACKGROUND, 256, 256)
             .addReverseVerticalSegment(45, 43, 2, 39, 176, 0)
@@ -33,6 +36,7 @@ public class AssemblerScreen extends AbstractContainerScreen<AssemblerMenu> {
                             .addReverseHorizontalSegment(101, 62, 2, 3, 192, 0)
                             .addInvisibleSegment(8)
             );
+    private final EnergyBar energyBar = new EnergyBar(-23, 11);
 
     public AssemblerScreen(AssemblerMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 222);
@@ -40,9 +44,20 @@ public class AssemblerScreen extends AbstractContainerScreen<AssemblerMenu> {
     }
 
     @Override
+    protected void init() {
+        super.init();
+
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 102, menu.containerId));
+    }
+
+    @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 7, 24, 90);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 98, 28, 28);
+
         progressRenderer.render(graphics, leftPos, topPos, menu.getAssemblyProgress());
+        energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 }
