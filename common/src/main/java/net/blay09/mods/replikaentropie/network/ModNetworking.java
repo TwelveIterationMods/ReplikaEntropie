@@ -3,8 +3,6 @@ package net.blay09.mods.replikaentropie.network;
 import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.replikaentropie.network.protocol.*;
 
-import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
-
 public class ModNetworking {
 
     public static void initialize(BalmNetworking networking) {
@@ -18,5 +16,6 @@ public class ModNetworking {
         networking.registerClientboundPacket(AbilityStateMessage.TYPE, AbilityStateMessage.class, AbilityStateMessage.STREAM_CODEC, AbilityStateMessage::handle);
         networking.registerServerboundPacket(ToggleAbilityMessage.TYPE, ToggleAbilityMessage.class, ToggleAbilityMessage.STREAM_CODEC, ToggleAbilityMessage::handle);
         networking.registerServerboundPacket(NonogramMarkMessage.TYPE, NonogramMarkMessage.class, NonogramMarkMessage.STREAM_CODEC, NonogramMarkMessage::handle);
+        networking.registerServerboundPacket(MakeshiftPsuMessage.TYPE, MakeshiftPsuMessage.class, MakeshiftPsuMessage.STREAM_CODEC, MakeshiftPsuMessage::handle);
     }
 }

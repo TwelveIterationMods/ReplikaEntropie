@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.menu;
 
+import net.blay09.mods.replikaentropie.block.entity.RecyclerBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.RecyclerSlot;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
@@ -11,12 +12,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class RecyclerMenu extends AbstractContainerMenu {
+public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
     private final Container container;
     private final ContainerData data;
+    private final ContainerLevelAccess access;
     private final QuickMove.Routing quickMove;
 
     public static final int DATA_PROCESSING_TIME = 0;
@@ -29,18 +32,19 @@ public class RecyclerMenu extends AbstractContainerMenu {
     public static final int DATA_COUNT = 7;
 
     public RecyclerMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(4), new SimpleContainerData(DATA_COUNT));
+        this(containerId, playerInventory, new SimpleContainer(4), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
-    public RecyclerMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
-        this(ModMenus.recycler.value(), containerId, playerInventory, container, data);
+    public RecyclerMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access) {
+        this(ModMenus.recycler.value(), containerId, playerInventory, container, data, access);
     }
 
-    public RecyclerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory playerInventory, Container container, ContainerData data) {
+    public RecyclerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access) {
         super(menuType, containerId);
         this.container = container;
         checkContainerSize(container, 4);
         this.data = data;
+        this.access = access;
         addDataSlots(data);
 
         addSlot(new RecyclerSlot(container, 0, 48, 55));
@@ -87,7 +91,17 @@ public class RecyclerMenu extends AbstractContainerMenu {
             return 0f;
         }
 
-        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 1f, 1f);
+        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
+    }
+
+    @Override
+    public void convertClickToPower() {
+        access.execute((level, pos) -> {
+            final BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof RecyclerBlockEntity recycler) {
+                recycler.getEnergyStorage().fill(250, false);
+            }
+        });
     }
 
     @Override

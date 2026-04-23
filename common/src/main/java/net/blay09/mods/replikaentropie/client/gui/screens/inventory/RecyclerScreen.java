@@ -1,10 +1,14 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
 import net.blay09.mods.replikaentropie.menu.RecyclerMenu;
+import net.blay09.mods.replikaentropie.network.protocol.MakeshiftPsuMessage;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -17,6 +21,7 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/recycler.png");
     private static final Identifier LEFT_WING = id("left_wing");
     private static final Identifier ENERGY_BAR = id("energy_bar");
+    private static final WidgetSprites MAKESHIFT_PSU_BUTTON = new WidgetSprites(id("makeshift_psu_button"), id("makeshift_psu_button_highlighted"));
 
     private final SegmentedProgressRenderer topProgressRenderer = new SegmentedProgressRenderer(BACKGROUND, 256, 256)
             .addInvisibleSegment(28)
@@ -40,6 +45,15 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
     }
 
     @Override
+    protected void init() {
+        super.init();
+
+        addRenderableWidget(new ImageButton(leftPos - 25, topPos + 96, 20, 20, MAKESHIFT_PSU_BUTTON,
+                _ -> Balm.networking().sendToServer(new MakeshiftPsuMessage(menu.containerId)),
+                Component.translatable("gui.replikaentropie.makeshift_psu")));
+    }
+
+    @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractBackground(graphics, mouseX, mouseY, a);
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
@@ -55,12 +69,12 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
         fractionalBiomassRenderer.render(graphics, leftPos, topPos, menu.getFractionalBiomass());
         fractionalFragmentsRenderer.render(graphics, leftPos, topPos, menu.getFractionalFragments());
 
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos, 26, 90);
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 91, 26, 25);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 1, 24, 90);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 92, 28, 28);
 
         final var energyHeight = (int) (menu.getPowerProgress() * 82);
         if (energyHeight > 0) {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENERGY_BAR, leftPos - 23, topPos + 4, 18, energyHeight);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENERGY_BAR, leftPos - 23, topPos + 5, 16, energyHeight);
         }
     }
 }

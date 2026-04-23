@@ -93,6 +93,7 @@
   "gui.replikaentropie.fabricator.tooltip.biomass": "%d Biomass",
   "gui.replikaentropie.fabricator.tooltip.fragments": "%d Fragments",
   "gui.replikaentropie.fabricator.tooltip.free": "Free",
+  "gui.replikaentropie.makeshift_psu": "Makeshift PSU",
   "gui.replikaentropie.entropic_data_miner.download": "Download",
   "gui.replikaentropie.entropic_data_miner.no_events": "No events captured",
   "gui.replikaentropie.entropic_data_miner.event.unknown": "Unknown Event",
