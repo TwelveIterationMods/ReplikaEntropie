@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -35,11 +34,13 @@ public record AssemblerRecipe(List<CountedIngredient> ingredients,
             AssemblerRecipe::new
     );
 
+    @Deprecated
     public boolean matches(Container container, Level level) {
         return matches(new ContainerInput(container), level);
     }
 
-    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
+    @Deprecated
+    public ItemStack assemble(Container container) {
         return assemble(new ContainerInput(container));
     }
 
@@ -88,10 +89,6 @@ public record AssemblerRecipe(List<CountedIngredient> ingredients,
     @Override
     public String group() {
         return "";
-    }
-
-    public ItemStack getResultItem() {
-        return result.create();
     }
 
     @Override

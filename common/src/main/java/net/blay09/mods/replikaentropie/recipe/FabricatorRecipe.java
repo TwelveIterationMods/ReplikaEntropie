@@ -72,6 +72,11 @@ public record FabricatorRecipe(int scrap, int biomass, int fragments,
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public String group() {
         return "";
     }

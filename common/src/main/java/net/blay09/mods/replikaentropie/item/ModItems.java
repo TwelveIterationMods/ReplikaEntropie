@@ -76,8 +76,8 @@ public class ModItems {
         biosteel = items.register("biosteel", Item::new, it -> it).asDeferredItem();
         assemblyTicket = items.register("assembly_ticket", AssemblyTicketItem::new, it -> it).asDeferredItem();
         biomash = items.register("biomash", Item::new, it -> it.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.1f).build())).asDeferredItem();
-        nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.HELMET)).asDeferredItem();
-        brightVisionGoggles = items.register("brightvision_goggles", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.HELMET)).asDeferredItem();
+        nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET)).asDeferredItem();
+        brightVisionGoggles = items.register("brightvision_goggles", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET)).asDeferredItem();
         graviliftHarness = items.register("gravilift_harness", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE).durability(-1)).asDeferredItem();
         magphasers = items.register("magphasers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
         nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(-1)).asDeferredItem();
@@ -94,10 +94,10 @@ public class ModItems {
         biosteelLeggings = items.register("biosteel_leggings", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.LEGGINGS)).asDeferredItem();
         biosteelBoots = items.register("biosteel_boots", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.BOOTS)).asDeferredItem();
         hazmatLining = items.register("hazmat_lining", Item::new, it -> it).asDeferredItem();
-        hazmatHelmet = items.register("hazmat_helmet", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.HELMET)).asDeferredItem();
-        hazmatChestplate = items.register("hazmat_chestplate", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE)).asDeferredItem();
-        hazmatLeggings = items.register("hazmat_leggings", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.LEGGINGS)).asDeferredItem();
-        hazmatBoots = items.register("hazmat_boots", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS)).asDeferredItem();
+        hazmatHelmet = items.register("hazmat_helmet", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.HELMET)).asDeferredItem();
+        hazmatChestplate = items.register("hazmat_chestplate", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.CHESTPLATE)).asDeferredItem();
+        hazmatLeggings = items.register("hazmat_leggings", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.LEGGINGS)).asDeferredItem();
+        hazmatBoots = items.register("hazmat_boots", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.BOOTS)).asDeferredItem();
         replikaSkin = items.register("replika_skin", Item::new, it -> it).asDeferredItem();
         replikaHelmetFrame = items.register("replika_helmet_frame", Item::new, it -> it).asDeferredItem();
         replikaChestplateFrame = items.register("replika_chestplate_frame", Item::new, it -> it).asDeferredItem();

@@ -100,6 +100,11 @@ public record ResearchRecipe(
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public String group() {
         return "";
     }

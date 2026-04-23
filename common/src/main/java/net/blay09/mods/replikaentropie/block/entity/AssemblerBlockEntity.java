@@ -171,7 +171,7 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
             return;
         }
 
-        final var resultStack = assemblerRecipe.assemble(inputContainer, level.registryAccess());
+        final var resultStack = assemblerRecipe.assemble(inputContainer);
         final var output = resultContainer.getItem(0);
         if (!output.isEmpty()) {
             if (!ItemStack.isSameItemSameComponents(output, resultStack)

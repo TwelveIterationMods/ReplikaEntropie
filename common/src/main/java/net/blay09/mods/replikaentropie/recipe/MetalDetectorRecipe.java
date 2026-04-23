@@ -68,6 +68,11 @@ public record MetalDetectorRecipe(BlockState state, ResourceKey<LootTable> lootT
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public String group() {
         return "";
     }

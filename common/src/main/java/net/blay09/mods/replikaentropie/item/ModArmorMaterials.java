@@ -1,6 +1,7 @@
 package net.blay09.mods.replikaentropie.item;
 
 import net.blay09.mods.replikaentropie.tag.ModItemTags;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -9,6 +10,8 @@ import net.minecraft.world.item.equipment.ArmorMaterials;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import java.util.Collections;
+
+import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class ModArmorMaterials {
     public static final ArmorMaterial BIOSTEEL = new ArmorMaterial(
@@ -19,7 +22,7 @@ public class ModArmorMaterials {
             ArmorMaterials.IRON.toughness(),
             ArmorMaterials.IRON.knockbackResistance(),
             ModItemTags.REPAIRS_BIOSTEEL_ARMOR,
-            EquipmentAssets.createId("replikaentropie_biosteel")
+            ResourceKey.create(EquipmentAssets.ROOT_ID, id("biosteel"))
     );
 
     public static final ArmorMaterial REPLIKA = new ArmorMaterial(
@@ -30,7 +33,7 @@ public class ModArmorMaterials {
             ArmorMaterials.DIAMOND.toughness(),
             ArmorMaterials.DIAMOND.knockbackResistance(),
             ModItemTags.REPAIRS_REPLIKA_ARMOR,
-            EquipmentAssets.createId("replikaentropie_replika")
+            ResourceKey.create(EquipmentAssets.ROOT_ID, id("replika"))
     );
 
     public static final ArmorMaterial GOGGLES = new ArmorMaterial(
@@ -41,7 +44,7 @@ public class ModArmorMaterials {
             REPLIKA.toughness(),
             REPLIKA.knockbackResistance(),
             ModItemTags.REPAIRS_REPLIKA_ARMOR,
-            EquipmentAssets.createId("replikaentropie_goggles")
+            ResourceKey.create(EquipmentAssets.ROOT_ID, id("goggles"))
     );
 
     public static final ArmorMaterial HAZMAT = new ArmorMaterial(
@@ -52,7 +55,7 @@ public class ModArmorMaterials {
             ArmorMaterials.LEATHER.toughness(),
             ArmorMaterials.LEATHER.knockbackResistance(),
             ModItemTags.REPAIRS_HAZMAT_ARMOR,
-            EquipmentAssets.createId("replikaentropie_hazmat")
+            ResourceKey.create(EquipmentAssets.ROOT_ID, id("hazmat"))
     );
 
 }
