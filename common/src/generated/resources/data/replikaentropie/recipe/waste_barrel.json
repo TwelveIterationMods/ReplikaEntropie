@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:barrel",
+    "D": "minecraft:lime_dye",
+    "I": "minecraft:iron_ingot"
+  },
+  "pattern": [
+    "III",
+    "DBD",
+    "III"
+  ],
+  "result": {
+    "id": "replikaentropie:waste_barrel"
+  }
+}

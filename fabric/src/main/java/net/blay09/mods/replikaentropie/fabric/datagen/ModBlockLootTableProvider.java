@@ -18,6 +18,7 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
         dropSelf(ModBlocks.entropicDataMiner.value());
         dropSelf(ModBlocks.fabricator.value());
         dropSelf(ModBlocks.assembler.value());
+        dropSelf(ModBlocks.wasteBarrel.value());
         dropSelf(ModBlocks.fragmentalWaste.value());
         dropSelf(ModBlocks.biomassIncubator.value());
         dropSelf(ModBlocks.biomassHarvester.value());

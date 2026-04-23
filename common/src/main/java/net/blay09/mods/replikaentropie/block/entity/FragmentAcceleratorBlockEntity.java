@@ -23,6 +23,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -50,6 +51,8 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
     public static final float OUTPUT_MULTIPLIER = 0.25f;
     private static final float MULTIPLIER_BONUS_PER_TYPE = 0.1f;
     private static final float DIMINISHING_RETURNS = 0.5f;
+    private static final float WASTE_CHANCE = 0.1f;
+    private static final float IDLE_SPEED_FALLOFF = 0.1f;
 
     private final DefaultContainer backingContainer = new DefaultContainer(8) {
         @Override
@@ -61,7 +64,8 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         @Override
         public boolean canTakeItem(Container target, int slot, ItemStack itemStack) {
             return switch (slot) {
-                case 0, 1 -> true;
+                case 0 -> true;
+                case 1 -> itemStack.is(ModBlocks.fragmentalWaste.asItem());
                 default -> false;
             };
         }
@@ -69,8 +73,9 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
             return switch (slot) {
-                case 0, 1 -> false;
-                default -> true;
+                case 0 -> false;
+                case 1 -> itemStack.is(ModBlocks.wasteBarrel.asItem()) && getItem(1).isEmpty();
+                default -> !itemStack.is(ModBlocks.wasteBarrel.asItem());
             };
         }
     };
@@ -167,8 +172,7 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private void spreadWaste() {
-        final var wasteStack = wasteContainer.getItem(0);
-        if (wasteStack.is(ModBlocks.fragmentalWaste.asItem()) && level.getGameTime() % 20 == 0) {
+        if ((canProcess() || wasteContainer.getItem(0).is(ModBlocks.fragmentalWaste.asItem())) && level.getGameTime() % 20 == 0) {
             FragmentalWaste.applyWasteAroundBlockEntity(this);
         }
     }
@@ -176,7 +180,7 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
     private void processState() {
         if (!canProcess()) {
             processingTicks = 0;
-            speedMultiplier = 1f;
+            speedMultiplier = Math.max(1, speedMultiplier - IDLE_SPEED_FALLOFF);
             isSyncDirty = true;
             return;
         }
@@ -184,7 +188,9 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         processingTicks++;
         if (processingTicks >= getMaxProcessingTicks()) {
             processingTicks = 0;
-            generateWaste();
+            if (level.getRandom().nextFloat() <= WASTE_CHANCE) {
+                generateWaste();
+            }
             final var results = calculateOutput();
             fragments.add(results.fragments());
             final var maxSpeedMultiplier = Math.min(MAX_SPEED_MULTIPLIER, results.uniqueItems());
@@ -223,7 +229,7 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private boolean canProcess() {
-        return hasAnyValidInput() && hasSpaceForWaste() && fragments.hasSpace();
+        return hasAnyValidInput() && hasWasteBarrel() && fragments.hasSpace();
     }
 
     private boolean isValidInput(ItemStack itemStack) {
@@ -243,20 +249,16 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         return false;
     }
 
-    private boolean hasSpaceForWaste() {
+    private boolean hasWasteBarrel() {
         final var wasteSlotItem = wasteContainer.getItem(0);
-        return wasteSlotItem.isEmpty() ||
-                (wasteSlotItem.is(ModBlocks.fragmentalWaste.asItem()) &&
-                        wasteSlotItem.getCount() < wasteSlotItem.getMaxStackSize());
+        return wasteSlotItem.is(ModBlocks.wasteBarrel.asItem());
     }
 
     private void generateWaste() {
         final var wasteSlotItem = wasteContainer.getItem(0);
-        if (wasteSlotItem.isEmpty()) {
-            wasteContainer.setItem(0, new ItemStack(ModBlocks.fragmentalWaste, 1));
-        } else if (wasteSlotItem.is(ModBlocks.fragmentalWaste.asItem()) &&
-                wasteSlotItem.getCount() < wasteSlotItem.getMaxStackSize()) {
-            wasteSlotItem.grow(1);
+        if (wasteSlotItem.is(ModBlocks.wasteBarrel.asItem())) {
+            // We re-use the wasteSlotItem count, just to not accidentally void waste barrels that made it past the slot size limit
+            wasteContainer.setItem(0, ModBlocks.fragmentalWaste.createStack(wasteSlotItem.getCount()));
         }
     }
 

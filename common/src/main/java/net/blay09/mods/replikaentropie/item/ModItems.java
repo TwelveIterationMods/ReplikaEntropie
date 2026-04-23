@@ -56,9 +56,10 @@ public class ModItems {
     public static DeferredItem springBoots;
     public static DeferredItem semisonicSpeeders;
     public static DeferredItem assemblyTicket;
-    public static DeferredItem wasteBarrel;
     public static DeferredItem redpowerBattery;
     public static DeferredItem metalDetector;
+    public static DeferredItem wasteBarrelMinecart;
+    public static DeferredItem fragmentalWasteMinecart;
 
     public static void initialize(BalmItemRegistrar items) {
         handheldAnalyzer = items.register("handheld_analyzer", HandheldAnalyzerItem::new, it -> it.stacksTo(1)).asDeferredItem();
@@ -129,6 +130,7 @@ public class ModItems {
                     output.accept(ModBlocks.defragmentizer);
                     output.accept(ModBlocks.fragmentAccelerator);
                     output.accept(ModBlocks.chaosEngine);
+                    output.accept(ModBlocks.wasteBarrel);
                     output.accept(ModBlocks.fragmentalWaste);
                     output.accept(ModBlocks.replikaWorkbench);
                     output.accept(burstDrill);

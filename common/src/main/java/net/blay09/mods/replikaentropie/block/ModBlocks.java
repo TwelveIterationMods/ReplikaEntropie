@@ -3,6 +3,7 @@ package net.blay09.mods.replikaentropie.block;
 import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
 import net.blay09.mods.balm.world.level.block.DeferredBlock;
 import net.blay09.mods.replikaentropie.item.FragmentalWasteItem;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -13,6 +14,7 @@ public class ModBlocks {
     public static DeferredBlock entropicDataMiner;
     public static DeferredBlock fabricator;
     public static DeferredBlock assembler;
+    public static DeferredBlock wasteBarrel;
     public static DeferredBlock fragmentalWaste;
     public static DeferredBlock biomassIncubator;
     public static DeferredBlock biomassHarvester;
@@ -47,7 +49,11 @@ public class ModBlocks {
                 .withDefaultItem()
                 .asDeferredBlock();
 
-        fragmentalWaste = blocks.register("fragmental_waste", FragmentalWasteBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+        wasteBarrel = blocks.register("waste_barrel", WasteBarrelBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
+
+        fragmentalWaste = blocks.register("fragmental_waste", FragmentalWasteBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 0f).sound(SoundType.METAL))
                 .withItem(FragmentalWasteItem::new, it -> it.stacksTo(1))
                 .asDeferredBlock();
 

@@ -1,5 +1,8 @@
 package net.blay09.mods.replikaentropie.menu;
 
+import net.blay09.mods.replikaentropie.block.ModBlocks;
+import net.blay09.mods.replikaentropie.item.ModItems;
+import net.blay09.mods.replikaentropie.menu.slot.FragmentAcceleratorWasteSlot;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
@@ -35,7 +38,7 @@ public class FragmentAcceleratorMenu extends AbstractContainerMenu {
         addDataSlots(data);
 
         addSlot(new OutputSlot(container, 0, 61, 55));
-        addSlot(new OutputSlot(container, 1, 92, 55));
+        addSlot(new FragmentAcceleratorWasteSlot(container, 1, 92, 55));
 
         addSlot(new Slot(container, 2, 61, 26));
         addSlot(new Slot(container, 3, 92, 26));
@@ -56,7 +59,9 @@ public class FragmentAcceleratorMenu extends AbstractContainerMenu {
         }
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
+                .slotRange("waste", 1, 2)
                 .slotRange("inputs", 2, 8)
+                .route(it -> it.is(ModBlocks.wasteBarrel.asItem()), QuickMove.PLAYER, "waste")
                 .route(QuickMove.PLAYER, "inputs")
                 .build();
 

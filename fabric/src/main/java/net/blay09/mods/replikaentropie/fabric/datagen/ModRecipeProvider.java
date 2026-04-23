@@ -6,9 +6,10 @@ import net.blay09.mods.replikaentropie.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
@@ -23,164 +24,174 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         return new RecipeProvider(registries, output) {
             @Override
             public void buildRecipes() {
-        shapeless(RecipeCategory.REDSTONE, ModItems.chipset)
-                .requires(ModItems.damagedChipset)
-                .requires(Items.REDSTONE)
-                .requires(Items.STRING)
-                .unlockedBy("has_damaged_chipset", has(ModItems.damagedChipset))
-                .save(output);
+                shapeless(RecipeCategory.REDSTONE, ModItems.chipset)
+                        .requires(ModItems.damagedChipset)
+                        .requires(Items.REDSTONE)
+                        .requires(Items.STRING)
+                        .unlockedBy("has_damaged_chipset", has(ModItems.damagedChipset))
+                        .save(output);
 
-        shaped(RecipeCategory.TOOLS, ModItems.handheldAnalyzer)
-                .pattern("IIG")
-                .pattern("IRI")
-                .pattern("II ")
-                .define('I', Items.IRON_INGOT)
-                .define('R', Items.REDSTONE)
-                .define('G', Items.GLASS)
-                .unlockedBy("has_redstone", has(Items.REDSTONE))
-                .save(output);
+                shaped(RecipeCategory.TOOLS, ModItems.handheldAnalyzer)
+                        .pattern("IIG")
+                        .pattern("IRI")
+                        .pattern("II ")
+                        .define('I', Items.IRON_INGOT)
+                        .define('R', Items.REDSTONE)
+                        .define('G', Items.GLASS)
+                        .unlockedBy("has_redstone", has(Items.REDSTONE))
+                        .save(output);
 
-        shaped(RecipeCategory.TOOLS, ModItems.skyScraper)
-                .pattern("III")
-                .pattern("GCG")
-                .pattern("III")
-                .define('I', Items.IRON_INGOT)
-                .define('C', ModItems.chipset)
-                .define('G', Items.GLASS)
-                .unlockedBy("has_chipset", has(ModItems.chipset))
-                .save(output);
+                shaped(RecipeCategory.TOOLS, ModItems.skyScraper)
+                        .pattern("III")
+                        .pattern("GCG")
+                        .pattern("III")
+                        .define('I', Items.IRON_INGOT)
+                        .define('C', ModItems.chipset)
+                        .define('G', Items.GLASS)
+                        .unlockedBy("has_chipset", has(ModItems.chipset))
+                        .save(output);
 
-        shaped(RecipeCategory.MISC, ModBlocks.recycler)
-                .pattern("IDI")
-                .pattern("CSC")
-                .pattern("III")
-                .define('I', Items.IRON_INGOT)
-                .define('D', Items.DAYLIGHT_DETECTOR)
-                .define('S', Items.SHEARS)
-                .define('C', Items.IRON_CHAIN)
-                .unlockedBy("has_quartz", has(Items.QUARTZ))
-                .save(output);
+                shaped(RecipeCategory.MISC, ModBlocks.recycler)
+                        .pattern("IDI")
+                        .pattern("CSC")
+                        .pattern("III")
+                        .define('I', Items.IRON_INGOT)
+                        .define('D', Items.DAYLIGHT_DETECTOR)
+                        .define('S', Items.SHEARS)
+                        .define('C', Items.IRON_CHAIN)
+                        .unlockedBy("has_quartz", has(Items.QUARTZ))
+                        .save(output);
 
-        shaped(RecipeCategory.MISC, ModBlocks.assembler)
-                .pattern("IDI")
-                .pattern("CAC")
-                .pattern("III")
-                .define('I', Items.IRON_INGOT)
-                .define('D', Items.DAYLIGHT_DETECTOR)
-                .define('A', Items.ANVIL)
-                .define('C', Items.IRON_CHAIN)
-                .unlockedBy("has_quartz", has(Items.QUARTZ))
-                .save(output);
+                shaped(RecipeCategory.MISC, ModBlocks.assembler)
+                        .pattern("IDI")
+                        .pattern("CAC")
+                        .pattern("III")
+                        .define('I', Items.IRON_INGOT)
+                        .define('D', Items.DAYLIGHT_DETECTOR)
+                        .define('A', Items.ANVIL)
+                        .define('C', Items.IRON_CHAIN)
+                        .unlockedBy("has_quartz", has(Items.QUARTZ))
+                        .save(output);
 
-        shapeless(RecipeCategory.COMBAT, ModItems.biosteel)
-                .requires(Items.IRON_INGOT)
-                .requires(ModItems.scrap)
-                .requires(ModItems.scrap)
-                .requires(ModItems.biomass)
-                .requires(ModItems.biomass)
-                .requires(ModItems.biomass)
-                .unlockedBy("has_biomass", has(ModItems.biomass))
-                .save(output);
+                shaped(RecipeCategory.MISC, ModBlocks.wasteBarrel)
+                        .pattern("III")
+                        .pattern("DBD")
+                        .pattern("III")
+                        .define('I', Items.IRON_INGOT)
+                        .define('D', Items.LIME_DYE)
+                        .define('B', Items.BARREL)
+                        .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.biosteelHelmet)
-                .pattern("BBB")
-                .pattern("B B")
-                .define('B', ModItems.biosteel)
-                .unlockedBy("has_biosteel", has(ModItems.biosteel))
-                .save(output);
+                shapeless(RecipeCategory.COMBAT, ModItems.biosteel)
+                        .requires(Items.IRON_INGOT)
+                        .requires(ModItems.scrap)
+                        .requires(ModItems.scrap)
+                        .requires(ModItems.biomass)
+                        .requires(ModItems.biomass)
+                        .requires(ModItems.biomass)
+                        .unlockedBy("has_biomass", has(ModItems.biomass))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.biosteelChestplate)
-                .pattern("B B")
-                .pattern("BBB")
-                .pattern("BBB")
-                .define('B', ModItems.biosteel)
-                .unlockedBy("has_biosteel", has(ModItems.biosteel))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.biosteelHelmet)
+                        .pattern("BBB")
+                        .pattern("B B")
+                        .define('B', ModItems.biosteel)
+                        .unlockedBy("has_biosteel", has(ModItems.biosteel))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.biosteelLeggings)
-                .pattern("BBB")
-                .pattern("B B")
-                .pattern("B B")
-                .define('B', ModItems.biosteel)
-                .unlockedBy("has_biosteel", has(ModItems.biosteel))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.biosteelChestplate)
+                        .pattern("B B")
+                        .pattern("BBB")
+                        .pattern("BBB")
+                        .define('B', ModItems.biosteel)
+                        .unlockedBy("has_biosteel", has(ModItems.biosteel))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.biosteelBoots)
-                .pattern("B B")
-                .pattern("B B")
-                .define('B', ModItems.biosteel)
-                .unlockedBy("has_biosteel", has(ModItems.biosteel))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.biosteelLeggings)
+                        .pattern("BBB")
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('B', ModItems.biosteel)
+                        .unlockedBy("has_biosteel", has(ModItems.biosteel))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.hazmatHelmet)
-                .pattern("BBB")
-                .pattern("B B")
-                .define('B', ModItems.hazmatLining)
-                .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.biosteelBoots)
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('B', ModItems.biosteel)
+                        .unlockedBy("has_biosteel", has(ModItems.biosteel))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.hazmatChestplate)
-                .pattern("B B")
-                .pattern("BBB")
-                .pattern("BBB")
-                .define('B', ModItems.hazmatLining)
-                .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.hazmatHelmet)
+                        .pattern("BBB")
+                        .pattern("B B")
+                        .define('B', ModItems.hazmatLining)
+                        .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.hazmatLeggings)
-                .pattern("BBB")
-                .pattern("B B")
-                .pattern("B B")
-                .define('B', ModItems.hazmatLining)
-                .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.hazmatChestplate)
+                        .pattern("B B")
+                        .pattern("BBB")
+                        .pattern("BBB")
+                        .define('B', ModItems.hazmatLining)
+                        .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.hazmatBoots)
-                .pattern("B B")
-                .pattern("B B")
-                .define('B', ModItems.hazmatLining)
-                .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.hazmatLeggings)
+                        .pattern("BBB")
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('B', ModItems.hazmatLining)
+                        .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.replikaHelmetFrame)
-                .pattern("BDB")
-                .pattern("B B")
-                .define('B', ModItems.replikaSkin)
-                .define('D', Items.DIAMOND)
-                .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.hazmatBoots)
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('B', ModItems.hazmatLining)
+                        .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.replikaChestplateFrame)
-                .pattern("B B")
-                .pattern("BDB")
-                .pattern("BBB")
-                .define('B', ModItems.replikaSkin)
-                .define('D', Items.DIAMOND)
-                .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.replikaHelmetFrame)
+                        .pattern("BDB")
+                        .pattern("B B")
+                        .define('B', ModItems.replikaSkin)
+                        .define('D', Items.DIAMOND)
+                        .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.replikaLeggingsFrame)
-                .pattern("BDB")
-                .pattern("B B")
-                .pattern("B B")
-                .define('B', ModItems.replikaSkin)
-                .define('D', Items.DIAMOND)
-                .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.replikaChestplateFrame)
+                        .pattern("B B")
+                        .pattern("BDB")
+                        .pattern("BBB")
+                        .define('B', ModItems.replikaSkin)
+                        .define('D', Items.DIAMOND)
+                        .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
+                        .save(output);
 
-        shaped(RecipeCategory.COMBAT, ModItems.replikaBootsFrame)
-                .pattern("D D")
-                .pattern("B B")
-                .define('B', ModItems.replikaSkin)
-                .define('D', Items.DIAMOND)
-                .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.replikaLeggingsFrame)
+                        .pattern("BDB")
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('B', ModItems.replikaSkin)
+                        .define('D', Items.DIAMOND)
+                        .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
+                        .save(output);
 
-        shapeless(RecipeCategory.FOOD, ModItems.biomash)
-                .requires(ModItems.biomass)
-                .requires(Items.BOWL)
-                .unlockedBy("has_biomass", has(ModItems.biomass))
-                .save(output);
+                shaped(RecipeCategory.COMBAT, ModItems.replikaBootsFrame)
+                        .pattern("D D")
+                        .pattern("B B")
+                        .define('B', ModItems.replikaSkin)
+                        .define('D', Items.DIAMOND)
+                        .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
+                        .save(output);
+
+                shapeless(RecipeCategory.FOOD, ModItems.biomash)
+                        .requires(ModItems.biomass)
+                        .requires(Items.BOWL)
+                        .unlockedBy("has_biomass", has(ModItems.biomass))
+                        .save(output);
             }
         };
     }

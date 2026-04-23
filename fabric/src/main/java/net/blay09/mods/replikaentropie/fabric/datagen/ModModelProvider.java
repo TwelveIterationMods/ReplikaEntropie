@@ -22,6 +22,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateHorizontalBlock(ModBlocks.recycler.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.fabricator.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.assembler.value());
+        generators.createNonTemplateModelBlock(ModBlocks.wasteBarrel.value());
         generators.createNonTemplateModelBlock(ModBlocks.fragmentalWaste.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.biomassIncubator.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.biomassHarvester.value());
@@ -37,6 +38,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.registerSimpleItemModel(ModBlocks.recycler.value(), ModelLocationUtils.getModelLocation(ModBlocks.recycler.value()));
         generators.registerSimpleItemModel(ModBlocks.fabricator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fabricator.value()));
         generators.registerSimpleItemModel(ModBlocks.assembler.value(), ModelLocationUtils.getModelLocation(ModBlocks.assembler.value()));
+        generators.registerSimpleItemModel(ModBlocks.wasteBarrel.value(), ModelLocationUtils.getModelLocation(ModBlocks.wasteBarrel.value()));
         generators.registerSimpleItemModel(ModBlocks.fragmentalWaste.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentalWaste.value()));
         generators.registerSimpleItemModel(ModBlocks.biomassIncubator.value(), ModelLocationUtils.getModelLocation(ModBlocks.biomassIncubator.value()));
         generators.registerSimpleItemModel(ModBlocks.biomassHarvester.value(), ModelLocationUtils.getModelLocation(ModBlocks.biomassHarvester.value()));
