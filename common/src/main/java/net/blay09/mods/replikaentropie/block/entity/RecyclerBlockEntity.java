@@ -4,6 +4,9 @@ import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
+import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
+import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
+import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.RecyclerMenu;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
@@ -29,7 +32,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public class RecyclerBlockEntity extends BlockEntity implements BalmContainerProvider {
+public class RecyclerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmEnergyStorageProvider {
+
+    private static final int PROCESSING_TICKS = 100;
+    private static final int ENERGY_CAPACITY = 10000;
+    private static final int ENERGY_INPUT_RATE = 1000;
+    private static final int ENERGY_COST_PER_TICK = 10;
 
     private final DefaultContainer backingContainer = new DefaultContainer(4) {
         @Override
@@ -47,7 +55,12 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
         }
     };
 
-    private static final int PROCESSING_TICKS = 100;
+    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+        @Override
+        public void setChanged() {
+            RecyclerBlockEntity.this.setChanged();
+        }
+    };
 
     private final Container inputContainer = new SubContainer(backingContainer, 0, 1);
     private final Container scrapContainer = new SubContainer(backingContainer, 1, 2);
@@ -70,6 +83,8 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
                 case RecyclerMenu.DATA_FRACTIONAL_SCRAP -> scrap.getFractionalAmountAsMenuData();
                 case RecyclerMenu.DATA_FRACTIONAL_BIOMASS -> biomass.getFractionalAmountAsMenuData();
                 case RecyclerMenu.DATA_FRACTIONAL_FRAGMENTS -> fragments.getFractionalAmountAsMenuData();
+                case RecyclerMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
+                case RecyclerMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
                 default -> 0;
             };
         }
@@ -126,6 +141,16 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
         };
     }
 
+    @Override
+    public EnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage(Direction side) {
+        return energyStorage;
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, RecyclerBlockEntity blockEntity) {
         blockEntity.processTick(level);
     }
@@ -143,6 +168,12 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
             return;
         }
 
+        int drained = energyStorage.drain(ENERGY_COST_PER_TICK, true);
+        if (drained < ENERGY_COST_PER_TICK) {
+            return;
+        }
+
+        energyStorage.drain(ENERGY_COST_PER_TICK, false);
         processingTicks++;
         if (processingTicks >= PROCESSING_TICKS) {
             inputStack.shrink(1);
@@ -164,6 +195,7 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
         scrap.setFractionalAmount(input.getFloatOr("FractionalScrap", 0));
         biomass.setFractionalAmount(input.getFloatOr("FractionalBiomass", 0));
         fragments.setFractionalAmount(input.getFloatOr("FractionalFragments", 0));
+        energyStorage.deserialize(input);
     }
 
     @Override
@@ -173,5 +205,6 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
         output.putFloat("FractionalScrap", scrap.getFractionalAmount());
         output.putFloat("FractionalBiomass", biomass.getFractionalAmount());
         output.putFloat("FractionalFragments", fragments.getFractionalAmount());
+        energyStorage.serialize(output);
     }
 }

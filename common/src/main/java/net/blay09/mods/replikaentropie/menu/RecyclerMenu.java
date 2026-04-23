@@ -24,7 +24,9 @@ public class RecyclerMenu extends AbstractContainerMenu {
     public static final int DATA_FRACTIONAL_SCRAP = 2;
     public static final int DATA_FRACTIONAL_BIOMASS = 3;
     public static final int DATA_FRACTIONAL_FRAGMENTS = 4;
-    public static final int DATA_COUNT = 5;
+    public static final int DATA_CURRENT_POWER = 5;
+    public static final int DATA_MAX_POWER = 6;
+    public static final int DATA_COUNT = 7;
 
     public RecyclerMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, new SimpleContainer(4), new SimpleContainerData(DATA_COUNT));
@@ -77,6 +79,15 @@ public class RecyclerMenu extends AbstractContainerMenu {
 
     public float getFractionalFragments() {
         return Mth.clamp(data.get(DATA_FRACTIONAL_FRAGMENTS) / 100f, 0f, 0.99f);
+    }
+
+    public float getPowerProgress() {
+        final var maxPower = data.get(DATA_MAX_POWER);
+        if (maxPower <= 0) {
+            return 0f;
+        }
+
+        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 1f, 1f);
     }
 
     @Override
