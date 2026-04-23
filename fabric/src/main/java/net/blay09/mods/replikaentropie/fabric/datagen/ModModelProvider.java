@@ -53,6 +53,7 @@ public class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerators generators) {
         generators.generateFlatItem(ModItems.damagedChipset.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.makeshiftPSU.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.data.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.scrap.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.biomass.asItem(), ModelTemplates.FLAT_ITEM);

@@ -15,6 +15,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/recycler.png");
+    private static final Identifier LEFT_WING = id("left_wing");
 
     private final SegmentedProgressRenderer topProgressRenderer = new SegmentedProgressRenderer(BACKGROUND, 256, 256)
             .addInvisibleSegment(28)
@@ -52,5 +53,8 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
         fractionalScrapRenderer.render(graphics, leftPos, topPos, menu.getFractionalScrap());
         fractionalBiomassRenderer.render(graphics, leftPos, topPos, menu.getFractionalBiomass());
         fractionalFragmentsRenderer.render(graphics, leftPos, topPos, menu.getFractionalFragments());
+
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 26, topPos, 25, 90);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 26, topPos + 91, 25, 25);
     }
 }

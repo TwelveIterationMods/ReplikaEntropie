@@ -56,7 +56,7 @@ public class ModItems {
     public static DeferredItem springBoots;
     public static DeferredItem semisonicSpeeders;
     public static DeferredItem assemblyTicket;
-    public static DeferredItem redpowerBattery;
+    public static DeferredItem makeshiftPSU;
     public static DeferredItem metalDetector;
     public static DeferredItem wasteBarrelMinecart;
     public static DeferredItem fragmentalWasteMinecart;
@@ -64,6 +64,7 @@ public class ModItems {
     public static void initialize(BalmItemRegistrar items) {
         handheldAnalyzer = items.register("handheld_analyzer", HandheldAnalyzerItem::new, it -> it.stacksTo(1)).asDeferredItem();
         skyScraper = items.register("sky_scraper", SkyScraperItem::new, it -> it.stacksTo(1)).asDeferredItem();
+        makeshiftPSU = items.register("makeshift_psu", Item::new, it -> it).asDeferredItem();
         damagedChipset = items.register("damaged_chipset", Item::new, it -> it).asDeferredItem();
         data = items.register("data", DataItem::new, it -> it.food(new FoodProperties.Builder().alwaysEdible().build())).asDeferredItem();
         scrap = items.register("scrap", Item::new, it -> it).asDeferredItem();

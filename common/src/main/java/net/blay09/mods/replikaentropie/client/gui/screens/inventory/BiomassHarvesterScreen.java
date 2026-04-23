@@ -14,11 +14,12 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class BiomassHarvesterScreen extends AbstractContainerScreen<BiomassHarvesterMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/biomass_harvester.png");
+    private static final Identifier LEFT_WING = id("left_wing");
 
     private final ProgressRenderer fractionalBiomass = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(100, 50).size(3, 26).uv(176, 0);
 
     public BiomassHarvesterScreen(BiomassHarvesterMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 206);
+        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 207);
 
         inventoryLabelY = imageHeight - 94;
     }
@@ -28,6 +29,10 @@ public class BiomassHarvesterScreen extends AbstractContainerScreen<BiomassHarve
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         fractionalBiomass.render(graphics, leftPos, topPos, menu.getFractionalBiomass());
+
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 26, topPos, 25, 90);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 26, topPos + 91, 25, 25);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos + imageWidth + 1, topPos, 25, 90);
     }
 
 }

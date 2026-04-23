@@ -9,7 +9,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
@@ -91,6 +90,17 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .requires(ModItems.biomass)
                         .requires(ModItems.biomass)
                         .unlockedBy("has_biomass", has(ModItems.biomass))
+                        .save(output);
+
+                shaped(RecipeCategory.MISC, ModItems.makeshiftPSU)
+                        .pattern(" PC")
+                        .pattern("TRT")
+                        .pattern("CP ")
+                        .define('P', Items.PISTON)
+                        .define('C', Items.COPPER_INGOT)
+                        .define('R', Items.REDSTONE)
+                        .define('T', Items.REPEATER)
+                        .unlockedBy("has_redstone", has(Items.REDSTONE))
                         .save(output);
 
                 shaped(RecipeCategory.COMBAT, ModItems.biosteelHelmet)
