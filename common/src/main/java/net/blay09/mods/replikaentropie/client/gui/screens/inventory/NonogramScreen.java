@@ -82,7 +82,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
         final var errors = menu.getErrors();
 
         for (int column = 0; column < clues.width(); column++) {
-            final int color = errors.erroredColumns().contains(column) ? 0xFFFF3636 : 0x363636;
+            final int color = errors.erroredColumns().contains(column) ? 0xFFFF3636 : 0xFF363636;
             final var x = leftPos + PADDING_LEFT + column * CELL_SIZE + 1;
             var y = topPos + PADDING_TOP - 6;
             final var columnClues = clues.columnClues(column);
@@ -94,7 +94,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
         }
 
         for (int row = 0; row < clues.height(); row++) {
-            final int color = errors.erroredRows().contains(row) ? 0xFFFF3636 : 0x363636;
+            final int color = errors.erroredRows().contains(row) ? 0xFFFF3636 : 0xFF363636;
             var x = leftPos + PADDING_LEFT - 6;
             final var y = topPos + PADDING_TOP + row * CELL_SIZE + 1;
             final var rowClues = clues.rowClues(row);
