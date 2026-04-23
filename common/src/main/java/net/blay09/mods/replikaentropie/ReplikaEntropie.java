@@ -27,13 +27,17 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
+    // TODO Right now the only way to get a Sky Scraper is a damaged chipset, which is only obtainable through loot. That makes this mod incompatible with void worlds and a nuisance on existing worlds...
     // TODO Recycler should have some better output indicator, the output bar is easy to miss right now
     // TODO a way to skip research, e.g. an Auto Decrypter Tool. Maybe a sidebar with all tools that can be dropped onto the nonogram.
     // TODO Sheep and Pig gave me no data?
     // TODO Introduce Entropic Energy
     // TODO "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
     // TODO Expand Assembler to nine input slots. That way it can also work as an auto-crafter.
-    // TODO Biomass Incubator should do a single crop, and do biomass as secondary step
+    // TODO Biomass Incubator should do a single crop, and do biomass as an optional secondary step
+    // TODO Rethink Biomass Incubator water usage, or provide a way to create water
+    // TODO World Eater should do scrap as an optional secondary step, so it can be used as a Quarry
+    // TODO Would be nice to have some better visuals for the World Eater. It's not very obvious what blocks it would target right now.
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 

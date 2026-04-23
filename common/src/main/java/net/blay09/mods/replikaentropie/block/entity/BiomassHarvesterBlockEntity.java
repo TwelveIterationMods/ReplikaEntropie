@@ -346,7 +346,7 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
         backingContainer.getItems().clear();
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
         try {
-            state = State.valueOf(input.getStringOr("State", "IDLE"));
+            state = input.getString("State").map(State::valueOf).orElse(State.IDLE);
         } catch (IllegalArgumentException e) {
             state = State.IDLE;
         }
