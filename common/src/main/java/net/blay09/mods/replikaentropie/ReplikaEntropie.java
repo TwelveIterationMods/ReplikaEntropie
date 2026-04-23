@@ -27,21 +27,18 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
-    // TODO Right now the only way to get a Sky Scraper is a damaged chipset, which is only obtainable through loot. That makes this mod incompatible with void worlds and a nuisance on existing worlds...
-    // TODO Recycler should have some better output indicator, the output bar is easy to miss right now
+    // TODO Metal Detector to find Dig Spots (copy from Little Joys). Contains e.g. damaged chipset, scrap, iron ingot.
     // TODO a way to skip research, e.g. an Auto Decrypter Tool. Maybe a sidebar with all tools that can be dropped onto the nonogram.
     // TODO Sheep and Pig gave me no data?
     // TODO Introduce Entropic Energy
     // TODO "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
-    // TODO Expand Assembler to nine input slots. That way it can also work as an auto-crafter.
     // TODO Biomass Incubator should do a single crop, and do biomass as an optional secondary step
-    // TODO Rethink Biomass Incubator water usage, or provide a way to create water
     // TODO World Eater should do scrap as an optional secondary step, so it can be used as a Quarry
     // TODO Would be nice to have some better visuals for the World Eater. It's not very obvious what blocks it would target right now.
     // TODO Change the Defragmentizer. Instead of being another convert redstone to fragment machine, make it convert fragments to energy.
     // TODO Maybe have the Entropic Data Miner create Data items instead of downloadable list items
     // TODO not the biggest fan of the Fabricator yet. It feels odd to turn Scrap into Hazmat Lining.
-    // TODO Armor is not rendering (hazmat)
+    // TODO Armor is not rendering
     // TODO Fragment Accelerator should require Waste Barrels.
     // TODO Purification Panel - a horizontal double block frame that you can walk through to get rid of status effects
     // TODO Purify Fragmental Waste barrels by throwing them through a purification panel. One at a time, and needs to pass through multiple times.

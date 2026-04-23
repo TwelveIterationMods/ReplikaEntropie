@@ -23,6 +23,10 @@ public class ModBlocks {
     public static DeferredBlock fragmentAccelerator;
     public static DeferredBlock chaosEngine;
     public static DeferredBlock recycler;
+    public static DeferredBlock kitchenSink;
+    public static DeferredBlock bluePrinter;
+    public static DeferredBlock solarSink;
+    public static DeferredBlock dataBasedGenerator;
 
     public static void initialize(BalmBlockRegistrar blocks) {
         blocks.enableBlockDescriptionPrefixForItems();
@@ -44,7 +48,7 @@ public class ModBlocks {
                 .asDeferredBlock();
 
         fragmentalWaste = blocks.register("fragmental_waste", FragmentalWasteBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withItem(FragmentalWasteItem::new)
+                .withItem(FragmentalWasteItem::new, it -> it.stacksTo(1))
                 .asDeferredBlock();
 
         biomassIncubator = blocks.register("biomass_incubator", BiomassIncubatorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))

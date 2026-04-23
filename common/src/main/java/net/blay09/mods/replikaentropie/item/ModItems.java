@@ -56,6 +56,9 @@ public class ModItems {
     public static DeferredItem springBoots;
     public static DeferredItem semisonicSpeeders;
     public static DeferredItem assemblyTicket;
+    public static DeferredItem wasteBarrel;
+    public static DeferredItem redpowerBattery;
+    public static DeferredItem metalDetector;
 
     public static void initialize(BalmItemRegistrar items) {
         handheldAnalyzer = items.register("handheld_analyzer", HandheldAnalyzerItem::new, it -> it.stacksTo(1)).asDeferredItem();
