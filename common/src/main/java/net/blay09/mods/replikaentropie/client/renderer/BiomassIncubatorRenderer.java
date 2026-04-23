@@ -35,65 +35,49 @@ public class BiomassIncubatorRenderer implements BlockEntityRenderer<BiomassIncu
     @Override
     public void extractRenderState(BiomassIncubatorBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
-        for (int i = 0; i < 3; i++) {
-            state.seedBlocks[i].clear();
-        }
+
 
         final var soilContainer = blockEntity.getSoilContainer();
         final var seedsContainer = blockEntity.getSeedsContainer();
 
-        for (int i = 0; i < 3; i++) {
-            final var soilStack = soilContainer.getItem(i);
-            final var soilBlock = Block.byItem(soilStack.getItem());
-            final var soilState = soilBlock.defaultBlockState();
-            blockModelResolver.update(state.soilBlocks[i], soilState, blockDisplayContext);
+        final var soilStack = soilContainer.getItem(0);
+        final var soilBlock = Block.byItem(soilStack.getItem());
+        final var soilState = soilBlock.defaultBlockState();
+        blockModelResolver.update(state.soilBlock, soilState, blockDisplayContext);
 
-            final var seedStack = seedsContainer.getItem(i);
-            final var seedBlock = Block.byItem(seedStack.getItem());
-            var seedState = seedBlock instanceof CropBlock cropBlock
-                    ? cropBlock.getStateForAge(Mth.floor(cropBlock.getMaxAge() * blockEntity.getGrowthProgress(i)))
-                    : seedBlock.defaultBlockState();
-            if (!seedState.isAir()) {
-                blockModelResolver.update(state.seedBlocks[i], seedState, blockDisplayContext);
-            }
+        final var seedStack = seedsContainer.getItem(0);
+        final var seedBlock = Block.byItem(seedStack.getItem());
+        var seedState = seedBlock instanceof CropBlock cropBlock
+                ? cropBlock.getStateForAge(Mth.floor(cropBlock.getMaxAge() * blockEntity.getGrowthProgress(0)))
+                : seedBlock.defaultBlockState();
+        state.seedBlock.clear();
+        if (!seedState.isAir()) {
+            blockModelResolver.update(state.seedBlock, seedState, blockDisplayContext);
         }
     }
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
         final var scale = 0.25f;
-        final var xs = new float[]{4f / 16f, 8f / 16f, 12f / 16f};
-        final var y = 0.126f;
-        final var zs = new float[]{7f / 16f, 10f / 16f, 7f / 16f};
 
-        for (int i = 0; i < 3; i++) {
+        poseStack.pushPose();
+        poseStack.translate(0.5f, 2/16f, 0.5f);
+        poseStack.scale(1f - 4/16f, 0.001f, 1f - 4/16f);
+        poseStack.translate(-0.5f, 0f, -0.5f);
+
+        state.soilBlock.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        if (!state.seedBlock.isEmpty()) {
             poseStack.pushPose();
-            poseStack.translate(xs[i], y, zs[i]);
-            poseStack.scale(scale, scale, scale);
-            poseStack.translate(-0.5f, 0f, -0.5f);
-
-            state.soilBlocks[i].submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
-            if (!state.seedBlocks[i].isEmpty()) {
-                poseStack.pushPose();
-                poseStack.translate(0f, 1f, 0f);
-                state.seedBlocks[i].submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
-                poseStack.popPose();
-            }
-
+            poseStack.translate(0f, 1f, 0f);
+            state.seedBlock.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
         }
+
+        poseStack.popPose();
     }
 
     public static class State extends BlockEntityRenderState {
-        public final BlockModelRenderState[] soilBlocks = new BlockModelRenderState[]{
-                new BlockModelRenderState(),
-                new BlockModelRenderState(),
-                new BlockModelRenderState()
-        };
-        public final BlockModelRenderState[] seedBlocks = new BlockModelRenderState[]{
-                new BlockModelRenderState(),
-                new BlockModelRenderState(),
-                new BlockModelRenderState()
-        };
+        public final BlockModelRenderState soilBlock = new BlockModelRenderState();
+        public final BlockModelRenderState seedBlock = new BlockModelRenderState();
     }
 }
