@@ -98,5 +98,6 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.slowphasers.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.stompers.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.springBoots.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.automaticHackTool.asItem(), ModelTemplates.FLAT_ITEM);
     }
 }

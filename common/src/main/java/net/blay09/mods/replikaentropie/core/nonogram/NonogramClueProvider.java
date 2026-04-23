@@ -4,4 +4,8 @@ public interface NonogramClueProvider {
     NonogramClues clues();
 
     boolean validate(NonogramState nonogramState);
+
+    default int solution(int column, int row) {
+        return 0;
+    }
 }

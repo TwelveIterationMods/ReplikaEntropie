@@ -4,9 +4,14 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.client.gui.ExtendedGuiGraphics;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.AbstractNonogramMenu;
+import net.blay09.mods.replikaentropie.menu.NonogramMenu;
+import net.blay09.mods.replikaentropie.network.protocol.NonogramAutoHackMessage;
 import net.blay09.mods.replikaentropie.network.protocol.NonogramMarkMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -24,6 +29,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu> {
 
     private static final Identifier BACKGROUND = id("textures/gui/container/nonogram.png");
+    private static final Identifier LEFT_WING = id("left_wing");
     private static final int BACKGROUND_WIDTH = 135;
     private static final int BACKGROUND_HEIGHT = 135;
 
@@ -33,6 +39,14 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
     private static final int PADDING_BOTTOM = 10;
 
     private static final int CELL_SIZE = 18;
+    private static final WidgetSprites AUTO_HACK_BUTTON_SPRITES = new WidgetSprites(
+            id("automatic_hack_tool_button"),
+            id("automatic_hack_tool_button_disabled"),
+            id("automatic_hack_tool_button_highlighted"),
+            id("automatic_hack_tool_button_disabled")
+    );
+    private static final Component AUTO_HACK_MESSAGE = Component.translatable("gui.replikaentropie.nonogram.auto_hack");
+    private static final Component NO_AUTO_HACK_MESSAGE = Component.translatable("gui.replikaentropie.nonogram.no_auto_hack");
 
     private int draggingButton = -1;
     private int dragOnlyAffects;
@@ -42,6 +56,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
     private boolean completionSoundPlayed;
 
     private NonogramHelpButton helpButton;
+    private ImageButton autoHackButton;
 
     public NonogramScreen(AbstractNonogramMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, PADDING_LEFT + PADDING_RIGHT + CELL_SIZE * menu.getClues().width(), PADDING_TOP + PADDING_BOTTOM + CELL_SIZE * menu.getClues().height());
@@ -53,6 +68,13 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
 
         helpButton = new NonogramHelpButton(leftPos + 20, topPos + 18, 16);
         addRenderableWidget(helpButton);
+
+        autoHackButton = new ImageButton(leftPos - 24, topPos + 5, 20, 20, AUTO_HACK_BUTTON_SPRITES, _ ->
+                Balm.networking().sendToServer(new NonogramAutoHackMessage(menu.containerId)), AUTO_HACK_MESSAGE);
+        final var canAutoHack = menu instanceof NonogramMenu nonogramMenu && nonogramMenu.canAutoHack();
+        autoHackButton.setTooltip(Tooltip.create(canAutoHack ? AUTO_HACK_MESSAGE : NO_AUTO_HACK_MESSAGE));
+        autoHackButton.active = canAutoHack;
+        addRenderableWidget(autoHackButton);
     }
 
     @Override
@@ -120,6 +142,8 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
                 }
             }
         }
+
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 2, 26, 26);
     }
 
     private boolean overlapsClues(int x, int y, int width, int height) {
@@ -291,6 +315,10 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        if (autoHackButton != null) {
+            autoHackButton.active = menu instanceof NonogramMenu nonogramMenu && nonogramMenu.canAutoHack();
+        }
+
         if (menu.isCompleted()) {
             if (!completionSoundPlayed) {
                 minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.PLAYER_LEVELUP, 0f));
@@ -311,4 +339,5 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
             Balm.networking().sendToServer(new NonogramMarkMessage(menu.containerId, column, row, mark));
         }
     }
+
 }

@@ -49,6 +49,7 @@ public class ModItems {
     public static DeferredItem graviliftHarness;
     public static DeferredItem magphasers;
     public static DeferredItem nullphaser;
+    public static DeferredItem automaticHackTool;
     public static DeferredItem burstDrill;
     public static DeferredItem oreVacuum;
     public static DeferredItem slowphasers;
@@ -79,6 +80,7 @@ public class ModItems {
         graviliftHarness = items.register("gravilift_harness", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE).durability(-1)).asDeferredItem();
         magphasers = items.register("magphasers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
         nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(-1)).asDeferredItem();
+        automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> it.stacksTo(64)).asDeferredItem();
         burstDrill = items.register("burst_drill", BurstDrillItem::new, it -> it.durability(-1)).asDeferredItem();
         oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(-1)).asDeferredItem();
         metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(-1)).asDeferredItem();
@@ -115,6 +117,7 @@ public class ModItems {
                     output.accept(chipset);
                     output.accept(skyScraper);
                     output.accept(handheldAnalyzer);
+                    output.accept(automaticHackTool);
                     output.accept(scrap);
                     output.accept(biomass);
                     output.accept(fragments);

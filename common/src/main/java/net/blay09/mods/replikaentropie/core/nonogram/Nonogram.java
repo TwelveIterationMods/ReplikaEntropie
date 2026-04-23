@@ -58,6 +58,11 @@ public class Nonogram implements NonogramClueProvider {
         return true;
     }
 
+    @Override
+    public int solution(int column, int row) {
+        return grid[index(column, row)];
+    }
+
     private int index(int column, int row) {
         return row * width + column;
     }

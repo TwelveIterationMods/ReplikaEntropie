@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
+    // TODO Metal Detection JEI
     // TODO a way to skip research, e.g. an Auto Decrypter Tool. Maybe a sidebar with all tools that can be dropped onto the nonogram.
     // TODO Sheep and Pig gave me no data?
     // TODO "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye

@@ -15,6 +15,8 @@ public class ModNetworking {
         networking.registerClientboundPacket(BurstEnergyMessage.TYPE, BurstEnergyMessage.class, BurstEnergyMessage.STREAM_CODEC, BurstEnergyMessage::handle);
         networking.registerClientboundPacket(AbilityStateMessage.TYPE, AbilityStateMessage.class, AbilityStateMessage.STREAM_CODEC, AbilityStateMessage::handle);
         networking.registerServerboundPacket(ToggleAbilityMessage.TYPE, ToggleAbilityMessage.class, ToggleAbilityMessage.STREAM_CODEC, ToggleAbilityMessage::handle);
+        networking.registerClientboundPacket(NonogramAutoHackResultMessage.TYPE, NonogramAutoHackResultMessage.class, NonogramAutoHackResultMessage.STREAM_CODEC, NonogramAutoHackResultMessage::handle);
+        networking.registerServerboundPacket(NonogramAutoHackMessage.TYPE, NonogramAutoHackMessage.class, NonogramAutoHackMessage.STREAM_CODEC, NonogramAutoHackMessage::handle);
         networking.registerServerboundPacket(NonogramMarkMessage.TYPE, NonogramMarkMessage.class, NonogramMarkMessage.STREAM_CODEC, NonogramMarkMessage::handle);
         networking.registerServerboundPacket(MakeshiftPsuMessage.TYPE, MakeshiftPsuMessage.class, MakeshiftPsuMessage.STREAM_CODEC, MakeshiftPsuMessage::handle);
     }
