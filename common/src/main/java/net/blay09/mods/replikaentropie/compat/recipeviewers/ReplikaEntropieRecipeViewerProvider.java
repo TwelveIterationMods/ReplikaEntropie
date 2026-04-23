@@ -49,6 +49,11 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
 
     @Override
     public void initialize(RecipeViewerRegistrar registrar) {
+        registrar.registerIngredientInfo(ModItems.assemblyTicket, Component.translatable("jei.replikaentropie.assembly_ticket.info"));
+        registrar.registerIngredientInfo(ModItems.data, Component.translatable("jei.replikaentropie.data.info"));
+        registrar.registerIngredientInfo(ModItems.damagedChipset, Component.translatable("jei.replikaentropie.damaged_chipset.info"));
+        registrar.registerIngredientInfo(ModBlocks.fragmentalWaste, Component.translatable("jei.replikaentropie.fragmental_waste.info"));
+
         registerRecyclerRecipes(registrar);
         registerAssemblerRecipes(registrar);
         registerBiomassIncubatorRecipes(registrar);
