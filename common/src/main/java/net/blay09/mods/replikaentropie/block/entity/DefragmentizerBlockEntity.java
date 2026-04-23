@@ -11,10 +11,13 @@ import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
 import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
@@ -30,6 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -237,6 +241,17 @@ public class DefragmentizerBlockEntity extends BlockEntity implements BalmContai
             output.putInt("MaxProcessingTicks" + i, maxProcessingTicks[i]);
             output.putFloat("FractionalFragments" + i, fragments[i].getFractionalAmount());
         }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return BalmBlockEntityUtils.createUpdateTag(registries, this::saveAdditional);
+    }
+
+    @Override
+    @Nullable
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return BalmBlockEntityUtils.createUpdatePacket(this);
     }
 
     @Override

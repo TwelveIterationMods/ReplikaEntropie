@@ -10,9 +10,13 @@ import net.blay09.mods.replikaentropie.menu.WorldEaterMenu;
 import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
@@ -27,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -292,4 +297,16 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
         scannedPositions.values().stream().map(BlockPos::asLong).forEach(scannedPositionsArray::add);
         ContainerHelper.saveAllItems(output.child("Preview"), previewContainer.getItems());
     }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return BalmBlockEntityUtils.createUpdateTag(registries, this::saveAdditional);
+    }
+
+    @Override
+    @Nullable
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return BalmBlockEntityUtils.createUpdatePacket(this);
+    }
+
 }

@@ -38,6 +38,8 @@ public class ReplikaEntropie {
     // TODO Rethink Biomass Incubator water usage, or provide a way to create water
     // TODO World Eater should do scrap as an optional secondary step, so it can be used as a Quarry
     // TODO Would be nice to have some better visuals for the World Eater. It's not very obvious what blocks it would target right now.
+    // TODO Change the Defragmentizer. Instead of being another convert redstone to fragment machine, make it convert fragments to energy.
+    // TODO Maybe have the Entropic Data Miner create Data items instead of downloadable list items
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 
