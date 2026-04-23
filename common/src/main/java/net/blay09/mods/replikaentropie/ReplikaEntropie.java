@@ -27,25 +27,40 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
-    // TODO Metal Detection JEI
-    // TODO a way to skip research, e.g. an Auto Decrypter Tool. Maybe a sidebar with all tools that can be dropped onto the nonogram.
-    // TODO Sheep and Pig gave me no data?
-    // TODO "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
-    // TODO Biomass Incubator should do a single crop, and do biomass as an optional secondary step
-    // TODO World Eater should do scrap as an optional secondary step, so it can be used as a Quarry
-    // TODO Would be nice to have some better visuals for the World Eater. It's not very obvious what blocks it would target right now.
-    // TODO Change the Defragmentizer. Instead of being another convert redstone to fragment machine, make it convert fragments to energy.
-    // TODO Maybe have the Entropic Data Miner create Data items instead of downloadable list items
-    // TODO not the biggest fan of the Fabricator yet. It feels odd to turn Scrap into Hazmat Lining.
-    // TODO Armor is not rendering
-    // TODO Decontaminate Fragmental Waste barrels by placing them below a Water Sink (random tick)
-    // TODO Add Fragmental Waste Minecarts so they can be run below Water Sinks for decontamination. Hook Dispenser and Hopper to allow input/output from cart.
-    // TODO The Burst Drill sucks. Redesign it.
-    // TODO Broken culling in Replika Workbench
-    // TODO Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
-    // TODO Introduce durability (energy-based) for all items. Burst still exists, and can be separately upgraded. Essentialy, durability recharges the burst, while burst determines use duration at a time.
-    // TODO Stompers not working
-    // TODO Remove Replika Frame
+    // Stability
+    // - Fix up the commands, take player and require GM
+    // - Broken culling in Replika Workbench
+    // - Stompers not working
+    // - Armor is not rendering
+
+    // Rework Blocks
+    // - World Eater should do have an intermediate output buffer, so it can be used as a Quarry
+    // - World Eater should have some in-world visuals indicating the area it's eating
+    // - Add toggles for Biomass / Scrap Production in machines
+    // - Entropic Data Miner should create Data items instead of the downloadable list. No more tracking event log.
+    // - not the biggest fan of the Fabricator yet. It feels odd to turn Scrap into Hazmat Lining.
+    // - Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
+
+    // Rework Items
+    // - Remove the Burst Drill for now.
+    // - Remove Replika Frame - should no longer be necessary unless we want to make the recipe more microcrafted.
+
+    // New Blocks
+    // - "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
+    // - Solar Sink as the first energy-providing upgrade, placed on top of machine
+    // - Water Sink as an infinite water generator, rains down to fill machines below and decontaminate Fragmental Waste
+    // - Defragmentizer -> Fragmental Generator, generates power from fragments
+    // - I think we should have a Biofuel generator operating on refined biomass
+
+    // New Items
+    // - Metal Detector JEI support
+    // - Metal Detector hold to use
+    // - Metal Detector Item Sprite
+    // - Introduce durability (energy-based) for all items. Burst still exists, and can be separately upgraded. Essentialy, durability recharges the burst, while burst determines use duration at a time.
+
+    // New Entities
+    // - Fragmental Waste Minecarts so they can be run below Water Sinks for decontamination.
+    // - Hook Dispenser and Hopper to allow input/output of Fragmental Waste from cart.
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 

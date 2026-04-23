@@ -14,9 +14,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,6 +83,15 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
             return;
         }
 
+        final var usedScannerItemStack = player.getUseItem();
+        final var dataForEntity = ResearchEntityRecords.getCollectableData(entity);
+        if (usedScannerItemStack.is(ModItems.handheldAnalyzer)) {
+            grantData(player, dataForEntity);
+        } else {
+            ReplikaEntropie.logger.warn("Tried to analyze entity without using an analyzer");
+            return;
+        }
+
         final var data = getPersistentData(player);
         if (entity instanceof Player targetPlayer) {
             final var analyzedPlayers = data.getCompoundOrEmpty(ANALYZED_PLAYERS);
@@ -139,10 +150,11 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
         Balm.networking().sendTo(player, new AnalyzedPlayersMessage(true, analyzedPlayers));
 
         final var analyzedEntityIds = data.getCompoundOrEmpty(ANALYZED_ENTITIES);
-        final var analyzedEntities = analyzedEntityIds.keySet().stream()
+        final var analyzedEntities = new ArrayList<EntityType<?>>();
+        analyzedEntityIds.keySet().stream()
                 .map(Identifier::parse)
                 .map(BuiltInRegistries.ENTITY_TYPE::getValue)
-                .toList();
+                .forEach(analyzedEntities::add);
         Balm.networking().sendTo(player, new AnalyzedEntitiesMessage(true, analyzedEntities));
     }
 
