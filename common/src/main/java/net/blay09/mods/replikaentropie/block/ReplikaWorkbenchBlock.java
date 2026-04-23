@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.block.entity.ReplikaWorkbenchBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -21,10 +21,19 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public class ReplikaWorkbenchBlock extends BaseEntityBlock {
     public static final MapCodec<ReplikaWorkbenchBlock> CODEC = simpleCodec(ReplikaWorkbenchBlock::new);
+
+    public static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(Shapes.or(
+            Shapes.box(0, 0, 0, 1, 5/16f, 1),
+            Shapes.box(0.5f/16f, 15/16f, 1/16f, 1 - 0.5f/16f, 1, 1 - 0.5f/16f),
+            Shapes.box(0.5f/16f, 5/16f, 1/16f, 2.5/16f, 1, 1 - 0.5f/16f),
+            Shapes.box(1 - 2.5f/16f, 5/16f, 1/16f, 1 - 0.5f/16f, 1, 1 - 0.5f/16f),
+            Shapes.box(0.5f/16f, 5/16f, 13.5/16f, 1 - 0.5f/16f, 1, 1 - 0.5f/16f)
+    ).optimize());
 
     public ReplikaWorkbenchBlock(Properties properties) {
         super(properties);
@@ -64,5 +73,10 @@ public class ReplikaWorkbenchBlock extends BaseEntityBlock {
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPES.get(state.getValue(BlockStateProperties.HORIZONTAL_FACING));
     }
 }

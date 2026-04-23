@@ -29,7 +29,6 @@ public class ReplikaEntropie {
 
     // Stability
     // - Fix up the commands, take player and require GM
-    // - Broken culling in Replika Workbench
     // - Stompers not working
     // - Armor is not rendering
 
