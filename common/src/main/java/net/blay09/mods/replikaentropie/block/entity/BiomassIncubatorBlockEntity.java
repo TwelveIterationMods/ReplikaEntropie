@@ -42,7 +42,6 @@ import org.jspecify.annotations.Nullable;
 
 public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmFluidTankProvider, BalmMenuProvider<Unit> {
 
-    private static final int WATERING_TICKS = 100;
     private static final int GROWTH_TICKS = 200;
 
     private final DefaultContainer backingContainer = new DefaultContainer(8) {
@@ -56,7 +55,9 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         public boolean canPlaceItem(int index, ItemStack stack) {
             return switch (index) {
                 case 1 -> stack.is(Items.WATER_BUCKET);
-                case 2, 3, 4 -> level != null && BiomassIncubatorRecipe.getRecipe(level, stack).isPresent();
+                case 2 ->
+                        level != null && BiomassIncubatorRecipe.getRecipe(level, stack).map(it -> it.soil().test(stack)).orElse(false);
+                case 3 -> level != null && BiomassIncubatorRecipe.getRecipe(level, stack).isPresent();
                 default -> false;
             };
         }
@@ -74,21 +75,13 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     private final Container resultContainer = new SubContainer(backingContainer, 0, 1);
     private final Container outputContainer = new SubContainer(backingContainer, 0, 2);
     private final Container waterContainer = new SubContainer(backingContainer, 1, 2);
-    private final Container seedsContainer = new SubContainer(backingContainer, 2, 5);
-    private final DefaultContainer soilContainer = new DefaultContainer(3)  {
-        @Override
-        public void setChanged() {
-            BiomassIncubatorBlockEntity.this.setChanged();
-            isSyncDirty = true;
-        }
-    };
+    private final Container soilContainer = new SubContainer(backingContainer, 2, 3);
+    private final Container seedsContainer = new SubContainer(backingContainer, 3, 4);
     private final DefaultFluidTank waterTank = new DefaultFluidTank(3000);
 
-    private final int[] growthTicks = new int[3];
     private final FractionalResource biomass = new FractionalResource(resultContainer, 0, ModItems.biomass);
-    private final int[] waterUsesRemaining = new int[3];
 
-    private int wateringTicks;
+    private int growthTicks;
 
     private boolean isSyncDirty;
     private int ticksSinceSync;
@@ -97,13 +90,9 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         @Override
         public int get(int index) {
             return switch (index) {
-                case BiomassIncubatorMenu.DATA_WATERING_TIME -> wateringTicks;
-                case BiomassIncubatorMenu.DATA_MAX_WATERING_TIME -> WATERING_TICKS;
                 case BiomassIncubatorMenu.DATA_WATER_TANK -> waterTank.getAmount();
                 case BiomassIncubatorMenu.DATA_MAX_WATER_TANK -> waterTank.getCapacity();
-                case BiomassIncubatorMenu.DATA_GROWTH_TIME_1 -> growthTicks[0];
-                case BiomassIncubatorMenu.DATA_GROWTH_TIME_2 -> growthTicks[1];
-                case BiomassIncubatorMenu.DATA_GROWTH_TIME_3 -> growthTicks[2];
+                case BiomassIncubatorMenu.DATA_GROWTH_TIME -> growthTicks;
                 case BiomassIncubatorMenu.DATA_MAX_GROWTH_TIME -> GROWTH_TICKS;
                 case BiomassIncubatorMenu.DATA_FRACTIONAL_BIOMASS -> biomass.getFractionalAmountAsMenuData();
                 default -> 0;
@@ -122,16 +111,11 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
 
     public BiomassIncubatorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(ModBlockEntities.biomassIncubator.value(), blockPos, blockState);
-
-        soilContainer.setItem(0, new ItemStack(Items.DIRT));
-        soilContainer.setItem(1, new ItemStack(Items.DIRT));
-        soilContainer.setItem(2, new ItemStack(Items.DIRT));
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, BiomassIncubatorBlockEntity blockEntity) {
         blockEntity.broadcastChanges();
         blockEntity.processBuckets();
-        blockEntity.processWatering();
         blockEntity.processGrowth();
     }
 
@@ -145,13 +129,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     }
 
     private boolean isGrowing() {
-        for (int growthTick : growthTicks) {
-            if (growthTick > 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return growthTicks > 0;
     }
 
     private void processBuckets() {
@@ -163,48 +141,18 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         }
     }
 
-    private void processWatering() {
-        if (canWater()) {
-            wateringTicks++;
-
-            final var wateringProgress = (float) wateringTicks / WATERING_TICKS;
-            if (wateringProgress >= 1f && soilContainer.getItem(2).is(Items.DIRT)) {
-                soilContainer.setItem(2, new ItemStack(Items.FARMLAND));
-                waterUsesRemaining[2] = 9;
-                waterTank.drain(Fluids.WATER, 334, false);
-            } else if (wateringProgress >= 0.65f && soilContainer.getItem(1).is(Items.DIRT)) {
-                soilContainer.setItem(1, new ItemStack(Items.FARMLAND));
-                waterUsesRemaining[1] = 9;
-                waterTank.drain(Fluids.WATER, 333, false);
-            } else if (wateringProgress >= 0.29f && soilContainer.getItem(0).is(Items.DIRT)) {
-                soilContainer.setItem(0, new ItemStack(Items.FARMLAND));
-                waterUsesRemaining[0] = 9;
-                waterTank.drain(Fluids.WATER, 333, false);
-            }
-
-            if (wateringTicks >= WATERING_TICKS) {
-                wateringTicks = 0;
-                setChanged();
-            }
-        } else {
-            wateringTicks = 0;
-        }
-    }
-
-    private boolean isSlotWatered(int slotIndex) {
-        return soilContainer.getItem(slotIndex).is(Items.FARMLAND);
+    private boolean hasWater() {
+        return !getFluidTank().isEmpty();
     }
 
     private void processGrowth() {
-        for (int i = 0; i < 3; i++) {
-            if (isSlotWatered(i) && hasValidSeed(i)) {
-                growthTicks[i]++;
-                if (growthTicks[i] >= GROWTH_TICKS) {
-                    completeGrowth(i);
-                }
-            } else {
-                growthTicks[i] = 0;
+        if (hasWater() && hasValidSeed()) {
+            growthTicks++;
+            if (growthTicks >= GROWTH_TICKS) {
+                completeGrowth();
             }
+        } else {
+            growthTicks = 0;
         }
     }
 
@@ -213,37 +161,23 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
             return false;
         }
 
-        for (int i = 0; i < 3; i++) {
-            if (!isSlotWatered(i)) {
-                return true;
-            }
+        if (!hasWater()) {
+            return true;
         }
 
         return false;
     }
 
-    private boolean hasValidSeed(int slotIndex) {
-        final var seedStack = seedsContainer.getItem(slotIndex);
+    private boolean hasValidSeed() {
+        final var seedStack = seedsContainer.getItem(0);
         return level != null && BiomassIncubatorRecipe.getRecipe(level, seedStack).isPresent();
     }
 
-    private void completeGrowth(int slotIndex) {
-        final var seedStack = seedsContainer.getItem(slotIndex);
+    private void completeGrowth() {
+        final var seedStack = seedsContainer.getItem(0);
         final var recipe = BiomassIncubatorRecipe.getRecipe(level, seedStack);
         recipe.ifPresent(biomassIncubatorRecipe -> biomass.add(biomassIncubatorRecipe.biomass()));
-
-        if (soilContainer.getItem(slotIndex).is(Items.FARMLAND)) {
-            if (waterUsesRemaining[slotIndex] > 0) {
-                waterUsesRemaining[slotIndex]--;
-            }
-            if (waterUsesRemaining[slotIndex] <= 0) {
-                soilContainer.setItem(slotIndex, new ItemStack(Items.DIRT));
-            }
-        } else {
-            soilContainer.setItem(slotIndex, new ItemStack(Items.DIRT));
-            waterUsesRemaining[slotIndex] = 0;
-        }
-        growthTicks[slotIndex] = 0;
+        growthTicks = 0;
         setChanged();
     }
 
@@ -251,17 +185,9 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     protected void loadAdditional(ValueInput input) {
         backingContainer.getItems().clear();
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
-        soilContainer.getItems().clear();
-        input.child("Soil").ifPresent(child -> ContainerHelper.loadAllItems(child, soilContainer.getItems()));
         input.child("WaterTank").ifPresent(waterTank::deserialize);
 
-        wateringTicks = input.getIntOr("WateringTicks", 0);
-        for (int i = 0; i < 3; i++) {
-            waterUsesRemaining[i] = input.getIntOr("WaterUsesRemaining" + i, 0);
-        }
-        for (int i = 0; i < 3; i++) {
-            growthTicks[i] = input.getIntOr("GrowthTicks" + i, 0);
-        }
+        growthTicks = input.getIntOr("GrowthTicks", 0);
 
         biomass.setFractionalAmount(input.getFloatOr("FractionalBiomass", 0));
     }
@@ -271,17 +197,9 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         ContainerHelper.saveAllItems(output, backingContainer.getItems());
         waterTank.serialize(output.child("WaterTank"));
 
-        output.putInt("WateringTicks", wateringTicks);
-        for (int i = 0; i < 3; i++) {
-            output.putInt("WaterUsesRemaining" + i, waterUsesRemaining[i]);
-        }
-        for (int i = 0; i < 3; i++) {
-            output.putInt("GrowthTicks" + i, growthTicks[i]);
-        }
+        output.putInt("GrowthTicks", growthTicks);
 
         output.putFloat("FractionalBiomass", biomass.getFractionalAmount());
-
-        ContainerHelper.saveAllItems(output.child("Soil"), soilContainer.getItems());
     }
 
     @Override
@@ -302,7 +220,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new BiomassIncubatorMenu(containerId, inventory, backingContainer, soilContainer, dataAccess);
+        return new BiomassIncubatorMenu(containerId, inventory, backingContainer, dataAccess);
     }
 
     @Override
@@ -342,7 +260,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         return seedsContainer;
     }
 
-    public float getGrowthProgress(int index) {
-        return Mth.clamp(growthTicks[index] / (float) GROWTH_TICKS, 0f, 1f);
+    public float getGrowthProgress() {
+        return Mth.clamp(growthTicks / (float) GROWTH_TICKS, 0f, 1f);
     }
 }

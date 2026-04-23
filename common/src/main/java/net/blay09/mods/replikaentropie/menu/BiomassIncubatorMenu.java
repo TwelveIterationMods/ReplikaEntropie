@@ -20,16 +20,12 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 public class BiomassIncubatorMenu extends AbstractContainerMenu {
 
-    public static final int DATA_WATERING_TIME = 0;
-    public static final int DATA_MAX_WATERING_TIME = 1;
-    public static final int DATA_WATER_TANK = 2;
-    public static final int DATA_MAX_WATER_TANK = 3;
-    public static final int DATA_GROWTH_TIME_1 = 4;
-    public static final int DATA_GROWTH_TIME_2 = 5;
-    public static final int DATA_GROWTH_TIME_3 = 6;
-    public static final int DATA_MAX_GROWTH_TIME = 7;
-    public static final int DATA_FRACTIONAL_BIOMASS = 8;
-    public static final int DATA_COUNT = 9;
+    public static final int DATA_WATER_TANK = 0;
+    public static final int DATA_MAX_WATER_TANK = 1;
+    public static final int DATA_GROWTH_TIME = 2;
+    public static final int DATA_MAX_GROWTH_TIME = 3;
+    public static final int DATA_FRACTIONAL_BIOMASS = 4;
+    public static final int DATA_COUNT = 5;
 
     private final Container container;
     private final ContainerData data;
@@ -37,27 +33,27 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu {
     private final QuickMove.Routing quickMove;
 
     public BiomassIncubatorMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainer(3), new SimpleContainerData(DATA_COUNT));
+        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT));
     }
 
-    public BiomassIncubatorMenu(int containerId, Inventory playerInventory, Container container, Container soilContainer, ContainerData data) {
+    public BiomassIncubatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
         super(ModMenus.biomassIncubator.value(), containerId);
         this.container = container;
         checkContainerSize(container, 8);
         this.data = data;
         addDataSlots(data);
 
-        addSlot(new OutputSlot(container, 0, 125, 80));
+        addSlot(new OutputSlot(container, 0, 133, 53));
 
-        addSlot(new IngredientSlot(container, 1, 26, 80, Ingredient.of(Items.WATER_BUCKET)));
+        addSlot(new IngredientSlot(container, 1, 24, 80, Ingredient.of(Items.WATER_BUCKET)));
 
-        addSlot(new Slot(container, 2, 51, 23));
-        addSlot(new Slot(container, 3, 69, 23));
-        addSlot(new Slot(container, 4, 87, 23));
+        addSlot(new Slot(container, 2, 59, 62));
+        addSlot(new Slot(container, 3, 59, 37));
 
-        addSlot(new ReadonlySlot(soilContainer, 0, 51, 41));
-        addSlot(new ReadonlySlot(soilContainer, 1, 69, 41));
-        addSlot(new ReadonlySlot(soilContainer, 2, 87, 41));
+        addSlot(new Slot(container, 4, 94, 26));
+        addSlot(new Slot(container, 5, 94, 44));
+        addSlot(new Slot(container, 6, 94, 62));
+        addSlot(new Slot(container, 7, 94, 80));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; ++j) {
@@ -71,7 +67,8 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu {
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
                 .slot("water", 1)
-                .slotRange("seeds", 2, 5)
+                .slot("soil", 2)
+                .slot("seeds", 3)
                 .route(it -> it.is(Items.WATER_BUCKET), QuickMove.PLAYER, "water")
                 .route(it -> BiomassIncubatorRecipe.getRecipe(playerInventory.player.level(), it).isPresent(), QuickMove.PLAYER, "seeds")
                 .build();
@@ -95,18 +92,6 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu {
         container.stopOpen(player);
     }
 
-    public int getWateringTime() {
-        return data.get(DATA_WATERING_TIME);
-    }
-
-    public int getMaxWateringTime() {
-        return data.get(DATA_MAX_WATERING_TIME);
-    }
-
-    public float getWateringProgress() {
-        return getMaxWateringTime() > 0 ? (float) getWateringTime() / getMaxWateringTime() : 0f;
-    }
-
     public int getWaterTank() {
         return data.get(DATA_WATER_TANK);
     }
@@ -119,21 +104,16 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu {
         return getMaxWaterCapacity() > 0 ? (float) getWaterTank() / getMaxWaterCapacity() : 0f;
     }
 
-    public int getGrowthTime(int slot) {
-        return switch (slot) {
-            case 0 -> data.get(DATA_GROWTH_TIME_1);
-            case 1 -> data.get(DATA_GROWTH_TIME_2);
-            case 2 -> data.get(DATA_GROWTH_TIME_3);
-            default -> 0;
-        };
+    public int getGrowthTime() {
+        return data.get(DATA_GROWTH_TIME);
     }
 
     public int getMaxGrowthTime() {
         return data.get(DATA_MAX_GROWTH_TIME);
     }
 
-    public float getGrowthProgress(int slot) {
-        return getMaxGrowthTime() > 0 ? (float) getGrowthTime(slot) / getMaxGrowthTime() : 0f;
+    public float getGrowthProgress() {
+        return getMaxGrowthTime() > 0 ? (float) getGrowthTime() / getMaxGrowthTime() : 0f;
     }
 
     public float getFractionalBiomass() {

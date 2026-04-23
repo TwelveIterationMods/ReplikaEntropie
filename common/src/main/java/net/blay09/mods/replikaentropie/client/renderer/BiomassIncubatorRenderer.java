@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -38,17 +39,19 @@ public class BiomassIncubatorRenderer implements BlockEntityRenderer<BiomassIncu
 
 
         final var soilContainer = blockEntity.getSoilContainer();
-        final var seedsContainer = blockEntity.getSeedsContainer();
-
         final var soilStack = soilContainer.getItem(0);
         final var soilBlock = Block.byItem(soilStack.getItem());
-        final var soilState = soilBlock.defaultBlockState();
+        var soilState = soilBlock.defaultBlockState();
+        if (soilState.is(Blocks.DIRT)) {
+            soilState = Blocks.FARMLAND.defaultBlockState();
+        }
         blockModelResolver.update(state.soilBlock, soilState, blockDisplayContext);
 
+        final var seedsContainer = blockEntity.getSeedsContainer();
         final var seedStack = seedsContainer.getItem(0);
         final var seedBlock = Block.byItem(seedStack.getItem());
         var seedState = seedBlock instanceof CropBlock cropBlock
-                ? cropBlock.getStateForAge(Mth.floor(cropBlock.getMaxAge() * blockEntity.getGrowthProgress(0)))
+                ? cropBlock.getStateForAge(Mth.floor(cropBlock.getMaxAge() * blockEntity.getGrowthProgress()))
                 : seedBlock.defaultBlockState();
         state.seedBlock.clear();
         if (!seedState.isAir()) {
@@ -58,11 +61,9 @@ public class BiomassIncubatorRenderer implements BlockEntityRenderer<BiomassIncu
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
-        final var scale = 0.25f;
-
         poseStack.pushPose();
-        poseStack.translate(0.5f, 2/16f, 0.5f);
-        poseStack.scale(1f - 4/16f, 0.001f, 1f - 4/16f);
+        poseStack.translate(0.5f, 2 / 16f, 0.5f);
+        poseStack.scale(1f - 4 / 16f, 0.001f, 1f - 4 / 16f);
         poseStack.translate(-0.5f, 0f, -0.5f);
 
         state.soilBlock.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);

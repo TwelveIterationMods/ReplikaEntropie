@@ -19,17 +19,20 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-public record BiomassIncubatorRecipe(Ingredient ingredient, ItemStackTemplate result, float biomass)
+public record BiomassIncubatorRecipe(Ingredient seed, Ingredient soil, ItemStackTemplate result, float biomass)
         implements Recipe<SingleRecipeInput>, PreviewableRecipe {
     private static final MapCodec<BiomassIncubatorRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Ingredient.CODEC.fieldOf("ingredient").forGetter(BiomassIncubatorRecipe::ingredient),
+            Ingredient.CODEC.fieldOf("seed").forGetter(BiomassIncubatorRecipe::seed),
+            Ingredient.CODEC.fieldOf("soil").forGetter(BiomassIncubatorRecipe::soil),
             ItemStackTemplate.CODEC.fieldOf("result").forGetter(BiomassIncubatorRecipe::result),
             Codec.FLOAT.fieldOf("biomass").forGetter(BiomassIncubatorRecipe::biomass)
     ).apply(instance, BiomassIncubatorRecipe::new));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, BiomassIncubatorRecipe> STREAM_CODEC = StreamCodec.composite(
             Ingredient.CONTENTS_STREAM_CODEC,
-            BiomassIncubatorRecipe::ingredient,
+            BiomassIncubatorRecipe::seed,
+            Ingredient.CONTENTS_STREAM_CODEC,
+            BiomassIncubatorRecipe::soil,
             ItemStackTemplate.STREAM_CODEC,
             BiomassIncubatorRecipe::result,
             ByteBufCodecs.FLOAT,
@@ -46,7 +49,7 @@ public record BiomassIncubatorRecipe(Ingredient ingredient, ItemStackTemplate re
 
     @Override
     public boolean matches(SingleRecipeInput input, Level level) {
-        return ingredient.test(input.item());
+        return seed.test(input.item());
     }
 
     @Override
@@ -85,7 +88,7 @@ public record BiomassIncubatorRecipe(Ingredient ingredient, ItemStackTemplate re
 
     @Override
     public PlacementInfo placementInfo() {
-        return PlacementInfo.create(ingredient);
+        return PlacementInfo.create(seed);
     }
 
     @Override

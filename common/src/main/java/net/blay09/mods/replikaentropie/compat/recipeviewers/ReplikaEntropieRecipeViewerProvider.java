@@ -120,9 +120,9 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                             slots.renderOnlySlot(26, 19).add(Items.FARMLAND);
                             slots.renderOnlySlot(44, 19).add(Items.FARMLAND);
                             slots.renderOnlySlot(62, 19).add(Items.FARMLAND);
-                            slots.inputSlot(26, 1).add(recipe.ingredient());
-                            slots.inputSlot(44, 1).add(recipe.ingredient());
-                            slots.inputSlot(62, 1).add(recipe.ingredient());
+                            slots.inputSlot(26, 1).add(recipe.seed());
+                            slots.inputSlot(44, 1).add(recipe.seed());
+                            slots.inputSlot(62, 1).add(recipe.seed());
                             slots.outputSlot(100, 58).add(resourceStack(ModItems.biomass, recipe.biomass()));
                         }));
     }
