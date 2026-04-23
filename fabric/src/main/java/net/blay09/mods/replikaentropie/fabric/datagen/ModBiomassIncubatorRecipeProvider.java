@@ -2,6 +2,7 @@ package net.blay09.mods.replikaentropie.fabric.datagen;
 
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.recipe.BiomassIncubatorRecipe;
+import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.Holder;
@@ -12,6 +13,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
@@ -29,19 +32,25 @@ public class ModBiomassIncubatorRecipeProvider extends FabricRecipeProvider {
         return new RecipeProvider(registries, output) {
             @Override
             public void buildRecipes() {
-                incubatorRecipe(Items.WHEAT_SEEDS, Items.WHEAT, Items.DIRT, 0.2f).save(output);
-                incubatorRecipe(Items.BEETROOT_SEEDS, Items.BEETROOT, Items.DIRT, 0.2f).save(output);
-                incubatorRecipe(Items.PUMPKIN_SEEDS, Items.PUMPKIN, Items.DIRT, 0.2f).save(output);
-                incubatorRecipe(Items.MELON_SEEDS, Items.MELON, Items.DIRT, 0.2f).save(output);
-                incubatorRecipe(Items.TORCHFLOWER_SEEDS, Items.TORCHFLOWER, Items.DIRT, 0.2f).save(output);
-                incubatorRecipe(Items.CARROT, Items.CARROT, Items.DIRT, 0.2f).save(output);
-                incubatorRecipe(Items.POTATO, Items.POTATO, Items.DIRT, 0.2f).save(output);
+                incubatorRecipe(Ingredient.of(Items.WHEAT_SEEDS), tag(ModItemTags.BIOMASS_INCUBATOR_FARMLAND_LIKE), new ItemStackTemplate(Items.WHEAT), 0.2f).save(output);
+                incubatorRecipe(Ingredient.of(Items.BEETROOT_SEEDS), tag(ModItemTags.BIOMASS_INCUBATOR_FARMLAND_LIKE), new ItemStackTemplate(Items.BEETROOT), 0.2f).save(output);
+                incubatorRecipe(Ingredient.of(Items.PUMPKIN_SEEDS), tag(ModItemTags.BIOMASS_INCUBATOR_FARMLAND_LIKE), new ItemStackTemplate(Items.PUMPKIN), 0.2f).save(output);
+                incubatorRecipe(Ingredient.of(Items.MELON_SEEDS), tag(ModItemTags.BIOMASS_INCUBATOR_FARMLAND_LIKE), new ItemStackTemplate(Items.MELON), 0.2f).save(output);
+                incubatorRecipe(Ingredient.of(Items.TORCHFLOWER_SEEDS), tag(ModItemTags.BIOMASS_INCUBATOR_FARMLAND_LIKE), new ItemStackTemplate(Items.TORCHFLOWER), 0.2f).save(output);
+                incubatorRecipe(Ingredient.of(Items.CARROT), tag(ModItemTags.BIOMASS_INCUBATOR_FARMLAND_LIKE), new ItemStackTemplate(Items.CARROT), 0.2f).save(output);
+                incubatorRecipe(Ingredient.of(Items.POTATO), tag(ModItemTags.BIOMASS_INCUBATOR_FARMLAND_LIKE), new ItemStackTemplate(Items.POTATO), 0.2f).save(output);
+                incubatorRecipe(Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.SOUL_SAND), new ItemStackTemplate(Items.NETHER_WART), 0.2f).save(output);
+                incubatorRecipe(Ingredient.of(Items.CHORUS_FRUIT), Ingredient.of(Items.END_STONE), new ItemStackTemplate(Items.CHORUS_PLANT), 0.2f).save(output);
             }
         };
     }
 
     private BiomassIncubatorRecipeBuilder incubatorRecipe(Item seed, Item soil, Item output, float biomass) {
-        return new BiomassIncubatorRecipeBuilder(Ingredient.of(seed), Ingredient.of(soil), new ItemStackTemplate(output), biomass);
+        return incubatorRecipe(Ingredient.of(seed), Ingredient.of(soil), new ItemStackTemplate(output), biomass);
+    }
+
+    private BiomassIncubatorRecipeBuilder incubatorRecipe(Ingredient seed, Ingredient soil, ItemStackTemplate output, float biomass) {
+        return new BiomassIncubatorRecipeBuilder(seed, soil, output, biomass);
     }
 
     @Override

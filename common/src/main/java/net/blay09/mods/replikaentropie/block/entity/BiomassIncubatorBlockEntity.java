@@ -3,6 +3,9 @@ package net.blay09.mods.replikaentropie.block.entity;
 import net.blay09.mods.balm.platform.fluid.BalmFluidTankProvider;
 import net.blay09.mods.balm.platform.fluid.DefaultFluidTank;
 import net.blay09.mods.balm.platform.fluid.FluidTank;
+import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
+import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
+import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
@@ -30,6 +33,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -40,9 +44,12 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
-public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmFluidTankProvider, BalmMenuProvider<Unit> {
+public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmFluidTankProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
 
     private static final int GROWTH_TICKS = 200;
+    private static final int ENERGY_CAPACITY = 10000;
+    private static final int ENERGY_INPUT_RATE = 1000;
+    private static final int ENERGY_COST_PER_TICK = 10;
 
     private final DefaultContainer backingContainer = new DefaultContainer(8) {
         @Override
@@ -77,7 +84,14 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     private final Container waterContainer = new SubContainer(backingContainer, 1, 2);
     private final Container soilContainer = new SubContainer(backingContainer, 2, 3);
     private final Container seedsContainer = new SubContainer(backingContainer, 3, 4);
-    private final DefaultFluidTank waterTank = new DefaultFluidTank(3000);
+    private final DefaultFluidTank waterTank = new DefaultFluidTank(1000);
+    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+        @Override
+        public void setChanged() {
+            BiomassIncubatorBlockEntity.this.setChanged();
+            isSyncDirty = true;
+        }
+    };
 
     private final FractionalResource biomass = new FractionalResource(resultContainer, 0, ModItems.biomass);
 
@@ -95,6 +109,8 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
                 case BiomassIncubatorMenu.DATA_GROWTH_TIME -> growthTicks;
                 case BiomassIncubatorMenu.DATA_MAX_GROWTH_TIME -> GROWTH_TICKS;
                 case BiomassIncubatorMenu.DATA_FRACTIONAL_BIOMASS -> biomass.getFractionalAmountAsMenuData();
+                case BiomassIncubatorMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
+                case BiomassIncubatorMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
                 default -> 0;
             };
         }
@@ -147,6 +163,11 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
 
     private void processGrowth() {
         if (hasWater() && hasValidSeed()) {
+            if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK) {
+                return;
+            }
+
+            energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_TICK);
             growthTicks++;
             if (growthTicks >= GROWTH_TICKS) {
                 completeGrowth();
@@ -190,6 +211,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         growthTicks = input.getIntOr("GrowthTicks", 0);
 
         biomass.setFractionalAmount(input.getFloatOr("FractionalBiomass", 0));
+        energyStorage.deserialize(input);
     }
 
     @Override
@@ -200,6 +222,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         output.putInt("GrowthTicks", growthTicks);
 
         output.putFloat("FractionalBiomass", biomass.getFractionalAmount());
+        energyStorage.serialize(output);
     }
 
     @Override
@@ -220,7 +243,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new BiomassIncubatorMenu(containerId, inventory, backingContainer, dataAccess);
+        return new BiomassIncubatorMenu(containerId, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
     }
 
     @Override
@@ -250,6 +273,16 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     @Override
     public FluidTank getFluidTank() {
         return waterTank;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage(Direction side) {
+        return energyStorage;
     }
 
     public Container getSoilContainer() {

@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:biomass_incubator",
+  "biomass": 0.2,
+  "result": {
+    "id": "minecraft:chorus_plant"
+  },
+  "seed": "minecraft:chorus_fruit",
+  "soil": "minecraft:end_stone"
+}

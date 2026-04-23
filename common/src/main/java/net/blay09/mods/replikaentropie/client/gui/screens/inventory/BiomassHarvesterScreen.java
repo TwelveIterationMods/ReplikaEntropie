@@ -2,6 +2,8 @@ package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
 import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
+import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
+import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.BiomassHarvesterMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -17,6 +19,7 @@ public class BiomassHarvesterScreen extends AbstractContainerScreen<BiomassHarve
     private static final Identifier LEFT_WING = id("left_wing");
 
     private final ProgressRenderer fractionalBiomass = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(100, 50).size(3, 26).uv(176, 0);
+    private final EnergyBar energyBar = new EnergyBar(-23, 6);
 
     public BiomassHarvesterScreen(BiomassHarvesterMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 207);
@@ -25,14 +28,22 @@ public class BiomassHarvesterScreen extends AbstractContainerScreen<BiomassHarve
     }
 
     @Override
+    protected void init() {
+        super.init();
+
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 97, menu.containerId));
+    }
+
+    @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         fractionalBiomass.render(graphics, leftPos, topPos, menu.getFractionalBiomass());
 
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 26, topPos, 25, 90);
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 26, topPos + 91, 25, 25);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 2, 24, 90);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 93, 28, 28);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos + imageWidth + 1, topPos, 25, 90);
+        energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 
 }

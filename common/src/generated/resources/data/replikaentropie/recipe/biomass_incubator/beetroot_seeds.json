@@ -1,8 +1,9 @@
 {
   "type": "replikaentropie:biomass_incubator",
   "biomass": 0.2,
-  "ingredient": "minecraft:beetroot_seeds",
   "result": {
     "id": "minecraft:beetroot"
-  }
+  },
+  "seed": "minecraft:beetroot_seeds",
+  "soil": "#replikaentropie:biomass_incubator/farmland_like"
 }

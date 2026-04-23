@@ -1,8 +1,8 @@
 package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.block.entity.BiomassHarvesterBlockEntity;
-import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.BiomassHarvesterWeaponSlot;
+import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -11,27 +11,32 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class BiomassHarvesterMenu extends AbstractContainerMenu {
+public class BiomassHarvesterMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
     public static final int DATA_FRACTIONAL_BIOMASS = 0;
-    public static final int DATA_COUNT = 1;
+    public static final int DATA_CURRENT_POWER = 1;
+    public static final int DATA_MAX_POWER = 2;
+    public static final int DATA_COUNT = 3;
 
     protected final Inventory playerInventory;
     protected final Container container;
     protected final ContainerData data;
+    private final ContainerLevelAccess access;
     private final QuickMove.Routing quickMove;
 
     public BiomassHarvesterMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(5), new SimpleContainerData(DATA_COUNT));
+        this(containerId, playerInventory, new SimpleContainer(5), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
-    public BiomassHarvesterMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
+    public BiomassHarvesterMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.biomassHarvester.value(), containerId);
         this.playerInventory = playerInventory;
         this.container = container;
         checkContainerSize(container, 5);
         this.data = data;
+        this.access = access;
         addDataSlots(data);
 
         addSlot(new OutputSlot(container, 0, 78, 55));
@@ -77,5 +82,24 @@ public class BiomassHarvesterMenu extends AbstractContainerMenu {
 
     public float getFractionalBiomass() {
         return Mth.clamp(data.get(DATA_FRACTIONAL_BIOMASS) / 100f, 0f, 1f);
+    }
+
+    public float getPowerProgress() {
+        final var maxPower = data.get(DATA_MAX_POWER);
+        if (maxPower <= 0) {
+            return 0f;
+        }
+
+        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
+    }
+
+    @Override
+    public void convertClickToPower() {
+        access.execute((level, pos) -> {
+            final BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof BiomassHarvesterBlockEntity biomassHarvester) {
+                biomassHarvester.getEnergyStorage().fill(250, false);
+            }
+        });
     }
 }

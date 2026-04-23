@@ -1,8 +1,9 @@
 {
   "type": "replikaentropie:biomass_incubator",
   "biomass": 0.2,
-  "ingredient": "minecraft:torchflower_seeds",
   "result": {
     "id": "minecraft:torchflower"
-  }
+  },
+  "seed": "minecraft:torchflower_seeds",
+  "soil": "#replikaentropie:biomass_incubator/farmland_like"
 }

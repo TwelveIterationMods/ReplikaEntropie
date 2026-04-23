@@ -16,6 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -45,6 +46,9 @@ public class BiomassIncubatorRenderer implements BlockEntityRenderer<BiomassIncu
         if (soilState.is(Blocks.DIRT)) {
             soilState = Blocks.FARMLAND.defaultBlockState();
         }
+        if (soilState.hasProperty(BlockStateProperties.MOISTURE) && !blockEntity.getFluidTank().isEmpty()) {
+            soilState = soilState.setValue(BlockStateProperties.MOISTURE, 7);
+        }
         blockModelResolver.update(state.soilBlock, soilState, blockDisplayContext);
 
         final var seedsContainer = blockEntity.getSeedsContainer();
@@ -65,16 +69,18 @@ public class BiomassIncubatorRenderer implements BlockEntityRenderer<BiomassIncu
         poseStack.translate(0.5f, 2 / 16f, 0.5f);
         poseStack.scale(1f - 4 / 16f, 0.001f, 1f - 4 / 16f);
         poseStack.translate(-0.5f, 0f, -0.5f);
-
         state.soilBlock.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        poseStack.popPose();
+
         if (!state.seedBlock.isEmpty()) {
             poseStack.pushPose();
-            poseStack.translate(0f, 1f, 0f);
+            poseStack.translate(0.5f, 3 / 16f, 0.5f);
+            poseStack.scale(1f - 4 / 16f, 1f - 4 / 16f, 1f - 4 / 16f);
+            poseStack.translate(-0.5f, 0f, -0.5f);
             state.seedBlock.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
         }
 
-        poseStack.popPose();
     }
 
     public static class State extends BlockEntityRenderState {

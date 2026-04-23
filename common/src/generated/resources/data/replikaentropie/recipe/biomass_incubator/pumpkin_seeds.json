@@ -1,8 +1,9 @@
 {
   "type": "replikaentropie:biomass_incubator",
   "biomass": 0.2,
-  "ingredient": "minecraft:pumpkin_seeds",
   "result": {
     "id": "minecraft:pumpkin"
-  }
+  },
+  "seed": "minecraft:pumpkin_seeds",
+  "soil": "#replikaentropie:biomass_incubator/farmland_like"
 }

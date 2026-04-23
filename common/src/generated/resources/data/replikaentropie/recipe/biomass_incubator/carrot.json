@@ -1,8 +1,9 @@
 {
   "type": "replikaentropie:biomass_incubator",
   "biomass": 0.2,
-  "ingredient": "minecraft:carrot",
   "result": {
     "id": "minecraft:carrot"
-  }
+  },
+  "seed": "minecraft:carrot",
+  "soil": "#replikaentropie:biomass_incubator/farmland_like"
 }

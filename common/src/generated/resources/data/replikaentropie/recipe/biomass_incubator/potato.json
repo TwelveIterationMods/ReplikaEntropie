@@ -1,8 +1,9 @@
 {
   "type": "replikaentropie:biomass_incubator",
   "biomass": 0.2,
-  "ingredient": "minecraft:potato",
   "result": {
     "id": "minecraft:potato"
-  }
+  },
+  "seed": "minecraft:potato",
+  "soil": "#replikaentropie:biomass_incubator/farmland_like"
 }

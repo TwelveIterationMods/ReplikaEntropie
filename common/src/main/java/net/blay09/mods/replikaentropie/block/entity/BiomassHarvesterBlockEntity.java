@@ -1,5 +1,8 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
+import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
+import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
+import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
@@ -32,6 +35,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TridentItem;
@@ -44,11 +48,14 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
+public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
 
     private static final int WARNING_TICKS = 60;
     private static final int SLAUGHTER_TICKS = 60;
     private static final int COOLDOWN_TICKS = 60;
+    private static final int ENERGY_CAPACITY = 10000;
+    private static final int ENERGY_INPUT_RATE = 1000;
+    private static final int ENERGY_COST_PER_TICK = 10;
 
     private static final float ATTACK_RANGE = 1f;
     private static final int ATTACK_INTERVAL_TICKS = 20;
@@ -75,6 +82,13 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
 
     private final Container outputContainer = new SubContainer(backingContainer, 0, 1);
     private final SubContainer weaponsContainer = new SubContainer(backingContainer, 1, 5);
+    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+        @Override
+        public void setChanged() {
+            BiomassHarvesterBlockEntity.this.setChanged();
+            isSyncDirty = true;
+        }
+    };
 
     private State state = State.IDLE;
     private int stateTicks;
@@ -93,6 +107,8 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
             //noinspection SwitchStatementWithTooFewBranches
             return switch (index) {
                 case BiomassHarvesterMenu.DATA_FRACTIONAL_BIOMASS -> biomass.getFractionalAmountAsMenuData();
+                case BiomassHarvesterMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
+                case BiomassHarvesterMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
                 default -> 0;
             };
         }
@@ -118,7 +134,7 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new BiomassHarvesterMenu(containerId, inventory, backingContainer, dataAccess);
+        return new BiomassHarvesterMenu(containerId, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
     }
 
     @Override
@@ -145,6 +161,16 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
         };
     }
 
+    @Override
+    public EnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage(Direction side) {
+        return energyStorage;
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, BiomassHarvesterBlockEntity blockEntity) {
         blockEntity.broadcastChanges();
         blockEntity.processState();
@@ -169,10 +195,13 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
     }
 
     private void processState() {
-        stateTicks++;
-
         switch (state) {
             case WARNING -> {
+                if (!consumeEnergy()) {
+                    transition(State.COOLING);
+                    return;
+                }
+                stateTicks++;
                 if (stateTicks >= WARNING_TICKS) {
                     transition(State.SLAUGHTERING);
                 }
@@ -183,6 +212,12 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
                     return;
                 }
 
+                if (!consumeEnergy()) {
+                    transition(State.COOLING);
+                    return;
+                }
+
+                stateTicks++;
                 pullNearbyEntities();
 
                 if (stateTicks % ATTACK_INTERVAL_TICKS == 0) {
@@ -194,6 +229,10 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
                 }
             }
             case COOLING -> {
+                if (!consumeEnergy()) {
+                    return;
+                }
+                stateTicks++;
                 if (stateTicks >= COOLDOWN_TICKS) {
                     transition(State.IDLE);
                 }
@@ -204,6 +243,15 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
                 }
             }
         }
+    }
+
+    private boolean consumeEnergy() {
+        if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK) {
+            return false;
+        }
+
+        energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_TICK);
+        return true;
     }
 
     private void updateClientAnimation() {
@@ -254,8 +302,8 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
         if (itemStack.isEmpty()) {
             return 0f;
         }
-        final var weapon = itemStack.get(DataComponents.WEAPON);
-        return weapon != null ? weapon.itemDamagePerAttack() : 0f; // TODO itemDamagePerAttack sounds wrong ... is this right?
+        final var damage = itemStack.get(DataComponents.DAMAGE);
+        return damage != null ? damage : 0f;
     }
 
     private void pullNearbyEntities() {
@@ -356,6 +404,7 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
         }
         stateTicks = input.getIntOr("StateTicks", 0);
         biomass.setFractionalAmount(input.getFloatOr("FractionalBiomass", 0f));
+        energyStorage.deserialize(input);
     }
 
     @Override
@@ -364,6 +413,7 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
         output.putString("State", state.name());
         output.putInt("StateTicks", stateTicks);
         output.putFloat("FractionalBiomass", biomass.getFractionalAmount());
+        energyStorage.serialize(output);
     }
 
     @Override

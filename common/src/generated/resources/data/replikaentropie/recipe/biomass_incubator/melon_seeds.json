@@ -1,8 +1,9 @@
 {
   "type": "replikaentropie:biomass_incubator",
   "biomass": 0.2,
-  "ingredient": "minecraft:melon_seeds",
   "result": {
     "id": "minecraft:melon"
-  }
+  },
+  "seed": "minecraft:melon_seeds",
+  "soil": "#replikaentropie:biomass_incubator/farmland_like"
 }

@@ -5,6 +5,7 @@ import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -70,6 +71,28 @@ public class ModItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
                 ModItems.slowphasers.value(),
                 ModItems.stompers.value(),
                 ModItems.biosteel.value()
+        );
+
+        valueLookupBuilder(ModItemTags.BIOMASS_INCUBATOR_SEEDS).add(
+                Items.WHEAT_SEEDS,
+                Items.BEETROOT_SEEDS,
+                Items.MELON_SEEDS,
+                Items.PUMPKIN_SEEDS,
+                Items.TORCHFLOWER_SEEDS,
+                Items.NETHER_WART,
+                Items.CHORUS_FLOWER
+        );
+
+        valueLookupBuilder(ModItemTags.BIOMASS_INCUBATOR_SOILS).add(
+                Items.DIRT,
+                Items.FARMLAND,
+                Items.SOUL_SAND,
+                Items.END_STONE
+        );
+
+        valueLookupBuilder(ModItemTags.BIOMASS_INCUBATOR_FARMLAND_LIKE).add(
+                Items.DIRT,
+                Items.FARMLAND
         );
     }
 }

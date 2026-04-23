@@ -1,8 +1,9 @@
 {
   "type": "replikaentropie:biomass_incubator",
   "biomass": 0.2,
-  "ingredient": "minecraft:wheat_seeds",
   "result": {
     "id": "minecraft:wheat"
-  }
+  },
+  "seed": "minecraft:wheat_seeds",
+  "soil": "#replikaentropie:biomass_incubator/farmland_like"
 }
