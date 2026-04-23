@@ -45,8 +45,8 @@ public class AssemblerMenu extends AbstractContainerMenu {
         this.data = data;
         addDataSlots(data);
 
-        addSlot(new OutputSlot(container, 0, 80, 61));
-        addSlot(new AssemblerTicketSlot(container, 1, 19, 61) {
+        addSlot(new OutputSlot(container, 0, 98, 63));
+        addSlot(new AssemblerTicketSlot(container, 1, 26, 63) {
             @Override
             public void setChanged() {
                 super.setChanged();
@@ -55,11 +55,17 @@ public class AssemblerMenu extends AbstractContainerMenu {
         });
 
         for (int i = 0; i < 5; i++) {
-            addSlot(new Slot(container, 2 + i, 44 + i * 18, 99));
+            addSlot(new Slot(container, 2 + i, 62 + i * 18, 92));
+        }
+        for (int i = 0; i < 4; i++) {
+            addSlot(new Slot(container, 2 + 5 + i, 70 + i * 18, 110));
         }
 
+        for (int i = 0; i < 4; i++) {
+            addSlot(new ReadonlySlot(previewContainer, i, 71 + i * 18, 16));
+        }
         for (int i = 0; i < 5; i++) {
-            addSlot(new ReadonlySlot(previewContainer, i, 44 + i * 18, 41));
+            addSlot(new ReadonlySlot(previewContainer, 4 + i, 62 + i * 18, 34));
         }
 
         for (int i = 0; i < 3; i++) {
