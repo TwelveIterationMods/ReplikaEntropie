@@ -11,10 +11,10 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class RecyclerSlot extends Slot {
 
     public static final List<Identifier> ICONS = List.of(
-            id("item/empty_dust_slot"),
-            id("item/empty_flesh_slot"),
-            id("item/empty_ingot_slot"),
-            id("item/empty_ore_slot")
+            id("container/slot/dust"),
+            id("container/slot/flesh"),
+            id("container/slot/ingot"),
+            id("container/slot/ore")
     );
 
     private long lastIconChange;

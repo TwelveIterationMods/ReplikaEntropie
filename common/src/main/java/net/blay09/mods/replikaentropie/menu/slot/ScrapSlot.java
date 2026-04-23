@@ -9,7 +9,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class ScrapSlot extends IngredientSlot {
 
-    private final Identifier ICON = id("item/empty_scrap_slot");
+    private final Identifier ICON = id("container/slot/scrap");
 
     public ScrapSlot(Container container, int slot, int x, int y) {
         super(container, slot, x, y, Ingredient.of(ModItems.scrap));

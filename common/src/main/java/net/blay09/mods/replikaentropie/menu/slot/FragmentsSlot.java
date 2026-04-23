@@ -10,7 +10,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class FragmentsSlot extends IngredientSlot {
 
-    private final Identifier ICON = id("item/empty_fragments_slot");
+    private final Identifier ICON = id("container/slot/fragments");
 
     public FragmentsSlot(Container container, int slot, int x, int y) {
         super(container, slot, x, y, Ingredient.of(ModItems.fragments));

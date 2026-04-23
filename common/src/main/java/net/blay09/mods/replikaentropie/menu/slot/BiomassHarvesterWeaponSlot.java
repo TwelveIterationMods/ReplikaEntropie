@@ -10,7 +10,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class BiomassHarvesterWeaponSlot extends Slot {
 
-    private final Identifier ICON = id("item/empty_sword_slot");
+    private final Identifier ICON = id("container/slot/sword");
 
     public BiomassHarvesterWeaponSlot(Container container, int slot, int x, int y) {
         super(container, slot, x, y);

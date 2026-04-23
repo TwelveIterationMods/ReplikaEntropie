@@ -9,7 +9,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class AssemblerTicketSlot extends IngredientSlot {
 
-    private final Identifier ICON = id("item/empty_assembly_ticket_slot");
+    private final Identifier ICON = id("container/slot/assembly_ticket");
 
     public AssemblerTicketSlot(Container container, int slot, int x, int y) {
         super(container, slot, x, y, Ingredient.of(ModItems.assemblyTicket));

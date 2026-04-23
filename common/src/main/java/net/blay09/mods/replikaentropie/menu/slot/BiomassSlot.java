@@ -9,7 +9,7 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class BiomassSlot extends IngredientSlot {
 
-    private final Identifier ICON = id("item/empty_biomass_slot");
+    private final Identifier ICON = id("container/slot/biomass");
 
     public BiomassSlot(Container container, int slot, int x, int y) {
         super(container, slot, x, y, Ingredient.of(ModItems.biomass));
