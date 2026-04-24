@@ -3,7 +3,10 @@ package net.blay09.mods.replikaentropie.client;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.client.BalmClientRegistrars;
 import net.blay09.mods.balm.client.platform.event.callback.ClientTickCallback;
+import net.blay09.mods.balm.client.platform.event.callback.RenderCallback;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
+import net.blay09.mods.replikaentropie.block.ModBlocks;
+import net.blay09.mods.replikaentropie.block.entity.WorldEaterBlockEntity;
 import net.blay09.mods.replikaentropie.client.gui.components.BurstEnergyBarRenderer;
 import net.blay09.mods.replikaentropie.client.gui.screens.ModScreens;
 import net.blay09.mods.replikaentropie.client.handler.ClientDataNotifications;
@@ -12,6 +15,11 @@ import net.blay09.mods.replikaentropie.compat.recipeviewers.ReplikaEntropieRecip
 import net.blay09.mods.replikaentropie.core.abilities.AbilityManager;
 import net.blay09.mods.replikaentropie.core.abilities.MagphaseAbility;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.Shapes;
 
 public class ReplikaEntropieClient {
 
@@ -36,5 +44,37 @@ public class ReplikaEntropieClient {
                 AbilityManager.clientTick(player);
             }
         });
+
+        RenderCallback.BlockHighlight.EVENT.register(((hitResult, poseStack, multiBufferSource, camera, color, lineWidth) -> {
+            final var player = Minecraft.getInstance().player;
+            if (!player.isShiftKeyDown()) {
+                return true;
+            }
+
+            if (hitResult.getType() != HitResult.Type.BLOCK) {
+                return true;
+            }
+
+            final var pos = hitResult.getBlockPos();
+            final var state = player.level().getBlockState(pos);
+            if (!state.is(ModBlocks.worldEater)) {
+                return true;
+            }
+            final var blockEntity = player.level().getBlockEntity(pos);
+            if (blockEntity instanceof WorldEaterBlockEntity worldEater) {
+                final var area = new AABB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 10, pos.getY() + 10, pos.getZ() + 10);
+
+                final var vertexBuilder = multiBufferSource.getBuffer(RenderTypes.LINES);
+                final var shape = Shapes.create(area.inflate(0.002));
+
+                double camX = camera.position().x;
+                double camY = camera.position().y;
+                double camZ = camera.position().z;
+                ShapeRenderer.renderShape(poseStack, vertexBuilder, shape, -camX, -camY, -camZ, 0xFFFFFF00, lineWidth * 2f);
+                return true;
+            }
+
+            return true;
+        }));
     }
 }
