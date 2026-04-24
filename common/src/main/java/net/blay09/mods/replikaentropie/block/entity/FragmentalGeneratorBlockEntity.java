@@ -6,7 +6,7 @@ import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.item.ModItems;
-import net.blay09.mods.replikaentropie.menu.DefragmentizerMenu;
+import net.blay09.mods.replikaentropie.menu.FragmentalGeneratorMenu;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
 import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
@@ -37,7 +37,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
-public class DefragmentizerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
+public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
     private static final int MIN_PROCESSING_TICKS = 60;
     private static final int MAX_PROCESSING_TICKS = 140;
@@ -47,7 +47,7 @@ public class DefragmentizerBlockEntity extends BlockEntity implements BalmContai
     private final DefaultContainer backingContainer = new DefaultContainer(8) {
         @Override
         public void setChanged() {
-            DefragmentizerBlockEntity.this.setChanged();
+            FragmentalGeneratorBlockEntity.this.setChanged();
             isSyncDirty = true;
         }
 
@@ -92,16 +92,16 @@ public class DefragmentizerBlockEntity extends BlockEntity implements BalmContai
 
         @Override
         public int getCount() {
-            return DefragmentizerMenu.DATA_COUNT;
+            return FragmentalGeneratorMenu.DATA_COUNT;
         }
     };
 
-    public DefragmentizerBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.defragmentizer.value(), blockPos, blockState);
+    public FragmentalGeneratorBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(ModBlockEntities.fragmentalGenerator.value(), blockPos, blockState);
         Arrays.fill(maxProcessingTicks, 0);
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, DefragmentizerBlockEntity blockEntity) {
+    public static void serverTick(Level level, BlockPos pos, BlockState state, FragmentalGeneratorBlockEntity blockEntity) {
         for (int i = 0; i < INPUTS_COUNT; i++) {
             if (blockEntity.canStartProcessing(i)) {
                 blockEntity.processingTicks[i] = 0;
@@ -119,7 +119,7 @@ public class DefragmentizerBlockEntity extends BlockEntity implements BalmContai
         blockEntity.broadcastChanges();
     }
 
-    public static void clientTick(Level level, BlockPos pos, BlockState state, DefragmentizerBlockEntity blockEntity) {
+    public static void clientTick(Level level, BlockPos pos, BlockState state, FragmentalGeneratorBlockEntity blockEntity) {
         blockEntity.updateClientProgress();
     }
 
@@ -214,12 +214,12 @@ public class DefragmentizerBlockEntity extends BlockEntity implements BalmContai
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("container.replikaentropie.defragmentizer");
+        return Component.translatable("container.replikaentropie.fragmental_generator");
     }
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new DefragmentizerMenu(containerId, playerInventory, backingContainer, data);
+        return new FragmentalGeneratorMenu(containerId, playerInventory, backingContainer, data);
     }
 
     @Override

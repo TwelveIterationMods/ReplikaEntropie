@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.HashCommon;
-import net.blay09.mods.replikaentropie.block.entity.DefragmentizerBlockEntity;
+import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -16,13 +16,12 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
-public class DefragmentizerRenderer implements BlockEntityRenderer<DefragmentizerBlockEntity, DefragmentizerRenderer.State> {
+public class FragmentalGeneratorRenderer implements BlockEntityRenderer<FragmentalGeneratorBlockEntity, FragmentalGeneratorRenderer.State> {
 
     record AnimationStage(float lerpStartY, float lerpEndY, float wobbleAmplitude, float wobbleSpeed, float scale) {
         public float computeOffset(float time) {
@@ -51,7 +50,7 @@ public class DefragmentizerRenderer implements BlockEntityRenderer<Defragmentize
 
     private final ItemModelResolver itemModelResolver;
 
-    public DefragmentizerRenderer(BlockEntityRendererProvider.Context context) {
+    public FragmentalGeneratorRenderer(BlockEntityRendererProvider.Context context) {
         this.itemModelResolver = context.itemModelResolver();
     }
 
@@ -61,7 +60,7 @@ public class DefragmentizerRenderer implements BlockEntityRenderer<Defragmentize
     }
 
     @Override
-    public void extractRenderState(DefragmentizerBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+    public void extractRenderState(FragmentalGeneratorBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
         for (int i = 0; i < state.items.length; i++) {
             state.items[i] = null;

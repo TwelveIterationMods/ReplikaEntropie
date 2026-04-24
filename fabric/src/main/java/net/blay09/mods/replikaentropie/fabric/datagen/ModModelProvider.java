@@ -4,6 +4,7 @@ import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
@@ -31,7 +32,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateHorizontalBlock(ModBlocks.lavascrap.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.worldEater.value());
         generators.createNonTemplateModelBlock(ModBlocks.fragmentAccelerator.value());
-        generators.createNonTemplateModelBlock(ModBlocks.defragmentizer.value());
+        generators.createNonTemplateModelBlock(ModBlocks.fragmentalGenerator.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.chaosEngine.value());
 
         generators.registerSimpleItemModel(ModBlocks.replikaWorkbench.value(), ModelLocationUtils.getModelLocation(ModBlocks.replikaWorkbench.value()));
@@ -43,11 +44,11 @@ public class ModModelProvider extends FabricModelProvider {
         generators.registerSimpleItemModel(ModBlocks.fragmentalWaste.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentalWaste.value()));
         generators.registerSimpleItemModel(ModBlocks.biomassIncubator.value(), ModelLocationUtils.getModelLocation(ModBlocks.biomassIncubator.value()));
         generators.registerSimpleItemModel(ModBlocks.biomassHarvester.value(), ModelLocationUtils.getModelLocation(ModBlocks.biomassHarvester.value()));
-        generators.registerSimpleItemModel(ModBlocks.cobblescrap.value(), ModelLocationUtils.getModelLocation(ModBlocks.cobblescrap.value()));
-        generators.registerSimpleItemModel(ModBlocks.lavascrap.value(), ModelLocationUtils.getModelLocation(ModBlocks.lavascrap.value()));
+        generators.registerSimpleTintedItemModel(ModBlocks.cobblescrap.value(), ModelLocationUtils.getModelLocation(ModBlocks.cobblescrap.value()), new Constant(0xFF3F76E4));
+        generators.registerSimpleTintedItemModel(ModBlocks.lavascrap.value(), ModelLocationUtils.getModelLocation(ModBlocks.lavascrap.value()), new Constant(0xFF3F76E4));
         generators.registerSimpleItemModel(ModBlocks.worldEater.value(), ModelLocationUtils.getModelLocation(ModBlocks.worldEater.value()));
         generators.registerSimpleItemModel(ModBlocks.fragmentAccelerator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentAccelerator.value()));
-        generators.registerSimpleItemModel(ModBlocks.defragmentizer.value(), ModelLocationUtils.getModelLocation(ModBlocks.defragmentizer.value()));
+        generators.registerSimpleItemModel(ModBlocks.fragmentalGenerator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentalGenerator.value()));
         generators.registerSimpleItemModel(ModBlocks.chaosEngine.value(), ModelLocationUtils.getModelLocation(ModBlocks.chaosEngine.value()));
     }
 

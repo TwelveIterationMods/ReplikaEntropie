@@ -1,0 +1,17 @@
+{
+  "type": "replikaentropie:research",
+  "data": 5,
+  "fragments": 2,
+  "hardDependencies": [
+    "replikaentropie:research/fragment_accelerator"
+  ],
+  "icon": {
+    "id": "replikaentropie:fragmental_generator"
+  },
+  "nonogram": "replikaentropie:fragmental_generator",
+  "research_type": "assembler",
+  "sort_order": 3200,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/fragmental_generator"
+  ]
+}

@@ -25,7 +25,7 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
         dropSelf(ModBlocks.cobblescrap.value());
         dropSelf(ModBlocks.lavascrap.value());
         dropSelf(ModBlocks.worldEater.value());
-        dropSelf(ModBlocks.defragmentizer.value());
+        dropSelf(ModBlocks.fragmentalGenerator.value());
         dropSelf(ModBlocks.fragmentAccelerator.value());
         dropSelf(ModBlocks.chaosEngine.value());
         dropSelf(ModBlocks.recycler.value());

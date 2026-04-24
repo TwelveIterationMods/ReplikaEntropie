@@ -19,7 +19,7 @@ public class ModMenus {
     public static Holder<MenuType<LavascrapMenu>> lavascrap;
     public static Holder<MenuType<WorldEaterMenu>> worldEater;
     public static Holder<MenuType<FragmentAcceleratorMenu>> fragmentAccelerator;
-    public static Holder<MenuType<DefragmentizerMenu>> defragmentizer;
+    public static Holder<MenuType<FragmentalGeneratorMenu>> fragmentalGenerator;
     public static Holder<MenuType<BiomassHarvesterMenu>> biomassHarvester;
     public static Holder<MenuType<BiomassIncubatorMenu>> biomassIncubator;
     public static Holder<MenuType<EntropicDataMinerMenu>> entropicDataMiner;
@@ -124,10 +124,10 @@ public class ModMenus {
             }
         }).asHolder();
 
-        defragmentizer = menus.register("defragmentizer", new BalmMenuFactory<DefragmentizerMenu, Unit>() {
+        fragmentalGenerator = menus.register("fragmental_generator", new BalmMenuFactory<FragmentalGeneratorMenu, Unit>() {
             @Override
-            public DefragmentizerMenu create(int syncId, Inventory inventory, Unit unit) {
-                return new DefragmentizerMenu(syncId, inventory);
+            public FragmentalGeneratorMenu create(int syncId, Inventory inventory, Unit unit) {
+                return new FragmentalGeneratorMenu(syncId, inventory);
             }
 
             @Override

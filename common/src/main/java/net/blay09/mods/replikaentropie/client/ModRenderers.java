@@ -11,8 +11,6 @@ import java.util.List;
 
 public class ModRenderers {
     public static void initialize(BalmBlockColorRegistrar registrar) {
-        // TODO 0xFF3F76E4 item color cobblescrap, lavascrap, biomass incubator
-        registrar.register(List.of(BlockTintSources.water()), ModBlocks.biomassIncubator);
         registrar.register(List.of(BlockTintSources.water()), ModBlocks.cobblescrap, ModBlocks.lavascrap);
     }
 
@@ -20,7 +18,7 @@ public class ModRenderers {
         registrar.register(ModBlockEntities.biomassHarvester, BiomassHarvesterRenderer::new);
         registrar.register(ModBlockEntities.biomassIncubator, BiomassIncubatorRenderer::new);
         registrar.register(ModBlockEntities.worldEater, WorldEaterRenderer::new);
-        registrar.register(ModBlockEntities.defragmentizer, DefragmentizerRenderer::new);
+        registrar.register(ModBlockEntities.fragmentalGenerator, FragmentalGeneratorRenderer::new);
         registrar.register(ModBlockEntities.chaosEngine, ChaosEngineRenderer::new);
         registrar.register(ModBlockEntities.fragmentAccelerator, FragmentAcceleratorRenderer::new);
     }

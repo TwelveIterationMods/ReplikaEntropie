@@ -107,6 +107,7 @@ public class ModItems {
                     output.accept(fragments);
                     output.accept(biomash);
                     output.accept(data);
+                    output.accept(makeshiftPSU);
                     output.accept(ModBlocks.recycler);
                     output.accept(ModBlocks.assembler);
                     output.accept(ModBlocks.fabricator);
@@ -116,7 +117,7 @@ public class ModItems {
                     output.accept(ModBlocks.worldEater);
                     output.accept(ModBlocks.biomassIncubator);
                     output.accept(ModBlocks.biomassHarvester);
-                    output.accept(ModBlocks.defragmentizer);
+                    output.accept(ModBlocks.fragmentalGenerator);
                     output.accept(ModBlocks.fragmentAccelerator);
                     output.accept(ModBlocks.chaosEngine);
                     output.accept(ModBlocks.wasteBarrel);

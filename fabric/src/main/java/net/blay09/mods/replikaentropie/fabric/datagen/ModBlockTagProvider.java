@@ -32,7 +32,7 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
                 ModBlocks.cobblescrap.value(),
                 ModBlocks.lavascrap.value(),
                 ModBlocks.worldEater.value(),
-                ModBlocks.defragmentizer.value(),
+                ModBlocks.fragmentalGenerator.value(),
                 ModBlocks.fragmentAccelerator.value(),
                 ModBlocks.chaosEngine.value(),
                 ModBlocks.recycler.value()

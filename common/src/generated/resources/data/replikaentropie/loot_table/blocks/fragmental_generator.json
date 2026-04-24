@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "replikaentropie:defragmentizer"
+          "name": "replikaentropie:fragmental_generator"
         }
       ],
       "rolls": 1.0

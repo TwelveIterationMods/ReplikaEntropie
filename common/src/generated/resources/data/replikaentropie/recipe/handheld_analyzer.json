@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
+    "C": "replikaentropie:chipset",
     "G": "minecraft:glass",
-    "I": "minecraft:iron_ingot",
-    "R": "minecraft:redstone"
+    "I": "minecraft:iron_ingot"
   },
   "pattern": [
     "IIG",
-    "IRI",
+    "ICI",
     "II "
   ],
   "result": {

@@ -32,10 +32,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
                 shaped(RecipeCategory.TOOLS, ModItems.handheldAnalyzer)
                         .pattern("IIG")
-                        .pattern("IRI")
+                        .pattern("ICI")
                         .pattern("II ")
                         .define('I', Items.IRON_INGOT)
-                        .define('R', Items.REDSTONE)
+                        .define('C', ModItems.chipset)
                         .define('G', Items.GLASS)
                         .unlockedBy("has_redstone", has(Items.REDSTONE))
                         .save(output);

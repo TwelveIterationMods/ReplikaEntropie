@@ -3,10 +3,10 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"0": "replikaentropie:block/defragmentizer",
+		"0": "replikaentropie:block/fragmental_generator",
 		"1": "replikaentropie:block/machine_top",
 		"4": "replikaentropie:block/machine_inside",
-		"5": "replikaentropie:block/defragmentizer_inside",
+		"5": "replikaentropie:block/fragmental_generator_inside",
 		"particle": "replikaentropie:block/machine_top"
 	},
 	"elements": [

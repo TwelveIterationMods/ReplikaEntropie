@@ -5,7 +5,7 @@ import net.blay09.mods.balm.platform.compatibility.recipeviewer.RecipeViewerInfo
 import net.blay09.mods.balm.platform.compatibility.recipeviewer.RecipeViewerRegistrar;
 import net.blay09.mods.balm.world.item.DeferredItem;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
-import net.blay09.mods.replikaentropie.block.entity.DefragmentizerBlockEntity;
+import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.FragmentAcceleratorBlockEntity;
 import net.blay09.mods.replikaentropie.component.AssemblyTicket;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
@@ -35,7 +35,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
     private static final Identifier RESEARCH_TEXTURE = id("textures/gui/jei/research.png");
     private static final Identifier LAVASCRAP_TEXTURE = id("textures/gui/jei/lavascrap.png");
     private static final Identifier COBBLESCRAP_TEXTURE = id("textures/gui/jei/cobblescrap.png");
-    private static final Identifier DEFRAGMENTIZER_TEXTURE = id("textures/gui/jei/defragmentizer.png");
     private static final Identifier FRAGMENT_ACCELERATOR_TEXTURE = id("textures/gui/jei/fragment_accelerator.png");
     private static final Identifier BIOMASS_HARVESTER_TEXTURE = id("textures/gui/jei/biomass_harvester.png");
 
@@ -53,7 +52,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
         registerBiomassIncubatorRecipes(registrar);
         registerFabricatorRecipes(registrar);
         registerResearchRecipes(registrar);
-        registerDefragmentizerRecipes(registrar);
         registerFragmentAcceleratorRecipes(registrar);
         registerWorldEaterRecipe(registrar);
         registerLavascrapRecipe(registrar);
@@ -180,24 +178,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                                 slots.renderOnlySlot(44, 14).add(icon);
                             } else {
                                 slots.outputSlot(44, 14).add(icon);
-                            }
-                        }));
-    }
-
-    private static void registerDefragmentizerRecipes(RecipeViewerRegistrar registrar) {
-        registrar.registerCustomRecipeType(id("defragmentizer"), RecyclerRecipe.class)
-                .withRecipes(getFragmentRecipes())
-                .withCraftingStation(ModBlocks.defragmentizer)
-                .buildDisplay(display -> display
-                        .title(Component.translatable(id("defragmentizer").toLanguageKey("jei")))
-                        .icon(ModBlocks.defragmentizer)
-                        .size(141, 80)
-                        .background(DEFRAGMENTIZER_TEXTURE)
-                        .slots((recipe, slots) -> {
-                            final var fragments = resourceStack(ModItems.fragments, recipe.fragments() * DefragmentizerBlockEntity.OUTPUT_MULTIPLIER);
-                            for (int i = 0; i < 4; i++) {
-                                slots.inputSlot(5 + i * 37, 1).add(recipe.ingredient());
-                                slots.outputSlot(5 + i * 37, 59).add(fragments);
                             }
                         }));
     }

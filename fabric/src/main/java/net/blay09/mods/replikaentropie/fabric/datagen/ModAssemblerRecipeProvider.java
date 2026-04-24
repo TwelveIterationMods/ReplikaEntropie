@@ -11,15 +11,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.core.registries.BuiltInRegistries;
 
@@ -124,7 +119,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.FISHING_ROD, 1)
                 .save(output);
 
-        assemblerRecipe(ModBlocks.defragmentizer, 1)
+        assemblerRecipe(ModBlocks.fragmentalGenerator, 1)
                 .ingredient(Items.IRON_INGOT, 9)
                 .ingredient(Items.GLASS, 8)
                 .ingredient(Items.GUNPOWDER, 4)

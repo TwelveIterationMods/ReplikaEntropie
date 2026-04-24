@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 
-public class DefragmentizerMenu extends AbstractContainerMenu {
+public class FragmentalGeneratorMenu extends AbstractContainerMenu {
 
     private final Container container;
     private final ContainerData data;
@@ -24,12 +24,12 @@ public class DefragmentizerMenu extends AbstractContainerMenu {
     public static final int DATA_FRACTIONAL_FRAGMENTS_END = 11;
     public static final int DATA_COUNT = 12;
 
-    public DefragmentizerMenu(int containerId, Inventory playerInventory) {
+    public FragmentalGeneratorMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT));
     }
 
-    public DefragmentizerMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
-        super(ModMenus.defragmentizer.value(), containerId);
+    public FragmentalGeneratorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
+        super(ModMenus.fragmentalGenerator.value(), containerId);
         this.container = container;
         checkContainerSize(container, 8);
         this.data = data;

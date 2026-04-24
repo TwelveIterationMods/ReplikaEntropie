@@ -2,7 +2,7 @@ package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
 import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
-import net.blay09.mods.replikaentropie.menu.DefragmentizerMenu;
+import net.blay09.mods.replikaentropie.menu.FragmentalGeneratorMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -12,12 +12,12 @@ import net.minecraft.world.entity.player.Inventory;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
-public class DefragmentizerScreen extends AbstractContainerScreen<DefragmentizerMenu> {
-    private static final Identifier BACKGROUND = id("textures/gui/container/defragmentizer.png");
+public class FragmentalGeneratorScreen extends AbstractContainerScreen<FragmentalGeneratorMenu> {
+    private static final Identifier BACKGROUND = id("textures/gui/container/fragmental_generator.png");
     private final ProgressRenderer[] processingRenderers = new ProgressRenderer[4];
     private final ProgressRenderer[] fractionalRenderers = new ProgressRenderer[4];
 
-    public DefragmentizerScreen(DefragmentizerMenu menu, Inventory playerInventory, Component title) {
+    public FragmentalGeneratorScreen(FragmentalGeneratorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 207);
 
         inventoryLabelY = imageHeight - 94;

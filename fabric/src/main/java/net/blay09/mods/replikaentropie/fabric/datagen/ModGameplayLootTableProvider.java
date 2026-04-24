@@ -33,6 +33,7 @@ public class ModGameplayLootTableProvider extends SimpleFabricLootTableSubProvid
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
                         .add(LootItem.lootTableItem(Items.IRON_NUGGET).setWeight(6)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
+                        .add(LootItem.lootTableItem(ModItems.scrap))
                         .add(LootItem.lootTableItem(Items.IRON_CHAIN))
                         .add(LootItem.lootTableItem(Items.IRON_HELMET)
                                 .apply(SetItemDamageFunction.setDamage(UniformGenerator.between(0.1f, 0.2f))))

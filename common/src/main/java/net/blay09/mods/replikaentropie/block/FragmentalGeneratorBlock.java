@@ -2,10 +2,9 @@ package net.blay09.mods.replikaentropie.block;
 
 import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.replikaentropie.block.entity.DefragmentizerBlockEntity;
+import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -22,8 +21,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class DefragmentizerBlock extends BaseEntityBlock {
-    public static final MapCodec<DefragmentizerBlock> CODEC = simpleCodec(DefragmentizerBlock::new);
+public class FragmentalGeneratorBlock extends BaseEntityBlock {
+    public static final MapCodec<FragmentalGeneratorBlock> CODEC = simpleCodec(FragmentalGeneratorBlock::new);
 
     public static final VoxelShape SHAPE = Shapes.or(
             Shapes.box(0, 0, 0, 1, 1/16f, 1),
@@ -31,7 +30,7 @@ public class DefragmentizerBlock extends BaseEntityBlock {
             Shapes.box(0, 15/16f, 0, 1, 1f, 1)
     ).optimize();
 
-    public DefragmentizerBlock(Properties properties) {
+    public FragmentalGeneratorBlock(Properties properties) {
         super(properties);
     }
 
@@ -42,14 +41,14 @@ public class DefragmentizerBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new DefragmentizerBlockEntity(blockPos, blockState);
+        return new FragmentalGeneratorBlockEntity(blockPos, blockState);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
-            if (level.getBlockEntity(pos) instanceof DefragmentizerBlockEntity defragmentizerBlockEntity) {
-                Balm.networking().openMenu(player, defragmentizerBlockEntity);
+            if (level.getBlockEntity(pos) instanceof FragmentalGeneratorBlockEntity fragmentalGeneratorBlockEntity) {
+                Balm.networking().openMenu(player, fragmentalGeneratorBlockEntity);
             }
         }
         return InteractionResult.CONSUME;
@@ -68,7 +67,7 @@ public class DefragmentizerBlock extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide()
-                ? createTickerHelper(type, ModBlockEntities.defragmentizer.value(), DefragmentizerBlockEntity::clientTick)
-                : createTickerHelper(type, ModBlockEntities.defragmentizer.value(), DefragmentizerBlockEntity::serverTick);
+                ? createTickerHelper(type, ModBlockEntities.fragmentalGenerator.value(), FragmentalGeneratorBlockEntity::clientTick)
+                : createTickerHelper(type, ModBlockEntities.fragmentalGenerator.value(), FragmentalGeneratorBlockEntity::serverTick);
     }
 }

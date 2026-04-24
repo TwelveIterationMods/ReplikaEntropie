@@ -4,8 +4,6 @@ import net.blay09.mods.balm.client.gui.screens.inventory.BalmMenuScreenRegistrar
 import net.blay09.mods.replikaentropie.client.gui.screens.inventory.*;
 import net.blay09.mods.replikaentropie.menu.ModMenus;
 
-import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
-
 public class ModScreens {
     public static void initialize(BalmMenuScreenRegistrar screens) {
         screens.register(ModMenus.replikaWorkbench, ReplikaWorkbenchScreen::new);
@@ -16,7 +14,7 @@ public class ModScreens {
         screens.register(ModMenus.lavascrap, LavascrapScreen::new);
         screens.register(ModMenus.worldEater, WorldEaterScreen::new);
         screens.register(ModMenus.fragmentAccelerator, FragmentAcceleratorScreen::new);
-        screens.register(ModMenus.defragmentizer, DefragmentizerScreen::new);
+        screens.register(ModMenus.fragmentalGenerator, FragmentalGeneratorScreen::new);
         screens.register(ModMenus.biomassHarvester, BiomassHarvesterScreen::new);
         screens.register(ModMenus.biomassIncubator, BiomassIncubatorScreen::new);
         screens.register(ModMenus.entropicDataMiner, EntropicDataMinerScreen::new);

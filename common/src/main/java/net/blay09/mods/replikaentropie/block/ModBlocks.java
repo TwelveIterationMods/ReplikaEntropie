@@ -20,7 +20,7 @@ public class ModBlocks {
     public static DeferredBlock cobblescrap;
     public static DeferredBlock lavascrap;
     public static DeferredBlock worldEater;
-    public static DeferredBlock defragmentizer;
+    public static DeferredBlock fragmentalGenerator;
     public static DeferredBlock fragmentAccelerator;
     public static DeferredBlock chaosEngine;
     public static DeferredBlock recycler;
@@ -28,7 +28,7 @@ public class ModBlocks {
     public static DeferredBlock waterSink;
     public static DeferredBlock bluePrinter;
     public static DeferredBlock solarSink;
-    public static DeferredBlock dataBasedGenerator;
+    public static DeferredBlock entropicGenerator;
 
     public static void initialize(BalmBlockRegistrar blocks) {
         blocks.enableBlockDescriptionPrefixForItems();
@@ -77,7 +77,7 @@ public class ModBlocks {
                 .withDefaultItem()
                 .asDeferredBlock();
 
-        defragmentizer = blocks.register("defragmentizer", DefragmentizerBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+        fragmentalGenerator = blocks.register("fragmental_generator", FragmentalGeneratorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
                 .withDefaultItem()
                 .asDeferredBlock();
 
