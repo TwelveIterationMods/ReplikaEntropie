@@ -101,6 +101,16 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_biomass", has(ModItems.biomass))
                         .save(output);
 
+                shaped(RecipeCategory.MISC, ModItems.metalDetector)
+                        .pattern("  R")
+                        .pattern(" I ")
+                        .pattern("C  ")
+                        .define('R', Items.COMPARATOR)
+                        .define('I', Items.IRON_INGOT)
+                        .define('C', Items.COPPER_INGOT)
+                        .unlockedBy("has_quartz", has(Items.QUARTZ))
+                        .save(output);
+
                 shaped(RecipeCategory.MISC, ModItems.makeshiftPSU)
                         .pattern(" PC")
                         .pattern("TRT")

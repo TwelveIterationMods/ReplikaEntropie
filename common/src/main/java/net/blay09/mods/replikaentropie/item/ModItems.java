@@ -96,6 +96,7 @@ public class ModItems {
                 .icon(() -> handheldAnalyzer.createStack())
                 .title(Component.translatable(id(ReplikaEntropie.MOD_ID).toLanguageKey("itemGroup")))
                 .displayItems(((_, output) -> {
+                    output.accept(metalDetector);
                     output.accept(damagedChipset);
                     output.accept(chipset);
                     output.accept(skyScraper);
@@ -122,7 +123,6 @@ public class ModItems {
                     output.accept(ModBlocks.fragmentalWaste);
                     output.accept(ModBlocks.replikaWorkbench);
                     output.accept(oreVacuum);
-                    output.accept(metalDetector);
                     output.accept(nullphaser);
                     output.accept(nightVisionGoggles);
                     output.accept(brightVisionGoggles);
