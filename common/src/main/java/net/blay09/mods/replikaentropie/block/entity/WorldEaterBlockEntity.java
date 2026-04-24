@@ -29,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
@@ -42,7 +43,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
 
     private static final int SCANNING_TICKS = 200;
     private static final int DESTROY_TICKS = 100;
-    private static final int SCAN_RANGE = 16;
+    private static final int SCAN_RANGE = 8;
 
     private enum State {IDLE, SCANNING, DESTROYING}
 
@@ -134,14 +135,20 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
         return previewContainer;
     }
 
+    private BlockPos getScanCenter() {
+        final var facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        return worldPosition.relative(facing.getOpposite(), SCAN_RANGE + 1);
+    }
+
     public AABB getScanArea() {
+        final var scanCenter = getScanCenter();
         return new AABB(
-                worldPosition.getX() - SCAN_RANGE,
-                worldPosition.getY() - SCAN_RANGE,
-                worldPosition.getZ() - SCAN_RANGE,
-                worldPosition.getX() + SCAN_RANGE,
-                worldPosition.getY() + SCAN_RANGE,
-                worldPosition.getZ() + SCAN_RANGE
+                scanCenter.getX() - SCAN_RANGE,
+                scanCenter.getY() - SCAN_RANGE,
+                scanCenter.getZ() - SCAN_RANGE,
+                scanCenter.getX() + SCAN_RANGE,
+                scanCenter.getY() + SCAN_RANGE,
+                scanCenter.getZ() + SCAN_RANGE
         );
     }
 
@@ -241,10 +248,11 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
 
     private Optional<ScannedBlock> findRandomScannableBlock(Level level) {
         final var random = level.getRandom();
+        final var scanCenter = getScanCenter();
         for (int attempts = 0; attempts < 50; attempts++) {
-            final var x = worldPosition.getX() + random.nextInt(-SCAN_RANGE, SCAN_RANGE);
-            final var y = worldPosition.getY() + random.nextInt(-SCAN_RANGE, SCAN_RANGE);
-            final var z = worldPosition.getZ() + random.nextInt(-SCAN_RANGE, SCAN_RANGE);
+            final var x = scanCenter.getX() + random.nextInt(-SCAN_RANGE, SCAN_RANGE);
+            final var y = scanCenter.getY() + random.nextInt(-SCAN_RANGE, SCAN_RANGE);
+            final var z = scanCenter.getZ() + random.nextInt(-SCAN_RANGE, SCAN_RANGE);
             final var targetPos = new BlockPos(x, y, z);
             final var targetState = level.getBlockState(targetPos);
             if (!isQuestionablyEdibleBlock(level, targetPos, targetState)) {
