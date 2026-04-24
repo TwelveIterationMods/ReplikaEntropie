@@ -1,0 +1,14 @@
+{
+  "type": "replikaentropie:research",
+  "data": 4,
+  "fragments": 1,
+  "hardDependencies": [
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "id": "replikaentropie:chipset"
+  },
+  "nonogram": "replikaentropie:chipset",
+  "scrap": 1,
+  "sort_order": 1400
+}
