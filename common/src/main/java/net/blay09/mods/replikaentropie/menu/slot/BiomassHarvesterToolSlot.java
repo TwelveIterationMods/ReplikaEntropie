@@ -14,7 +14,8 @@ public class BiomassHarvesterToolSlot extends Slot {
 
     public static final List<Identifier> ICONS = List.of(
             id("container/slot/sword"),
-            id("container/slot/hoe")
+            id("container/slot/hoe"),
+            id("container/slot/shears")
     );
 
     private long lastIconChange;

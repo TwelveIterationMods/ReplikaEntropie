@@ -41,6 +41,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -301,7 +302,7 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
     }
 
     public static boolean isValidHarvesterTool(ItemStack itemStack) {
-        return getWeaponDamage(itemStack) > 0f || itemStack.is(ItemTags.HOES) || true;
+        return getWeaponDamage(itemStack) > 0f || itemStack.is(ItemTags.HOES) || itemStack.is(Items.SHEARS);
     }
 
     private static float getWeaponDamage(ItemStack itemStack) {
