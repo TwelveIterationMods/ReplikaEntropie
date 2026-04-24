@@ -4,6 +4,11 @@
       {
         "texture": "replikaentropie:biosteel"
       }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "replikaentropie:biosteel"
+      }
     ]
   }
 }

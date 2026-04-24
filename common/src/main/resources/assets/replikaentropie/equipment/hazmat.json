@@ -4,6 +4,11 @@
       {
         "texture": "replikaentropie:hazmat"
       }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "replikaentropie:hazmat"
+      }
     ]
   }
 }
