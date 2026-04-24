@@ -10,8 +10,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.functions.SetItemDamageFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -27,11 +29,16 @@ public class ModGameplayLootTableProvider extends SimpleFabricLootTableSubProvid
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
         output.accept(ResourceKey.create(Registries.LOOT_TABLE, id("metal_detector/sand")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
-                        .add(LootItem.lootTableItem(ModItems.damagedChipset))
-                        .add(LootItem.lootTableItem(Items.GOLD_NUGGET))
-                        .add(LootItem.lootTableItem(Items.IRON_NUGGET))
-                        .add(LootItem.lootTableItem(ModItems.scrap))
-                        .when(LootItemRandomChanceCondition.randomChance(0.125f))));
+                        .add(LootItem.lootTableItem(Items.GOLD_NUGGET).setWeight(4)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
+                        .add(LootItem.lootTableItem(Items.IRON_NUGGET).setWeight(6)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
+                        .add(LootItem.lootTableItem(Items.IRON_CHAIN))
+                        .add(LootItem.lootTableItem(Items.IRON_HELMET)
+                                .apply(SetItemDamageFunction.setDamage(UniformGenerator.between(0.1f, 0.2f))))
+                        .add(LootItem.lootTableItem(Items.IRON_BOOTS)
+                                .apply(SetItemDamageFunction.setDamage(UniformGenerator.between(0.1f, 0.2f))))
+                        .add(LootItem.lootTableItem(ModItems.damagedChipset).setWeight(2))));
     }
 
 }

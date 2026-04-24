@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.recipe;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
@@ -21,10 +22,11 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public record MetalDetectorRecipe(BlockState state, ResourceKey<LootTable> lootTable) implements Recipe<RecipeInput> {
+public record MetalDetectorRecipe(BlockState state, float chance, ResourceKey<LootTable> lootTable) implements Recipe<RecipeInput> {
 
     private static final MapCodec<MetalDetectorRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BlockState.CODEC.fieldOf("state").forGetter(MetalDetectorRecipe::state),
+            Codec.FLOAT.fieldOf("chance").forGetter(MetalDetectorRecipe::chance),
             ResourceKey.codec(Registries.LOOT_TABLE).fieldOf("loot_table").forGetter(MetalDetectorRecipe::lootTable)
     ).apply(instance, MetalDetectorRecipe::new));
 
@@ -99,12 +101,14 @@ public record MetalDetectorRecipe(BlockState state, ResourceKey<LootTable> lootT
 
     private static MetalDetectorRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
         final var state = buf.readLenientJsonWithCodec(BlockState.CODEC);
+        final var chance = buf.readFloat();
         final var lootTable = buf.readResourceKey(Registries.LOOT_TABLE);
-        return new MetalDetectorRecipe(state, lootTable);
+        return new MetalDetectorRecipe(state, chance, lootTable);
     }
 
     private static void toNetwork(RegistryFriendlyByteBuf buf, MetalDetectorRecipe recipe) {
         buf.writeJsonWithCodec(BlockState.CODEC, recipe.state);
+        buf.writeFloat(recipe.chance);
         buf.writeResourceKey(recipe.lootTable);
     }
 

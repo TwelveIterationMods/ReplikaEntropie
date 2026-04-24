@@ -10,12 +10,7 @@ import net.blay09.mods.replikaentropie.block.entity.FragmentAcceleratorBlockEnti
 import net.blay09.mods.replikaentropie.component.AssemblyTicket;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.item.ModItems;
-import net.blay09.mods.replikaentropie.recipe.AssemblerRecipe;
-import net.blay09.mods.replikaentropie.recipe.BiomassIncubatorRecipe;
-import net.blay09.mods.replikaentropie.recipe.FabricatorRecipe;
-import net.blay09.mods.replikaentropie.recipe.ModRecipes;
-import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
-import net.blay09.mods.replikaentropie.recipe.ResearchRecipe;
+import net.blay09.mods.replikaentropie.recipe.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -38,7 +33,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
     private static final Identifier FABRICATOR_TEXTURE = id("textures/gui/jei/fabricator.png");
     private static final Identifier WORLD_EATER_TEXTURE = id("textures/gui/jei/world_eater.png");
     private static final Identifier RESEARCH_TEXTURE = id("textures/gui/jei/research.png");
-    private static final Identifier REPLIKA_WORKBENCH_TEXTURE = id("textures/gui/jei/replika_workbench.png");
     private static final Identifier LAVASCRAP_TEXTURE = id("textures/gui/jei/lavascrap.png");
     private static final Identifier COBBLESCRAP_TEXTURE = id("textures/gui/jei/cobblescrap.png");
     private static final Identifier DEFRAGMENTIZER_TEXTURE = id("textures/gui/jei/defragmentizer.png");

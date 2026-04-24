@@ -3,5 +3,6 @@
   "state": {
     "Name": "minecraft:sand"
   },
-  "loot_table": "replikaentropie:metal_detector/sand"
+  "loot_table": "replikaentropie:metal_detector/sand",
+  "chance": 0.005
 }

@@ -43,9 +43,6 @@ public class ReplikaEntropie {
     // - I think we should have a Biofuel generator operating on refined biomass
 
     // New Items
-    // - Metal Detector JEI support
-    // - Metal Detector hold to use
-    // - Metal Detector Item Sprite
     // - Introduce durability (energy-based) for all items. Burst still exists, and can be separately upgraded. Essentialy, durability recharges the burst, while burst determines use duration at a time.
 
     // New Entities

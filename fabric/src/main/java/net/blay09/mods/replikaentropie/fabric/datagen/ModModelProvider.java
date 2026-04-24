@@ -69,7 +69,8 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.skyScraper.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
         generators.generateFlatItem(ModItems.nullphaser.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
         generators.generateFlatItem(ModItems.oreVacuum.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
-        generators.generateFlatItem(ModItems.metalDetector.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
+
+        generators.declareCustomModelItem(ModItems.metalDetector.asItem());
 
         generators.generateFlatItem(ModItems.biosteelHelmet.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.biosteelChestplate.asItem(), ModelTemplates.FLAT_ITEM);
