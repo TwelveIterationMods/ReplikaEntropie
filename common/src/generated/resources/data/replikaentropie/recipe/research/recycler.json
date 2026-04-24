@@ -9,7 +9,7 @@
   },
   "nonogram": "replikaentropie:recycler",
   "research_type": "crafting",
-  "sort_order": 300,
+  "sort_order": 400,
   "unlocked_recipes": [
     "replikaentropie:recycler"
   ]

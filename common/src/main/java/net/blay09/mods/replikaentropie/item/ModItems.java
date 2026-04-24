@@ -51,7 +51,6 @@ public class ModItems {
     public static DeferredItem magphasers;
     public static DeferredItem nullphaser;
     public static DeferredItem automaticHackTool;
-    public static DeferredItem burstDrill;
     public static DeferredItem oreVacuum;
     public static DeferredItem slowphasers;
     public static DeferredItem stompers;
@@ -82,7 +81,6 @@ public class ModItems {
         magphasers = items.register("magphasers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
         nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(-1)).asDeferredItem();
         automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> it.durability(16).component(DataComponents.BREAK_SOUND, SoundEvents.ITEM_BREAK)).asDeferredItem();
-        burstDrill = items.register("burst_drill", BurstDrillItem::new, it -> it.durability(-1)).asDeferredItem();
         oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(-1)).asDeferredItem();
         metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(-1)).asDeferredItem();
         slowphasers = items.register("slowphasers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
@@ -139,7 +137,6 @@ public class ModItems {
                     output.accept(ModBlocks.wasteBarrel);
                     output.accept(ModBlocks.fragmentalWaste);
                     output.accept(ModBlocks.replikaWorkbench);
-                    output.accept(burstDrill);
                     output.accept(oreVacuum);
                     output.accept(metalDetector);
                     output.accept(nullphaser);

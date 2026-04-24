@@ -153,12 +153,6 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.GLASS, 1)
                 .save(output);
 
-        assemblerRecipe(ModItems.burstDrill, 1)
-                .ingredient(Items.IRON_INGOT, 5)
-                .ingredient(Items.DIAMOND, 1)
-                .ingredient(Items.STICK, 1)
-                .save(output);
-
         assemblerRecipe(ModItems.oreVacuum, 1)
                 .ingredient(Items.IRON_INGOT, 4)
                 .ingredient(Items.HOPPER, 1)

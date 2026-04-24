@@ -3,7 +3,7 @@
   "data": 10,
   "fragments": 2,
   "hardDependencies": [
-    "replikaentropie:research/burst_drill"
+    "replikaentropie:research/burst_energy"
   ],
   "icon": {
     "id": "replikaentropie:ore_vacuum"

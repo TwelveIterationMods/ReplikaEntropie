@@ -51,6 +51,14 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                 .sortOrder(sortOrder += 100)
                 .save(output);
 
+        research(id("automatic_hack_tool"))
+                .icon(ModItems.automaticHackTool)
+                .dependsOn(id("research/handheld_analyzer"))
+                .nonogram(id("automatic_hack_tool"))
+                .costs(1, 0, 0, 0)
+                .sortOrder(sortOrder += 100)
+                .save(output);
+
         research(id("recycler"))
                 .icon(ModBlocks.recycler)
                 .dependsOn(id("research/handheld_analyzer"))
@@ -141,19 +149,9 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                 .sortOrder(sortOrder += 100)
                 .save(output);
 
-        research(id("burst_drill"))
-                .icon(ModItems.burstDrill)
-                .dependsOn(id("research/burst_energy"))
-                .unlocksRecipe(id("assembler/burst_drill"))
-                .nonogram(id("burst_drill"))
-                .costs(8, 12, 0, 1)
-                .sortOrder(sortOrder += 100)
-                .type(ResearchRecipe.Type.ASSEMBLER)
-                .save(output);
-
         research(id("ore_vacuum"))
                 .icon(ModItems.oreVacuum)
-                .dependsOn(id("research/burst_drill"))
+                .dependsOn(id("research/burst_energy"))
                 .unlocksRecipe(id("assembler/ore_vacuum"))
                 .nonogram(id("ore_vacuum"))
                 .costs(10, 8, 0, 2)

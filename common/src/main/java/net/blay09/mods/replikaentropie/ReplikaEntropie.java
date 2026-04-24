@@ -27,9 +27,6 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
-    // Stability
-    // - all armor leg textures are in the wrong place
-
     // Rework Blocks
     // - World Eater should do have an intermediate output buffer, so it can be used as a Quarry
     // - World Eater should have some in-world visuals indicating the area it's eating
@@ -39,7 +36,6 @@ public class ReplikaEntropie {
     // - Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
 
     // Rework Items
-    // - Remove the Burst Drill for now.
     // - Remove Replika Frame - should no longer be necessary unless we want to make the recipe more microcrafted.
 
     // New Blocks

@@ -1,0 +1,12 @@
+{
+  "type": "replikaentropie:research",
+  "data": 1,
+  "hardDependencies": [
+    "replikaentropie:research/handheld_analyzer"
+  ],
+  "icon": {
+    "id": "replikaentropie:automatic_hack_tool"
+  },
+  "nonogram": "replikaentropie:automatic_hack_tool",
+  "sort_order": 300
+}

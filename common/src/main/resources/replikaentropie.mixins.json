@@ -11,8 +11,7 @@
   ],
   "client": [
     "GameRendererAccessor",
-    "GameRendererMixin",
-    "MultiPlayerGameModeMixin"
+    "GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
