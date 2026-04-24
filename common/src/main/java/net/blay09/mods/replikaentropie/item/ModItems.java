@@ -36,15 +36,7 @@ public class ModItems {
     public static DeferredItem hazmatChestplate;
     public static DeferredItem hazmatLeggings;
     public static DeferredItem hazmatBoots;
-    public static DeferredItem replikaSkin;
-    public static DeferredItem replikaHelmetFrame;
-    public static DeferredItem replikaChestplateFrame;
-    public static DeferredItem replikaLeggingsFrame;
-    public static DeferredItem replikaBootsFrame;
-    public static DeferredItem replikaHelmet;
-    public static DeferredItem replikaChestplate;
-    public static DeferredItem replikaLeggings;
-    public static DeferredItem replikaBoots;
+    public static DeferredItem scubaHelmet;
     public static DeferredItem nightVisionGoggles;
     public static DeferredItem brightVisionGoggles;
     public static DeferredItem graviliftHarness;
@@ -96,15 +88,7 @@ public class ModItems {
         hazmatChestplate = items.register("hazmat_chestplate", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.CHESTPLATE)).asDeferredItem();
         hazmatLeggings = items.register("hazmat_leggings", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.LEGGINGS)).asDeferredItem();
         hazmatBoots = items.register("hazmat_boots", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.BOOTS)).asDeferredItem();
-        replikaSkin = items.register("replika_skin", Item::new, it -> it).asDeferredItem();
-        replikaHelmetFrame = items.register("replika_helmet_frame", Item::new, it -> it).asDeferredItem();
-        replikaChestplateFrame = items.register("replika_chestplate_frame", Item::new, it -> it).asDeferredItem();
-        replikaLeggingsFrame = items.register("replika_leggings_frame", Item::new, it -> it).asDeferredItem();
-        replikaBootsFrame = items.register("replika_boots_frame", Item::new, it -> it).asDeferredItem();
-        replikaHelmet = items.register("replika_helmet", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.HELMET)).asDeferredItem();
-        replikaChestplate = items.register("replika_chestplate", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE)).asDeferredItem();
-        replikaLeggings = items.register("replika_leggings", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.LEGGINGS)).asDeferredItem();
-        replikaBoots = items.register("replika_boots", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS)).asDeferredItem();
+        scubaHelmet = items.register("replika_helmet", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.HELMET)).asDeferredItem();
     }
 
     public static void initialize(BalmCreativeModeTabRegistrar creativeModeTabs) {
@@ -158,15 +142,7 @@ public class ModItems {
                     output.accept(hazmatChestplate);
                     output.accept(hazmatLeggings);
                     output.accept(hazmatBoots);
-                    output.accept(replikaSkin);
-                    output.accept(replikaHelmetFrame);
-                    output.accept(replikaChestplateFrame);
-                    output.accept(replikaLeggingsFrame);
-                    output.accept(replikaBootsFrame);
-                    output.accept(replikaHelmet);
-                    output.accept(replikaChestplate);
-                    output.accept(replikaLeggings);
-                    output.accept(replikaBoots);
+                    output.accept(scubaHelmet);
                     output.accept(assemblyTicket);
                 })));
     }

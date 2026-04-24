@@ -35,9 +35,6 @@ public class ReplikaEntropie {
     // - not the biggest fan of the Fabricator yet. It feels odd to turn Scrap into Hazmat Lining.
     // - Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
 
-    // Rework Items
-    // - Remove Replika Frame - should no longer be necessary unless we want to make the recipe more microcrafted.
-
     // New Blocks
     // - "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
     // - Solar Sink as the first energy-providing upgrade, placed on top of machine

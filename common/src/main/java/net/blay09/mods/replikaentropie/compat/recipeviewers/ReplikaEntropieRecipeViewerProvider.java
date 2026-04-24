@@ -65,7 +65,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
         registerLavascrapRecipe(registrar);
         registerCobblescrapRecipe(registrar);
         registerBiomassHarvesterRecipe(registrar);
-        registerReplikaWorkbenchRecipes(registrar);
     }
 
     private static void registerRecyclerRecipes(RecipeViewerRegistrar registrar) {
@@ -302,26 +301,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                             slots.inputSlot(60, 30).add(Items.DIAMOND_SWORD);
                             slots.inputSlot(30, 59).add(Items.DIAMOND_SWORD);
                             slots.outputSlot(30, 30).add(ModItems.biomass);
-                        }));
-    }
-
-    private static void registerReplikaWorkbenchRecipes(RecipeViewerRegistrar registrar) {
-        registrar.registerCustomRecipeType(id("replika_workbench"), ReplikaWorkbenchRecipe.class)
-                .withRecipes(List.of(
-                        new ReplikaWorkbenchRecipe(ModItems.replikaHelmetFrame.createStack(), ModItems.replikaHelmet.createStack()),
-                        new ReplikaWorkbenchRecipe(ModItems.replikaChestplateFrame.createStack(), ModItems.replikaChestplate.createStack()),
-                        new ReplikaWorkbenchRecipe(ModItems.replikaLeggingsFrame.createStack(), ModItems.replikaLeggings.createStack()),
-                        new ReplikaWorkbenchRecipe(ModItems.replikaBootsFrame.createStack(), ModItems.replikaBoots.createStack())
-                ))
-                .withCraftingStation(ModBlocks.replikaWorkbench)
-                .buildDisplay(display -> display
-                        .title(Component.translatable(id("replika_workbench").toLanguageKey("jei")))
-                        .icon(ModBlocks.replikaWorkbench)
-                        .size(138, 76)
-                        .background(REPLIKA_WORKBENCH_TEXTURE)
-                        .slots((recipe, slots) -> {
-                            slots.inputSlot(30, 30).add(recipe.frameItem());
-                            slots.outputSlot(117, 30).add(recipe.assembledItem());
                         }));
     }
 

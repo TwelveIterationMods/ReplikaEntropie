@@ -64,11 +64,6 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.assemblyTicket.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.biomash.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.hazmatLining.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.replikaSkin.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.replikaHelmetFrame.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.replikaChestplateFrame.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.replikaLeggingsFrame.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.replikaBootsFrame.asItem(), ModelTemplates.FLAT_ITEM);
 
         generators.generateFlatItem(ModItems.handheldAnalyzer.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
         generators.generateFlatItem(ModItems.skyScraper.asItem(), ModelTemplates.FLAT_HANDHELD_ITEM);
@@ -84,10 +79,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.hazmatChestplate.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.hazmatLeggings.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.hazmatBoots.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.replikaHelmet.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.replikaChestplate.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.replikaLeggings.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.replikaBoots.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.scubaHelmet.asItem(), ModelTemplates.FLAT_ITEM);
 
         generators.generateFlatItem(ModItems.nightVisionGoggles.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.brightVisionGoggles.asItem(), ModelTemplates.FLAT_ITEM);

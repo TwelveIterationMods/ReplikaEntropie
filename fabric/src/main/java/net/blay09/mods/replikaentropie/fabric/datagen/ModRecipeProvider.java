@@ -172,40 +172,6 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_hazmat_lining", has(ModItems.hazmatLining))
                         .save(output);
 
-                shaped(RecipeCategory.COMBAT, ModItems.replikaHelmetFrame)
-                        .pattern("BDB")
-                        .pattern("B B")
-                        .define('B', ModItems.replikaSkin)
-                        .define('D', Items.DIAMOND)
-                        .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                        .save(output);
-
-                shaped(RecipeCategory.COMBAT, ModItems.replikaChestplateFrame)
-                        .pattern("B B")
-                        .pattern("BDB")
-                        .pattern("BBB")
-                        .define('B', ModItems.replikaSkin)
-                        .define('D', Items.DIAMOND)
-                        .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                        .save(output);
-
-                shaped(RecipeCategory.COMBAT, ModItems.replikaLeggingsFrame)
-                        .pattern("BDB")
-                        .pattern("B B")
-                        .pattern("B B")
-                        .define('B', ModItems.replikaSkin)
-                        .define('D', Items.DIAMOND)
-                        .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                        .save(output);
-
-                shaped(RecipeCategory.COMBAT, ModItems.replikaBootsFrame)
-                        .pattern("D D")
-                        .pattern("B B")
-                        .define('B', ModItems.replikaSkin)
-                        .define('D', Items.DIAMOND)
-                        .unlockedBy("has_replika_framing", has(ModItems.replikaSkin))
-                        .save(output);
-
                 shapeless(RecipeCategory.FOOD, ModItems.biomash)
                         .requires(ModItems.biomass)
                         .requires(Items.BOWL)

@@ -2,7 +2,6 @@ package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
 import net.blay09.mods.replikaentropie.menu.slot.ReplikaWorkbenchSlot;
-import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -55,9 +54,6 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu {
                 .slotRange("parts1", 0, 4)
                 .slotRange("parts2", 5, 10)
                 .slot("center", 4)
-                .route(it -> it.is(ModItemTags.REPLIKA_FRAME), QuickMove.PLAYER, "center")
-                .route(it -> it.is(ModItemTags.REPLIKA_PART), QuickMove.PLAYER, "parts1")
-                .route(it -> it.is(ModItemTags.REPLIKA_PART), QuickMove.PLAYER, "parts2")
                 .build();
     }
 
@@ -108,9 +104,6 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu {
 
     public boolean canAssemble() {
         final var frameStack = getSlot(4).getItem();
-        if (!frameStack.is(ModItemTags.REPLIKA_FRAME)) {
-            return false;
-        }
 
         for (int i = 0; i < 9; i++) {
             if (i == 4) {

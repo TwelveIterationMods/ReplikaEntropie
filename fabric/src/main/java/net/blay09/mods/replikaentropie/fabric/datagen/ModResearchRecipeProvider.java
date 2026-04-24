@@ -364,17 +364,17 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                 .type(ResearchRecipe.Type.ASSEMBLER)
                 .save(output);
 
-        research(id("replika_skin"))
+        /*research(id("replika_skin"))
                 .icon(ModItems.replikaSkin)
                 .dependsOn(id("research/burst_energy"))
                 .nonogram(id("replika_skin"))
                 .costs(8, 0, 12, 0)
                 .sortOrder(sortOrder += 100)
-                .save(output);
+                .save(output);*/
 
         research(id("replika_workbench"))
                 .icon(ModBlocks.replikaWorkbench)
-                .dependsOn(id("research/replika_skin"))
+                .dependsOn(id("research/burst_energy"))
                 .unlocksRecipe(id("assembler/replika_workbench"))
                 .nonogram(id("replika_workbench"))
                 .costs(32, 32, 32, 32)

@@ -37,7 +37,7 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
 
         @Override
         public boolean canTakeItem(Container target, int slot, ItemStack itemStack) {
-            return slot != 4 || !itemStack.is(ModItemTags.REPLIKA_FRAME);
+            return true;
         }
     };
 

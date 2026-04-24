@@ -33,7 +33,6 @@ public class ModFabricatorRecipeProvider extends FabricRecipeProvider {
         fabricatorRecipe(ModItems.biosteel, 2, 2, 0, sortOrder += 100).save(output);
         fabricatorRecipe(ModItems.chipset, 2, 0, 1, sortOrder += 100).save(output);
         fabricatorRecipe(ModItems.hazmatLining, 4, 0, 0, sortOrder += 100).save(output);
-        fabricatorRecipe(ModItems.replikaSkin, 8, 8, 2, sortOrder += 100).save(output);
         fabricatorRecipe(Items.IRON_CHAIN, 2, 0, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.STICK, 0, 1, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.BONE_MEAL, 0, 2, 0, sortOrder += 100).save(output);
