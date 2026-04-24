@@ -114,9 +114,9 @@ public class ModItems {
                     output.accept(ModBlocks.entropicDataMiner);
                     output.accept(ModBlocks.cobblescrap);
                     output.accept(ModBlocks.lavascrap);
-                    output.accept(ModBlocks.worldEater);
                     output.accept(ModBlocks.biomassIncubator);
                     output.accept(ModBlocks.biomassHarvester);
+                    output.accept(ModBlocks.worldEater);
                     output.accept(ModBlocks.fragmentalGenerator);
                     output.accept(ModBlocks.fragmentAccelerator);
                     output.accept(ModBlocks.chaosEngine);
