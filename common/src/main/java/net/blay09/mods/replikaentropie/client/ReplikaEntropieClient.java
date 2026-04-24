@@ -17,7 +17,6 @@ import net.blay09.mods.replikaentropie.core.abilities.MagphaseAbility;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 
@@ -62,10 +61,8 @@ public class ReplikaEntropieClient {
             }
             final var blockEntity = player.level().getBlockEntity(pos);
             if (blockEntity instanceof WorldEaterBlockEntity worldEater) {
-                final var area = new AABB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 10, pos.getY() + 10, pos.getZ() + 10);
-
                 final var vertexBuilder = multiBufferSource.getBuffer(RenderTypes.LINES);
-                final var shape = Shapes.create(area.inflate(0.002));
+                final var shape = Shapes.create(worldEater.getScanArea().inflate(0.002));
 
                 double camX = camera.position().x;
                 double camY = camera.position().y;

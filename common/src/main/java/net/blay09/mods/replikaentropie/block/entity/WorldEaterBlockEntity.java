@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
@@ -131,6 +132,17 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
 
     public Container getPreviewContainer() {
         return previewContainer;
+    }
+
+    public AABB getScanArea() {
+        return new AABB(
+                worldPosition.getX() - SCAN_RANGE,
+                worldPosition.getY() - SCAN_RANGE,
+                worldPosition.getZ() - SCAN_RANGE,
+                worldPosition.getX() + SCAN_RANGE,
+                worldPosition.getY() + SCAN_RANGE,
+                worldPosition.getZ() + SCAN_RANGE
+        );
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, WorldEaterBlockEntity blockEntity) {
