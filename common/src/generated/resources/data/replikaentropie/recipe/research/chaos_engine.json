@@ -13,7 +13,7 @@
   "nonogram": "replikaentropie:chaos_engine",
   "research_type": "assembler",
   "scrap": 24,
-  "sort_order": 3400,
+  "sort_order": 3500,
   "unlocked_recipes": [
     "replikaentropie:assembler/chaos_engine"
   ]

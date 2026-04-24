@@ -10,7 +10,7 @@
   "nonogram": "replikaentropie:lavascrap",
   "research_type": "assembler",
   "scrap": 32,
-  "sort_order": 2700,
+  "sort_order": 2800,
   "unlocked_recipes": [
     "replikaentropie:assembler/lavascrap"
   ]
