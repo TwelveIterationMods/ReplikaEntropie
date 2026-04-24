@@ -34,18 +34,20 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu implements Makes
     public static final int DATA_MAX_POWER = 6;
     public static final int DATA_COUNT = 7;
 
+    private final Inventory inventory;
     private final Container container;
     private final ContainerData data;
     private final ContainerLevelAccess access;
 
     private final QuickMove.Routing quickMove;
 
-    public BiomassIncubatorMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+    public BiomassIncubatorMenu(int containerId, Inventory inventory) {
+        this(containerId, inventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
-    public BiomassIncubatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access) {
+    public BiomassIncubatorMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.biomassIncubator.value(), containerId);
+        this.inventory = inventory;
         this.container = container;
         checkContainerSize(container, 8);
         this.data = data;
@@ -66,12 +68,12 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu implements Makes
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; ++j) {
-                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 121 + i * 18));
+                addSlot(new Slot(inventory, j + i * 9 + 9, 8 + j * 18, 121 + i * 18));
             }
         }
 
         for (int i = 0; i < 9; i++) {
-            addSlot(new Slot(playerInventory, i, 8 + i * 18, 179));
+            addSlot(new Slot(inventory, i, 8 + i * 18, 179));
         }
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
@@ -83,7 +85,7 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu implements Makes
                 .route(it -> it.is(ModItemTags.BIOMASS_INCUBATOR_SOILS), QuickMove.PLAYER, "soils")
                 .build();
 
-        container.startOpen(playerInventory.player);
+        container.startOpen(inventory.player);
     }
 
     @Override
@@ -144,7 +146,7 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu implements Makes
         access.execute((level, pos) -> {
             final BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof BiomassIncubatorBlockEntity biomassIncubator) {
-                biomassIncubator.getEnergyStorage().fill(250, false);
+                biomassIncubator.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
             }
         });
     }

@@ -1,7 +1,7 @@
 package net.blay09.mods.replikaentropie.client.gui.components;
 
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.replikaentropie.network.protocol.MakeshiftPsuMessage;
+import net.blay09.mods.replikaentropie.network.protocol.MakeshiftPowerMessage;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -21,7 +21,7 @@ public class MakeshiftPowerButton extends ImageButton {
     private int soundCounter;
 
     public MakeshiftPowerButton(int x, int y, int containerId) {
-        super(x, y, WIDTH, HEIGHT, SPRITES, _ -> Balm.networking().sendToServer(new MakeshiftPsuMessage(containerId)), MESSAGE);
+        super(x, y, WIDTH, HEIGHT, SPRITES, _ -> Balm.networking().sendToServer(new MakeshiftPowerMessage(containerId)), MESSAGE);
     }
 
     @Override

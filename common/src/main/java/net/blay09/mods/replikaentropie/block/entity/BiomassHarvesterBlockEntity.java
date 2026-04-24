@@ -25,20 +25,23 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,7 +79,7 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
 
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
-            return weaponsContainer.containsOuterSlot(slot) && isValidWeapon(itemStack);
+            return weaponsContainer.containsOuterSlot(slot) && isValidHarvesterTool(itemStack);
         }
     };
 
@@ -177,6 +180,9 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, BiomassHarvesterBlockEntity blockEntity) {
+        if (blockEntity.state == State.SLAUGHTERING) {
+            blockEntity.pullNearbyEntities();
+        }
         blockEntity.updateClientAnimation();
     }
 
@@ -287,29 +293,32 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
     private boolean hasAnyWeapon() {
         for (int i = 0; i < weaponsContainer.getContainerSize(); i++) {
             final var itemStack = weaponsContainer.getItem(i);
-            if (isValidWeapon(itemStack)) {
+            if (isValidHarvesterTool(itemStack)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean isValidWeapon(ItemStack itemStack) {
-        return getWeaponDamage(itemStack) > 0f;
+    public static boolean isValidHarvesterTool(ItemStack itemStack) {
+        return getWeaponDamage(itemStack) > 0f || itemStack.is(ItemTags.HOES) || true;
     }
 
     private static float getWeaponDamage(ItemStack itemStack) {
         if (itemStack.isEmpty()) {
             return 0f;
         }
-        final var damage = itemStack.get(DataComponents.DAMAGE);
-        return damage != null ? damage : 0f;
+        final var attributeModifiers = itemStack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        return attributeModifiers.modifiers().stream()
+                .filter(it -> it.matches(Attributes.ATTACK_DAMAGE, Item.BASE_ATTACK_DAMAGE_ID))
+                .map(it -> it.modifier().amount())
+                .findFirst().orElse(0.0).floatValue();
     }
 
     private void pullNearbyEntities() {
         if (level != null) {
             final var pullArea = new AABB(worldPosition).inflate(PULL_MAX_DISTANCE);
-            final var nearbyEntities = level.getEntitiesOfClass(LivingEntity.class, pullArea);
+            final var nearbyEntities = level.getEntitiesOfClass(Entity.class, pullArea);
             final var center = Vec3.atCenterOf(worldPosition);
             nearbyEntities.forEach(entity -> {
                 if (!entity.isAlive()) {
@@ -343,7 +352,7 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
 
                 entity.setDeltaMovement(newVelocity);
 
-                // We need to manually send a packet to players or they won't get pulled
+                // We need to manually send a packet to players, or they won't get pulled
                 if (entity instanceof ServerPlayer serverPlayer) {
                     serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
                 }

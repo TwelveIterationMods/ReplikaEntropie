@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
+    private final Inventory inventory;
     private final Container container;
     private final ContainerData data;
     private final ContainerLevelAccess access;
@@ -31,16 +32,17 @@ public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPowe
     public static final int DATA_MAX_POWER = 6;
     public static final int DATA_COUNT = 7;
 
-    public RecyclerMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(4), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+    public RecyclerMenu(int containerId, Inventory inventory) {
+        this(containerId, inventory, new SimpleContainer(4), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
-    public RecyclerMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access) {
-        this(ModMenus.recycler.value(), containerId, playerInventory, container, data, access);
+    public RecyclerMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
+        this(ModMenus.recycler.value(), containerId, inventory, container, data, access);
     }
 
-    public RecyclerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access) {
+    public RecyclerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
         super(menuType, containerId);
+        this.inventory = inventory;
         this.container = container;
         checkContainerSize(container, 4);
         this.data = data;
@@ -54,19 +56,19 @@ public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPowe
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 125 + i * 18));
+                addSlot(new Slot(inventory, j + i * 9 + 9, 8 + j * 18, 125 + i * 18));
             }
         }
         for (int i = 0; i < 9; i++) {
-            addSlot(new Slot(playerInventory, i, 8 + i * 18, 183));
+            addSlot(new Slot(inventory, i, 8 + i * 18, 183));
         }
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
                 .slot("input", 0)
-                .route(it -> RecyclerRecipe.getRecipe(playerInventory.player.level(), it).isPresent(), QuickMove.PLAYER, "input")
+                .route(it -> RecyclerRecipe.getRecipe(inventory.player.level(), it).isPresent(), QuickMove.PLAYER, "input")
                 .build();
 
-        container.startOpen(playerInventory.player);
+        container.startOpen(inventory.player);
     }
 
     public float getProcessingProgress() {
@@ -99,7 +101,7 @@ public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPowe
         access.execute((level, pos) -> {
             final BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof RecyclerBlockEntity recycler) {
-                recycler.getEnergyStorage().fill(250, false);
+                recycler.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
             }
         });
     }

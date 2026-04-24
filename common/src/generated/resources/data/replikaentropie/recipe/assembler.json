@@ -3,12 +3,12 @@
   "category": "misc",
   "key": {
     "A": "minecraft:anvil",
+    "B": "replikaentropie:makeshift_psu",
     "C": "minecraft:iron_chain",
-    "D": "minecraft:daylight_detector",
     "I": "minecraft:iron_ingot"
   },
   "pattern": [
-    "IDI",
+    "IBI",
     "CAC",
     "III"
   ],

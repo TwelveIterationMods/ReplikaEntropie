@@ -38,8 +38,8 @@ public class AssemblerScreen extends AbstractContainerScreen<AssemblerMenu> {
             );
     private final EnergyBar energyBar = new EnergyBar(-23, 11);
 
-    public AssemblerScreen(AssemblerMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 222);
+    public AssemblerScreen(AssemblerMenu menu, Inventory inventory, Component title) {
+        super(menu, inventory, title, DEFAULT_IMAGE_WIDTH, 222);
         inventoryLabelY = imageHeight - 94;
     }
 

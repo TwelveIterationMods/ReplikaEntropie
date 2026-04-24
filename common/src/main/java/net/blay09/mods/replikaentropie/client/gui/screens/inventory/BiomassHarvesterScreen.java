@@ -42,7 +42,6 @@ public class BiomassHarvesterScreen extends AbstractContainerScreen<BiomassHarve
 
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 2, 24, 90);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 93, 28, 28);
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos + imageWidth + 1, topPos, 25, 90);
         energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 

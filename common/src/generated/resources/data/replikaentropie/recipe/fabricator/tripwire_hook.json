@@ -2,8 +2,8 @@
   "type": "replikaentropie:fabricator",
   "biomass": 1,
   "result": {
-    "id": "minecraft:bowl"
+    "id": "minecraft:tripwire_hook"
   },
   "scrap": 1,
-  "sortOrder": 2000
+  "sortOrder": 500
 }

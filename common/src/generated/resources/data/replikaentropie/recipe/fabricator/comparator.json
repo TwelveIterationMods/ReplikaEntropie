@@ -1,0 +1,10 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 1,
+  "fragments": 1,
+  "result": {
+    "id": "minecraft:comparator"
+  },
+  "scrap": 2,
+  "sortOrder": 800
+}

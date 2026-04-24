@@ -18,6 +18,6 @@ public class ModNetworking {
         networking.registerClientboundPacket(NonogramAutoHackResultMessage.TYPE, NonogramAutoHackResultMessage.class, NonogramAutoHackResultMessage.STREAM_CODEC, NonogramAutoHackResultMessage::handle);
         networking.registerServerboundPacket(NonogramAutoHackMessage.TYPE, NonogramAutoHackMessage.class, NonogramAutoHackMessage.STREAM_CODEC, NonogramAutoHackMessage::handle);
         networking.registerServerboundPacket(NonogramMarkMessage.TYPE, NonogramMarkMessage.class, NonogramMarkMessage.STREAM_CODEC, NonogramMarkMessage::handle);
-        networking.registerServerboundPacket(MakeshiftPsuMessage.TYPE, MakeshiftPsuMessage.class, MakeshiftPsuMessage.STREAM_CODEC, MakeshiftPsuMessage::handle);
+        networking.registerServerboundPacket(MakeshiftPowerMessage.TYPE, MakeshiftPowerMessage.class, MakeshiftPowerMessage.STREAM_CODEC, MakeshiftPowerMessage::handle);
     }
 }

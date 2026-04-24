@@ -60,22 +60,22 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .save(output);
 
                 shaped(RecipeCategory.MISC, ModBlocks.recycler)
-                        .pattern("IDI")
+                        .pattern("IBI")
                         .pattern("CSC")
                         .pattern("III")
                         .define('I', Items.IRON_INGOT)
-                        .define('D', Items.DAYLIGHT_DETECTOR)
+                        .define('B', ModItems.makeshiftPSU)
                         .define('S', Items.SHEARS)
                         .define('C', Items.IRON_CHAIN)
                         .unlockedBy("has_quartz", has(Items.QUARTZ))
                         .save(output);
 
                 shaped(RecipeCategory.MISC, ModBlocks.assembler)
-                        .pattern("IDI")
+                        .pattern("IBI")
                         .pattern("CAC")
                         .pattern("III")
                         .define('I', Items.IRON_INGOT)
-                        .define('D', Items.DAYLIGHT_DETECTOR)
+                        .define('B', ModItems.makeshiftPSU)
                         .define('A', Items.ANVIL)
                         .define('C', Items.IRON_CHAIN)
                         .unlockedBy("has_quartz", has(Items.QUARTZ))
@@ -99,6 +99,13 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .requires(ModItems.biomass)
                         .requires(ModItems.biomass)
                         .unlockedBy("has_biomass", has(ModItems.biomass))
+                        .save(output);
+
+                shapeless(RecipeCategory.COMBAT, ModItems.hazmatLining, 4)
+                        .requires(Items.LEATHER)
+                        .requires(Items.ARMADILLO_SCUTE)
+                        .requires(Items.YELLOW_DYE)
+                        .unlockedBy("has_armadillo_scute", has(Items.ARMADILLO_SCUTE))
                         .save(output);
 
                 shaped(RecipeCategory.MISC, ModItems.metalDetector)

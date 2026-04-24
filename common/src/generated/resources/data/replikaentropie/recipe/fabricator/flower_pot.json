@@ -1,8 +1,8 @@
 {
   "type": "replikaentropie:fabricator",
   "result": {
-    "id": "replikaentropie:hazmat_lining"
+    "id": "minecraft:flower_pot"
   },
   "scrap": 4,
-  "sortOrder": 300
+  "sortOrder": 2200
 }

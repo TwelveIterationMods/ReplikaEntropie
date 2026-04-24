@@ -3,7 +3,6 @@ package net.blay09.mods.replikaentropie.menu;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.block.entity.AssemblerBlockEntity;
 import net.blay09.mods.replikaentropie.item.ModItems;
-import net.blay09.mods.replikaentropie.menu.MakeshiftPoweredMenu;
 import net.blay09.mods.replikaentropie.menu.slot.AssemblerTicketSlot;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
@@ -27,7 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
-    private final Inventory playerInventory;
+    private final Inventory inventory;
     private final Container previewContainer = new SimpleContainer(9);
     private final Container container;
     private final ContainerData data;
@@ -40,13 +39,13 @@ public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPow
     public static final int DATA_MAX_POWER = 3;
     public static final int DATA_COUNT = 4;
 
-    public AssemblerMenu(int id, Inventory playerInventory) {
-        this(id, playerInventory, new SimpleContainer(11), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+    public AssemblerMenu(int id, Inventory inventory) {
+        this(id, inventory, new SimpleContainer(11), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
-    public AssemblerMenu(int id, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access) {
+    public AssemblerMenu(int id, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.assembler.value(), id);
-        this.playerInventory = playerInventory;
+        this.inventory = inventory;
         this.container = container;
         checkContainerSize(container, 11);
         this.data = data;
@@ -78,11 +77,11 @@ public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPow
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 140 + i * 18));
+                addSlot(new Slot(inventory, j + i * 9 + 9, 8 + j * 18, 140 + i * 18));
             }
         }
         for (int i = 0; i < 9; i++) {
-            addSlot(new Slot(playerInventory, i, 8 + i * 18, 198));
+            addSlot(new Slot(inventory, i, 8 + i * 18, 198));
         }
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
@@ -92,7 +91,7 @@ public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPow
                 .route(it -> !it.is(ModItems.assemblyTicket), QuickMove.PLAYER, "inputs")
                 .build();
 
-        container.startOpen(playerInventory.player);
+        container.startOpen(inventory.player);
 
         updatePreviewFromTicket();
     }
@@ -141,7 +140,7 @@ public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPow
         access.execute((level, pos) -> {
             final BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof AssemblerBlockEntity assembler) {
-                assembler.getEnergyStorage().fill(250, false);
+                assembler.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
             }
         });
     }
@@ -159,7 +158,7 @@ public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPow
             return;
         }
 
-        if (!(playerInventory.player.level() instanceof ServerLevel serverLevel)) {
+        if (!(inventory.player.level() instanceof ServerLevel serverLevel)) {
             clearPreview();
             return;
         }

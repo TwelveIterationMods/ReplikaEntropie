@@ -1,9 +1,8 @@
 {
   "type": "replikaentropie:fabricator",
-  "biomass": 2,
   "result": {
-    "id": "replikaentropie:biosteel"
+    "id": "minecraft:copper_chain"
   },
   "scrap": 2,
-  "sortOrder": 100
+  "sortOrder": 200
 }

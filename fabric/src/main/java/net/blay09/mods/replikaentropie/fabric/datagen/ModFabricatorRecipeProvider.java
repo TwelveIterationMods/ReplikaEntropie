@@ -9,11 +9,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.core.registries.BuiltInRegistries;
 
@@ -30,20 +28,30 @@ public class ModFabricatorRecipeProvider extends FabricRecipeProvider {
             @Override
             public void buildRecipes() {
         int sortOrder = 0;
-        fabricatorRecipe(ModItems.biosteel, 2, 2, 0, sortOrder += 100).save(output);
-        fabricatorRecipe(ModItems.chipset, 2, 0, 1, sortOrder += 100).save(output);
-        fabricatorRecipe(ModItems.hazmatLining, 4, 0, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.IRON_CHAIN, 2, 0, 0, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.COPPER_CHAIN.unaffected(), 2, 0, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.STICK, 0, 1, 0, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.LEVER, 1, 1, 0, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.TRIPWIRE_HOOK, 1, 1, 0, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.REDSTONE_TORCH, 0, 1, 1, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.REPEATER, 1, 1, 1, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.COMPARATOR, 2, 1, 1, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.SCAFFOLDING, 1, 1, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.BONE_MEAL, 0, 2, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.FLINT, 1, 0, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.SLIME_BALL, 0, 8, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.GUNPOWDER, 2, 0, 2, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.SNOWBALL, 0, 0, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.ICE, 0, 0, 0, sortOrder += 100).save(output);
-        fabricatorRecipe(Items.RAIL, 6, 1, 0, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.RAIL, 1, 1, 0, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.ACTIVATOR_RAIL, 1, 1, 1, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.DETECTOR_RAIL, 1, 1, 1, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.POWERED_RAIL, 2, 1, 1, sortOrder += 100).save(output);
         fabricatorRecipe(Items.BOWL, 1, 1, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.BRICK, 2, 0, 0, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.FLOWER_POT, 4, 0, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.PAPER, 0, 2, 0, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.GLASS, 1, 0, 0, sortOrder += 100).save(output);
             }
         };
     }

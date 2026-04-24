@@ -1,9 +1,8 @@
 {
   "type": "replikaentropie:fabricator",
-  "biomass": 1,
   "result": {
-    "id": "minecraft:bowl"
+    "id": "minecraft:glass"
   },
   "scrap": 1,
-  "sortOrder": 2000
+  "sortOrder": 2400
 }

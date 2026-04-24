@@ -1,9 +1,10 @@
 {
   "type": "replikaentropie:fabricator",
   "biomass": 1,
+  "fragments": 1,
   "result": {
-    "id": "minecraft:bowl"
+    "id": "minecraft:repeater"
   },
   "scrap": 1,
-  "sortOrder": 2000
+  "sortOrder": 700
 }

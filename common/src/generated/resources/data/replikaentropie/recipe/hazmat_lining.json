@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather",
+    "minecraft:armadillo_scute",
+    "minecraft:yellow_dye"
+  ],
+  "result": {
+    "count": 4,
+    "id": "replikaentropie:hazmat_lining"
+  }
+}

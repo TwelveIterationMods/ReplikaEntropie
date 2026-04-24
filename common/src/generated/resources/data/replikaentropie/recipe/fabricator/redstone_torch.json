@@ -1,9 +1,9 @@
 {
   "type": "replikaentropie:fabricator",
+  "biomass": 1,
   "fragments": 1,
   "result": {
-    "id": "replikaentropie:chipset"
+    "id": "minecraft:redstone_torch"
   },
-  "scrap": 2,
-  "sortOrder": 200
+  "sortOrder": 600
 }

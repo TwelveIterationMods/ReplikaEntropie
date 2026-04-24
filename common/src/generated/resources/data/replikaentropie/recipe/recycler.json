@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "B": "replikaentropie:makeshift_psu",
     "C": "minecraft:iron_chain",
-    "D": "minecraft:daylight_detector",
     "I": "minecraft:iron_ingot",
     "S": "minecraft:shears"
   },
   "pattern": [
-    "IDI",
+    "IBI",
     "CSC",
     "III"
   ],

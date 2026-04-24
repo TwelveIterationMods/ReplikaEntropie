@@ -127,6 +127,7 @@ public class ModItems {
                     output.accept(nullphaser);
                     output.accept(nightVisionGoggles);
                     output.accept(brightVisionGoggles);
+                    output.accept(scubaHelmet);
                     output.accept(graviliftHarness);
                     output.accept(semisonicSpeeders);
                     output.accept(springBoots);
@@ -143,7 +144,6 @@ public class ModItems {
                     output.accept(hazmatChestplate);
                     output.accept(hazmatLeggings);
                     output.accept(hazmatBoots);
-                    output.accept(scubaHelmet);
                     output.accept(assemblyTicket);
                 })));
     }

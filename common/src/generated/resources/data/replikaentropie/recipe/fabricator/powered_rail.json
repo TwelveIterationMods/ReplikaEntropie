@@ -1,0 +1,10 @@
+{
+  "type": "replikaentropie:fabricator",
+  "biomass": 1,
+  "fragments": 1,
+  "result": {
+    "id": "minecraft:powered_rail"
+  },
+  "scrap": 2,
+  "sortOrder": 1900
+}
