@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,14 +20,19 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayDeque;
+import java.util.Comparator;
 
 public class OreVacuumItem extends Item {
 
     private static final int TICKS_PER_BLOCK = 4;
+    private static final int TICKS_PER_SHEAR = 12;
     private static final float COST_PER_BLOCK = 8f;
+    private static final double SHEAR_SWEEP_RADIUS = 1.25;
 
     public OreVacuumItem(Properties properties) {
         super(properties);
@@ -58,6 +64,51 @@ public class OreVacuumItem extends Item {
             return;
         }
 
+        tryShearEntities(level, player, stack);
+        tryVacuumOre(level, player);
+    }
+
+    private void tryShearEntities(Level level, Player player, ItemStack stack) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        final var eyePosition = player.getEyePosition();
+        final var reach = player.blockInteractionRange();
+        final Vec3 lookDirection = player.getViewVector(1f).normalize();
+        final var endPosition = eyePosition.add(lookDirection.scale(reach));
+        final var shearArea = new AABB(eyePosition, endPosition).inflate(SHEAR_SWEEP_RADIUS);
+
+        final var targets = level.getEntitiesOfClass(LivingEntity.class, shearArea, entity -> {
+            if (entity == player || !(entity instanceof Shearable shearable) || !shearable.readyForShearing()) {
+                return false;
+            }
+
+            final var toEntity = entity.position().subtract(eyePosition);
+            final var forwardDistance = toEntity.dot(lookDirection);
+            if (forwardDistance < 0 || forwardDistance > reach + entity.getBbWidth()) {
+                return false;
+            }
+
+            final var closestPoint = eyePosition.add(lookDirection.scale(forwardDistance));
+            final var maxDistanceFromCenter = SHEAR_SWEEP_RADIUS + entity.getBbWidth() * 0.5;
+            return entity.distanceToSqr(closestPoint) <= maxDistanceFromCenter * maxDistanceFromCenter;
+        });
+
+        targets.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(eyePosition)));
+        final var entity = targets.isEmpty() ? null : targets.getFirst();
+        if (entity == null || !BurstEnergy.consumeEnergy(player, COST_PER_BLOCK)) {
+            return;
+        }
+
+        if (player.getUseItemRemainingTicks() % TICKS_PER_SHEAR == 0) {
+            ((Shearable) entity).shear(serverLevel, SoundSource.PLAYERS, stack);
+        } else {
+            sendTrailParticles(serverLevel, entity.position().add(0, entity.getBbHeight() * 0.5, 0), new Vec3(player.getX(), player.getEyeY(), player.getZ()));
+        }
+    }
+
+    private void tryVacuumOre(Level level, Player player) {
         final var blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         if (blockHitResult.getType() != HitResult.Type.BLOCK) {
             return;
@@ -87,21 +138,7 @@ public class OreVacuumItem extends Item {
         serverLevel.levelEvent(spawnDestroyParticlesType, furthestPos, Block.getId(state));
         serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.25f, 0.9f + serverLevel.getRandom().nextFloat() * 0.2f);
 
-        // Trail from ore to player
-        final var startX = furthestPos.getX() + 0.5;
-        final var startY = furthestPos.getY() + 0.5;
-        final var startZ = furthestPos.getZ() + 0.5;
-        final var endX = player.getX();
-        final var endY = player.getEyeY();
-        final var endZ = player.getZ();
-        final var segments = 6;
-        for (int i = 0; i <= segments; i++) {
-            final var t = i / (double) segments;
-            final var x = startX + (endX - startX) * t;
-            final var y = startY + (endY - startY) * t;
-            final var z = startZ + (endZ - startZ) * t;
-            serverLevel.sendParticles(ParticleTypes.WHITE_ASH, x, y, z, 1, 0, 0, 0, 0);
-        }
+        sendTrailParticles(serverLevel, Vec3.atCenterOf(furthestPos), new Vec3(player.getX(), player.getEyeY(), player.getZ()));
 
         for (final var dropItemStack : drops) {
             if (!player.addItem(dropItemStack)) {
@@ -155,6 +192,17 @@ public class OreVacuumItem extends Item {
         }
 
         return furthestPos;
+    }
+
+    private void sendTrailParticles(ServerLevel serverLevel, Vec3 start, Vec3 end) {
+        final var segments = 6;
+        for (int i = 0; i <= segments; i++) {
+            final var t = i / (double) segments;
+            final var x = start.x + (end.x - start.x) * t;
+            final var y = start.y + (end.y - start.y) * t;
+            final var z = start.z + (end.z - start.z) * t;
+            serverLevel.sendParticles(ParticleTypes.WHITE_ASH, x, y, z, 1, 0, 0, 0, 0);
+        }
     }
 
 }
