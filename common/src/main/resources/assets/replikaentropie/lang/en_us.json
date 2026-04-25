@@ -221,7 +221,7 @@
   "jei.replikaentropie.replika_workbench": "Replika Workbench",
   "jei.replikaentropie.assembly_ticket.info": "Assembly Tickets can be printed using the Sky Scraper once the item has been unlocked. Place the ticket into an Assembler to proceed.",
   "jei.replikaentropie.data.info": "Data Points are a player-bound resource acquired by scanning blocks and items using the Handheld Analyzer. Later you can also place an Entropic Data Miner to have it generate data from observing world events.",
-  "jei.replikaentropie.damaged_chipset.info": "Damaged Chipsets may be found in various chests around the world. Finding one is the easiest way to get started with Replika Entropie. \n\nAlternatively, craft a Metal Detector and use it to search through sand.",
+  "jei.replikaentropie.damaged_chipset.info": "Try searching through some sand with a Metal Detector.\n\nAlternatively, damaged chipsets may also be found in various chests around the world.",
   "jei.replikaentropie.fragmental_waste.info": "Fragmental Waste does is very explosive and emits harmful particles. Consider wearing a Hazmat Suit when handling it.",
   "death.attack.fragmental_waste": "%1$s has fragmented away",
   "death.attack.fragmental_waste.player": "%1$s has fragmented away",
