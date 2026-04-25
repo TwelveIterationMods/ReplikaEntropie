@@ -23,6 +23,13 @@ public class WaterSinkBlockEntity extends BlockEntity {
     private void pushWaterDown(Level level, BlockPos pos) {
         for (BlockPos currentPos = pos.below(); currentPos.getY() >= level.getMinY(); currentPos = currentPos.below()) {
             final var blockEntity = level.getBlockEntity(currentPos);
+            if (blockEntity instanceof FragmentalWasteBlockEntity fragmentalWasteBlockEntity) {
+                if (fragmentalWasteBlockEntity.addDecontaminationTick()) {
+                    fragmentalWasteBlockEntity.convertToWasteBarrel();
+                }
+                return;
+            }
+
             final var targetTank = blockEntity != null
                     ? Balm.capabilities().getCapability(blockEntity, Direction.UP, CommonCapabilities.FLUID_TANK)
                     : null;
