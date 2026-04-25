@@ -62,8 +62,8 @@ public class FragmentalGeneratorRenderer implements BlockEntityRenderer<Fragment
     @Override
     public void extractRenderState(FragmentalGeneratorBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
-        for (int i = 0; i < state.items.length; i++) {
-            state.items[i] = null;
+        for (final var contentState : state.content) {
+            contentState.item.clear();
         }
 
         final var xs = new float[]{
@@ -79,12 +79,12 @@ public class FragmentalGeneratorRenderer implements BlockEntityRenderer<Fragment
                 10f / 16f
         };
 
-        final var inputs = blockEntity.getInputContainer();
+        final var inputs = blockEntity.getContainer();
 
         final var shardStack = ModItems.fragments.createStack();
         final var seed = HashCommon.long2int(blockEntity.getBlockPos().asLong());
 
-        for (int i = 0; i < inputs.getContainerSize(); i++) {
+        for (int i = 0; i < 4; i++) {
             final var inputStack = inputs.getItem(i);
             if (inputStack.isEmpty()) {
                 continue;
@@ -113,41 +113,46 @@ public class FragmentalGeneratorRenderer implements BlockEntityRenderer<Fragment
             final var wobbleX = stage.computeWobbleX(time);
             final var wobbleZ = stage.computeWobbleZ(time);
 
-            final var itemState = new ItemStackRenderState();
-            itemModelResolver.updateForTopItem(itemState, progress < 0.66f ? inputStack : shardStack, ItemDisplayContext.GROUND, blockEntity.getLevel(), null, seed + i);
-            state.items[i] = itemState;
-            state.xs[i] = baseX + wobbleX;
-            state.ys[i] = y;
-            state.zs[i] = baseZ + wobbleZ;
-            state.rotations[i] = blockEntity.getClientItemRotation(i);
-            state.scales[i] = stage.scale;
+            final var contentState = state.content.get(i);
+            itemModelResolver.updateForTopItem(contentState.item, progress < 0.66f ? inputStack : shardStack, ItemDisplayContext.GROUND, blockEntity.getLevel(), null, seed + i);
+            contentState.x = baseX + wobbleX;
+            contentState.y = y;
+            contentState.z = baseZ + wobbleZ;
+            contentState.rotation = blockEntity.getClientItemRotation(i);
+            contentState.scale = stage.scale;
         }
     }
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
-        for (int i = 0; i < state.items.length; i++) {
-            final var itemState = state.items[i];
-            if (itemState == null) {
-                continue;
+        for (final var contentState : state.content) {
+            if (!contentState.item.isEmpty()) {
+                poseStack.pushPose();
+                poseStack.translate(contentState.x, contentState.y, contentState.z);
+                poseStack.mulPose(Axis.XP.rotationDegrees(90f));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(contentState.rotation));
+                poseStack.scale(contentState.scale, contentState.scale, contentState.scale);
+                contentState.item.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+                poseStack.popPose();
             }
-
-            poseStack.pushPose();
-            poseStack.translate(state.xs[i], state.ys[i], state.zs[i]);
-            poseStack.mulPose(Axis.XP.rotationDegrees(90f));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(state.rotations[i]));
-            poseStack.scale(state.scales[i], state.scales[i], state.scales[i]);
-            itemState.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
-            poseStack.popPose();
         }
     }
 
     public static class State extends BlockEntityRenderState {
-        public final ItemStackRenderState[] items = new ItemStackRenderState[4];
-        public final float[] xs = new float[4];
-        public final float[] ys = new float[4];
-        public final float[] zs = new float[4];
-        public final float[] rotations = new float[4];
-        public final float[] scales = new float[4];
+        public final List<ContentRenderState> content = List.of(
+                new ContentRenderState(),
+                new ContentRenderState(),
+                new ContentRenderState(),
+                new ContentRenderState()
+        );
+    }
+
+    public static class ContentRenderState {
+        public final ItemStackRenderState item = new ItemStackRenderState();
+        public float x;
+        public float y;
+        public float z;
+        public float rotation;
+        public float scale;
     }
 }

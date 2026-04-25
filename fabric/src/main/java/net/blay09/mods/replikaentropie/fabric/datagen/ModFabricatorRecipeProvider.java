@@ -51,7 +51,7 @@ public class ModFabricatorRecipeProvider extends FabricRecipeProvider {
         fabricatorRecipe(Items.BRICK, 2, 0, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.FLOWER_POT, 4, 0, 0, sortOrder += 100).save(output);
         fabricatorRecipe(Items.PAPER, 0, 2, 0, sortOrder += 100).save(output);
-        fabricatorRecipe(Items.GLASS, 1, 0, 0, sortOrder += 100).save(output);
+        fabricatorRecipe(Items.GLASS_BOTTLE, 1, 0, 0, sortOrder += 100).save(output);
             }
         };
     }

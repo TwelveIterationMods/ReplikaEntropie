@@ -7,22 +7,28 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class FragmentalGeneratorMenu extends AbstractContainerMenu {
+    private static final int INPUTS_COUNT = 4;
 
     private final Container container;
     private final ContainerData data;
     private final QuickMove.Routing quickMove;
 
     public static final int DATA_PROCESSING_TIME_START = 0;
-    public static final int DATA_PROCESSING_TIME_END = 11;
-    public static final int DATA_MAX_PROCESSING_TIME_START = 12;
-    public static final int DATA_MAX_PROCESSING_TIME_END = 23;
-    public static final int DATA_CURRENT_POWER = 24;
-    public static final int DATA_MAX_POWER = 25;
-    public static final int DATA_COUNT = 26;
+    public static final int DATA_PROCESSING_TIME_END = DATA_PROCESSING_TIME_START + INPUTS_COUNT - 1;
+    public static final int DATA_MAX_PROCESSING_TIME_START = DATA_PROCESSING_TIME_END + 1;
+    public static final int DATA_MAX_PROCESSING_TIME_END = DATA_MAX_PROCESSING_TIME_START + INPUTS_COUNT - 1;
+    public static final int DATA_TEMPERATURE = DATA_MAX_PROCESSING_TIME_END + 1;
+    public static final int DATA_MAX_TEMPERATURE = DATA_TEMPERATURE + 1;
+    public static final int DATA_CURRENT_POWER = DATA_MAX_TEMPERATURE + 1;
+    public static final int DATA_MAX_POWER = DATA_CURRENT_POWER + 1;
+    public static final int DATA_COUNT = DATA_MAX_POWER + 1;
 
     public FragmentalGeneratorMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, new SimpleContainer(FragmentalGeneratorBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT));
@@ -37,7 +43,12 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
-                addSlot(new Slot(container, j + i * 4, 22 + j * 37, 21 + i * 25));
+                addSlot(new Slot(container, j + i * 4, 22 + j * 37, 21 + i * 25) {
+                    @Override
+                    public int getMaxStackSize() {
+                        return 1;
+                    }
+                });
             }
         }
 
@@ -72,6 +83,23 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
         }
 
         return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
+    }
+
+    public int getTemperature() {
+        return data.get(DATA_TEMPERATURE);
+    }
+
+    public int getMaxTemperature() {
+        return data.get(DATA_MAX_TEMPERATURE);
+    }
+
+    public float getTemperatureProgress() {
+        final var maxTemperature = getMaxTemperature();
+        if (maxTemperature <= 0) {
+            return 0f;
+        }
+
+        return Mth.clamp(getTemperature() / (float) maxTemperature, 0f, 1f);
     }
 
     @Override

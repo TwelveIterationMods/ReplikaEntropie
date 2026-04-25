@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:snowball",
+    "minecraft:ice",
+    "minecraft:packed_ice",
+    "minecraft:blue_ice"
+  ]
+}
