@@ -39,12 +39,13 @@ import java.util.Arrays;
 
 public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
+    public static final int CONTAINER_SIZE = 12;
     private static final int MIN_PROCESSING_TICKS = 60;
     private static final int MAX_PROCESSING_TICKS = 140;
     private static final int INPUTS_COUNT = 4;
     public static final float OUTPUT_MULTIPLIER = 2f;
 
-    private final DefaultContainer backingContainer = new DefaultContainer(8) {
+    private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override
         public void setChanged() {
             FragmentalGeneratorBlockEntity.this.setChanged();

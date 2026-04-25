@@ -30,16 +30,15 @@ public class ReplikaEntropie {
     // Rework Blocks
     // - World Eater should do have an intermediate output buffer, so it can be used as a Quarry
     // - World Eater should have some in-world visuals indicating the area it's eating
-    // - Add toggles for Biomass / Scrap Production in machines
     // - Entropic Data Miner should create Data items instead of the downloadable list. No more tracking event log.
-    // - not the biggest fan of the Fabricator yet. It feels odd to turn Scrap into Hazmat Lining.
     // - Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
 
     // New Blocks
     // - "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
     // - Solar Sink as the first energy-providing upgrade, placed on top of machine
     // - Water Sink as an infinite water generator, rains down to fill machines below and decontaminate Fragmental Waste
-    // - Defragmentizer -> Fragmental Generator, generates power from fragments
+    // - Fragmental Generator, generates power from fragments
+    // - Entropic Generator
     // - I think we should have a Biofuel generator operating on refined biomass
 
     // New Items

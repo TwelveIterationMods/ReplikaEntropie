@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.menu;
 
-import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
+import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -25,22 +25,20 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
     public static final int DATA_COUNT = 12;
 
     public FragmentalGeneratorMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT));
+        this(containerId, playerInventory, new SimpleContainer(FragmentalGeneratorBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT));
     }
 
     public FragmentalGeneratorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
         super(ModMenus.fragmentalGenerator.value(), containerId);
         this.container = container;
-        checkContainerSize(container, 8);
+        checkContainerSize(container, FragmentalGeneratorBlockEntity.CONTAINER_SIZE);
         this.data = data;
         addDataSlots(data);
 
-        for (int i = 0; i < 4; i++) {
-            addSlot(new Slot(container, i, 22 + i * 37, 22));
-        }
-
-        for (int i = 0; i < 4; i++) {
-            addSlot(new OutputSlot(container, i + 4, 22 + i * 37, 80));
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 4; j++) {
+                addSlot(new Slot(container, j, 22 + j * 37, 21 + i * 25));
+            }
         }
 
         for (int i = 0; i < 3; i++) {
@@ -54,7 +52,7 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
         }
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
-                .slotRange("inputs", 0, 4)
+                .slotRange("inputs", 0, 12)
                 .route(QuickMove.PLAYER, "inputs")
                 .build();
 
