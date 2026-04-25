@@ -77,6 +77,17 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .sortOrder(sortOrder += 100)
                         .save(output);
 
+                research(id("water_sink"))
+                        .icon(ModBlocks.waterSink)
+                        .dependsOn(id("research/entropic_energy"))
+                        .dependsOn(id("research/assembler"))
+                        .unlocksRecipe(id("assembler/water_sink"))
+                        .nonogram(id("water_sink"))
+                        .costs(4, 2, 0, 0)
+                        .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
                 research(id("solar_sink"))
                         .icon(ModBlocks.solarSink)
                         .dependsOn(id("research/entropic_energy"))

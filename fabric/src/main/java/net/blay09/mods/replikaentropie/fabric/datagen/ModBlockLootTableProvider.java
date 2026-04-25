@@ -28,6 +28,7 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
         dropSelf(ModBlocks.fragmentalGenerator.value());
         dropSelf(ModBlocks.fragmentAccelerator.value());
         dropSelf(ModBlocks.chaosEngine.value());
+        dropSelf(ModBlocks.waterSink.value());
         dropSelf(ModBlocks.solarSink.value());
         dropSelf(ModBlocks.recycler.value());
     }

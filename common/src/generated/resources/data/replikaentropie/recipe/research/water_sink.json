@@ -6,13 +6,13 @@
     "replikaentropie:research/assembler"
   ],
   "icon": {
-    "id": "replikaentropie:solar_sink"
+    "id": "replikaentropie:water_sink"
   },
-  "nonogram": "replikaentropie:solar_sink",
+  "nonogram": "replikaentropie:water_sink",
   "research_type": "assembler",
   "scrap": 2,
-  "sort_order": 700,
+  "sort_order": 600,
   "unlocked_recipes": [
-    "replikaentropie:assembler/solar_sink"
+    "replikaentropie:assembler/water_sink"
   ]
 }

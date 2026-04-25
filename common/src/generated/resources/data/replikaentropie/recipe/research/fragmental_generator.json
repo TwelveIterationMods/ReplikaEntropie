@@ -10,7 +10,7 @@
   },
   "nonogram": "replikaentropie:fragmental_generator",
   "research_type": "assembler",
-  "sort_order": 3400,
+  "sort_order": 3500,
   "unlocked_recipes": [
     "replikaentropie:assembler/fragmental_generator"
   ]

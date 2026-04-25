@@ -13,6 +13,7 @@
     "replikaentropie:fragmental_generator",
     "replikaentropie:fragment_accelerator",
     "replikaentropie:chaos_engine",
+    "replikaentropie:water_sink",
     "replikaentropie:solar_sink",
     "replikaentropie:recycler"
   ]

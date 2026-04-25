@@ -20,6 +20,7 @@ public class ModBlockEntities {
     public static Holder<BlockEntityType<EntropicDataMinerBlockEntity>> entropicDataMiner;
     public static Holder<BlockEntityType<RecyclerBlockEntity>> recycler;
     public static Holder<BlockEntityType<ChaosEngineBlockEntity>> chaosEngine;
+    public static Holder<BlockEntityType<WaterSinkBlockEntity>> waterSink;
     public static Holder<BlockEntityType<SolarSinkBlockEntity>> solarSink;
     public static Holder<BlockEntityType<DigSpotBlockEntity>> digSpot;
 
@@ -79,6 +80,10 @@ public class ModBlockEntities {
         chaosEngine = blockEntities.register("chaos_engine",
                 ChaosEngineBlockEntity::new,
                 ModBlocks.chaosEngine).asHolder();
+
+        waterSink = blockEntities.register("water_sink",
+                WaterSinkBlockEntity::new,
+                ModBlocks.waterSink).asHolder();
 
         solarSink = blockEntities.register("solar_sink",
                 SolarSinkBlockEntity::new,

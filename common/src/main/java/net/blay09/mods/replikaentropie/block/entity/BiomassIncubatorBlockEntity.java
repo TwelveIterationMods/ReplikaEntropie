@@ -79,8 +79,8 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     };
 
     private final Container waterContainer = new SubContainer(backingContainer, 0, 1);
-    private final Container soilContainer = new SubContainer(backingContainer, 1, 2);
-    private final Container seedsContainer = new SubContainer(backingContainer, 2, 3);
+    private final Container seedsContainer = new SubContainer(backingContainer, 1, 2);
+    private final Container soilContainer = new SubContainer(backingContainer, 2, 3);
     private final DefaultFluidTank waterTank = new DefaultFluidTank(1000);
     private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
         @Override

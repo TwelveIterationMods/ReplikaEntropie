@@ -111,6 +111,7 @@ public class ModItems {
                     output.accept(ModBlocks.recycler);
                     output.accept(ModBlocks.assembler);
                     output.accept(ModBlocks.solarSink);
+                    output.accept(ModBlocks.waterSink);
                     output.accept(ModBlocks.fabricator);
                     output.accept(ModBlocks.entropicDataMiner);
                     output.accept(ModBlocks.cobblescrap);

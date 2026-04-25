@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ModRenderers {
     public static void initialize(BalmBlockColorRegistrar registrar) {
-        registrar.register(List.of(BlockTintSources.water()), ModBlocks.cobblescrap, ModBlocks.lavascrap);
+        registrar.register(List.of(BlockTintSources.water()), ModBlocks.cobblescrap, ModBlocks.lavascrap, ModBlocks.waterSink);
     }
 
     public static void initialize(BalmBlockEntityRendererRegistrar registrar) {

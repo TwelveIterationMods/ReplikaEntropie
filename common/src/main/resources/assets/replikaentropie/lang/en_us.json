@@ -140,6 +140,8 @@
   "research.replikaentropie.research/handheld_analyzer.description": "Good job! Keep [scan]ning [blocks] to [collect] data [points], then use this tablet to [unlock] the good [stuff]! Continue with the Recycler to get started on your journey.",
   "research.replikaentropie.research/entropic_energy.title": "How is this powered?",
   "research.replikaentropie.research/entropic_energy.description": "Information is [power], and the passing of time its [generator]; [no] cables, [no] sockets, just entropy. Embedded in every machine. Infinite energy. Don't worry about it [too hard].",
+  "research.replikaentropie.research/water_sink.title": "Water Sink",
+  "research.replikaentropie.research/water_sink.description": "Normally we [use] this kitchen appliance to [cool] nuclear reactors, but the trusty [sink] can probably be used for lower stake things too.",
   "research.replikaentropie.research/solar_sink.title": "Solar Sink",
   "research.replikaentropie.research/solar_sink.description": "Harvest the sun for re[new]able power. Fits on top of any [machine], and [will] trickle down energy all day long - as long as it [see]s the [sky].",
   "research.replikaentropie.research/recycler.title": "Recycler",
