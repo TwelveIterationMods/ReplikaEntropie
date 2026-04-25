@@ -109,17 +109,13 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                 .buildDisplay(display -> display
                         .title(Component.translatable(id("biomass_incubator").toLanguageKey("jei")))
                         .icon(ModBlocks.biomassIncubator)
-                        .size(125, 79)
+                        .size(88, 75)
                         .background(BIOMASS_INCUBATOR_TEXTURE)
                         .slots((recipe, slots) -> {
                             slots.craftingStationSlot(1, 58).add(Items.WATER_BUCKET);
-                            slots.renderOnlySlot(26, 19).add(Items.FARMLAND);
-                            slots.renderOnlySlot(44, 19).add(Items.FARMLAND);
-                            slots.renderOnlySlot(62, 19).add(Items.FARMLAND);
-                            slots.inputSlot(26, 1).add(recipe.seed());
-                            slots.inputSlot(44, 1).add(recipe.seed());
-                            slots.inputSlot(62, 1).add(recipe.seed());
-                            slots.outputSlot(100, 58).add(resourceStack(ModItems.biomass, recipe.biomass()));
+                            slots.renderOnlySlot(36, 40).add(recipe.soil());
+                            slots.inputSlot(36, 15).add(recipe.seed());
+                            slots.outputSlot(71, 4).add(recipe.result());
                         }));
     }
 

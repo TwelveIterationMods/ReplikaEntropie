@@ -1,31 +1,22 @@
 package net.blay09.mods.replikaentropie.recipe;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-public record BiomassIncubatorRecipe(Ingredient seed, Ingredient soil, ItemStackTemplate result, float biomass)
+public record BiomassIncubatorRecipe(Ingredient seed, Ingredient soil, ItemStackTemplate result)
         implements Recipe<SingleRecipeInput>, PreviewableRecipe {
     private static final MapCodec<BiomassIncubatorRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Ingredient.CODEC.fieldOf("seed").forGetter(BiomassIncubatorRecipe::seed),
             Ingredient.CODEC.fieldOf("soil").forGetter(BiomassIncubatorRecipe::soil),
-            ItemStackTemplate.CODEC.fieldOf("result").forGetter(BiomassIncubatorRecipe::result),
-            Codec.FLOAT.fieldOf("biomass").forGetter(BiomassIncubatorRecipe::biomass)
+            ItemStackTemplate.CODEC.fieldOf("result").forGetter(BiomassIncubatorRecipe::result)
     ).apply(instance, BiomassIncubatorRecipe::new));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, BiomassIncubatorRecipe> STREAM_CODEC = StreamCodec.composite(
@@ -35,15 +26,13 @@ public record BiomassIncubatorRecipe(Ingredient seed, Ingredient soil, ItemStack
             BiomassIncubatorRecipe::soil,
             ItemStackTemplate.STREAM_CODEC,
             BiomassIncubatorRecipe::result,
-            ByteBufCodecs.FLOAT,
-            BiomassIncubatorRecipe::biomass,
             BiomassIncubatorRecipe::new
     );
 
     public static Optional<BiomassIncubatorRecipe> getRecipe(Level level, ItemStack itemStack) {
         return level != null
                 ? ModRecipes.biomassIncubator.getRecipeFor(level, new SingleRecipeInput(itemStack))
-                .map(holder -> holder.value())
+                .map(RecipeHolder::value)
                 : Optional.empty();
     }
 
@@ -65,10 +54,6 @@ public record BiomassIncubatorRecipe(Ingredient seed, Ingredient soil, ItemStack
     @Override
     public String group() {
         return "";
-    }
-
-    public ItemStack getResultItem() {
-        return result.create();
     }
 
     @Override
