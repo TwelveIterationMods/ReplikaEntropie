@@ -5,15 +5,16 @@ import net.blay09.mods.balm.platform.compatibility.recipeviewer.RecipeViewerInfo
 import net.blay09.mods.balm.platform.compatibility.recipeviewer.RecipeViewerRegistrar;
 import net.blay09.mods.balm.world.item.DeferredItem;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
-import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.FragmentAcceleratorBlockEntity;
 import net.blay09.mods.replikaentropie.component.AssemblyTicket;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.recipe.*;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -262,14 +263,22 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                 .buildDisplay(display -> display
                         .title(Component.translatable(id("biomass_harvester").toLanguageKey("jei")))
                         .icon(ModBlocks.biomassHarvester)
-                        .size(77, 76)
+                        .size(76, 76)
                         .background(BIOMASS_HARVESTER_TEXTURE)
                         .slots((_, slots) -> {
-                            slots.inputSlot(30, 1).add(Items.DIAMOND_SWORD);
-                            slots.inputSlot(1, 30).add(Items.DIAMOND_SWORD);
-                            slots.inputSlot(60, 30).add(Items.DIAMOND_SWORD);
-                            slots.inputSlot(30, 59).add(Items.DIAMOND_SWORD);
-                            slots.outputSlot(30, 30).add(ModItems.biomass);
+                            final var toolSlots = List.of(slots.inputSlot(30, 1),
+                                    slots.inputSlot(1, 30),
+                                    slots.inputSlot(60, 30),
+                                    slots.inputSlot(30, 59));
+                            for (final var toolSlot : toolSlots) {
+                                for (final var toolItem : BuiltInRegistries.ITEM.getTagOrEmpty(ItemTags.SWORDS)) {
+                                    toolSlot.add(toolItem.value());
+                                }
+                                for (final var toolItem : BuiltInRegistries.ITEM.getTagOrEmpty(ItemTags.HOES)) {
+                                    toolSlot.add(toolItem.value());
+                                }
+                                toolSlot.add(Items.SHEARS);
+                            }
                         }));
     }
 
