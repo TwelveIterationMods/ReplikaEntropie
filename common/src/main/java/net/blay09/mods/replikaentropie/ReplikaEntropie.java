@@ -27,27 +27,21 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
-    // Rework Blocks
-    // - World Eater should do have an intermediate output buffer, so it can be used as a Quarry
-    // - World Eater should have some in-world visuals indicating the area it's eating
+    // Highest Priority
     // - Entropic Data Miner should create Data items instead of the downloadable list. No more tracking event log.
     // - Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
-
-    // New Blocks
-    // - A block that heats cobblestone into lava
-    // - "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
-    // - Solar Sink as the first energy-providing upgrade, placed on top of machine
-    // - Water Sink as an infinite water generator, rains down to fill machines below and decontaminate Fragmental Waste
     // - Fragmental Generator, generates power from fragments
-    // - Entropic Generator
-    // - I think we should have a Biofuel generator operating on refined biomass
-
-    // New Items
     // - Introduce durability (energy-based) for all items. Burst still exists, and can be separately upgraded. Essentialy, durability recharges the burst, while burst determines use duration at a time.
 
-    // New Entities
+    // Lower Priority
+    // - Lava Sink that heats cobblestone into lava, to complete the Cobblescrap -> Lavascrap -> Renewable Obsidian -> ??? -> Profit cycle
+    // - "Blue Printer" to print custom assembly tickets (or duplicate them), needs paper, ink, and cyan dye
+    // - Solar Sink as the first energy-providing upgrade, placed on top of machine
+    // - Water Sink as an infinite water generator, rains down to fill machines below and decontaminate Fragmental Waste
+    // - Entropic Generator
     // - Fragmental Waste Minecarts so they can be run below Water Sinks for decontamination.
     // - Hook Dispenser and Hopper to allow input/output of Fragmental Waste from cart.
+    // - Would be cool to have a Biofuel Generator path
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 

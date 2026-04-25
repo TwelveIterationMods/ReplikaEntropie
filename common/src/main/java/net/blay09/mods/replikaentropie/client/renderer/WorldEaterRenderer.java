@@ -21,6 +21,12 @@ import org.jspecify.annotations.Nullable;
 
 public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEntity, WorldEaterRenderer.State> {
 
+    private static final int[] MENU_RENDER_ORDER = {
+            10, 11, 12, 13, 14,
+            9, 8, 7, 6, 5,
+            0, 1, 2, 3, 4
+    };
+
     private final BlockModelResolver blockModelResolver;
     private final BlockDisplayContext blockDisplayContext = BlockDisplayContext.create();
 
@@ -91,7 +97,7 @@ public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEn
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
-                final var index = row * columns + col;
+                final var index = MENU_RENDER_ORDER[row * columns + col];
                 final var block = state.blocks[index];
                 if (block.isEmpty()) {
                     continue;

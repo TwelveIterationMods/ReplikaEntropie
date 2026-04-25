@@ -12,6 +12,7 @@ import net.blay09.mods.replikaentropie.network.protocol.ParticleTrailMessage;
 import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -49,7 +50,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
     public static final int CONTAINER_SIZE = 6;
 
     private static final int SCANNING_TICKS = 200;
-    private static final int DESTROY_TICKS = 100;
+    private static final int DESTROY_TICKS_PER_DESTROY_SPEED = 20;
     private static final int SCAN_RANGE = 8;
 
     private enum State {IDLE, SCANNING, DESTROYING}
@@ -75,11 +76,13 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
             isSyncDirty = true;
         }
     };
+    private final NonNullList<ItemStack> outputBuffer = NonNullList.create();
 
     private final Map<Integer, BlockPos> scannedPositions = new HashMap<>();
     private State state = State.IDLE;
     private int stateTicks;
     private int currentDestroySlot = -1;
+    private int currentMaxDestroyTicks;
 
     private boolean isSyncDirty;
 
@@ -90,7 +93,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                 case WorldEaterMenu.DATA_SCANNING_TIME -> state == State.SCANNING ? stateTicks : 0;
                 case WorldEaterMenu.DATA_MAX_SCANNING_TIME -> SCANNING_TICKS;
                 case WorldEaterMenu.DATA_DESTROYING_TIME -> state == State.DESTROYING ? stateTicks : 0;
-                case WorldEaterMenu.DATA_MAX_DESTROYING_TIME -> DESTROY_TICKS;
+                case WorldEaterMenu.DATA_MAX_DESTROYING_TIME -> currentMaxDestroyTicks;
                 case WorldEaterMenu.DATA_CURRENT_DESTROY_SLOT -> currentDestroySlot;
                 default -> 0;
             };
@@ -171,6 +174,13 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
     }
 
     private void processState(ServerLevel level) {
+        if (!outputBuffer.isEmpty()) {
+            flushOutputBuffer();
+            if (!outputBuffer.isEmpty()) {
+                return;
+            }
+        }
+
         stateTicks++;
 
         switch (state) {
@@ -190,8 +200,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                 }
 
                 if (stateTicks >= SCANNING_TICKS) {
-                    currentDestroySlot = getNextDestroySlot();
-                    if (currentDestroySlot != -1) {
+                    if (prepareNextDestroySlot(level)) {
                         transition(State.DESTROYING);
                     } else {
                         scannedPositions.clear();
@@ -200,11 +209,11 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                 }
             }
             case DESTROYING -> {
-                if (!hasSpaceForScrap()) {
-                    return;
+                if (currentMaxDestroyTicks <= 0) {
+                    currentMaxDestroyTicks = getDestroyTicksForSlot(level, currentDestroySlot);
                 }
 
-                if (stateTicks >= DESTROY_TICKS) {
+                if (stateTicks >= currentMaxDestroyTicks) {
                     final var maxPreviewSlots = previewContainer.getContainerSize();
                     if (currentDestroySlot >= 0 && currentDestroySlot < maxPreviewSlots) {
                         final var blockItem = previewContainer.getItem(currentDestroySlot);
@@ -214,7 +223,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                             if (isQuestionablyEdibleBlock(level, targetPos, targetState)) {
                                 level.removeBlock(targetPos, false);
                                 Block.getDrops(targetState, level, targetPos, null)
-                                        .forEach(it -> ContainerUtils.insertItem(backingContainer, it, false));
+                                        .forEach(this::insertOrBuffer);
                             }
                             previewContainer.setItem(currentDestroySlot, ItemStack.EMPTY);
                         }
@@ -222,8 +231,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
 
                     stateTicks = 0;
 
-                    currentDestroySlot = getNextDestroySlot();
-                    if (currentDestroySlot == -1) {
+                    if (!prepareNextDestroySlot(level)) {
                         scannedPositions.clear();
                         transition(State.SCANNING);
                     }
@@ -232,8 +240,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                 }
             }
             default -> {
-                currentDestroySlot = getNextDestroySlot();
-                if (currentDestroySlot != -1) {
+                if (prepareNextDestroySlot(level)) {
                     transition(State.DESTROYING);
                 } else {
                     scannedPositions.clear();
@@ -247,11 +254,6 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
         this.state = newState;
         this.stateTicks = 0;
         setChanged();
-    }
-
-    private boolean hasSpaceForScrap() {
-        final var resultSlotItem = backingContainer.getItem(0);
-        return resultSlotItem.isEmpty() || resultSlotItem.getCount() < resultSlotItem.getMaxStackSize();
     }
 
     private Optional<ScannedBlock> findRandomScannableBlock(Level level) {
@@ -281,6 +283,32 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                 && !state.hasBlockEntity();
     }
 
+    private boolean prepareNextDestroySlot(Level level) {
+        final int nextDestroySlot = getNextDestroySlot();
+        currentDestroySlot = nextDestroySlot;
+        currentMaxDestroyTicks = getDestroyTicksForSlot(level, nextDestroySlot);
+        return nextDestroySlot != -1;
+    }
+
+    private int getDestroyTicksForSlot(Level level, int destroySlot) {
+        if (destroySlot < 0) {
+            return 0;
+        }
+
+        final var targetPos = scannedPositions.get(destroySlot);
+        if (targetPos == null) {
+            return 0;
+        }
+
+        final var targetState = level.getBlockState(targetPos);
+        return getDestroyTicks(level, targetPos, targetState);
+    }
+
+    private int getDestroyTicks(Level level, BlockPos pos, BlockState state) {
+        final float destroySpeed = Math.max(0f, state.getDestroySpeed(level, pos));
+        return Math.max(1, (int) Math.ceil(destroySpeed * DESTROY_TICKS_PER_DESTROY_SPEED));
+    }
+
     private int getNextDestroySlot() {
         for (int i = 0; i < previewContainer.getContainerSize(); i++) {
             if (!previewContainer.getItem(i).isEmpty()) {
@@ -295,6 +323,32 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
         Balm.networking().sendToTracking(level, BlockPos.containing(midPoint), new ParticleTrailMessage(start.toVector3f(), end.toVector3f(), 6, ParticleTypes.SMALL_GUST));
     }
 
+    private void insertOrBuffer(ItemStack itemStack) {
+        final var remainingItem = ContainerUtils.insertItem(backingContainer, itemStack, false);
+        if (!remainingItem.isEmpty()) {
+            outputBuffer.add(remainingItem);
+            setChanged();
+        }
+    }
+
+    private void flushOutputBuffer() {
+        boolean changed = false;
+        for (int i = 0; i < outputBuffer.size(); ) {
+            final var remainingItem = ContainerUtils.insertItem(backingContainer, outputBuffer.get(i), false);
+            if (remainingItem.isEmpty()) {
+                outputBuffer.remove(i);
+                changed = true;
+            } else {
+                outputBuffer.set(i, remainingItem);
+                i++;
+            }
+        }
+
+        if (changed) {
+            setChanged();
+        }
+    }
+
     @Override
     protected void loadAdditional(ValueInput input) {
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
@@ -304,7 +358,8 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
             state = State.IDLE;
         }
         stateTicks = input.getIntOr("StateTicks", 0);
-        currentDestroySlot = input.getIntOr("CurrentDestroySlot", 0);
+        currentDestroySlot = input.getIntOr("CurrentDestroySlot", -1);
+        currentMaxDestroyTicks = input.getIntOr("CurrentMaxDestroyTicks", 0);
 
         scannedPositions.clear();
         final var scannedPositionsArray = input.listOrEmpty("ScannedPositions", Codec.LONG);
@@ -316,6 +371,9 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
 
         previewContainer.getItems().clear();
         input.child("Preview").ifPresent(child -> ContainerHelper.loadAllItems(child, previewContainer.getItems()));
+
+        outputBuffer.clear();
+        input.child("OutputBuffer").ifPresent(child -> ContainerHelper.loadAllItems(child, outputBuffer));
     }
 
     @Override
@@ -324,9 +382,11 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
         output.putString("State", state.name());
         output.putInt("StateTicks", stateTicks);
         output.putInt("CurrentDestroySlot", currentDestroySlot);
+        output.putInt("CurrentMaxDestroyTicks", currentMaxDestroyTicks);
         final var scannedPositionsArray = output.list("ScannedPositions", Codec.LONG);
         scannedPositions.values().stream().map(BlockPos::asLong).forEach(scannedPositionsArray::add);
         ContainerHelper.saveAllItems(output.child("Preview"), previewContainer.getItems());
+        ContainerHelper.saveAllItems(output.child("OutputBuffer"), outputBuffer);
     }
 
     @Override
