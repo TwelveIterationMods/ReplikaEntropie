@@ -232,13 +232,12 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                 .buildDisplay(display -> display
                         .title(Component.translatable(id("lavascrap").toLanguageKey("jei")))
                         .icon(ModBlocks.lavascrap)
-                        .size(144, 80)
+                        .size(144, 75)
                         .background(LAVASCRAP_TEXTURE)
                         .slots((_, slots) -> {
                             slots.craftingStationSlot(1, 58).add(Items.WATER_BUCKET);
                             slots.craftingStationSlot(127, 58).add(Items.LAVA_BUCKET);
-                            slots.inputSlot(64, 1).add(Items.OBSIDIAN);
-                            slots.outputSlot(64, 59).add(ModItems.scrap);
+                            slots.outputSlot(64, 1).add(Items.OBSIDIAN);
                         }));
     }
 
