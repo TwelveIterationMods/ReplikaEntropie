@@ -1,8 +1,6 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
-import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
-import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
 import net.blay09.mods.replikaentropie.menu.WorldEaterMenu;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -18,7 +16,6 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class WorldEaterScreen extends AbstractContainerScreen<WorldEaterMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/world_eater.png");
     private final SegmentedProgressRenderer scanningProgressRenderer;
-    private final ProgressRenderer scrapProgressRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(156, 55).size(3, 26).uv(208, 0);
 
     public WorldEaterScreen(WorldEaterMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 180);
@@ -66,8 +63,6 @@ public class WorldEaterScreen extends AbstractContainerScreen<WorldEaterMenu> {
         } else if (menu.isDestroying()) {
             scanningProgressRenderer.render(graphics, leftPos, topPos, 1f);
         }
-
-        scrapProgressRenderer.render(graphics, leftPos, topPos, menu.getFractionalScrap());
     }
 
 }

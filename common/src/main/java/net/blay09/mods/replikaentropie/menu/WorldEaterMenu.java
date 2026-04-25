@@ -22,7 +22,6 @@ public class WorldEaterMenu extends AbstractContainerMenu {
     public static final int DATA_DESTROYING_TIME = 2;
     public static final int DATA_MAX_DESTROYING_TIME = 3;
     public static final int DATA_CURRENT_DESTROY_SLOT = 4;
-    public static final int DATA_FRACTIONAL_SCRAP = 5;
     public static final int DATA_COUNT = 6;
 
     public WorldEaterMenu(int containerId, Inventory playerInventory, Container previewContainer, Container container, ContainerData data) {
@@ -104,10 +103,6 @@ public class WorldEaterMenu extends AbstractContainerMenu {
 
     public int getCurrentDestroySlot() {
         return data.get(DATA_CURRENT_DESTROY_SLOT);
-    }
-
-    public float getFractionalScrap() {
-        return Mth.clamp(data.get(DATA_FRACTIONAL_SCRAP) / 100f, 0, 1f);
     }
 
 }

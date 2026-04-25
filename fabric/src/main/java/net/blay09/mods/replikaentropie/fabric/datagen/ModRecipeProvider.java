@@ -82,12 +82,13 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .save(output);
 
                 shaped(RecipeCategory.MISC, ModBlocks.wasteBarrel)
-                        .pattern("III")
+                        .pattern("ISI")
                         .pattern("DOD")
-                        .pattern("III")
+                        .pattern("ISI")
                         .define('I', Items.IRON_INGOT)
                         .define('D', Items.LIME_DYE)
                         .define('O', Items.OBSIDIAN)
+                        .define('S', ModItems.scrap)
                         .unlockedBy("has_obsidian", has(Items.OBSIDIAN))
                         .save(output);
 
