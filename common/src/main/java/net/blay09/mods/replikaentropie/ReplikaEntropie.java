@@ -34,6 +34,7 @@ public class ReplikaEntropie {
     // - Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
 
     // New Blocks
+    // - A block that heats cobblestone into lava
     // - "Blue Printer" to print assembly tickets, needs paper, ink, and cyan dye
     // - Solar Sink as the first energy-providing upgrade, placed on top of machine
     // - Water Sink as an infinite water generator, rains down to fill machines below and decontaminate Fragmental Waste

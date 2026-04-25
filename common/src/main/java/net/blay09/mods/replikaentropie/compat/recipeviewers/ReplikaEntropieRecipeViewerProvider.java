@@ -47,6 +47,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
         registrar.registerIngredientInfo(ModItems.data, Component.translatable("jei.replikaentropie.data.info"));
         registrar.registerIngredientInfo(ModItems.damagedChipset, Component.translatable("jei.replikaentropie.damaged_chipset.info"));
         registrar.registerIngredientInfo(ModBlocks.fragmentalWaste, Component.translatable("jei.replikaentropie.fragmental_waste.info"));
+        registrar.registerIngredientInfo(ModItems.metalDetector, Component.translatable("jei.replikaentropie.metal_detector.info"));
 
         registerRecyclerRecipes(registrar);
         registerAssemblerRecipes(registrar);
