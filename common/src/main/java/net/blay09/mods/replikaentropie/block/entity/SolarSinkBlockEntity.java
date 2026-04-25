@@ -1,5 +1,7 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
+import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.capabilities.CommonCapabilities;
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
 import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
 import net.blay09.mods.balm.platform.energy.EnergyStorage;
@@ -49,11 +51,10 @@ public class SolarSinkBlockEntity extends BlockEntity implements BalmEnergyStora
             return;
         }
 
-        if (!(level.getBlockEntity(pos.below()) instanceof BalmEnergyStorageProvider energyStorageProvider)) {
-            return;
-        }
-
-        final var targetStorage = energyStorageProvider.getEnergyStorage(Direction.UP);
+        final var blockEntityBelow = level.getBlockEntity(pos.below());
+        final var targetStorage = blockEntityBelow != null
+                ? Balm.capabilities().getCapability(blockEntityBelow, Direction.UP, CommonCapabilities.ENERGY_STORAGE)
+                : null;
         if (targetStorage == null || !targetStorage.canFill()) {
             return;
         }
