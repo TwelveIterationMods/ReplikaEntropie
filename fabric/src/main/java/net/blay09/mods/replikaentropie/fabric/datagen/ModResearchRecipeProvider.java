@@ -47,7 +47,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .icon(ModItems.handheldAnalyzer)
                         .dependsOn(id("research/sky_scraper"))
                         .nonogram(id("handheld_analyzer"))
-                        .costs(1, 0, 0, 0)
+                        .costs(0, 0, 0, 0)
                         .sortOrder(sortOrder += 100)
                         .save(output);
 

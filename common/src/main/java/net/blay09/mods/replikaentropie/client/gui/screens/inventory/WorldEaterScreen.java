@@ -24,17 +24,17 @@ public class WorldEaterScreen extends AbstractContainerScreen<WorldEaterMenu> {
 
         scanningProgressRenderer = new SegmentedProgressRenderer(BACKGROUND, 256, 256)
                 .addInvisibleSegment(20)
-                .addHorizontalSegment(18, 29, 3, 5, 194, 0)
+                .addHorizontalSegment(14, 66, 3, 5, 194, 0)
                 .addInvisibleSegment(90)
-                .addHorizontalSegment(111, 29, 5, 5, 197, 0)
-                .addVerticalSegment(113, 34, 3, 18, 199, 5)
-                .addReverseHorizontalSegment(111, 47, 2, 5, 197, 18)
+                .addHorizontalSegment(107, 66, 2, 5, 197, 18)
+                .addReverseVerticalSegment(109, 53, 3, 18, 199, 5)
+                .addReverseHorizontalSegment(107, 49, 5, 5, 197, 0)
                 .addInvisibleSegment(90)
-                .addReverseHorizontalSegment(16, 47, 5, 5, 192, 18)
-                .addVerticalSegment(16, 52, 3, 18, 192, 23)
-                .addHorizontalSegment(19, 65, 2, 5, 195, 36)
+                .addReverseHorizontalSegment(15, 49, 2, 5, 195, 36)
+                .addReverseVerticalSegment(12, 36, 3, 18, 192, 23)
+                .addHorizontalSegment(12, 31, 5, 5, 192, 18)
                 .addInvisibleSegment(90)
-                .addHorizontalSegment(111, 59, 11, 16, 197, 30);
+                .addHorizontalSegment(107, 24, 11, 16, 197, 30);
     }
 
     @Override

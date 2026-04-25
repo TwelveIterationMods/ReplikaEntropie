@@ -1,14 +1,17 @@
 package net.blay09.mods.replikaentropie.menu;
 
+import net.blay09.mods.replikaentropie.block.entity.WorldEaterBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
-import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class WorldEaterMenu extends AbstractContainerMenu {
@@ -27,21 +30,22 @@ public class WorldEaterMenu extends AbstractContainerMenu {
     public WorldEaterMenu(int containerId, Inventory playerInventory, Container previewContainer, Container container, ContainerData data) {
         super(ModMenus.worldEater.value(), containerId);
         this.container = container;
-        checkContainerSize(container, 1);
+        checkContainerSize(container, WorldEaterBlockEntity.CONTAINER_SIZE);
         checkContainerSize(previewContainer, 15);
         this.data = data;
         addDataSlots(data);
 
-        addSlot(new OutputSlot(container, 0, 134, 60));
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 2; j++) {
+                addSlot(new OutputSlot(container, j + i * 2, 126 + j * 18, 24 + i * 18));
+            }
+        }
 
-        for (int j = 0; j < 5; j++) {
-            addSlot(new ReadonlySlot(previewContainer, j, 22 + j * 18, 24));
-        }
-        for (int j = 0; j < 5; j++) {
-            addSlot(new ReadonlySlot(previewContainer, 5 + j, 22 + 72 - j * 18, 24 + 18));
-        }
-        for (int j = 0; j < 5; j++) {
-            addSlot(new ReadonlySlot(previewContainer, 10 + j, 22 + j * 18, 24 + 18 * 2));
+        for(int i = 0; i < 3; i++) {
+            for (int j = 0; j < 5; j++) {
+                final int x = i == 1 ? 90 - j * 18 : 18 + j * 18;
+                addSlot(new ReadonlySlot(previewContainer, j + i * 5, x, 60 - i * 18));
+            }
         }
 
         for (int i = 0; i < 3; i++) {
@@ -62,7 +66,7 @@ public class WorldEaterMenu extends AbstractContainerMenu {
     }
 
     public WorldEaterMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(15), new SimpleContainer(1), new SimpleContainerData(DATA_COUNT));
+        this(containerId, playerInventory, new SimpleContainer(15), new SimpleContainer(WorldEaterBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT));
     }
 
     @Override

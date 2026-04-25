@@ -20,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeMap;
-import net.minecraft.world.level.ItemLike;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,14 +31,11 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
     private static final Identifier ASSEMBLER_TEXTURE = id("textures/gui/jei/assembler.png");
     private static final Identifier BIOMASS_INCUBATOR_TEXTURE = id("textures/gui/jei/biomass_incubator.png");
     private static final Identifier FABRICATOR_TEXTURE = id("textures/gui/jei/fabricator.png");
-    private static final Identifier WORLD_EATER_TEXTURE = id("textures/gui/jei/world_eater.png");
     private static final Identifier RESEARCH_TEXTURE = id("textures/gui/jei/research.png");
     private static final Identifier LAVASCRAP_TEXTURE = id("textures/gui/jei/lavascrap.png");
     private static final Identifier COBBLESCRAP_TEXTURE = id("textures/gui/jei/cobblescrap.png");
     private static final Identifier FRAGMENT_ACCELERATOR_TEXTURE = id("textures/gui/jei/fragment_accelerator.png");
     private static final Identifier BIOMASS_HARVESTER_TEXTURE = id("textures/gui/jei/biomass_harvester.png");
-
-    private static final RandomSource random = RandomSource.create();
 
     @Override
     public void initialize(RecipeViewerRegistrar registrar) {
@@ -55,7 +51,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
         registerFabricatorRecipes(registrar);
         registerResearchRecipes(registrar);
         registerFragmentAcceleratorRecipes(registrar);
-        registerWorldEaterRecipe(registrar);
         registerLavascrapRecipe(registrar);
         registerCobblescrapRecipe(registrar);
         registerBiomassHarvesterRecipe(registrar);
@@ -198,34 +193,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                         }));
     }
 
-    private static void registerWorldEaterRecipe(RecipeViewerRegistrar registrar) {
-        registrar.registerCustomRecipeType(id("world_eater"), WorldEaterRecipe.class)
-                .withRecipe(new WorldEaterRecipe())
-                .withCraftingStation(ModBlocks.worldEater)
-                .buildDisplay(display -> display
-                        .title(Component.translatable(id("world_eater").toLanguageKey("jei")))
-                        .icon(ModBlocks.worldEater)
-                        .size(143, 58)
-                        .background(WORLD_EATER_TEXTURE)
-                        .slots((_, slots) -> {
-                            final var candidates = new ItemLike[]{
-                                    Items.STONE,
-                                    Items.DIORITE,
-                                    Items.GRANITE,
-                                    Items.GRAVEL,
-                                    Items.DEEPSLATE
-                            };
-
-                            for (int i = 0; i < 5; i++) {
-                                for (int j = 0; j < 3; j++) {
-                                    slots.renderOnlySlot(6 + i * 18, 1 + j * 18).add(candidates[random.nextInt(candidates.length)]);
-                                }
-                            }
-
-                            slots.outputSlot(118, 37).add(ModItems.scrap);
-                        }));
-    }
-
     private static void registerLavascrapRecipe(RecipeViewerRegistrar registrar) {
         registrar.registerCustomRecipeType(id("lavascrap"), LavascrapRecipe.class)
                 .withRecipe(new LavascrapRecipe())
@@ -304,9 +271,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
 
     private static ItemStack resourceStack(DeferredItem item, float amount) {
         return amount > 0 ? item.createStack((int) Math.ceil(amount)) : ItemStack.EMPTY;
-    }
-
-    public record WorldEaterRecipe() {
     }
 
     public record LavascrapRecipe() {
