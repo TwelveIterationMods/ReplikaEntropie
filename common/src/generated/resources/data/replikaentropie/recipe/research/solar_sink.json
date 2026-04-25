@@ -1,0 +1,18 @@
+{
+  "type": "replikaentropie:research",
+  "data": 4,
+  "hardDependencies": [
+    "replikaentropie:research/entropic_energy",
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "id": "replikaentropie:solar_sink"
+  },
+  "nonogram": "replikaentropie:solar_sink",
+  "research_type": "assembler",
+  "scrap": 2,
+  "sort_order": 600,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/solar_sink"
+  ]
+}

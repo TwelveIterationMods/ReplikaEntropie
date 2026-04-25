@@ -1,0 +1,23 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 9,
+      "ingredient": "minecraft:iron_ingot"
+    },
+    {
+      "count": 3,
+      "ingredient": "minecraft:glass"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:redstone"
+    },
+    {
+      "ingredient": "minecraft:daylight_detector"
+    }
+  ],
+  "result": {
+    "id": "replikaentropie:solar_sink"
+  }
+}

@@ -93,6 +93,10 @@ public class ModBlocks {
                 .withDefaultItem()
                 .asDeferredBlock();
 
+        solarSink = blocks.register("solar_sink", SolarSinkBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
+
         digSpot = blocks.register("dig_spot", DigSpotBlock::new, it -> it)
                 .withDefaultItem()
                 .asDeferredBlock();

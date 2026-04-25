@@ -34,6 +34,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateModelBlock(ModBlocks.fragmentAccelerator.value());
         generators.createNonTemplateModelBlock(ModBlocks.fragmentalGenerator.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.chaosEngine.value());
+        generators.createNonTemplateModelBlock(ModBlocks.solarSink.value());
 
         generators.registerSimpleItemModel(ModBlocks.replikaWorkbench.value(), ModelLocationUtils.getModelLocation(ModBlocks.replikaWorkbench.value()));
         generators.registerSimpleItemModel(ModBlocks.entropicDataMiner.value(), ModelLocationUtils.getModelLocation(ModBlocks.entropicDataMiner.value()));
@@ -49,6 +50,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.registerSimpleItemModel(ModBlocks.fragmentAccelerator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentAccelerator.value()));
         generators.registerSimpleItemModel(ModBlocks.fragmentalGenerator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentalGenerator.value()));
         generators.registerSimpleItemModel(ModBlocks.chaosEngine.value(), ModelLocationUtils.getModelLocation(ModBlocks.chaosEngine.value()));
+        generators.registerSimpleItemModel(ModBlocks.solarSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.solarSink.value()));
     }
 
     @Override

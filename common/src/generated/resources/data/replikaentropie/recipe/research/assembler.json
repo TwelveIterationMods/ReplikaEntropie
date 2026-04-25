@@ -14,7 +14,7 @@
   "nonogram": "replikaentropie:assembler",
   "research_type": "crafting",
   "scrap": 2,
-  "sort_order": 1000,
+  "sort_order": 1100,
   "unlocked_recipes": [
     "replikaentropie:assembler"
   ]

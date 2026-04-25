@@ -110,6 +110,7 @@ public class ModItems {
                     output.accept(makeshiftPSU);
                     output.accept(ModBlocks.recycler);
                     output.accept(ModBlocks.assembler);
+                    output.accept(ModBlocks.solarSink);
                     output.accept(ModBlocks.fabricator);
                     output.accept(ModBlocks.entropicDataMiner);
                     output.accept(ModBlocks.cobblescrap);

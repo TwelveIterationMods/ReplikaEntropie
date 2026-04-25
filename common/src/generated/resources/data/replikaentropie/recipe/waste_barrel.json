@@ -4,12 +4,13 @@
   "key": {
     "D": "minecraft:lime_dye",
     "I": "minecraft:iron_ingot",
-    "O": "minecraft:obsidian"
+    "O": "minecraft:obsidian",
+    "S": "replikaentropie:scrap"
   },
   "pattern": [
-    "III",
+    "ISI",
     "DOD",
-    "III"
+    "ISI"
   ],
   "result": {
     "id": "replikaentropie:waste_barrel"

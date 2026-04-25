@@ -1,6 +1,5 @@
 {
   "type": "replikaentropie:research",
-  "data": 1,
   "hardDependencies": [
     "replikaentropie:research/sky_scraper"
   ],

@@ -142,6 +142,13 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.COMPASS, 1)
                 .save(output);
 
+        assemblerRecipe(ModBlocks.solarSink, 1)
+                .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(Items.GLASS, 3)
+                .ingredient(Items.REDSTONE, 2)
+                .ingredient(Items.DAYLIGHT_DETECTOR, 1)
+                .save(output);
+
         assemblerRecipe(ModItems.nullphaser, 1)
                 .ingredient(Items.IRON_INGOT, 2)
                 .ingredient(Items.ENDER_PEARL, 1)

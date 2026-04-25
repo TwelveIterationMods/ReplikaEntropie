@@ -10,7 +10,7 @@
   "nonogram": "replikaentropie:world_eater",
   "research_type": "assembler",
   "scrap": 64,
-  "sort_order": 3000,
+  "sort_order": 3100,
   "unlocked_recipes": [
     "replikaentropie:assembler/world_eater"
   ]
