@@ -1,7 +1,12 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.1,
-  "fragments": 0.0,
   "ingredient": "minecraft:golden_carrot",
-  "scrap": 0.08888889
+  "outputs": [
+    {
+      "id": "replikaentropie:scrap"
+    },
+    {
+      "id": "replikaentropie:biomass"
+    }
+  ]
 }

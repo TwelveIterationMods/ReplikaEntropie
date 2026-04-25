@@ -1,7 +1,10 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:diamond_boots",
-  "scrap": 4.0
+  "outputs": [
+    {
+      "count": 4,
+      "id": "replikaentropie:scrap"
+    }
+  ]
 }

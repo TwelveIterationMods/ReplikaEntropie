@@ -1,7 +1,12 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.2,
-  "fragments": 0.2,
   "ingredient": "minecraft:pitcher_plant",
-  "scrap": 0.0
+  "outputs": [
+    {
+      "id": "replikaentropie:biomass"
+    },
+    {
+      "id": "replikaentropie:fragments"
+    }
+  ]
 }

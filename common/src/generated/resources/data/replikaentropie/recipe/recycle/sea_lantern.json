@@ -1,7 +1,10 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:sea_lantern",
-  "scrap": 9.0
+  "outputs": [
+    {
+      "count": 9,
+      "id": "replikaentropie:scrap"
+    }
+  ]
 }

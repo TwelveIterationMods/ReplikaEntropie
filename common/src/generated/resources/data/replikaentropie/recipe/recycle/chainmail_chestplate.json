@@ -1,7 +1,9 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:chainmail_chestplate",
-  "scrap": 0.8
+  "outputs": [
+    {
+      "id": "replikaentropie:scrap"
+    }
+  ]
 }

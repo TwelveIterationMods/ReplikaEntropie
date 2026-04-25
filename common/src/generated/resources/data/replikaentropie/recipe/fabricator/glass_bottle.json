@@ -1,7 +1,7 @@
 {
   "type": "replikaentropie:fabricator",
   "result": {
-    "id": "minecraft:glass"
+    "id": "minecraft:glass_bottle"
   },
   "scrap": 1,
   "sortOrder": 2400

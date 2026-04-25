@@ -5,7 +5,6 @@ import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.RecyclerSlot;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
 import net.blay09.mods.replikaentropie.util.QuickMove;
-import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,12 +24,9 @@ public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPowe
 
     public static final int DATA_PROCESSING_TIME = 0;
     public static final int DATA_MAX_PROCESSING_TIME = 1;
-    public static final int DATA_FRACTIONAL_SCRAP = 2;
-    public static final int DATA_FRACTIONAL_BIOMASS = 3;
-    public static final int DATA_FRACTIONAL_FRAGMENTS = 4;
-    public static final int DATA_CURRENT_POWER = 5;
-    public static final int DATA_MAX_POWER = 6;
-    public static final int DATA_COUNT = 7;
+    public static final int DATA_CURRENT_POWER = 2;
+    public static final int DATA_MAX_POWER = 3;
+    public static final int DATA_COUNT = 4;
 
     public RecyclerMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, new SimpleContainer(4), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
@@ -75,25 +71,13 @@ public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPowe
         return data.get(DATA_PROCESSING_TIME) / (float) data.get(DATA_MAX_PROCESSING_TIME);
     }
 
-    public float getFractionalScrap() {
-        return Mth.clamp(data.get(DATA_FRACTIONAL_SCRAP) / 100f, 0f, 0.99f);
-    }
-
-    public float getFractionalBiomass() {
-        return Mth.clamp(data.get(DATA_FRACTIONAL_BIOMASS) / 100f, 0f, 0.99f);
-    }
-
-    public float getFractionalFragments() {
-        return Mth.clamp(data.get(DATA_FRACTIONAL_FRAGMENTS) / 100f, 0f, 0.99f);
-    }
-
     public float getPowerProgress() {
         final var maxPower = data.get(DATA_MAX_POWER);
         if (maxPower <= 0) {
             return 0f;
         }
 
-        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
+        return Math.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
     }
 
     @Override

@@ -1,7 +1,13 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.1,
-  "fragments": 0.0,
   "ingredient": "minecraft:diamond_hoe",
-  "scrap": 2.0
+  "outputs": [
+    {
+      "count": 2,
+      "id": "replikaentropie:scrap"
+    },
+    {
+      "id": "replikaentropie:biomass"
+    }
+  ]
 }

@@ -1,7 +1,9 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:hopper_minecart",
-  "scrap": 1.0
+  "outputs": [
+    {
+      "id": "replikaentropie:scrap"
+    }
+  ]
 }

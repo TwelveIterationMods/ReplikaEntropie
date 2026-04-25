@@ -1,6 +1,7 @@
 package net.blay09.mods.replikaentropie.fabric.datagen;
 
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
+import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -13,10 +14,13 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -584,7 +588,26 @@ public class ModRecycleRecipeProvider extends FabricRecipeProvider {
     public record RecycleRecipeBuilder(Ingredient ingredient, float scrap, float biomass, float fragments) {
         public void save(RecipeOutput output) {
             final var id = ReplikaEntropie.id("recycle/" + ingredientPath(ingredient));
-            output.accept(ResourceKey.create(Registries.RECIPE, id), new RecyclerRecipe(ingredient, scrap, biomass, fragments), null);
+            output.accept(ResourceKey.create(Registries.RECIPE, id), new RecyclerRecipe(ingredient, buildOutputs()), null);
+        }
+
+        private List<ItemStackTemplate> buildOutputs() {
+            final var outputs = new ArrayList<ItemStackTemplate>(3);
+            addOutput(outputs, ModItems.scrap.asItem(), scrap);
+            addOutput(outputs, ModItems.biomass.asItem(), biomass);
+            addOutput(outputs, ModItems.fragments.asItem(), fragments);
+            return outputs;
+        }
+
+        private static void addOutput(List<ItemStackTemplate> outputs, Item item, float amount) {
+            final int wholeOutput = toWholeOutput(amount);
+            if (wholeOutput > 0) {
+                outputs.add(new ItemStackTemplate(item, wholeOutput));
+            }
+        }
+
+        private static int toWholeOutput(float amount) {
+            return amount > 0f ? (int) Math.ceil(amount) : 0;
         }
 
         private static String ingredientPath(Ingredient ingredient) {

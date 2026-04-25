@@ -15,7 +15,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -63,13 +62,15 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                 .buildDisplay(display -> display
                         .title(Component.translatable(id("recycler").toLanguageKey("jei")))
                         .icon(ModBlocks.recycler)
-                        .size(86, 88)
+                        .size(82, 88)
                         .background(RECYCLER_TEXTURE)
                         .slots((recipe, slots) -> {
                             slots.inputSlot(1, 36).add(recipe.ingredient());
-                            slots.outputSlot(61, 5).add(resourceStack(ModItems.scrap, recipe.scrap()));
-                            slots.outputSlot(61, 36).add(resourceStack(ModItems.biomass, recipe.biomass()));
-                            slots.outputSlot(61, 67).add(resourceStack(ModItems.fragments, recipe.fragments()));
+                            final var outputs = recipe.outputs();
+                            for (int i = 0; i < outputs.size(); i++) {
+                                var output = outputs.get(i);
+                                slots.outputSlot(61, 5 + i * 18).add(output);
+                            }
                         }));
     }
 
@@ -188,7 +189,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                             slots.inputSlot(30, 1).add(recipe.ingredient());
                             slots.inputSlot(90, 30).add(recipe.ingredient());
                             slots.inputSlot(30, 59).add(recipe.ingredient());
-                            slots.outputSlot(30, 30).add(resourceStack(ModItems.fragments, recipe.fragments() * FragmentAcceleratorBlockEntity.OUTPUT_MULTIPLIER));
+                            slots.outputSlot(30, 30).add(resourceStack(ModItems.fragments, FragmentAcceleratorBlockEntity.OUTPUT_MULTIPLIER));
                             slots.outputSlot(61, 30).add(ModBlocks.wasteBarrel);
                         }));
     }
@@ -252,7 +253,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                 .map(ReplikaEntropieRecipeViewerProvider::getRecyclerRecipes)
                 .orElse(List.of())
                 .stream()
-                .filter(it -> it.fragments() > 0)
+                .filter(it -> !it.outputs().isEmpty())
                 .toList();
     }
 

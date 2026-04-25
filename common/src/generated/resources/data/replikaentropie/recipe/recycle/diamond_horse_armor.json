@@ -1,7 +1,10 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 7.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:diamond_horse_armor",
-  "scrap": 0.0
+  "outputs": [
+    {
+      "count": 7,
+      "id": "replikaentropie:biomass"
+    }
+  ]
 }

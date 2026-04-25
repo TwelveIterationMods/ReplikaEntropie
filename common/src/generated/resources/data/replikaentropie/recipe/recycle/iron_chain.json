@@ -1,7 +1,9 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:iron_chain",
-  "scrap": 0.12222222
+  "outputs": [
+    {
+      "id": "replikaentropie:scrap"
+    }
+  ]
 }

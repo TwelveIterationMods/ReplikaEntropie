@@ -1,8 +1,6 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
-import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
-import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
 import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
 import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.RecyclerMenu;
@@ -30,10 +28,6 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
             .addInvisibleSegment(28)
             .addVerticalSegment(78, 63, 2, 32, 182, 66)
             .addHorizontalSegment(80, 85, 15, 16, 184, 88);
-
-    private final ProgressRenderer fractionalScrapRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(130, 19).size(3, 26).uv(176, 0);
-    private final ProgressRenderer fractionalBiomassRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(130, 50).size(3, 26).uv(176, 0);
-    private final ProgressRenderer fractionalFragmentsRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(130, 81).size(3, 26).uv(176, 0);
     private final EnergyBar energyBar = new EnergyBar(-23, 5);
 
     public RecyclerScreen(RecyclerMenu menu, Inventory playerInventory, Component title) {
@@ -59,10 +53,6 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
             middleProgressRenderer.render(graphics, leftPos, topPos, progress);
             bottomProgressRenderer.render(graphics, leftPos, topPos, progress);
         }
-
-        fractionalScrapRenderer.render(graphics, leftPos, topPos, menu.getFractionalScrap());
-        fractionalBiomassRenderer.render(graphics, leftPos, topPos, menu.getFractionalBiomass());
-        fractionalFragmentsRenderer.render(graphics, leftPos, topPos, menu.getFractionalFragments());
 
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 1, 24, 90);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 92, 28, 28);

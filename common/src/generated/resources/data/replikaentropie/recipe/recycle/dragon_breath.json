@@ -1,7 +1,12 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 1.0,
   "ingredient": "minecraft:dragon_breath",
-  "scrap": 0.1
+  "outputs": [
+    {
+      "id": "replikaentropie:scrap"
+    },
+    {
+      "id": "replikaentropie:fragments"
+    }
+  ]
 }

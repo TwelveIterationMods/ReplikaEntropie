@@ -1,7 +1,9 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:prismarine_shard",
-  "scrap": 0.1
+  "outputs": [
+    {
+      "id": "replikaentropie:scrap"
+    }
+  ]
 }

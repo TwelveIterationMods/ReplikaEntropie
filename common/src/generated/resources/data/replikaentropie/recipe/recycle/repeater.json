@@ -1,7 +1,12 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.1,
-  "fragments": 0.3,
   "ingredient": "minecraft:repeater",
-  "scrap": 0.0
+  "outputs": [
+    {
+      "id": "replikaentropie:biomass"
+    },
+    {
+      "id": "replikaentropie:fragments"
+    }
+  ]
 }

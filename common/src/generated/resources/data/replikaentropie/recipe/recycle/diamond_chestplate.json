@@ -1,7 +1,10 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:diamond_chestplate",
-  "scrap": 8.0
+  "outputs": [
+    {
+      "count": 8,
+      "id": "replikaentropie:scrap"
+    }
+  ]
 }

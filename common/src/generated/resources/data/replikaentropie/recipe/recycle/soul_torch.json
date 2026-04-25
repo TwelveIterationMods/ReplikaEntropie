@@ -1,7 +1,15 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0125,
-  "fragments": 0.1,
   "ingredient": "minecraft:soul_torch",
-  "scrap": 0.05
+  "outputs": [
+    {
+      "id": "replikaentropie:scrap"
+    },
+    {
+      "id": "replikaentropie:biomass"
+    },
+    {
+      "id": "replikaentropie:fragments"
+    }
+  ]
 }

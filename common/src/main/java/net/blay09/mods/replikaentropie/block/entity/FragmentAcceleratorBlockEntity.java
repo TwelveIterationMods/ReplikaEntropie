@@ -233,10 +233,7 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private boolean isValidInput(ItemStack itemStack) {
-        return !itemStack.isEmpty() && RecyclerRecipe.getRecipe(level, itemStack)
-                .map(RecyclerRecipe::fragments)
-                .filter(it -> it > 0)
-                .isPresent();
+        return !itemStack.isEmpty() && RecyclerRecipe.getRecipe(level, itemStack).isPresent();
     }
 
     private boolean hasAnyValidInput() {
@@ -274,9 +271,9 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         var output = 0f;
         for (int i = 0; i < inputContainer.getContainerSize(); i++) {
             final var itemStack = inputContainer.getItem(i);
-            final float recipeFragments = RecyclerRecipe.getRecipe(level, itemStack)
-                    .map(RecyclerRecipe::fragments)
-                    .orElse(0f);
+            final int recipeFragments = RecyclerRecipe.getRecipe(level, itemStack)
+                    .map(it -> 1)
+                    .orElse(0);
             if (recipeFragments > 0) {
                 final var item = itemStack.getItem();
                 final var existing = uniqueKinds.count(item);

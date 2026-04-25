@@ -1,7 +1,10 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 2.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:sniffer_egg",
-  "scrap": 0.0
+  "outputs": [
+    {
+      "count": 2,
+      "id": "replikaentropie:biomass"
+    }
+  ]
 }

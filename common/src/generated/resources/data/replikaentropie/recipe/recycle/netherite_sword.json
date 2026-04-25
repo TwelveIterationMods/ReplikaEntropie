@@ -1,7 +1,13 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.05,
-  "fragments": 0.0,
   "ingredient": "minecraft:netherite_sword",
-  "scrap": 1.6
+  "outputs": [
+    {
+      "count": 2,
+      "id": "replikaentropie:scrap"
+    },
+    {
+      "id": "replikaentropie:biomass"
+    }
+  ]
 }

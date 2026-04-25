@@ -1,7 +1,9 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:bucket",
-  "scrap": 0.3
+  "outputs": [
+    {
+      "id": "replikaentropie:scrap"
+    }
+  ]
 }

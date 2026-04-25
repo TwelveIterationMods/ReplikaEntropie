@@ -1,7 +1,15 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 1.0,
-  "fragments": 1.0,
   "ingredient": "minecraft:elytra",
-  "scrap": 1.0
+  "outputs": [
+    {
+      "id": "replikaentropie:scrap"
+    },
+    {
+      "id": "replikaentropie:biomass"
+    },
+    {
+      "id": "replikaentropie:fragments"
+    }
+  ]
 }

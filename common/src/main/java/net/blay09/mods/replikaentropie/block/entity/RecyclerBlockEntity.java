@@ -1,19 +1,13 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.world.BalmContainerProvider;
-import net.blay09.mods.balm.world.BalmMenuProvider;
-import net.blay09.mods.balm.world.DefaultContainer;
-import net.blay09.mods.balm.world.SubContainer;
+import net.blay09.mods.balm.world.*;
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
 import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
 import net.blay09.mods.balm.platform.energy.EnergyStorage;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.RecyclerMenu;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
-import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -64,14 +58,7 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
     };
 
     private final Container inputContainer = new SubContainer(backingContainer, 0, 1);
-    private final Container scrapContainer = new SubContainer(backingContainer, 1, 2);
-    private final Container biomassContainer = new SubContainer(backingContainer, 2, 3);
-    private final Container fragmentsContainer = new SubContainer(backingContainer, 3, 4);
     private final Container outputContainer = new SubContainer(backingContainer, 1, 4);
-
-    private final FractionalResource scrap = new FractionalResource(scrapContainer, 0, ModItems.scrap);
-    private final FractionalResource biomass = new FractionalResource(biomassContainer, 0, ModItems.biomass);
-    private final FractionalResource fragments = new FractionalResource(fragmentsContainer, 0, ModItems.fragments);
 
     private int processingTicks;
 
@@ -81,9 +68,6 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
             return switch (index) {
                 case RecyclerMenu.DATA_PROCESSING_TIME -> processingTicks;
                 case RecyclerMenu.DATA_MAX_PROCESSING_TIME -> PROCESSING_TICKS;
-                case RecyclerMenu.DATA_FRACTIONAL_SCRAP -> scrap.getFractionalAmountAsMenuData();
-                case RecyclerMenu.DATA_FRACTIONAL_BIOMASS -> biomass.getFractionalAmountAsMenuData();
-                case RecyclerMenu.DATA_FRACTIONAL_FRAGMENTS -> fragments.getFractionalAmountAsMenuData();
                 case RecyclerMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
                 case RecyclerMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
                 default -> 0;
@@ -179,9 +163,9 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
             inputStack.shrink(1);
 
             final var recipe = foundRecipe.get();
-            scrap.add(recipe.scrap());
-            biomass.add(recipe.biomass());
-            fragments.add(recipe.fragments());
+            for (final var output : recipe.outputs()) {
+                ContainerUtils.insertItem(outputContainer, output.create(), false);
+            }
 
             processingTicks = 0;
             setChanged();
@@ -192,9 +176,6 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
     protected void loadAdditional(ValueInput input) {
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
         processingTicks = input.getIntOr("ProcessingTicks", 0);
-        scrap.setFractionalAmount(input.getFloatOr("FractionalScrap", 0));
-        biomass.setFractionalAmount(input.getFloatOr("FractionalBiomass", 0));
-        fragments.setFractionalAmount(input.getFloatOr("FractionalFragments", 0));
         energyStorage.deserialize(input);
     }
 
@@ -202,9 +183,6 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
     protected void saveAdditional(ValueOutput output) {
         ContainerHelper.saveAllItems(output, backingContainer.getItems());
         output.putInt("ProcessingTicks", processingTicks);
-        output.putFloat("FractionalScrap", scrap.getFractionalAmount());
-        output.putFloat("FractionalBiomass", biomass.getFractionalAmount());
-        output.putFloat("FractionalFragments", fragments.getFractionalAmount());
         energyStorage.serialize(output);
     }
 }

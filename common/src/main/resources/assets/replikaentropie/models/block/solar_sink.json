@@ -6,7 +6,7 @@
 		"3": "replikaentropie:block/fragmental_generator_bottom",
 		"4": "replikaentropie:block/solar_sink",
 		"side": "replikaentropie:block/machine_side",
-		"particle": "replikaentropie:block/fragmental_generator_bottom"
+		"particle": "replikaentropie:block/solar_sink"
 	},
 	"elements": [
 		{

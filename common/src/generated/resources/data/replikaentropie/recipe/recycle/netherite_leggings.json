@@ -1,7 +1,10 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.0,
-  "fragments": 0.0,
   "ingredient": "minecraft:netherite_leggings",
-  "scrap": 5.6
+  "outputs": [
+    {
+      "count": 6,
+      "id": "replikaentropie:scrap"
+    }
+  ]
 }

@@ -1,7 +1,9 @@
 {
   "type": "replikaentropie:recycler",
-  "biomass": 0.7,
-  "fragments": 0.0,
   "ingredient": "minecraft:leather_leggings",
-  "scrap": 0.0
+  "outputs": [
+    {
+      "id": "replikaentropie:biomass"
+    }
+  ]
 }

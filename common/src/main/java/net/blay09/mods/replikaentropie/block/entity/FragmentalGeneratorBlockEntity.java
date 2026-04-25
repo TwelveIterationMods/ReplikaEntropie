@@ -147,7 +147,6 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
         }
 
         return RecyclerRecipe.getRecipe(level, backingContainer.getItem(slot))
-                .filter(it -> it.fragments() > 0)
                 .map(it -> maxProcessingTicks[slot] == 0)
                 .orElse(false);
     }
@@ -159,9 +158,8 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
                 temperature = Mth.clamp(temperature - TEMPERATURE_PER_COOLING_ITEM, MIN_TEMPERATURE, MAX_TEMPERATURE);
             } else {
                 RecyclerRecipe.getRecipe(level, inputStack)
-                        .filter(it -> it.fragments() > 0)
                         .ifPresent(it -> {
-                            final var fragmentOutput = it.fragments() * OUTPUT_MULTIPLIER;
+                            final var fragmentOutput = OUTPUT_MULTIPLIER;
                             energyStorage.fill((int) (fragmentOutput * ENERGY_PER_FRAGMENT), false);
                             temperature = Mth.clamp(temperature + TEMPERATURE_PER_FRAGMENT, MIN_TEMPERATURE, MAX_TEMPERATURE);
                         });
