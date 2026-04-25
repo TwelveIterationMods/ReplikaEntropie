@@ -193,7 +193,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                             slots.inputSlot(90, 30).add(recipe.ingredient());
                             slots.inputSlot(30, 59).add(recipe.ingredient());
                             slots.outputSlot(30, 30).add(resourceStack(ModItems.fragments, recipe.fragments() * FragmentAcceleratorBlockEntity.OUTPUT_MULTIPLIER));
-                            slots.outputSlot(61, 30).add(ModBlocks.fragmentalWaste);
+                            slots.outputSlot(61, 30).add(ModBlocks.wasteBarrel);
                         }));
     }
 
@@ -250,9 +250,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                         .icon(ModBlocks.cobblescrap)
                         .size(144, 50)
                         .background(COBBLESCRAP_TEXTURE)
-                        .slots((_, slots) -> {
-                            slots.outputSlot(66, 20).add(Items.COBBLESTONE);
-                        }));
+                        .slots((_, slots) -> slots.outputSlot(66, 20).add(Items.COBBLESTONE)));
     }
 
     private static void registerBiomassHarvesterRecipe(RecipeViewerRegistrar registrar) {
@@ -317,8 +315,5 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
     }
 
     public record BiomassHarvesterRecipe() {
-    }
-
-    public record ReplikaWorkbenchRecipe(ItemStack frameItem, ItemStack assembledItem) {
     }
 }
