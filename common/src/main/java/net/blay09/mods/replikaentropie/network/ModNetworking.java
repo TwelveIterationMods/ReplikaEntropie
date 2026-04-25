@@ -9,6 +9,7 @@ public class ModNetworking {
         networking.registerClientboundPacket(AnalyzedItemsMessage.TYPE, AnalyzedItemsMessage.class, AnalyzedItemsMessage.STREAM_CODEC, AnalyzedItemsMessage::handle);
         networking.registerClientboundPacket(AnalyzedPlayersMessage.TYPE, AnalyzedPlayersMessage.class, AnalyzedPlayersMessage.STREAM_CODEC, AnalyzedPlayersMessage::handle);
         networking.registerClientboundPacket(AnalyzedEntitiesMessage.TYPE, AnalyzedEntitiesMessage.class, AnalyzedEntitiesMessage.STREAM_CODEC, AnalyzedEntitiesMessage::handle);
+        networking.registerClientboundPacket(ParticleTrailMessage.TYPE, ParticleTrailMessage.class, ParticleTrailMessage.STREAM_CODEC, ParticleTrailMessage::handle);
         networking.registerServerboundPacket(AnalyzePosMessage.TYPE, AnalyzePosMessage.class, AnalyzePosMessage.STREAM_CODEC, AnalyzePosMessage::handle);
         networking.registerServerboundPacket(AnalyzeEntityMessage.TYPE, AnalyzeEntityMessage.class, AnalyzeEntityMessage.STREAM_CODEC, AnalyzeEntityMessage::handle);
         networking.registerClientboundPacket(DataCollectedMessage.TYPE, DataCollectedMessage.class, DataCollectedMessage.STREAM_CODEC, DataCollectedMessage::handle);

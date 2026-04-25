@@ -1,12 +1,14 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
 import com.mojang.serialization.Codec;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.WorldEaterMenu;
+import net.blay09.mods.replikaentropie.network.protocol.ParticleTrailMessage;
 import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
@@ -157,7 +159,9 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, WorldEaterBlockEntity blockEntity) {
         blockEntity.broadcastChanges();
-        blockEntity.processState(level);
+        if(level instanceof ServerLevel serverLevel) {
+            blockEntity.processState(serverLevel);
+        }
     }
 
     private void broadcastChanges() {
@@ -167,7 +171,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
         }
     }
 
-    private void processState(Level level) {
+    private void processState(ServerLevel level) {
         stateTicks++;
 
         switch (state) {
@@ -181,7 +185,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                                 .ifPresent(scannedBlock -> {
                                     scannedPositions.put(slotToFill, scannedBlock.pos());
                                     previewContainer.setItem(slotToFill, scannedBlock.itemStack());
-                                    sendScanTrail((ServerLevel) level, scannedBlock.pos());
+                                    sendTrailParticles(level, Vec3.atCenterOf(scannedBlock.pos()), Vec3.atCenterOf(worldPosition));
                                 });
                     }
                 }
@@ -286,21 +290,9 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
         return -1;
     }
 
-    private void sendScanTrail(ServerLevel level, BlockPos scannedPos) {
-        final var scanCenter = Vec3.atCenterOf(getScanCenter());
-        sendTrailParticles(level, Vec3.atCenterOf(scannedPos), scanCenter);
-        sendTrailParticles(level, scanCenter, Vec3.atCenterOf(worldPosition));
-    }
-
     private void sendTrailParticles(ServerLevel level, Vec3 start, Vec3 end) {
-        final var segments = 6;
-        for (int i = 0; i <= segments; i++) {
-            final var t = i / (double) segments;
-            final var x = start.x + (end.x - start.x) * t;
-            final var y = start.y + (end.y - start.y) * t;
-            final var z = start.z + (end.z - start.z) * t;
-            level.sendParticles(ParticleTypes.SMALL_GUST, x, y, z, 1, 0, 0, 0, 0);
-        }
+        final var midPoint = start.lerp(end, 0.5);
+        Balm.networking().sendToTracking(level, BlockPos.containing(midPoint), new ParticleTrailMessage(start.toVector3f(), end.toVector3f(), 6, ParticleTypes.SMALL_GUST));
     }
 
     @Override

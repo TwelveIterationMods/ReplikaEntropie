@@ -1,7 +1,9 @@
 package net.blay09.mods.replikaentropie.item;
 
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
+import net.blay09.mods.replikaentropie.network.protocol.ParticleTrailMessage;
 import net.blay09.mods.replikaentropie.recipe.VacuumableOreRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -195,14 +197,9 @@ public class OreVacuumItem extends Item {
     }
 
     private void sendTrailParticles(ServerLevel serverLevel, Vec3 start, Vec3 end) {
-        final var segments = 6;
-        for (int i = 0; i <= segments; i++) {
-            final var t = i / (double) segments;
-            final var x = start.x + (end.x - start.x) * t;
-            final var y = start.y + (end.y - start.y) * t;
-            final var z = start.z + (end.z - start.z) * t;
-            serverLevel.sendParticles(ParticleTypes.WHITE_ASH, x, y, z, 1, 0, 0, 0, 0);
-        }
+        final var message = new ParticleTrailMessage(start.toVector3f(), end.toVector3f(), 6, ParticleTypes.WHITE_ASH);
+        final var midPoint = start.lerp(end, 0.5);
+        Balm.networking().sendToTracking(serverLevel, BlockPos.containing(midPoint), message);
     }
 
 }
