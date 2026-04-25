@@ -1,6 +1,7 @@
 package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.container.RecipeContainer;
+import net.blay09.mods.replikaentropie.block.entity.FabricatorBlockEntity;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.slot.*;
 import net.blay09.mods.replikaentropie.recipe.FabricatorRecipe;
@@ -12,39 +13,44 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.List;
 
-public class FabricatorMenu extends AbstractContainerMenu {
+public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
     private final Inventory playerInventory;
     private final Container container;
     private final ContainerData data;
+    private final ContainerLevelAccess access;
     private final List<FabricatorRecipe> recipes;
     private final RecipeContainer<FabricatorRecipe> recipeContainer = new RecipeContainer<>(7 * 4);
     private final QuickMove.Routing quickMove;
 
     public static final int DATA_OUTPUT_PROCESSING_TIME = 0;
     public static final int DATA_MAX_OUTPUT_PROCESSING_TIME = 1;
-    public static final int DATA_MISSING_SCRAP = 2;
-    public static final int DATA_MISSING_BIOMASS = 3;
-    public static final int DATA_MISSING_FRAGMENTS = 4;
-    public static final int DATA_RECIPES_START = 5;
+    public static final int DATA_CURRENT_POWER = 2;
+    public static final int DATA_MAX_POWER = 3;
+    public static final int DATA_MISSING_SCRAP = 4;
+    public static final int DATA_MISSING_BIOMASS = 5;
+    public static final int DATA_MISSING_FRAGMENTS = 6;
+    public static final int DATA_RECIPES_START = 7;
     public static final int DATA_RECIPES_SIZE = 4 * 7;
     public static final int DATA_RECIPES_END = DATA_RECIPES_START + DATA_RECIPES_SIZE;
 
     public static final int DATA_COUNT = DATA_RECIPES_END;
 
     public FabricatorMenu(int containerId, Inventory playerInventory, List<FabricatorRecipe> recipes) {
-        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), recipes);
+        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, recipes);
     }
 
-    public FabricatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, List<FabricatorRecipe> recipes) {
+    public FabricatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access, List<FabricatorRecipe> recipes) {
         super(ModMenus.fabricator.value(), containerId);
         this.playerInventory = playerInventory;
         this.container = container;
         checkContainerSize(container, 8);
         this.data = data;
+        this.access = access;
         addDataSlots(data);
         this.recipes = recipes;
 
@@ -131,6 +137,15 @@ public class FabricatorMenu extends AbstractContainerMenu {
         return data.get(DATA_OUTPUT_PROCESSING_TIME) / (float) data.get(DATA_MAX_OUTPUT_PROCESSING_TIME);
     }
 
+    public float getPowerProgress() {
+        final var maxPower = data.get(DATA_MAX_POWER);
+        if (maxPower <= 0) {
+            return 0f;
+        }
+
+        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
+    }
+
     public boolean isInfinitelyQueued(FabricatorRecipeSlot slot) {
         return data.get(DATA_RECIPES_START + slot.getContainerSlot()) == -1;
     }
@@ -149,5 +164,15 @@ public class FabricatorMenu extends AbstractContainerMenu {
 
     public boolean isMissingFragments() {
         return data.get(DATA_MISSING_FRAGMENTS) == 1;
+    }
+
+    @Override
+    public void convertClickToPower() {
+        access.execute((level, pos) -> {
+            final BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof FabricatorBlockEntity fabricator) {
+                fabricator.getEnergyStorage().fill(playerInventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
+            }
+        });
     }
 }

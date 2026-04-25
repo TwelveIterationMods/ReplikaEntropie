@@ -2,6 +2,9 @@ package net.blay09.mods.replikaentropie.block.entity;
 
 import com.mojang.serialization.Codec;
 import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
+import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
+import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
@@ -20,10 +23,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,9 +41,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class FabricatorBlockEntity extends BlockEntity implements BalmContainerProvider {
+public class FabricatorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmEnergyStorageProvider {
 
-    private final Container backingContainer = new DefaultContainer(8) {
+    private static final int ENERGY_CAPACITY = 10000;
+    private static final int ENERGY_INPUT_RATE = 1000;
+    private static final int ENERGY_COST_PER_TICK = 10;
+
+    private final DefaultContainer backingContainer = new DefaultContainer(8) {
         @Override
         public void setChanged() {
             FabricatorBlockEntity.this.setChanged();
@@ -52,6 +61,12 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
                 case 3 -> itemStack.is(ModItems.fragments);
                 default -> false;
             };
+        }
+    };
+    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+        @Override
+        public void setChanged() {
+            FabricatorBlockEntity.this.setChanged();
         }
     };
     private final Container resultContainer = new SubContainer(backingContainer, 0, 1);
@@ -76,6 +91,8 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
             return switch (index) {
                 case FabricatorMenu.DATA_OUTPUT_PROCESSING_TIME -> processingTicks;
                 case FabricatorMenu.DATA_MAX_OUTPUT_PROCESSING_TIME -> OUTPUT_PROCESSING_TICKS;
+                case FabricatorMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
+                case FabricatorMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
                 case FabricatorMenu.DATA_MISSING_SCRAP -> {
                     final var nextRecipe = getNextOutputRecipe();
                     if (nextRecipe == null) {
@@ -166,7 +183,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
 
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                return new FabricatorMenu(i, inventory, backingContainer, dataAccess, recipes);
+                return new FabricatorMenu(i, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition), recipes);
             }
 
             @Override
@@ -189,6 +206,16 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
     @Override
     public Container getContainer() {
         return backingContainer;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage(Direction side) {
+        return energyStorage;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, FabricatorBlockEntity blockEntity) {
@@ -221,6 +248,11 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
             return;
         }
 
+        if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK) {
+            return;
+        }
+
+        energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_TICK);
         processingTicks++;
         if (processingTicks >= OUTPUT_PROCESSING_TICKS) {
             consumeResources(currentRecipe);
@@ -315,9 +347,11 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
 
     @Override
     protected void loadAdditional(ValueInput input) {
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
         processingTicks = input.getIntOr("ProcessingTicks", 0);
         bufferMovementTicks = input.getIntOr("BufferMovementTicks", 0);
         infiniteQueueIndex = input.getIntOr("InfiniteQueueIndex", 0);
+        energyStorage.deserialize(input);
 
         recipeQueue.clear();
         final var queueList = input.listOrEmpty("RecipeQueue", Codec.STRING);
@@ -348,9 +382,11 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
 
     @Override
     protected void saveAdditional(ValueOutput output) {
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
         output.putInt("ProcessingTicks", processingTicks);
         output.putInt("BufferMovementTicks", bufferMovementTicks);
         output.putInt("InfiniteQueueIndex", infiniteQueueIndex);
+        energyStorage.serialize(output);
 
         final var queueList = output.list("RecipeQueue", Codec.STRING);
         for (final var recipe : recipeQueue) {

@@ -2,6 +2,8 @@ package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
 import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
 import net.blay09.mods.replikaentropie.container.RecipeContainer;
+import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
+import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.FabricatorMenu;
 import net.blay09.mods.replikaentropie.menu.slot.FabricatorBufferSlot;
 import net.blay09.mods.replikaentropie.menu.slot.FabricatorRecipeSlot;
@@ -21,7 +23,9 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class FabricatorScreen extends AbstractContainerScreen<FabricatorMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/fabricator.png");
+    private static final Identifier LEFT_WING = id("left_wing");
     private final SegmentedProgressRenderer outputProgressRenderer;
+    private final EnergyBar energyBar = new EnergyBar(-23, 11);
 
     public FabricatorScreen(FabricatorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 222);
@@ -31,6 +35,13 @@ public class FabricatorScreen extends AbstractContainerScreen<FabricatorMenu> {
         outputProgressRenderer = new SegmentedProgressRenderer(BACKGROUND, 256, 256)
                 .addHorizontalSegment(129, 28, 26, 4, 176, 16)
                 .addVerticalSegment(146, 32, 15, 10, 193, 20);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 102, menu.containerId));
     }
 
     @Override
@@ -61,6 +72,8 @@ public class FabricatorScreen extends AbstractContainerScreen<FabricatorMenu> {
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractBackground(graphics, mouseX, mouseY, a);
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 7, 24, 90);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 98, 28, 28);
 
         if (menu.isMissingScrap()) {
             final var x = leftPos + 37;
@@ -84,6 +97,8 @@ public class FabricatorScreen extends AbstractContainerScreen<FabricatorMenu> {
         if (outputProgress > 0f) {
             outputProgressRenderer.render(graphics, leftPos, topPos, outputProgress);
         }
+
+        energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 
     @Override
