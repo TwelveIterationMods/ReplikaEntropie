@@ -1,5 +1,8 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
+import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
+import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
+import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
@@ -37,12 +40,15 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
-public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
+public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
 
     public static final int CONTAINER_SIZE = 12;
     private static final int MIN_PROCESSING_TICKS = 60;
     private static final int MAX_PROCESSING_TICKS = 140;
     private static final int INPUTS_COUNT = 4;
+    private static final int ENERGY_CAPACITY = 10000;
+    private static final int ENERGY_OUTPUT_RATE = 1000;
+    private static final int ENERGY_PER_FRAGMENT = 1000;
     public static final float OUTPUT_MULTIPLIER = 2f;
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
@@ -60,6 +66,13 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
 
     private final SubContainer inputContainer = new SubContainer(backingContainer, 0, 4);
     private final SubContainer outputContainer = new SubContainer(backingContainer, 4, 8);
+    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, 0, ENERGY_OUTPUT_RATE) {
+        @Override
+        public void setChanged() {
+            FragmentalGeneratorBlockEntity.this.setChanged();
+            isSyncDirty = true;
+        }
+    };
 
     private final int[] processingTicks = new int[INPUTS_COUNT];
     private final int[] maxProcessingTicks = new int[INPUTS_COUNT];
@@ -83,6 +96,8 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
                 case 0, 1, 2, 3 -> processingTicks[index];
                 case 4, 5, 6, 7 -> maxProcessingTicks[index - 4];
                 case 8, 9, 10, 11 -> fragments[index - 8].getFractionalAmountAsMenuData();
+                case 12 -> energyStorage.getEnergy();
+                case 13 -> energyStorage.getCapacity();
                 default -> 0;
             };
         }
@@ -136,7 +151,11 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
         if (!inputStack.isEmpty()) {
             RecyclerRecipe.getRecipe(level, inputStack)
                     .filter(it -> it.fragments() > 0)
-                    .ifPresent(it -> fragments[slot].add(it.fragments() * OUTPUT_MULTIPLIER));
+                    .ifPresent(it -> {
+                        final var fragmentOutput = it.fragments() * OUTPUT_MULTIPLIER;
+                        fragments[slot].add(fragmentOutput);
+                        energyStorage.fill((int) (fragmentOutput * ENERGY_PER_FRAGMENT), false);
+                    });
             inputStack.shrink(1);
         }
 
@@ -214,6 +233,16 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     }
 
     @Override
+    public EnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage(Direction side) {
+        return energyStorage;
+    }
+
+    @Override
     public Component getDisplayName() {
         return Component.translatable("container.replikaentropie.fragmental_generator");
     }
@@ -242,6 +271,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
             output.putInt("MaxProcessingTicks" + i, maxProcessingTicks[i]);
             output.putFloat("FractionalFragments" + i, fragments[i].getFractionalAmount());
         }
+        energyStorage.serialize(output);
     }
 
     @Override
@@ -265,5 +295,6 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
             maxProcessingTicks[i] = input.getIntOr("MaxProcessingTicks" + i, 0);
             fragments[i].setFractionalAmount(input.getFloatOr("FractionalFragments" + i, 0f));
         }
+        energyStorage.deserialize(input);
     }
 }

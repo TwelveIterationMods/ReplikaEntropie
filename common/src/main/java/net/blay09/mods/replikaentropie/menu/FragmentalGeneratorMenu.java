@@ -17,12 +17,12 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
     private final QuickMove.Routing quickMove;
 
     public static final int DATA_PROCESSING_TIME_START = 0;
-    public static final int DATA_PROCESSING_TIME_END = 3;
-    public static final int DATA_MAX_PROCESSING_TIME_START = 4;
-    public static final int DATA_MAX_PROCESSING_TIME_END = 7;
-    public static final int DATA_FRACTIONAL_FRAGMENTS_START = 8;
-    public static final int DATA_FRACTIONAL_FRAGMENTS_END = 11;
-    public static final int DATA_COUNT = 12;
+    public static final int DATA_PROCESSING_TIME_END = 11;
+    public static final int DATA_MAX_PROCESSING_TIME_START = 12;
+    public static final int DATA_MAX_PROCESSING_TIME_END = 23;
+    public static final int DATA_CURRENT_POWER = 24;
+    public static final int DATA_MAX_POWER = 25;
+    public static final int DATA_COUNT = 26;
 
     public FragmentalGeneratorMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, new SimpleContainer(FragmentalGeneratorBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT));
@@ -37,7 +37,7 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
-                addSlot(new Slot(container, j, 22 + j * 37, 21 + i * 25));
+                addSlot(new Slot(container, j + i * 4, 22 + j * 37, 21 + i * 25));
             }
         }
 
@@ -65,8 +65,13 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
         return maxProcessingTime == 0 ? 0f : (float) processingTime / maxProcessingTime;
     }
 
-    public float getFractionalFragments(int slot) {
-        return Mth.clamp(data.get(DATA_FRACTIONAL_FRAGMENTS_START + slot) / 100f, 0f, 1f);
+    public float getPowerProgress() {
+        final var maxPower = data.get(DATA_MAX_POWER);
+        if (maxPower <= 0) {
+            return 0f;
+        }
+
+        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
     }
 
     @Override
