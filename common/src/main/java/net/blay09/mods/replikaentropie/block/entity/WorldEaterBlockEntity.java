@@ -11,12 +11,14 @@ import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
@@ -33,6 +35,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
@@ -178,6 +181,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                                 .ifPresent(scannedBlock -> {
                                     scannedPositions.put(slotToFill, scannedBlock.pos());
                                     previewContainer.setItem(slotToFill, scannedBlock.itemStack());
+                                    sendScanTrail((ServerLevel) level, scannedBlock.pos());
                                 });
                     }
                 }
@@ -280,6 +284,23 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
             }
         }
         return -1;
+    }
+
+    private void sendScanTrail(ServerLevel level, BlockPos scannedPos) {
+        final var scanCenter = Vec3.atCenterOf(getScanCenter());
+        sendTrailParticles(level, Vec3.atCenterOf(scannedPos), scanCenter);
+        sendTrailParticles(level, scanCenter, Vec3.atCenterOf(worldPosition));
+    }
+
+    private void sendTrailParticles(ServerLevel level, Vec3 start, Vec3 end) {
+        final var segments = 6;
+        for (int i = 0; i <= segments; i++) {
+            final var t = i / (double) segments;
+            final var x = start.x + (end.x - start.x) * t;
+            final var y = start.y + (end.y - start.y) * t;
+            final var z = start.z + (end.z - start.z) * t;
+            level.sendParticles(ParticleTypes.SMALL_GUST, x, y, z, 1, 0, 0, 0, 0);
+        }
     }
 
     @Override
