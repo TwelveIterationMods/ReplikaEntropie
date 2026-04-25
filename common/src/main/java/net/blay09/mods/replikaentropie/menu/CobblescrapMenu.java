@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.menu;
 
+import net.blay09.mods.replikaentropie.block.entity.CobblescrapBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.IngredientSlot;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
@@ -23,12 +24,11 @@ public class CobblescrapMenu extends AbstractScrapGeneratorMenu {
     public CobblescrapMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
         super(ModMenus.cobblescrap.value(), containerId, playerInventory, container, data);
 
-        checkContainerSize(container, 2);
+        checkContainerSize(container, CobblescrapBlockEntity.CONTAINER_SIZE);
 
-        addSlot(new OutputSlot(container, 0, 80, 80));
-        addSlot(new IngredientSlot(container, 1, 80, 22, Ingredient.of(Items.COBBLESTONE)));
+        addSlot(new OutputSlot(container, 0, 80, 35));
 
-        addPlayerInventorySlots();
+        addPlayerInventorySlots(0);
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
                 .slot("input", 1)

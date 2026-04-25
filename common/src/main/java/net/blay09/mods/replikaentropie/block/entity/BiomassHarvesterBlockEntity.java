@@ -84,8 +84,7 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
         }
     };
 
-    private final Container outputContainer = new SubContainer(backingContainer, 0, 1);
-    private final SubContainer weaponsContainer = new SubContainer(backingContainer, 1, 5);
+    private final SubContainer weaponsContainer = new SubContainer(backingContainer, 0, 4);
     private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
         @Override
         public void setChanged() {
@@ -150,15 +149,6 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
     @Override
     public Container getContainer() {
         return backingContainer;
-    }
-
-    @Override
-    public Container getContainer(Direction side) {
-        //noinspection SwitchStatementWithTooFewBranches
-        return switch (side) {
-            case DOWN -> outputContainer;
-            default -> backingContainer;
-        };
     }
 
     @Override

@@ -15,15 +15,13 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class CobblescrapScreen extends AbstractContainerScreen<CobblescrapMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/cobblescrap.png");
 
-    private final ProgressRenderer inputProgressLeftRenderer = SimpleProgressRenderer.horizontal(BACKGROUND, 256, 256).pos(34, 27).size(45, 6).uv(176, 22);
-    private final ProgressRenderer inputProgressRightRenderer = SimpleProgressRenderer.reverseHorizontal(BACKGROUND, 256, 256).pos(97, 27).size(45, 6).uv(176, 22);
-    private final ProgressRenderer outputProgressRenderer = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256).pos(80, 46).size(16, 22).uv(176, 0);
-    private final ProgressRenderer scrapProgressRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(102, 75).size(3, 26).uv(208, 28);
-    private final ProgressRenderer inputTankRenderer = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256).pos(17, 22).size(16, 48).uv(176, 28);
-    private final ProgressRenderer outputTankRenderer = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256).pos(143, 22).size(16, 48).uv(192, 28);
+    private final ProgressRenderer progressLeftRenderer = SimpleProgressRenderer.horizontal(BACKGROUND, 256, 256).pos(34, 41).size(41, 6).uv(176, 22);
+    private final ProgressRenderer progressRightRenderer = SimpleProgressRenderer.reverseHorizontal(BACKGROUND, 256, 256).pos(101, 41).size(41, 6).uv(180, 22);
+    private final ProgressRenderer waterTankRenderer = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256).pos(17, 19).size(16, 48).uv(176, 28);
+    private final ProgressRenderer lavaTankRenderer = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256).pos(143, 19).size(16, 48).uv(192, 28);
 
     public CobblescrapScreen(CobblescrapMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 200);
+        super(menu, playerInventory, title);
         inventoryLabelY = imageHeight - 94;
     }
 
@@ -33,13 +31,11 @@ public class CobblescrapScreen extends AbstractContainerScreen<CobblescrapMenu> 
 
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
-        final var inputProgress = menu.getInputProcessingProgress();
-        inputProgressLeftRenderer.render(graphics, leftPos, topPos, inputProgress);
-        inputProgressRightRenderer.render(graphics, leftPos, topPos, inputProgress);
-        outputProgressRenderer.render(graphics, leftPos, topPos, menu.getOutputProcessingProgress());
-        scrapProgressRenderer.render(graphics, leftPos, topPos, menu.getFractionalScrap());
-        inputTankRenderer.render(graphics, leftPos, topPos, 1f);
-        outputTankRenderer.render(graphics, leftPos, topPos, 1f);
+        final var inputProgress = menu.getProcessingProgress();
+        progressLeftRenderer.render(graphics, leftPos, topPos, inputProgress);
+        progressRightRenderer.render(graphics, leftPos, topPos, inputProgress);
+        waterTankRenderer.render(graphics, leftPos, topPos, 1f);
+        lavaTankRenderer.render(graphics, leftPos, topPos, 1f);
     }
 
 }

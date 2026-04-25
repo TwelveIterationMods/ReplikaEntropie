@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -21,15 +20,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class CobblescrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
 
+    public static final int CONTAINER_SIZE = 1;
+
     private final ContainerData dataAccess = new ContainerData() {
         @Override
         public int get(int index) {
             return switch (index) {
-                case CobblescrapMenu.DATA_INPUT_GENERATION_TIME -> inputProcessingTicks;
-                case CobblescrapMenu.DATA_MAX_INPUT_GENERATION_TIME -> INPUT_PROCESSING_TICKS;
-                case CobblescrapMenu.DATA_OUTPUT_GENERATION_TIME -> outputProcessingTicks;
-                case CobblescrapMenu.DATA_MAX_OUTPUT_GENERATION_TIME -> OUTPUT_PROCESSING_TICKS;
-                case CobblescrapMenu.DATA_SCRAP_FRACTIONAL -> scrap.getFractionalAmountAsMenuData();
+                case CobblescrapMenu.DATA_PROCESSING_TICKS -> processingTicks;
+                case CobblescrapMenu.DATA_MAX_PROCESSING_TICKS -> PROCESSING_TICKS;
                 default -> 0;
             };
         }
@@ -50,7 +48,7 @@ public class CobblescrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
 
     @Override
     protected DefaultContainer createBackingContainer() {
-        return new DefaultContainer(2) {
+        return new DefaultContainer(CONTAINER_SIZE) {
             @Override
             public void setChanged() {
                 CobblescrapBlockEntity.this.setChanged();
@@ -58,20 +56,7 @@ public class CobblescrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
 
             @Override
             public boolean canPlaceItem(int index, ItemStack stack) {
-                return switch(index) {
-                    case 0 -> false;
-                    case 1 -> isValidInput(stack);
-                    default -> true;
-                };
-            }
-
-            @Override
-            public boolean canTakeItem(Container target, int index, ItemStack stack) {
-                //noinspection SwitchStatementWithTooFewBranches
-                return switch(index) {
-                    case 0 -> true;
-                    default -> false;
-                };
+                return false;
             }
         };
     }
@@ -95,8 +80,8 @@ public class CobblescrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
         return new ItemStack(Items.COBBLESTONE);
     }
 
-    public BalmMenuProvider getMenuProvider() {
-        return new BalmMenuProvider<Unit>() {
+    public BalmMenuProvider<Unit> getMenuProvider() {
+        return new BalmMenuProvider<>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.replikaentropie.cobblescrap");
@@ -117,10 +102,5 @@ public class CobblescrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
                 return Unit.STREAM_CODEC.cast();
             }
         };
-    }
-
-    @Override
-    protected float getScrapPerProcess() {
-        return 0.15f;
     }
 }

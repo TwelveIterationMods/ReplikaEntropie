@@ -26,8 +26,10 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
 
-    private final Container waterInputContainer = new SubContainer(backingContainer, 2, 3);
-    private final Container lavaInputContainer = new SubContainer(backingContainer, 3, 4);
+    public static final int CONTAINER_SIZE = 3;
+
+    private final Container waterInputContainer = new SubContainer(backingContainer, 1, 2);
+    private final Container lavaInputContainer = new SubContainer(backingContainer, 2, 3);
 
     private final DefaultFluidTank waterTank = new DefaultFluidTank(3000);
     private final DefaultFluidTank lavaTank = new DefaultFluidTank(3000);
@@ -36,11 +38,8 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
         @Override
         public int get(int index) {
             return switch (index) {
-                case LavascrapMenu.DATA_INPUT_GENERATION_TIME -> inputProcessingTicks;
-                case LavascrapMenu.DATA_MAX_INPUT_GENERATION_TIME -> INPUT_PROCESSING_TICKS;
-                case LavascrapMenu.DATA_OUTPUT_GENERATION_TIME -> outputProcessingTicks;
-                case LavascrapMenu.DATA_MAX_OUTPUT_GENERATION_TIME -> OUTPUT_PROCESSING_TICKS;
-                case LavascrapMenu.DATA_SCRAP_FRACTIONAL -> scrap.getFractionalAmountAsMenuData();
+                case LavascrapMenu.DATA_PROCESSING_TICKS -> processingTicks;
+                case LavascrapMenu.DATA_MAX_PROCESSING_TICKS -> PROCESSING_TICKS;
                 case LavascrapMenu.DATA_WATER_TANK -> waterTank.getAmount();
                 case LavascrapMenu.DATA_MAX_WATER_TANK -> waterTank.getCapacity();
                 case LavascrapMenu.DATA_LAVA_TANK -> lavaTank.getAmount();
@@ -65,7 +64,7 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
 
     @Override
     protected DefaultContainer createBackingContainer() {
-        return new DefaultContainer(4) {
+        return new DefaultContainer(CONTAINER_SIZE) {
             @Override
             public void setChanged() {
                 LavascrapBlockEntity.this.setChanged();
@@ -75,9 +74,8 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
             public boolean canPlaceItem(int index, ItemStack stack) {
                 return switch(index) {
                     case 0 -> false;
-                    case 1 -> isValidInput(stack);
-                    case 2 -> stack.is(Items.WATER_BUCKET);
-                    case 3 -> stack.is(Items.LAVA_BUCKET);
+                    case 1 -> stack.is(Items.WATER_BUCKET);
+                    case 2 -> stack.is(Items.LAVA_BUCKET);
                     default -> true;
                 };
             }
@@ -86,7 +84,7 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
             public boolean canTakeItem(Container target, int index, ItemStack stack) {
                 return switch(index) {
                     case 0 -> true;
-                    case 2, 3 -> stack.is(Items.BUCKET);
+                    case 1, 2 -> stack.is(Items.BUCKET);
                     default -> false;
                 };
             }
@@ -165,10 +163,5 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
                 return Unit.STREAM_CODEC.cast();
             }
         };
-    }
-
-    @Override
-    protected float getScrapPerProcess() {
-        return 1.5f;
     }
 }

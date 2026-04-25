@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.menu;
 
+import net.blay09.mods.replikaentropie.block.entity.LavascrapBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.IngredientSlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
@@ -23,26 +24,23 @@ public class LavascrapMenu extends AbstractScrapGeneratorMenu {
     private final QuickMove.Routing quickMove;
 
     public LavascrapMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(4), new SimpleContainerData(DATA_COUNT));
+        this(containerId, playerInventory, new SimpleContainer(LavascrapBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT));
     }
 
     public LavascrapMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
         super(ModMenus.lavascrap.value(), containerId, playerInventory, container, data);
 
-        checkContainerSize(container, 4);
+        checkContainerSize(container, LavascrapBlockEntity.CONTAINER_SIZE);
 
         addSlot(new OutputSlot(container, 0, 80, 80));
-        addSlot(new IngredientSlot(container, 1, 80, 22, Ingredient.of(Items.OBSIDIAN)));
-        addSlot(new IngredientSlot(container, 2, 17, 79, Ingredient.of(Items.WATER_BUCKET)));
-        addSlot(new IngredientSlot(container, 3, 143, 79, Ingredient.of(Items.LAVA_BUCKET)));
+        addSlot(new IngredientSlot(container, 1, 17, 79, Ingredient.of(Items.WATER_BUCKET)));
+        addSlot(new IngredientSlot(container, 2, 143, 79, Ingredient.of(Items.LAVA_BUCKET)));
 
-        addPlayerInventorySlots();
+        addPlayerInventorySlots(0);
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
-                .slot("input", 1)
-                .slot("water", 2)
-                .slot("lava", 3)
-                .route(it -> it.is(Items.OBSIDIAN), QuickMove.PLAYER, "input")
+                .slot("water", 1)
+                .slot("lava", 2)
                 .route(it -> it.is(Items.WATER_BUCKET), QuickMove.PLAYER, "water")
                 .route(it -> it.is(Items.LAVA_BUCKET), QuickMove.PLAYER, "lava")
                 .build();
