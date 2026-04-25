@@ -15,8 +15,8 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class LavascrapScreen extends AbstractContainerScreen<LavascrapMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/lavascrap.png");
 
-    private final ProgressRenderer progressLeftRenderer = SimpleProgressRenderer.horizontal(BACKGROUND, 256, 256).pos(34, 27).size(45, 6).uv(176, 22);
-    private final ProgressRenderer progressRightRenderer = SimpleProgressRenderer.reverseHorizontal(BACKGROUND, 256, 256).pos(97, 27).size(45, 6).uv(176, 22);
+    private final ProgressRenderer progressLeftRenderer = SimpleProgressRenderer.horizontal(BACKGROUND, 256, 256).pos(34, 44).size(41, 6).uv(176, 22);
+    private final ProgressRenderer progressRightRenderer = SimpleProgressRenderer.reverseHorizontal(BACKGROUND, 256, 256).pos(101, 44).size(41, 6).uv(180, 22);
     private final ProgressRenderer waterTankRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(17, 22).size(16, 52).uv(176, 28);
     private final ProgressRenderer lavaTankRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(143, 22).size(16, 52).uv(192, 28);
 

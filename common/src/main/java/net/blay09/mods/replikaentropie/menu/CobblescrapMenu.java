@@ -26,7 +26,7 @@ public class CobblescrapMenu extends AbstractScrapGeneratorMenu {
 
         checkContainerSize(container, CobblescrapBlockEntity.CONTAINER_SIZE);
 
-        addSlot(new OutputSlot(container, 0, 80, 35));
+        addSlot(new OutputSlot(container, 0, 80, 34));
 
         addPlayerInventorySlots(0);
 

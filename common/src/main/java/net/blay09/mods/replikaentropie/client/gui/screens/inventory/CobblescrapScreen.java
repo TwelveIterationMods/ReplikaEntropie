@@ -15,10 +15,10 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class CobblescrapScreen extends AbstractContainerScreen<CobblescrapMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/cobblescrap.png");
 
-    private final ProgressRenderer progressLeftRenderer = SimpleProgressRenderer.horizontal(BACKGROUND, 256, 256).pos(34, 41).size(41, 6).uv(176, 22);
-    private final ProgressRenderer progressRightRenderer = SimpleProgressRenderer.reverseHorizontal(BACKGROUND, 256, 256).pos(101, 41).size(41, 6).uv(180, 22);
-    private final ProgressRenderer waterTankRenderer = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256).pos(17, 19).size(16, 48).uv(176, 28);
-    private final ProgressRenderer lavaTankRenderer = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256).pos(143, 19).size(16, 48).uv(192, 28);
+    private final ProgressRenderer progressLeftRenderer = SimpleProgressRenderer.horizontal(BACKGROUND, 256, 256).pos(34, 40).size(41, 6).uv(176, 22);
+    private final ProgressRenderer progressRightRenderer = SimpleProgressRenderer.reverseHorizontal(BACKGROUND, 256, 256).pos(101, 40).size(41, 6).uv(180, 22);
+    private final ProgressRenderer waterTankRenderer = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256).pos(17, 18).size(16, 48).uv(176, 28);
+    private final ProgressRenderer lavaTankRenderer = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256).pos(143, 18).size(16, 48).uv(192, 28);
 
     public CobblescrapScreen(CobblescrapMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);

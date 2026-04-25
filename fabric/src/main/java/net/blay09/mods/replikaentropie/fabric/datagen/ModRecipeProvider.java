@@ -83,12 +83,12 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
                 shaped(RecipeCategory.MISC, ModBlocks.wasteBarrel)
                         .pattern("III")
-                        .pattern("DBD")
+                        .pattern("DOD")
                         .pattern("III")
                         .define('I', Items.IRON_INGOT)
                         .define('D', Items.LIME_DYE)
-                        .define('B', Items.BARREL)
-                        .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                        .define('O', Items.OBSIDIAN)
+                        .unlockedBy("has_obsidian", has(Items.OBSIDIAN))
                         .save(output);
 
                 shapeless(RecipeCategory.COMBAT, ModItems.biosteel)

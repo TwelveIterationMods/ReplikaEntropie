@@ -32,11 +32,11 @@ public class LavascrapMenu extends AbstractScrapGeneratorMenu {
 
         checkContainerSize(container, LavascrapBlockEntity.CONTAINER_SIZE);
 
-        addSlot(new OutputSlot(container, 0, 80, 80));
+        addSlot(new OutputSlot(container, 0, 80, 38));
         addSlot(new IngredientSlot(container, 1, 17, 79, Ingredient.of(Items.WATER_BUCKET)));
         addSlot(new IngredientSlot(container, 2, 143, 79, Ingredient.of(Items.LAVA_BUCKET)));
 
-        addPlayerInventorySlots(0);
+        addPlayerInventorySlots(31);
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
                 .slot("water", 1)

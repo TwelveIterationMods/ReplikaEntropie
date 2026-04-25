@@ -57,7 +57,7 @@ public class ResearchScreen extends AbstractContainerScreen<ResearchMenu> {
     private static Identifier lastSelectedResearchId;
 
     private static final int EASTER_EGG_INDEX = 15;
-    private static final String EASTER_EGG = "... test, testing, is this thing on? Hello? Can you hear me? This is Eirote. If you've found this recording, then our mission is either complete... or failed beyond recovery. To whoever hears this: remember that compassion is not weakness. Even within systems built to suppress it, empathy can rewrite the code that binds fate. If we are gone, let that truth endure in our place. End of log.";
+    private static final String EASTER_EGG = "!!SIGSEGV!!0x414141 in ?? ()\\0Xq7!@Lp9#Z$k%2^&*()_+|{}:\"<>?Voss lost his mind, did you hear they started feeding Section 2 jellied biomass? call me later|{}:\"<>?~`Wqx7Kp!9L#mQ$2z%5^&*Gv+|{}:\"<>?~`WqRtYnUjIkOlPmNhBvCxDsEfGhJkLhi honey im sorry i didnt respond sooner, they started limiting access cause of a leak or something. love you lots and can't wait to come home next week9qZ!2wX@3eD#4rF$5tG%6yH^7uJ&8iK*9oL(0pP)_+Q|wE{<rT>?yU,./mNis Langford having a rave in his lab? lolLkJhGfDsA!@#$%^&5{6|7:\"8<>9?0~`A1b2C3d4E??? whats going on? is it lockdown or evacuation? people are panicking, need info asap7eD9cB5!@#$%^&*()WwwwWWwwwwwWWWWWWwwwwwwwwwwwelcome crew member, please setup your profile to begin using the Sky Scraper. If you do not have an account yet, please contact your administrator.";
 
     private EditBox searchBox;
     private boolean updatingSearch;

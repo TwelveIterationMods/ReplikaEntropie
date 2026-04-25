@@ -27,12 +27,12 @@ public abstract class AbstractScrapGeneratorMenu extends AbstractContainerMenu {
     protected void addPlayerInventorySlots(int y) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, y + 118 + i * 18));
+                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, y + 85 + i * 18));
             }
         }
 
         for (int i = 0; i < 9; i++) {
-            addSlot(new Slot(playerInventory, i, 8 + i * 18, y + 176));
+            addSlot(new Slot(playerInventory, i, 8 + i * 18, y + 143));
         }
     }
 
