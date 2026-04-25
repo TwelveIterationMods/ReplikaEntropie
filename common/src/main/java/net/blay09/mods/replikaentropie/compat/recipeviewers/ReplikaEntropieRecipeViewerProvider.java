@@ -248,11 +248,10 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                 .buildDisplay(display -> display
                         .title(Component.translatable(id("cobblescrap").toLanguageKey("jei")))
                         .icon(ModBlocks.cobblescrap)
-                        .size(144, 80)
+                        .size(144, 50)
                         .background(COBBLESCRAP_TEXTURE)
                         .slots((_, slots) -> {
-                            slots.inputSlot(64, 1).add(Items.COBBLESTONE);
-                            slots.outputSlot(64, 59).add(ModItems.scrap);
+                            slots.outputSlot(66, 20).add(Items.COBBLESTONE);
                         }));
     }
 
