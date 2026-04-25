@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": "minecraft:barrel",
     "D": "minecraft:lime_dye",
-    "I": "minecraft:iron_ingot"
+    "I": "minecraft:iron_ingot",
+    "O": "minecraft:obsidian"
   },
   "pattern": [
     "III",
-    "DBD",
+    "DOD",
     "III"
   ],
   "result": {

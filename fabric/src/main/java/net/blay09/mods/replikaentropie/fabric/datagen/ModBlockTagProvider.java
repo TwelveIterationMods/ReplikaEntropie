@@ -17,9 +17,10 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        valueLookupBuilder(ModBlockTags.BLOCKS_NULLPHASE).add(Blocks.BEDROCK, Blocks.BARRIER);
+        valueLookupBuilder(ModBlockTags.BLOCKS_NULLPHASE).add(Blocks.BEDROCK, Blocks.BARRIER, Blocks.OBSIDIAN);
         valueLookupBuilder(ModBlockTags.IMMUNE_TO_STOMPING).add(Blocks.BEDROCK, Blocks.BARRIER);
         valueLookupBuilder(ModBlockTags.IMMUNE_TO_WORLD_EATER).add(Blocks.BEDROCK, Blocks.BARRIER);
+        valueLookupBuilder(ModBlockTags.SLASHED_BY_BIOMASS_HARVESTER).add(Blocks.SUGAR_CANE);
 
         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(
                 ModBlocks.replikaWorkbench.value(),

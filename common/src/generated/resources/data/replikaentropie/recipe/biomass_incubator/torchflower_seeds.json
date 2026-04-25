@@ -1,6 +1,5 @@
 {
   "type": "replikaentropie:biomass_incubator",
-  "biomass": 0.2,
   "result": {
     "id": "minecraft:torchflower"
   },

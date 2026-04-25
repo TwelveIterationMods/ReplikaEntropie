@@ -9,6 +9,7 @@ import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.menu.BiomassHarvesterMenu;
+import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.blay09.mods.replikaentropie.tag.ModEntityTypeTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +24,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
@@ -30,6 +32,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,6 +45,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -49,6 +54,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
 
 public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
 
@@ -351,22 +358,108 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
         if (level instanceof ServerLevel serverLevel) {
             final var attackArea = new AABB(worldPosition).inflate(ATTACK_RANGE, 0f, ATTACK_RANGE);
             final var nearbyEntities = level.getEntitiesOfClass(LivingEntity.class, attackArea);
+            final var blockTargets = findHarvestableBlockTargets();
             int entityIndex = 0;
+            int cropIndex = 0;
+            int slashableBlockIndex = 0;
             for (int i = 0; i < weaponsContainer.getContainerSize(); i++) {
                 final var weaponStack = weaponsContainer.getItem(i);
+                final var entity = entityIndex < nearbyEntities.size() ? nearbyEntities.get(entityIndex) : null;
+
+                if (weaponStack.is(ItemTags.HOES) && cropIndex < blockTargets.harvestableCrops().size()) {
+                    harvestCrop(serverLevel, blockTargets.harvestableCrops().get(cropIndex));
+                    weaponStack.hurtAndBreak(1, serverLevel, null, (_) -> {
+                    });
+                    cropIndex++;
+                    continue;
+                }
+
+                final var canAttackEntity = entity != null && entity.isAlive() && !entity.is(ModEntityTypeTags.IMMUNE_TO_BIOMASS_HARVESTER);
+                if (!canAttackEntity && weaponStack.is(ItemTags.SWORDS) && slashableBlockIndex < blockTargets.slashableBlocks().size()) {
+                    breakSlashableBlock(serverLevel, blockTargets.slashableBlocks().get(slashableBlockIndex));
+                    weaponStack.hurtAndBreak(1, serverLevel, null, (_) -> {
+                    });
+                    slashableBlockIndex++;
+                    continue;
+                }
+
+                if (!canAttackEntity) {
+                    continue;
+                }
+
+                if (weaponStack.is(Items.SHEARS)
+                        && entity instanceof Shearable shearable
+                        && shearable.readyForShearing()) {
+                    shearable.shear(serverLevel, SoundSource.BLOCKS, weaponStack);
+                    weaponStack.hurtAndBreak(1, serverLevel, null, (_) -> {
+                    });
+                    entityIndex++;
+                    continue;
+                }
+
                 final var damage = getWeaponDamage(weaponStack);
                 if (damage > 0f) {
-                    final var entity = entityIndex < nearbyEntities.size() ? nearbyEntities.get(entityIndex) : null;
-                    if (entity != null && entity.isAlive() && !entity.is(ModEntityTypeTags.IMMUNE_TO_BIOMASS_HARVESTER)) {
-                        final var damageSource = entity.damageSources().generic();
-                        entity.hurtServer(serverLevel, damageSource, damage);
-                        weaponStack.hurtAndBreak(1, serverLevel, null, (_) -> {
-                        });
-                        entityIndex++;
-                    }
+                    final var damageSource = entity.damageSources().generic();
+                    entity.hurtServer(serverLevel, damageSource, damage);
+                    weaponStack.hurtAndBreak(1, serverLevel, null, (_) -> {
+                    });
+                    entityIndex++;
                 }
             }
         }
+    }
+
+    private HarvestableBlockTargets findHarvestableBlockTargets() {
+        final var crops = new ArrayList<BlockPos>();
+        final var blocks = new ArrayList<BlockPos>();
+        if (level == null) {
+            return new HarvestableBlockTargets(crops, blocks);
+        }
+
+        final var minPos = worldPosition.offset(-1, -1, -1);
+        final var maxPos = worldPosition.offset(1, 1, 1);
+        for (final var pos : BlockPos.betweenClosed(minPos, maxPos)) {
+            final var state = level.getBlockState(pos);
+            if (state.getBlock() instanceof CropBlock cropBlock && cropBlock.isMaxAge(state)) {
+                crops.add(pos.immutable());
+            }
+            if (!state.isAir() && (state.canBeReplaced() || state.is(ModBlockTags.SLASHED_BY_BIOMASS_HARVESTER))) {
+                blocks.add(pos.immutable());
+            }
+        }
+
+        return new HarvestableBlockTargets(crops, blocks);
+    }
+
+    private void harvestCrop(ServerLevel serverLevel, BlockPos pos) {
+        if (level == null) {
+            return;
+        }
+
+        final var state = level.getBlockState(pos);
+        if (!(state.getBlock() instanceof CropBlock cropBlock) || !cropBlock.isMaxAge(state)) {
+            return;
+        }
+
+        Block.dropResources(state, serverLevel, pos, level.getBlockEntity(pos));
+        level.setBlockAndUpdate(pos, cropBlock.defaultBlockState());
+    }
+
+    private void breakSlashableBlock(ServerLevel serverLevel, BlockPos pos) {
+        if (level == null) {
+            return;
+        }
+
+        final var state = level.getBlockState(pos);
+        if (state.isAir() || (!state.canBeReplaced() && !state.is(ModBlockTags.SLASHED_BY_BIOMASS_HARVESTER))) {
+            return;
+        }
+
+        Block.dropResources(state, serverLevel, pos, level.getBlockEntity(pos));
+        level.removeBlock(pos, false);
+    }
+
+    private record HarvestableBlockTargets(ArrayList<BlockPos> harvestableCrops, ArrayList<BlockPos> slashableBlocks) {
     }
 
     private float getBiomassForEntity(LivingEntity entity) {
