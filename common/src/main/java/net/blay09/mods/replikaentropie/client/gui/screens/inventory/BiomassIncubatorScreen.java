@@ -19,7 +19,7 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
     private static final Identifier BACKGROUND = id("textures/gui/container/biomass_incubator.png");
     private static final Identifier LEFT_WING = id("left_wing");
 
-    private final ProgressRenderer waterTank = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(24, 23).size(16, 48).uv(183, 30);
+    private final ProgressRenderer waterTank = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(45, 23).size(16, 48).uv(183, 30);
     private final EnergyBar energyBar = new EnergyBar(-23, 6);
 
     public BiomassIncubatorScreen(BiomassIncubatorMenu menu, Inventory playerInventory, Component title) {

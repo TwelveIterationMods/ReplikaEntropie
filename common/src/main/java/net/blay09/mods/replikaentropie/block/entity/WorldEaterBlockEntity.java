@@ -2,6 +2,9 @@ package net.blay09.mods.replikaentropie.block.entity;
 
 import com.mojang.serialization.Codec;
 import net.blay09.mods.balm.Balm;
+import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
+import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
+import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.ContainerUtils;
@@ -11,6 +14,7 @@ import net.blay09.mods.replikaentropie.menu.WorldEaterMenu;
 import net.blay09.mods.replikaentropie.network.protocol.ParticleTrailMessage;
 import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,6 +33,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -45,13 +50,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
+public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
 
     public static final int CONTAINER_SIZE = 6;
 
     private static final int SCANNING_TICKS = 200;
     private static final int DESTROY_TICKS_PER_DESTROY_SPEED = 20;
     private static final int SCAN_RANGE = 8;
+    private static final int ENERGY_CAPACITY = 10000;
+    private static final int ENERGY_INPUT_RATE = 1000;
+    private static final int ENERGY_COST_PER_TICK = 10;
 
     private enum State {IDLE, SCANNING, DESTROYING}
 
@@ -67,6 +75,12 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
             return false;
+        }
+    };
+    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+        @Override
+        public void setChanged() {
+            WorldEaterBlockEntity.this.setChanged();
         }
     };
 
@@ -95,6 +109,8 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                 case WorldEaterMenu.DATA_DESTROYING_TIME -> state == State.DESTROYING ? stateTicks : 0;
                 case WorldEaterMenu.DATA_MAX_DESTROYING_TIME -> currentMaxDestroyTicks;
                 case WorldEaterMenu.DATA_CURRENT_DESTROY_SLOT -> currentDestroySlot;
+                case WorldEaterMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
+                case WorldEaterMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
                 default -> 0;
             };
         }
@@ -120,7 +136,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new WorldEaterMenu(containerId, inventory, previewContainer, backingContainer, dataAccess);
+        return new WorldEaterMenu(containerId, inventory, previewContainer, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
     }
 
     @Override
@@ -136,6 +152,16 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
     @Override
     public Container getContainer() {
         return backingContainer;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage(Direction side) {
+        return energyStorage;
     }
 
     public Container getPreviewContainer() {
@@ -181,6 +207,11 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
             }
         }
 
+        if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK) {
+            return;
+        }
+
+        energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_TICK);
         stateTicks++;
 
         switch (state) {
@@ -374,6 +405,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
 
         outputBuffer.clear();
         input.child("OutputBuffer").ifPresent(child -> ContainerHelper.loadAllItems(child, outputBuffer));
+        energyStorage.deserialize(input);
     }
 
     @Override
@@ -387,6 +419,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
         scannedPositions.values().stream().map(BlockPos::asLong).forEach(scannedPositionsArray::add);
         ContainerHelper.saveAllItems(output.child("Preview"), previewContainer.getItems());
         ContainerHelper.saveAllItems(output.child("OutputBuffer"), outputBuffer);
+        energyStorage.serialize(output);
     }
 
     @Override

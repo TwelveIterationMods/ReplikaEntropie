@@ -1,6 +1,8 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
 import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
+import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
+import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.WorldEaterMenu;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -15,7 +17,9 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class WorldEaterScreen extends AbstractContainerScreen<WorldEaterMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/world_eater.png");
+    private static final Identifier LEFT_WING = id("left_wing");
     private final SegmentedProgressRenderer scanningProgressRenderer;
+    private final EnergyBar energyBar = new EnergyBar(-23, 5);
 
     public WorldEaterScreen(WorldEaterMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 180);
@@ -38,6 +42,13 @@ public class WorldEaterScreen extends AbstractContainerScreen<WorldEaterMenu> {
     }
 
     @Override
+    protected void init() {
+        super.init();
+
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 96, menu.containerId));
+    }
+
+    @Override
     public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractContents(graphics, mouseX, mouseY, a);
 
@@ -57,12 +68,16 @@ public class WorldEaterScreen extends AbstractContainerScreen<WorldEaterMenu> {
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 1, 24, 90);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 92, 28, 28);
 
         if (menu.isScanning()) {
             scanningProgressRenderer.render(graphics, leftPos, topPos, menu.getScanningProgress());
         } else if (menu.isDestroying()) {
             scanningProgressRenderer.render(graphics, leftPos, topPos, 1f);
         }
+
+        energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 
 }
