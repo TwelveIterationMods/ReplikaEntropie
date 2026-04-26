@@ -7,6 +7,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
@@ -30,12 +31,25 @@ public class LavaSinkMenu extends AbstractScrapGeneratorMenu {
 
         checkContainerSize(container, LavaSinkBlockEntity.CONTAINER_SIZE);
 
-        addSlot(new IngredientSlot(container, 0, 17, 79, Ingredient.of(Items.COBBLESTONE)));
+        addSlot(new IngredientSlot(container, LavaSinkBlockEntity.INPUT_SLOT, 51, 38, Ingredient.of(Items.COBBLESTONE)));
+        addSlot(new Slot(container, LavaSinkBlockEntity.BUCKET_SLOT, 110, 79) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return stack.is(Items.BUCKET);
+            }
+
+            @Override
+            public int getMaxStackSize() {
+                return 1;
+            }
+        });
         addPlayerInventorySlots(31);
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
-                .slot("input", 0)
+                .slot("input", LavaSinkBlockEntity.INPUT_SLOT)
+                .slot("bucket", LavaSinkBlockEntity.BUCKET_SLOT)
                 .route(it -> it.is(Items.COBBLESTONE), QuickMove.PLAYER, "input")
+                .route(it -> it.is(Items.BUCKET), QuickMove.PLAYER, "bucket")
                 .build();
 
         container.startOpen(playerInventory.player);

@@ -30,7 +30,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.blay09.mods.replikaentropie.menu.LavaSinkMenu;
 
 public class LavaSinkBlockEntity extends BlockEntity {
-    public static final int CONTAINER_SIZE = 1;
+    public static final int INPUT_SLOT = 0;
+    public static final int BUCKET_SLOT = 1;
+    public static final int CONTAINER_SIZE = 2;
     public static final int PROCESSING_TICKS = 50;
     public static final int LAVA_PER_OPERATION = 250;
     public static final int LAVA_CAPACITY = 4000;
@@ -43,7 +45,11 @@ public class LavaSinkBlockEntity extends BlockEntity {
 
         @Override
         public boolean canPlaceItem(int index, ItemStack stack) {
-            return index == 0 && stack.is(Items.COBBLESTONE);
+            return switch (index) {
+                case INPUT_SLOT -> stack.is(Items.COBBLESTONE);
+                case BUCKET_SLOT -> stack.is(Items.BUCKET);
+                default -> false;
+            };
         }
     };
     private final DefaultFluidTank lavaTank = new DefaultFluidTank(LAVA_CAPACITY);
@@ -77,6 +83,7 @@ public class LavaSinkBlockEntity extends BlockEntity {
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, LavaSinkBlockEntity blockEntity) {
         blockEntity.generateLava();
+        blockEntity.fillBuckets();
         blockEntity.pushLavaDown(level, pos);
     }
 
@@ -95,15 +102,24 @@ public class LavaSinkBlockEntity extends BlockEntity {
             return;
         }
 
-        backingContainer.removeItem(0, 1);
+        backingContainer.removeItem(INPUT_SLOT, 1);
         lavaTank.fill(Fluids.LAVA, LAVA_PER_OPERATION, false);
         processingTicks = 0;
         setChanged();
     }
 
     private boolean canGenerateLava() {
-        final var inputStack = backingContainer.getItem(0);
+        final var inputStack = backingContainer.getItem(INPUT_SLOT);
         return inputStack.is(Items.COBBLESTONE) && lavaTank.getAmount() + LAVA_PER_OPERATION <= lavaTank.getCapacity();
+    }
+
+    private void fillBuckets() {
+        final var bucketStack = backingContainer.getItem(BUCKET_SLOT);
+        if (bucketStack.is(Items.BUCKET) && lavaTank.getAmount() >= 1000) {
+            lavaTank.drain(Fluids.LAVA, 1000, false);
+            backingContainer.setItem(BUCKET_SLOT, new ItemStack(Items.LAVA_BUCKET));
+            setChanged();
+        }
     }
 
     private void pushLavaDown(Level level, BlockPos pos) {
