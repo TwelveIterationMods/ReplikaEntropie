@@ -27,7 +27,6 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
     private static final String ANALYZED_ITEMS = "analyzedItems";
     private static final String ANALYZED_PLAYERS = "analyzedPlayers";
     private static final String ANALYZED_ENTITIES = "analyzedEntities";
-    private static final String DOWNLOADED_EVENTS = "downloadedEvents";
 
     private CompoundTag getPersistentData(Player player) {
         final var data = Balm.hooks().getPersistentData(player);
@@ -196,23 +195,4 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
         return data.getIntOr("PersonalDataCollected", 0);
     }
 
-    public boolean isDataMinedEventDownloaded(Player player, DataMinedEvent event) {
-        final var data = getPersistentData(player);
-        final var downloaded = data.getCompoundOrEmpty(DOWNLOADED_EVENTS);
-        return downloaded.getBooleanOr(event.asKey(), false);
-    }
-
-    public void downloadDataMinedEvent(Player player, DataMinedEvent event) {
-        final var data = getPersistentData(player);
-        final var downloaded = data.getCompoundOrEmpty(DOWNLOADED_EVENTS);
-        downloaded.putBoolean(event.asKey(), true);
-        data.put(DOWNLOADED_EVENTS, downloaded);
-
-        grantData(player, event.dataMined());
-    }
-
-    public void resetDataMinedEvents(Player player) {
-        final var data = getPersistentData(player);
-        data.remove(DOWNLOADED_EVENTS);
-    }
 }

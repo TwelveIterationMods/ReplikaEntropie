@@ -72,17 +72,15 @@ public class ChaosEngineBlockEntity extends BlockEntity {
         ticksSinceEventGenerated++;
         if (ticksSinceEventGenerated >= 100) {
             LocalEventLog.findNearbyDataMiners(level, worldPosition).forEach(dataMiner -> {
-                if (dataMiner.countChaosEvents() < 5) {
-                    final var variant = UUID.randomUUID().toString();
-                    var randomBlock = pickBlockCandidate(level.getRandom());
-                    if (randomBlock == null) {
-                        randomBlock = Blocks.DIRT.defaultBlockState();
-                    }
-                    final var gibberish = GIBBERISH.get(level.getRandom().nextInt(GIBBERISH.size()));
-                    final var label = Component.translatable(gibberish, new ItemStack(randomBlock.getBlock()).getHoverName());
-                    final var event = DataMinedEvent.of(DataMinedEvent.Type.CHAOS, variant, new ItemStack(ModBlocks.chaosEngine), label);
-                    dataMiner.addEvent(event);
+                final var variant = UUID.randomUUID().toString();
+                var randomBlock = pickBlockCandidate(level.getRandom());
+                if (randomBlock == null) {
+                    randomBlock = Blocks.DIRT.defaultBlockState();
                 }
+                final var gibberish = GIBBERISH.get(level.getRandom().nextInt(GIBBERISH.size()));
+                final var label = Component.translatable(gibberish, new ItemStack(randomBlock.getBlock()).getHoverName());
+                final var event = DataMinedEvent.of(DataMinedEvent.Type.CHAOS, variant, new ItemStack(ModBlocks.chaosEngine), label);
+                dataMiner.addEvent(event);
             });
             ticksSinceEventGenerated = 0;
         }

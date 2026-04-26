@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.IntFunction;
+import java.util.Locale;
 
 public record DataMinedEvent(Type type, long timestamp, int dataMined, @Nullable String variant, ItemStack icon,
                              @Nullable Component label) {
@@ -78,6 +79,11 @@ public record DataMinedEvent(Type type, long timestamp, int dataMined, @Nullable
 
     public String asKey() {
         return type().ordinal() + ":" + (variant() == null ? "" : variant());
+    }
+
+    public Component getDisplayName() {
+        final var lowerCaseName = type().name().toLowerCase(Locale.ROOT);
+        return Component.translatable("gui.replikaentropie.entropic_data_miner.event." + lowerCaseName, label());
     }
 
     public static ItemStack createPlayerIcon(Player player) {

@@ -1,34 +1,52 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
+import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
-import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
-import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
+import net.blay09.mods.balm.world.ContainerUtils;
+import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
+import net.blay09.mods.replikaentropie.item.DataItem;
 import net.blay09.mods.replikaentropie.menu.EntropicDataMinerMenu;
+import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
-public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmMenuProvider<EntropicDataMinerMenu.Data> {
+    public static final int CONTAINER_SIZE = 10;
 
-    private final List<DataMinedEvent> capturedEvents = new ArrayList<>();
-    private final Set<String> capturedEventKeys = new HashSet<>();
+    private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
+        @Override
+        public void setChanged() {
+            EntropicDataMinerBlockEntity.this.setChanged();
+        }
+
+        @Override
+        public boolean canPlaceItem(int slot, ItemStack itemStack) {
+            return false;
+        }
+    };
 
     public EntropicDataMinerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -43,72 +61,50 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmMen
         return Component.translatable("container.replikaentropie.entropic_data_miner");
     }
 
-    private EntropicDataMinerMenu.Data createMenuData(Player player) {
-        return new EntropicDataMinerMenu.Data(capturedEvents, capturedEvents.stream().filter(it -> Analyzer.isDataMinedEventDownloaded(player, it)).map(DataMinedEvent::asKey).collect(Collectors.toSet()));
-    }
-
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new EntropicDataMinerMenu(containerId, createMenuData(player), ContainerLevelAccess.create(level, worldPosition));
+        return new EntropicDataMinerMenu(containerId, inventory, backingContainer, ContainerLevelAccess.create(level, worldPosition));
     }
 
     @Override
-    public EntropicDataMinerMenu.Data getScreenOpeningData(ServerPlayer player) {
-        return createMenuData(player);
+    public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
+        return Unit.STREAM_CODEC.cast();
     }
 
     @Override
-    public StreamCodec<RegistryFriendlyByteBuf, EntropicDataMinerMenu.Data> getScreenStreamCodec() {
-        return EntropicDataMinerMenu.Data.STREAM_CODEC;
+    public Unit getScreenOpeningData(ServerPlayer player) {
+        return Unit.INSTANCE;
+    }
+
+    @Override
+    public Container getContainer() {
+        return backingContainer;
     }
 
     public void addEvent(DataMinedEvent event) {
-        if (!capturedEventKeys.contains(event.asKey())) {
-            capturedEvents.add(event);
-            capturedEventKeys.add(event.asKey());
-        }
+        ContainerUtils.insertItem(backingContainer, DataItem.create(event), false);
         setChanged();
-    }
-
-    public int getEventCount() {
-        return capturedEvents.size();
-    }
-
-    public int countChaosEvents() {
-        return (int) capturedEvents.stream()
-                .filter(it -> it.type() == DataMinedEvent.Type.CHAOS)
-                .count();
-    }
-
-    public void removeEvent(String key) {
-        for (int i = 0; i < capturedEvents.size(); i++) {
-            final var event = capturedEvents.get(i);
-            if (key.equals(event.asKey())) {
-                capturedEvents.remove(i);
-                capturedEventKeys.remove(key);
-                setChanged();
-                break;
-            }
-        }
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
-        capturedEvents.clear();
-        capturedEventKeys.clear();
-        final var list = input.listOrEmpty("Events", DataMinedEvent.CODEC);
-        for (final var event : list) {
-            capturedEvents.add(event);
-            capturedEventKeys.add(event.asKey());
-        }
+        backingContainer.getItems().clear();
+        ContainerHelper.loadAllItems(input, backingContainer.getItems());
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
-        final var list = output.list("Events", DataMinedEvent.CODEC);
-        for (final var event : capturedEvents) {
-            list.add(event);
-        }
+        ContainerHelper.saveAllItems(output, backingContainer.getItems());
     }
 
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return BalmBlockEntityUtils.createUpdateTag(registries, this::saveAdditional);
+    }
+
+    @Override
+    @Nullable
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return BalmBlockEntityUtils.createUpdatePacket(this);
+    }
 }

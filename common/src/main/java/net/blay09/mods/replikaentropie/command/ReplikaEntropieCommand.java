@@ -55,9 +55,6 @@ public class ReplikaEntropieCommand {
                 .then(Commands.literal("scans")
                         .then(Commands.literal("reset")
                                 .executes(ReplikaEntropieCommand::resetScans)))
-                .then(Commands.literal("events")
-                        .then(Commands.literal("reset")
-                                .executes(ReplikaEntropieCommand::resetEvents)))
                 .then(Commands.literal("research")
                         .then(Commands.literal("unlock")
                                 .then(Commands.argument("targets", EntityArgument.players())
@@ -101,13 +98,6 @@ public class ReplikaEntropieCommand {
         final var player = context.getSource().getPlayerOrException();
         Analyzer.resetAllAnalyzed(player);
         context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.scans.reset"), false);
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private static int resetEvents(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        final var player = context.getSource().getPlayerOrException();
-        Analyzer.resetDataMinedEvents(player);
-        context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.events.reset"), false);
         return Command.SINGLE_SUCCESS;
     }
 

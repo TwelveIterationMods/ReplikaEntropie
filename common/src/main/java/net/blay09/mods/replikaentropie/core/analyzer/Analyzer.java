@@ -1,7 +1,6 @@
 package net.blay09.mods.replikaentropie.core.analyzer;
 
 import net.blay09.mods.balm.platform.event.callback.ServerPlayerCallback;
-import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -43,12 +42,6 @@ public class Analyzer {
         getManager(player).resetAll(player);
     }
 
-    public static void resetDataMinedEvents(Player player) {
-        if (getManager(player) instanceof PersistentAnalyzerManager manager) {
-            manager.resetDataMinedEvents(player);
-        }
-    }
-
     public static void resetAnalyzedItems(Player player) {
         getManager(player).resetAnalyzedItems(player);
     }
@@ -59,16 +52,6 @@ public class Analyzer {
 
     public static void resetAnalyzedEntities(Player player) {
         getManager(player).resetAnalyzedEntities(player);
-    }
-
-    public static boolean isDataMinedEventDownloaded(Player player, DataMinedEvent event) {
-        return getManager(player) instanceof PersistentAnalyzerManager manager && manager.isDataMinedEventDownloaded(player, event);
-    }
-
-    public static void downloadDataMinedEvent(Player player, DataMinedEvent event) {
-        if (getManager(player) instanceof PersistentAnalyzerManager manager) {
-            manager.downloadDataMinedEvent(player, event);
-        }
     }
 
     public static void grantData(Player player, int amount) {

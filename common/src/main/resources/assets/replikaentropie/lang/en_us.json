@@ -25,6 +25,8 @@
   "item.replikaentropie.handheld_analyzer": "Handheld Analyzer",
   "item.replikaentropie.sky_scraper": "Sky Scraper",
   "item.replikaentropie.data": "Data Points",
+  "item.replikaentropie.data.mined": "Data Points (%s)",
+  "item.replikaentropie.data.tooltip.value": "Stored Value: %d",
   "item.replikaentropie.makeshift_psu": "Makeshift PSU",
   "item.replikaentropie.scrap": "Scrap",
   "item.replikaentropie.biomass": "Biomass",

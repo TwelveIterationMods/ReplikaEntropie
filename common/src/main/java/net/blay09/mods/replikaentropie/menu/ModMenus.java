@@ -173,15 +173,15 @@ public class ModMenus {
             }
         }).asHolder();
 
-        entropicDataMiner = menus.register("entropic_data_miner", new BalmMenuFactory<EntropicDataMinerMenu, EntropicDataMinerMenu.Data>() {
+        entropicDataMiner = menus.register("entropic_data_miner", new BalmMenuFactory<EntropicDataMinerMenu, Unit>() {
             @Override
-            public EntropicDataMinerMenu create(int syncId, Inventory inventory, EntropicDataMinerMenu.Data data) {
-                return new EntropicDataMinerMenu(syncId, data);
+            public EntropicDataMinerMenu create(int syncId, Inventory inventory, Unit unit) {
+                return new EntropicDataMinerMenu(syncId, inventory);
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, EntropicDataMinerMenu.Data> getStreamCodec() {
-                return EntropicDataMinerMenu.Data.STREAM_CODEC;
+            public StreamCodec<RegistryFriendlyByteBuf, Unit> getStreamCodec() {
+                return Unit.STREAM_CODEC.cast();
             }
         }).asHolder();
 
