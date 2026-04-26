@@ -17,6 +17,7 @@ public class ModMenus {
     public static Holder<MenuType<AssemblerMenu>> assembler;
     public static Holder<MenuType<CobblescrapMenu>> cobblescrap;
     public static Holder<MenuType<LavascrapMenu>> lavascrap;
+    public static Holder<MenuType<LavaSinkMenu>> lavaSink;
     public static Holder<MenuType<WorldEaterMenu>> worldEater;
     public static Holder<MenuType<FragmentAcceleratorMenu>> fragmentAccelerator;
     public static Holder<MenuType<FragmentalGeneratorMenu>> fragmentalGenerator;
@@ -92,6 +93,18 @@ public class ModMenus {
             @Override
             public LavascrapMenu create(int syncId, Inventory inventory, Unit unit) {
                 return new LavascrapMenu(syncId, inventory);
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, Unit> getStreamCodec() {
+                return Unit.STREAM_CODEC.cast();
+            }
+        }).asHolder();
+
+        lavaSink = menus.register("lava_sink", new BalmMenuFactory<LavaSinkMenu, Unit>() {
+            @Override
+            public LavaSinkMenu create(int syncId, Inventory inventory, Unit unit) {
+                return new LavaSinkMenu(syncId, inventory);
             }
 
             @Override

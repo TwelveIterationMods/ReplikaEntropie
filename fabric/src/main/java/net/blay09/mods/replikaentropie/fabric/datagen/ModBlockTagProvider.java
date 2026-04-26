@@ -37,6 +37,7 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
                 ModBlocks.fragmentAccelerator.value(),
                 ModBlocks.chaosEngine.value(),
                 ModBlocks.waterSink.value(),
+                ModBlocks.lavaSink.value(),
                 ModBlocks.solarSink.value(),
                 ModBlocks.recycler.value()
         );

@@ -12,6 +12,7 @@ public class ModScreens {
         screens.register(ModMenus.assembler, AssemblerScreen::new);
         screens.register(ModMenus.cobblescrap, CobblescrapScreen::new);
         screens.register(ModMenus.lavascrap, LavascrapScreen::new);
+        screens.register(ModMenus.lavaSink, LavaSinkScreen::new);
         screens.register(ModMenus.worldEater, WorldEaterScreen::new);
         screens.register(ModMenus.fragmentAccelerator, FragmentAcceleratorScreen::new);
         screens.register(ModMenus.fragmentalGenerator, FragmentalGeneratorScreen::new);

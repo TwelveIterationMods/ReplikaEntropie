@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/lava_sink",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/lava_sink"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/lava_sink",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/lava_sink",
+      "y": 270
+    }
+  }
+}

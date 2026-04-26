@@ -35,6 +35,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateModelBlock(ModBlocks.fragmentalGenerator.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.chaosEngine.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.waterSink.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.lavaSink.value());
         generators.createNonTemplateModelBlock(ModBlocks.solarSink.value());
 
         generators.registerSimpleItemModel(ModBlocks.replikaWorkbench.value(), ModelLocationUtils.getModelLocation(ModBlocks.replikaWorkbench.value()));
@@ -52,6 +53,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.registerSimpleItemModel(ModBlocks.fragmentalGenerator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentalGenerator.value()));
         generators.registerSimpleItemModel(ModBlocks.chaosEngine.value(), ModelLocationUtils.getModelLocation(ModBlocks.chaosEngine.value()));
         generators.registerSimpleTintedItemModel(ModBlocks.waterSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.waterSink.value()), new Constant(0xFF3F76E4));
+        generators.registerSimpleItemModel(ModBlocks.lavaSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.lavaSink.value()));
         generators.registerSimpleItemModel(ModBlocks.solarSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.solarSink.value()));
     }
 

@@ -99,6 +99,17 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .type(ResearchRecipe.Type.ASSEMBLER)
                         .save(output);
 
+                research(id("lava_sink"))
+                        .icon(ModBlocks.lavaSink)
+                        .dependsOn(id("research/entropic_energy"))
+                        .dependsOn(id("research/assembler"))
+                        .unlocksRecipe(id("assembler/lava_sink"))
+                        .nonogram(id("lava_sink"))
+                        .costs(4, 2, 0, 0)
+                        .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
                 research(id("scrap"))
                         .icon(ModItems.scrap)
                         .dependsOn(id("research/recycler"))

@@ -14,6 +14,7 @@
     "replikaentropie:fragment_accelerator",
     "replikaentropie:chaos_engine",
     "replikaentropie:water_sink",
+    "replikaentropie:lava_sink",
     "replikaentropie:solar_sink",
     "replikaentropie:recycler"
   ]

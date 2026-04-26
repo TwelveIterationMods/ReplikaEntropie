@@ -1,0 +1,18 @@
+{
+  "type": "replikaentropie:research",
+  "data": 4,
+  "hardDependencies": [
+    "replikaentropie:research/entropic_energy",
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "id": "replikaentropie:lava_sink"
+  },
+  "nonogram": "replikaentropie:lava_sink",
+  "research_type": "assembler",
+  "scrap": 2,
+  "sort_order": 800,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/lava_sink"
+  ]
+}

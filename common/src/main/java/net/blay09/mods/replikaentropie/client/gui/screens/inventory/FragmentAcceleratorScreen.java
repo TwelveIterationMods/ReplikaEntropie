@@ -1,8 +1,6 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
-import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
-import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
 import net.blay09.mods.replikaentropie.menu.FragmentAcceleratorMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -16,7 +14,6 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class FragmentAcceleratorScreen extends AbstractContainerScreen<FragmentAcceleratorMenu> {
     private static final Identifier BACKGROUND = id("textures/gui/container/fragment_accelerator.png");
     private final SegmentedProgressRenderer progressRenderer;
-    private final ProgressRenderer fractionalFragmentsRenderer = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(83, 50).size(3, 26).uv(176, 0);
 
     public FragmentAcceleratorScreen(FragmentAcceleratorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 206);
@@ -41,7 +38,6 @@ public class FragmentAcceleratorScreen extends AbstractContainerScreen<FragmentA
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 
         progressRenderer.render(graphics, leftPos, topPos, menu.getProcessingProgress());
-        fractionalFragmentsRenderer.render(graphics, leftPos, topPos, menu.getFractionalFragments());
     }
 
 }

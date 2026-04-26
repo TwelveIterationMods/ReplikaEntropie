@@ -26,6 +26,7 @@ public class ModBlocks {
     public static DeferredBlock recycler;
     public static DeferredBlock digSpot;
     public static DeferredBlock waterSink;
+    public static DeferredBlock lavaSink;
     public static DeferredBlock bluePrinter;
     public static DeferredBlock solarSink;
     public static DeferredBlock entropicGenerator;
@@ -94,6 +95,10 @@ public class ModBlocks {
                 .asDeferredBlock();
 
         waterSink = blocks.register("water_sink", WaterSinkBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
+
+        lavaSink = blocks.register("lava_sink", LavaSinkBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
                 .withDefaultItem()
                 .asDeferredBlock();
 
