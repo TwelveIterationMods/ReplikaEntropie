@@ -24,11 +24,14 @@ public class FragmentalGeneratorScreen extends AbstractContainerScreen<Fragmenta
 
         inventoryLabelY = imageHeight - 94;
 
-        for (int i = 0; i < 4; i++) {
-            processingRenderers[i] = SimpleProgressRenderer.vertical(BACKGROUND, 256, 256)
-                    .pos(27 + i * 37, 46)
-                    .size(16, 22)
-                    .uv(176, 0);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 4; j++) {
+                final var slot = j + i * 4;
+                processingRenderers[slot] = SimpleProgressRenderer.horizontal(BACKGROUND, 256, 256)
+                        .pos(21 + j * 37, 39 + i * 25)
+                        .size(18, 5)
+                        .uv(176, 0);
+            }
         }
     }
 
@@ -37,11 +40,14 @@ public class FragmentalGeneratorScreen extends AbstractContainerScreen<Fragmenta
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 1, 24, 90);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < processingRenderers.length; i++) {
             processingRenderers[i].render(guiGraphics, leftPos, topPos, menu.getProcessingProgress(i));
         }
 
         energyBar.render(guiGraphics, leftPos, topPos, menu.getPowerProgress());
+
+        final var temperatureProgress = menu.getTemperatureProgress();
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos + 22 + (int) (123 * temperatureProgress), topPos + 98, 176, 5, 4, 11, 256, 256);
     }
 
 }

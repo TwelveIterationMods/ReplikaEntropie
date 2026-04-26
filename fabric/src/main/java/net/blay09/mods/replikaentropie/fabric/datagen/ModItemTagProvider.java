@@ -23,13 +23,6 @@ public class ModItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
                 ModItems.hazmatBoots.value()
         );
 
-        valueLookupBuilder(ModItemTags.COOLS_FRAGMENTAL_GENERATOR).add(
-                Items.SNOWBALL,
-                Items.ICE,
-                Items.PACKED_ICE,
-                Items.BLUE_ICE
-        );
-
         valueLookupBuilder(ModItemTags.BIOMASS_INCUBATOR_SEEDS).add(
                 Items.WHEAT_SEEDS,
                 Items.BEETROOT_SEEDS,

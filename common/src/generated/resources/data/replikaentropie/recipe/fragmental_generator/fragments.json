@@ -1,0 +1,6 @@
+{
+  "type": "replikaentropie:fragmental_generator",
+  "energy": 100,
+  "ingredient": "replikaentropie:fragments",
+  "temperature": 0.1
+}

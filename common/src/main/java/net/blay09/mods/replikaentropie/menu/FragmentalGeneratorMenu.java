@@ -14,7 +14,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class FragmentalGeneratorMenu extends AbstractContainerMenu {
-    private static final int INPUTS_COUNT = 4;
+    private static final int INPUTS_COUNT = FragmentalGeneratorBlockEntity.CONTAINER_SIZE;
 
     private final Container container;
     private final ContainerData data;
