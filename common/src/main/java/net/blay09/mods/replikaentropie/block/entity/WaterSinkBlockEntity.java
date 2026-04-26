@@ -10,8 +10,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 
 public class WaterSinkBlockEntity extends BlockEntity {
-    private static final int WATER_OUTPUT_RATE = 100;
-
     public WaterSinkBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.waterSink.value(), pos, state);
     }
@@ -35,7 +33,7 @@ public class WaterSinkBlockEntity extends BlockEntity {
                     : null;
             if (targetTank != null) {
                 if (targetTank.canFill(Fluids.WATER)) {
-                    targetTank.fill(Fluids.WATER, WATER_OUTPUT_RATE, false);
+                    targetTank.fill(Fluids.WATER, Integer.MAX_VALUE, false);
                 }
                 return;
             }
