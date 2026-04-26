@@ -109,7 +109,10 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.hazmatChestplate.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.hazmatLeggings.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.hazmatBoots.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.scubaHelmet.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaHelmet.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaChestplate.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaLeggings.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.replikaBoots.asItem(), ModelTemplates.FLAT_ITEM);
 
         generators.generateFlatItem(ModItems.nightVisionGoggles.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.brightVisionGoggles.asItem(), ModelTemplates.FLAT_ITEM);
@@ -118,7 +121,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.magphasers.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.slowphasers.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.stompers.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.springBoots.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.springs.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.automaticHackTool.asItem(), ModelTemplates.FLAT_ITEM);
     }
 }

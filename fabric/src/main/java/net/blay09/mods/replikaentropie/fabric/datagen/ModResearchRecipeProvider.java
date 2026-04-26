@@ -4,7 +4,6 @@ import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.recipe.ResearchRecipe;
-import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
@@ -241,7 +240,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .save(output);
 
                 research(id("spring_boots"))
-                        .icon(ModItems.springBoots)
+                        .icon(ModItems.springs)
                         .dependsOn(id("research/burst_energy"))
                         .unlocksRecipe(id("assembler/spring_boots"))
                         .nonogram(id("spring_boots"))

@@ -36,7 +36,10 @@ public class ModItems {
     public static DeferredItem hazmatChestplate;
     public static DeferredItem hazmatLeggings;
     public static DeferredItem hazmatBoots;
-    public static DeferredItem scubaHelmet;
+    public static DeferredItem replikaHelmet;
+    public static DeferredItem replikaChestplate;
+    public static DeferredItem replikaLeggings;
+    public static DeferredItem replikaBoots;
     public static DeferredItem nightVisionGoggles;
     public static DeferredItem brightVisionGoggles;
     public static DeferredItem graviliftHarness;
@@ -46,7 +49,7 @@ public class ModItems {
     public static DeferredItem oreVacuum;
     public static DeferredItem slowphasers;
     public static DeferredItem stompers;
-    public static DeferredItem springBoots;
+    public static DeferredItem springs;
     public static DeferredItem semisonicSpeeders;
     public static DeferredItem assemblyTicket;
     public static DeferredItem makeshiftPSU;
@@ -77,7 +80,7 @@ public class ModItems {
         metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(600)).asDeferredItem();
         slowphasers = items.register("slowphasers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
         stompers = items.register("stompers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
-        springBoots = items.register("spring_boots", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
+        springs = items.register("spring_boots", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
         semisonicSpeeders = items.register("semisonic_speeders", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.LEGGINGS).durability(-1)).asDeferredItem();
         biosteelHelmet = items.register("biosteel_helmet", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.HELMET)).asDeferredItem();
         biosteelChestplate = items.register("biosteel_chestplate", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.CHESTPLATE)).asDeferredItem();
@@ -88,7 +91,10 @@ public class ModItems {
         hazmatChestplate = items.register("hazmat_chestplate", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.CHESTPLATE)).asDeferredItem();
         hazmatLeggings = items.register("hazmat_leggings", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.LEGGINGS)).asDeferredItem();
         hazmatBoots = items.register("hazmat_boots", HazmatArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.HAZMAT, ArmorType.BOOTS)).asDeferredItem();
-        scubaHelmet = items.register("replika_helmet", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.HELMET)).asDeferredItem();
+        replikaHelmet = items.register("replika_helmet", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.HELMET)).asDeferredItem();
+        replikaChestplate = items.register("replika_chestplate", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE)).asDeferredItem();
+        replikaLeggings = items.register("replika_leggings", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.LEGGINGS)).asDeferredItem();
+        replikaBoots = items.register("replika_boots", ReplikaArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS)).asDeferredItem();
     }
 
     public static void initialize(BalmCreativeModeTabRegistrar creativeModeTabs) {
@@ -131,24 +137,27 @@ public class ModItems {
                     output.accept(nullphaser);
                     output.accept(nightVisionGoggles);
                     output.accept(brightVisionGoggles);
-                    output.accept(scubaHelmet);
-                    output.accept(graviliftHarness);
-                    output.accept(semisonicSpeeders);
-                    output.accept(springBoots);
-                    output.accept(stompers);
-                    output.accept(slowphasers);
-                    output.accept(magphasers);
+                    output.accept(assemblyTicket);
                     output.accept(biosteel);
                     output.accept(biosteelHelmet);
                     output.accept(biosteelChestplate);
                     output.accept(biosteelLeggings);
                     output.accept(biosteelBoots);
+                    output.accept(replikaHelmet);
+                    output.accept(replikaChestplate);
+                    output.accept(replikaLeggings);
+                    output.accept(replikaBoots);
                     output.accept(hazmatLining);
                     output.accept(hazmatHelmet);
                     output.accept(hazmatChestplate);
                     output.accept(hazmatLeggings);
                     output.accept(hazmatBoots);
-                    output.accept(assemblyTicket);
+                    output.accept(graviliftHarness);
+                    output.accept(semisonicSpeeders);
+                    output.accept(springs);
+                    output.accept(stompers);
+                    output.accept(slowphasers);
+                    output.accept(magphasers);
                 })));
     }
 

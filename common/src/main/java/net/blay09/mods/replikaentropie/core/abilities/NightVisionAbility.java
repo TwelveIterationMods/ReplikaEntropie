@@ -17,7 +17,7 @@ public class NightVisionAbility implements Ability {
 
     public static final NightVisionAbility INSTANCE = new NightVisionAbility();
     public static final Identifier ID = id("night_vision");
-    public static final Identifier SHADER = Identifier.withDefaultNamespace("post_effect/creeper.json"); // TODO not working atm
+    public static final Identifier SHADER = Identifier.withDefaultNamespace("creeper");
 
     protected NightVisionAbility() {
     }

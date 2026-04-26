@@ -1,32 +1,50 @@
 package net.blay09.mods.replikaentropie.menu;
 
-import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
+import net.blay09.mods.replikaentropie.block.entity.ReplikaWorkbenchBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.ReplikaWorkbenchSlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
-public class ReplikaWorkbenchMenu extends AbstractContainerMenu {
+    public static final int DATA_CURRENT_POWER = 0;
+    public static final int DATA_MAX_POWER = 1;
+    public static final int DATA_COUNT = 2;
 
+    private final Inventory inventory;
     private final Container container;
+    private final ContainerData data;
+    private final ContainerLevelAccess access;
     private final QuickMove.Routing quickMove;
 
     public ReplikaWorkbenchMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(9));
+        this(containerId, inventory, new SimpleContainer(9), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
-    public ReplikaWorkbenchMenu(int containerId, Inventory inventory, Container container) {
-        super(ModMenus.replikaWorkbench.value(), containerId);
+    public ReplikaWorkbenchMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
+        this(ModMenus.replikaWorkbench.value(), containerId, inventory, container, data, access);
+    }
+
+    public ReplikaWorkbenchMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
+        super(menuType, containerId);
+        this.inventory = inventory;
         this.container = container;
+        this.data = data;
+        this.access = access;
+        addDataSlots(data);
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -55,35 +73,8 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu {
                 .slotRange("parts2", 5, 10)
                 .slot("center", 4)
                 .build();
-    }
 
-    public void assemble() {
-        final var frameStack = container.getItem(4);
-        final var resultStack = ReplikaArmor.assembleFrame(frameStack);
-        final var parts = new ArrayList<ItemStack>();
-        for (int i = 0; i < 9; i++) {
-            if (i == 4) {
-                continue;
-            }
-            final var part = container.getItem(i);
-            if (ReplikaArmor.isMatchingPart(frameStack, part)) {
-                parts.add(part);
-            }
-        }
-        ReplikaArmor.setParts(resultStack, parts.stream().map(it -> it.split(1)).toList());
-        container.setItem(4, resultStack);
-    }
-
-    @Override
-    public boolean clickMenuButton(Player player, int buttonId) {
-        if (buttonId == 0) {
-            assemble();
-            if (!player.level().isClientSide()) {
-                player.level().playSound(null, player.blockPosition(), SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 1f, 1f);
-            }
-            return true;
-        }
-        return false;
+        container.startOpen(inventory.player);
     }
 
     @Override
@@ -102,20 +93,22 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu {
         return container.stillValid(player);
     }
 
-    public boolean canAssemble() {
-        final var frameStack = getSlot(4).getItem();
-
-        for (int i = 0; i < 9; i++) {
-            if (i == 4) {
-                continue;
-            }
-
-            final var part = container.getItem(i);
-            if (ReplikaArmor.isMatchingPart(frameStack, part)) {
-                return true;
-            }
+    public float getPowerProgress() {
+        final var maxPower = data.get(DATA_MAX_POWER);
+        if (maxPower <= 0) {
+            return 0f;
         }
 
-        return false;
+        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
+    }
+
+    @Override
+    public void convertClickToPower() {
+        access.execute((level, pos) -> {
+            final BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof ReplikaWorkbenchBlockEntity replikaWorkbench) {
+                replikaWorkbench.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
+            }
+        });
     }
 }
