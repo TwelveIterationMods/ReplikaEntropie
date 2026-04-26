@@ -44,7 +44,7 @@ public class JumpBoostAbility implements Ability {
 
     @Override
     public boolean isAvailable(ServerPlayer player) {
-        return ReplikaArmor.hasPart(player, ArmorType.BOOTS, ModItems.springs)
+        return ReplikaArmor.hasPart(player, ArmorType.BOOTS, ModItems.bootSprings)
                 && AbilityManager.canAffordBurst(player, this);
     }
 

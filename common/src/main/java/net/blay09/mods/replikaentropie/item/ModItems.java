@@ -49,13 +49,11 @@ public class ModItems {
     public static DeferredItem oreVacuum;
     public static DeferredItem slowphasers;
     public static DeferredItem stompers;
-    public static DeferredItem springs;
+    public static DeferredItem bootSprings;
     public static DeferredItem semisonicSpeeders;
     public static DeferredItem assemblyTicket;
     public static DeferredItem makeshiftPSU;
     public static DeferredItem metalDetector;
-    public static DeferredItem wasteBarrelMinecart;
-    public static DeferredItem fragmentalWasteMinecart;
 
     public static void initialize(BalmItemRegistrar items) {
         handheldAnalyzer = items.register("handheld_analyzer", HandheldAnalyzerItem::new, it -> it.stacksTo(1)).asDeferredItem();
@@ -73,15 +71,15 @@ public class ModItems {
         nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET)).asDeferredItem();
         brightVisionGoggles = items.register("brightvision_goggles", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET)).asDeferredItem();
         graviliftHarness = items.register("gravilift_harness", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE).durability(-1)).asDeferredItem();
-        magphasers = items.register("magphasers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
-        nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(-1)).asDeferredItem();
+        magphasers = items.register("magphasers", ReplikaPartItem::new).asDeferredItem();
+        nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(64)).asDeferredItem();
         automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> it.durability(16).component(DataComponents.BREAK_SOUND, SoundEvents.ITEM_BREAK)).asDeferredItem();
         oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(-1)).asDeferredItem();
         metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(600)).asDeferredItem();
-        slowphasers = items.register("slowphasers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
-        stompers = items.register("stompers", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
-        springs = items.register("spring_boots", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.BOOTS).durability(-1)).asDeferredItem();
-        semisonicSpeeders = items.register("semisonic_speeders", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.LEGGINGS).durability(-1)).asDeferredItem();
+        slowphasers = items.register("slowphasers", ReplikaPartItem::new).asDeferredItem();
+        stompers = items.register("stompers", ReplikaPartItem::new).asDeferredItem();
+        bootSprings = items.register("boot_springs", ReplikaPartItem::new).asDeferredItem();
+        semisonicSpeeders = items.register("semisonic_speeders", ReplikaPartItem::new).asDeferredItem();
         biosteelHelmet = items.register("biosteel_helmet", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.HELMET)).asDeferredItem();
         biosteelChestplate = items.register("biosteel_chestplate", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.CHESTPLATE)).asDeferredItem();
         biosteelLeggings = items.register("biosteel_leggings", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.LEGGINGS)).asDeferredItem();
@@ -154,7 +152,7 @@ public class ModItems {
                     output.accept(hazmatBoots);
                     output.accept(graviliftHarness);
                     output.accept(semisonicSpeeders);
-                    output.accept(springs);
+                    output.accept(bootSprings);
                     output.accept(stompers);
                     output.accept(slowphasers);
                     output.accept(magphasers);

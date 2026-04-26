@@ -2,6 +2,7 @@ package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.block.entity.ReplikaWorkbenchBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.ReplikaWorkbenchSlot;
+import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -70,8 +71,11 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
                 .slotRange("parts1", 0, 4)
-                .slotRange("parts2", 5, 10)
+                .slotRange("parts2", 5, 9)
                 .slot("center", 4)
+                .route(itemStack -> itemStack.is(ModItemTags.CHARGEABLE), QuickMove.PLAYER, "center")
+                .route(QuickMove.PLAYER, "parts1")
+                .route(QuickMove.PLAYER, "parts2")
                 .build();
 
         container.startOpen(inventory.player);

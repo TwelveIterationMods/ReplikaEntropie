@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 public class ReplikaEntropie {
 
     // Highest Priority
-    // - Entropic Data Miner should create Data items instead of the downloadable list. No more tracking event log.
     // - Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
     // - Fragmental Generator, generates power from fragments
     // - Introduce durability (energy-based) for all items. Burst still exists, and can be separately upgraded. Essentially, durability recharges the burst, while burst determines use duration at a time.

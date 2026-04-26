@@ -7,6 +7,7 @@ import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.replikaentropie.menu.ReplikaWorkbenchMenu;
+import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -22,6 +23,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -29,8 +31,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmContainerProvider, BalmEnergyStorageProvider {
 
+    public static final int RECHARGE_SLOT = 4;
     private static final int ENERGY_CAPACITY = 10000;
     private static final int ENERGY_INPUT_RATE = 1000;
+    private static final int RECHARGE_ENERGY_COST = 100;
+    private static final int RECHARGE_TICK_INTERVAL = 5;
 
     private final DefaultContainer backingContainer = new DefaultContainer(9) {
         @Override
@@ -83,6 +88,10 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
         super(ModBlockEntities.replikaWorkbench.value(), pos, blockState);
     }
 
+    public static void serverTick(Level level, BlockPos pos, BlockState state, ReplikaWorkbenchBlockEntity blockEntity) {
+        blockEntity.rechargeCenterSlotItem(level);
+    }
+
     public BalmMenuProvider<Unit> getMenuProvider() {
         return new BalmMenuProvider<Unit>() {
             @Override
@@ -120,6 +129,29 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
     @Override
     public EnergyStorage getEnergyStorage(Direction side) {
         return energyStorage;
+    }
+
+    private void rechargeCenterSlotItem(Level level) {
+        if (level.getGameTime() % RECHARGE_TICK_INTERVAL != 0) {
+            return;
+        }
+
+        final var itemStack = backingContainer.getItem(RECHARGE_SLOT);
+        if (!canRechargeItem(itemStack) || energyStorage.getEnergy() < RECHARGE_ENERGY_COST) {
+            return;
+        }
+
+        energyStorage.setEnergy(energyStorage.getEnergy() - RECHARGE_ENERGY_COST);
+        rechargeItem(itemStack, 1);
+        setChanged();
+    }
+
+    private static boolean canRechargeItem(ItemStack itemStack) {
+        return itemStack.is(ModItemTags.CHARGEABLE) && itemStack.isDamageableItem() && itemStack.isDamaged();
+    }
+
+    private static void rechargeItem(ItemStack itemStack, int amount) {
+        itemStack.setDamageValue(Math.max(0, itemStack.getDamageValue() - amount));
     }
 
     @Override

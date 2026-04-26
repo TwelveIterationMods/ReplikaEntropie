@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.menu.slot;
 
+import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +12,7 @@ public class ReplikaWorkbenchSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack itemStack) {
-        return true;
+        return itemStack.is(ModItemTags.CHARGEABLE);
     }
 
     @Override

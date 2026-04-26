@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,15 +27,23 @@ public class NullphaserItem extends Item {
     public InteractionResult useOn(UseOnContext context) {
         final var level = context.getLevel();
         final var player = context.getPlayer();
+        final var itemStack = context.getItemInHand();
+        if (!hasCharges(itemStack)) {
+            return InteractionResult.SUCCESS;
+        }
         if (level instanceof ServerLevel serverLevel && player instanceof ServerPlayer serverPlayer) {
             final var oppositeFace = context.getClickedFace().getOpposite();
             final var clickedPos = context.getClickedPos();
-            tryTeleport(serverLevel, serverPlayer, clickedPos, oppositeFace);
+            tryTeleport(serverLevel, serverPlayer, itemStack, clickedPos, oppositeFace);
         }
         return InteractionResult.SUCCESS;
     }
 
-    private void tryTeleport(ServerLevel level, ServerPlayer player, BlockPos pos, Direction direction) {
+    public static boolean hasCharges(ItemStack itemStack) {
+        return itemStack.getDamageValue() < itemStack.getMaxDamage();
+    }
+
+    private void tryTeleport(ServerLevel level, ServerPlayer player, ItemStack itemStack, BlockPos pos, Direction direction) {
         final var mutablePos = pos.mutable();
         for (int i = 1; i <= MAX_DISTANCE; i++) {
             mutablePos.setWithOffset(mutablePos, direction);
@@ -64,6 +73,7 @@ public class NullphaserItem extends Item {
                                 24,
                                 0.5, 0.5, 0.5,
                                 0.2);
+                        itemStack.hurtWithoutBreaking(1, player);
                     }
                     return;
                 }
