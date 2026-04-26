@@ -9,12 +9,9 @@ import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.core.waste.FragmentalWaste;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.FragmentAcceleratorMenu;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
-import net.blay09.mods.replikaentropie.util.FractionalResource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,7 +20,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -80,12 +76,8 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         }
     };
 
-    private final Container resultContainer = new SubContainer(backingContainer, 0, 1);
     private final Container wasteContainer = new SubContainer(backingContainer, 1, 2);
     private final Container inputContainer = new SubContainer(backingContainer, 2, 8);
-    private final Container outputContainer = new SubContainer(backingContainer, 0, 2);
-
-    private final FractionalResource fragments = new FractionalResource(resultContainer, 0, ModItems.fragments);
 
     private int processingTicks;
     private float speedMultiplier = 1f;
@@ -102,7 +94,6 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
             return switch (index) {
                 case FragmentAcceleratorMenu.DATA_PROCESSING_TIME -> processingTicks;
                 case FragmentAcceleratorMenu.DATA_MAX_PROCESSING_TIME -> getMaxProcessingTicks();
-                case FragmentAcceleratorMenu.DATA_FRACTIONAL_FRAGMENTS -> fragments.getFractionalAmountAsMenuData();
                 default -> 0;
             };
         }
@@ -146,15 +137,6 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         return backingContainer;
     }
 
-    @Override
-    public Container getContainer(Direction side) {
-        //noinspection SwitchStatementWithTooFewBranches
-        return switch (side) {
-            case DOWN -> outputContainer;
-            default -> backingContainer;
-        };
-    }
-
     public static void serverTick(Level level, BlockPos pos, BlockState state, FragmentAcceleratorBlockEntity blockEntity) {
         blockEntity.spreadWaste();
         blockEntity.processState();
@@ -192,7 +174,6 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
                 generateWaste();
             }
             final var results = calculateOutput();
-            fragments.add(results.fragments());
             final var maxSpeedMultiplier = Math.min(MAX_SPEED_MULTIPLIER, results.uniqueItems());
             speedMultiplier = Math.min(maxSpeedMultiplier, speedMultiplier + SPEED_INCREMENT_PER_COMPLETION);
 
@@ -229,7 +210,7 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private boolean canProcess() {
-        return hasAnyValidInput() && hasWasteBarrel() && fragments.hasSpace();
+        return hasAnyValidInput() && hasWasteBarrel();
     }
 
     private boolean isValidInput(ItemStack itemStack) {
@@ -293,7 +274,6 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         backingContainer.clearContent();
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
         processingTicks = input.getIntOr("ProcessingTicks", 0);
-        fragments.setFractionalAmount(input.getFloatOr("FractionalFragments", 0f));
         speedMultiplier = Math.max(1f, input.getFloatOr("SpeedMultiplier", 0f));
     }
 
@@ -301,7 +281,6 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
     protected void saveAdditional(ValueOutput output) {
         ContainerHelper.saveAllItems(output, backingContainer.getItems());
         output.putInt("ProcessingTicks", processingTicks);
-        output.putFloat("FractionalFragments", fragments.getFractionalAmount());
         output.putFloat("SpeedMultiplier", speedMultiplier);
     }
 

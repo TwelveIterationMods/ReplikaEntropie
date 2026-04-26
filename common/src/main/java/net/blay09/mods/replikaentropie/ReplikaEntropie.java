@@ -34,7 +34,6 @@ public class ReplikaEntropie {
     // - Introduce durability (energy-based) for all items. Burst still exists, and can be separately upgraded. Essentially, durability recharges the burst, while burst determines use duration at a time.
     // - Lava Sink that heats cobblestone into lava, to complete the Cobblescrap -> Lavascrap -> Renewable Obsidian -> ??? -> Profit cycle
     // - "Blue Printer" to print custom assembly tickets (or duplicate them), needs paper, ink, and cyan dye
-    // - Remove Fractionals from Recycler and Accelerator too
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 

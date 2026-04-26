@@ -1,11 +1,9 @@
 package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.block.ModBlocks;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.slot.FragmentAcceleratorWasteSlot;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
-import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,8 +15,7 @@ public class FragmentAcceleratorMenu extends AbstractContainerMenu {
 
     public static final int DATA_PROCESSING_TIME = 0;
     public static final int DATA_MAX_PROCESSING_TIME = 1;
-    public static final int DATA_FRACTIONAL_FRAGMENTS = 2;
-    public static final int DATA_COUNT = 3;
+    public static final int DATA_COUNT = 2;
 
     protected final Inventory playerInventory;
     protected final Container container;
@@ -90,7 +87,4 @@ public class FragmentAcceleratorMenu extends AbstractContainerMenu {
         return maxProgress > 0 ? (float) progress / maxProgress : 0f;
     }
 
-    public float getFractionalFragments() {
-        return Mth.clamp(data.get(DATA_FRACTIONAL_FRAGMENTS) / 100f, 0, 1f);
-    }
 }
