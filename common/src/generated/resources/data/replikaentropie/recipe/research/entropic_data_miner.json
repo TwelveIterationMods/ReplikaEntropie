@@ -11,7 +11,7 @@
   "nonogram": "replikaentropie:entropic_data_miner",
   "research_type": "assembler",
   "scrap": 2,
-  "sort_order": 2900,
+  "sort_order": 3000,
   "unlocked_recipes": [
     "replikaentropie:assembler/entropic_data_miner"
   ]

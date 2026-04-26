@@ -30,6 +30,7 @@ public class ModBlocks {
     public static DeferredBlock bluePrinter;
     public static DeferredBlock solarSink;
     public static DeferredBlock entropicGenerator;
+    public static DeferredBlock funnel;
 
     public static void initialize(BalmBlockRegistrar blocks) {
         blocks.enableBlockDescriptionPrefixForItems();
@@ -103,6 +104,10 @@ public class ModBlocks {
                 .asDeferredBlock();
 
         solarSink = blocks.register("solar_sink", SolarSinkBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem()
+                .asDeferredBlock();
+
+        funnel = blocks.register("funnel", FunnelBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
                 .withDefaultItem()
                 .asDeferredBlock();
 

@@ -23,6 +23,7 @@ public class ModBlockEntities {
     public static Holder<BlockEntityType<WaterSinkBlockEntity>> waterSink;
     public static Holder<BlockEntityType<LavaSinkBlockEntity>> lavaSink;
     public static Holder<BlockEntityType<SolarSinkBlockEntity>> solarSink;
+    public static Holder<BlockEntityType<FunnelBlockEntity>> funnel;
     public static Holder<BlockEntityType<DigSpotBlockEntity>> digSpot;
 
     public static void initialize(BalmBlockEntityTypeRegistrar blockEntities) {
@@ -93,6 +94,10 @@ public class ModBlockEntities {
         solarSink = blockEntities.register("solar_sink",
                 SolarSinkBlockEntity::new,
                 ModBlocks.solarSink).asHolder();
+
+        funnel = blockEntities.register("funnel",
+                FunnelBlockEntity::new,
+                ModBlocks.funnel).asHolder();
 
         digSpot = blockEntities.register("dig_spot",
                 DigSpotBlockEntity::new,

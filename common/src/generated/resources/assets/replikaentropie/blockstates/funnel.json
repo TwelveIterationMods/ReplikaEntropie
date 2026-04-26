@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "replikaentropie:block/funnel"
+    },
+    "facing=east": {
+      "model": "replikaentropie:block/funnel_side",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/funnel_side"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/funnel_side",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/funnel_side",
+      "y": 270
+    }
+  }
+}

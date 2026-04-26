@@ -1,6 +1,8 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
+import net.blay09.mods.balm.platform.fluid.BalmFluidTankProvider;
 import net.blay09.mods.balm.platform.fluid.DefaultFluidTank;
+import net.blay09.mods.balm.platform.fluid.FluidTank;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
@@ -20,19 +22,32 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 
-public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
+public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity implements BalmFluidTankProvider {
 
     public static final int CONTAINER_SIZE = 3;
 
     private final Container waterInputContainer = new SubContainer(backingContainer, 1, 2);
     private final Container lavaInputContainer = new SubContainer(backingContainer, 2, 3);
 
-    private final DefaultFluidTank waterTank = new DefaultFluidTank(3000);
-    private final DefaultFluidTank lavaTank = new DefaultFluidTank(3000);
+    private final DefaultFluidTank waterTank = new DefaultFluidTank(3000) {
+        @Override
+        public boolean canFill(Fluid fluid) {
+            return fluid.isSame(Fluids.WATER);
+        }
+    };
+    private final DefaultFluidTank lavaTank = new DefaultFluidTank(3000) {
+        @Override
+        public boolean canFill(Fluid fluid) {
+            return fluid.isSame(Fluids.LAVA);
+        }
+    };
+    private final CompositeFluidTank fluidTanks = new CompositeFluidTank(waterTank, lavaTank);
 
     private final ContainerData dataAccess = new ContainerData() {
         @Override
@@ -72,7 +87,7 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
 
             @Override
             public boolean canPlaceItem(int index, ItemStack stack) {
-                return switch(index) {
+                return switch (index) {
                     case 0 -> false;
                     case 1 -> stack.is(Items.WATER_BUCKET);
                     case 2 -> stack.is(Items.LAVA_BUCKET);
@@ -82,7 +97,7 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
 
             @Override
             public boolean canTakeItem(Container target, int index, ItemStack stack) {
-                return switch(index) {
+                return switch (index) {
                     case 0 -> true;
                     case 1, 2 -> stack.is(Items.BUCKET);
                     default -> false;
@@ -163,5 +178,10 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity {
                 return Unit.STREAM_CODEC.cast();
             }
         };
+    }
+
+    @Override
+    public @Nullable FluidTank getFluidTank() {
+        return fluidTanks;
     }
 }

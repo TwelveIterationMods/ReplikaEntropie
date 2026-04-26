@@ -7,8 +7,15 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
+import static net.minecraft.client.data.models.BlockModelGenerators.*;
 
 public class ModModelProvider extends FabricModelProvider {
 
@@ -38,6 +45,8 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateHorizontalBlock(ModBlocks.lavaSink.value());
         generators.createNonTemplateModelBlock(ModBlocks.solarSink.value());
 
+        createFunnel(generators, ModBlocks.funnel.asBlock());
+
         generators.registerSimpleItemModel(ModBlocks.replikaWorkbench.value(), ModelLocationUtils.getModelLocation(ModBlocks.replikaWorkbench.value()));
         generators.registerSimpleItemModel(ModBlocks.entropicDataMiner.value(), ModelLocationUtils.getModelLocation(ModBlocks.entropicDataMiner.value()));
         generators.registerSimpleItemModel(ModBlocks.recycler.value(), ModelLocationUtils.getModelLocation(ModBlocks.recycler.value()));
@@ -55,6 +64,19 @@ public class ModModelProvider extends FabricModelProvider {
         generators.registerSimpleTintedItemModel(ModBlocks.waterSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.waterSink.value()), new Constant(0xFF3F76E4));
         generators.registerSimpleItemModel(ModBlocks.lavaSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.lavaSink.value()));
         generators.registerSimpleItemModel(ModBlocks.solarSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.solarSink.value()));
+    }
+
+    private void createFunnel(BlockModelGenerators generators, Block funnel) {
+        final var downBlock = plainVariant(ModelLocationUtils.getModelLocation(funnel));
+        final var sideBlock = plainVariant(ModelLocationUtils.getModelLocation(funnel, "_side"));
+        generators.registerSimpleFlatItemModel(funnel.asItem());
+        generators.blockStateOutput.accept(MultiVariantGenerator.dispatch(funnel)
+                .with(PropertyDispatch.initial(BlockStateProperties.FACING_HOPPER)
+                        .select(Direction.DOWN, downBlock)
+                        .select(Direction.NORTH, sideBlock)
+                        .select(Direction.EAST, sideBlock.with(Y_ROT_90))
+                        .select(Direction.SOUTH, sideBlock.with(Y_ROT_180))
+                        .select(Direction.WEST, sideBlock.with(Y_ROT_270))));
     }
 
     @Override

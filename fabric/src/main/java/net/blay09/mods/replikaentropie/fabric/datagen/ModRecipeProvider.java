@@ -59,6 +59,15 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_redstone", has(Items.REDSTONE))
                         .save(output);
 
+                shaped(RecipeCategory.TOOLS, ModBlocks.funnel)
+                        .pattern("I I")
+                        .pattern("IBI")
+                        .pattern(" I ")
+                        .define('I', Items.IRON_INGOT)
+                        .define('B', Items.BUCKET)
+                        .unlockedBy("has_bucket", has(Items.BUCKET))
+                        .save(output);
+
                 shaped(RecipeCategory.MISC, ModBlocks.recycler)
                         .pattern("IBI")
                         .pattern("CSC")
