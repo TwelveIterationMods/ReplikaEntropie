@@ -1,13 +1,11 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
 import net.blay09.mods.replikaentropie.effect.ModEffects;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.equipment.ArmorType;
+import org.jetbrains.annotations.Nullable;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -30,9 +28,9 @@ public class SpeedBoostAbility implements Ability {
     }
 
     @Override
-    public void tick(Player player) {
+    public void tick(Player player, AbilitySourceContext source) {
         if (player.isSprinting()) {
-            if (AbilityManager.consumeBurst(player, this)) {
+            if (AbilityManager.consumeDurability(player, source, this)) {
                 if (!player.level().isClientSide()) {
                     if (!player.hasEffect(ModEffects.entropicSpeed)) {
                         player.addEffect(new MobEffectInstance(ModEffects.entropicSpeed, -1, 2, false, false));
@@ -47,23 +45,23 @@ public class SpeedBoostAbility implements Ability {
     }
 
     @Override
-    public void deactivate(Player player) {
+    public void deactivate(Player player, @Nullable AbilitySourceContext source) {
         if (!player.level().isClientSide()) {
             player.removeEffect(ModEffects.entropicSpeed);
         }
     }
 
     @Override
-    public boolean isAvailable(ServerPlayer player) {
-        if (!AbilityManager.canAffordBurst(player, this)) {
+    public boolean isAvailable(ServerPlayer player, AbilitySourceContext source) {
+        if (!AbilityManager.canAffordDurability(source, this)) {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorType.LEGGINGS, ModItems.semisonicSpeeders);
+        return true;
     }
 
     @Override
-    public boolean canActivate(ServerPlayer player) {
-        return AbilityManager.canAffordBurst(player, this);
+    public boolean canActivate(ServerPlayer player, AbilitySourceContext source) {
+        return AbilityManager.canAffordDurability(source, this);
     }
 }

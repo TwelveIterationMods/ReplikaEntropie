@@ -3,16 +3,22 @@ package net.blay09.mods.replikaentropie.item;
 import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
 import net.blay09.mods.balm.world.item.BalmItemRegistrar;
 import net.blay09.mods.balm.world.item.DeferredItem;
+import net.blay09.mods.replikaentropie.component.AbilityHolder;
+import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
+import net.blay09.mods.replikaentropie.core.abilities.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.Equippable;
+
+import java.util.List;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -49,7 +55,7 @@ public class ModItems {
     public static DeferredItem oreVacuum;
     public static DeferredItem slowphasers;
     public static DeferredItem stompers;
-    public static DeferredItem bootSprings;
+    public static DeferredItem springBouncers;
     public static DeferredItem semisonicSpeeders;
     public static DeferredItem assemblyTicket;
     public static DeferredItem makeshiftPSU;
@@ -68,18 +74,18 @@ public class ModItems {
         biosteel = items.register("biosteel", Item::new, it -> it).asDeferredItem();
         assemblyTicket = items.register("assembly_ticket", AssemblyTicketItem::new, it -> it).asDeferredItem();
         biomash = items.register("biomash", Item::new, it -> it.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.1f).build())).asDeferredItem();
-        nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET)).asDeferredItem();
-        brightVisionGoggles = items.register("brightvision_goggles", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET)).asDeferredItem();
-        graviliftHarness = items.register("gravilift_harness", ReplikaPieceArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE).durability(-1)).asDeferredItem();
-        magphasers = items.register("magphasers", ReplikaPartItem::new).asDeferredItem();
+        nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> withAbility(humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET), NightVisionAbility.ID)).asDeferredItem();
+        brightVisionGoggles = items.register("brightvision_goggles", ReplikaPieceArmorItem::new, it -> withAbility(humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET), BrightVisionAbility.ID)).asDeferredItem();
+        graviliftHarness = items.register("gravilift_harness", ReplikaPieceArmorItem::new, it -> withAbility(humanoidArmor(it, ModArmorMaterials.REPLIKA, ArmorType.CHESTPLATE).durability(-1), GraviliftAbility.ID)).asDeferredItem();
+        magphasers = items.register("magphasers", ReplikaPartItem::new, it -> withAbility(it, MagphaseAbility.ID)).asDeferredItem();
         nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(64)).asDeferredItem();
         automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> it.durability(16).component(DataComponents.BREAK_SOUND, SoundEvents.ITEM_BREAK)).asDeferredItem();
-        oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(-1)).asDeferredItem();
+        oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(256)).asDeferredItem();
         metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(600)).asDeferredItem();
-        slowphasers = items.register("slowphasers", ReplikaPartItem::new).asDeferredItem();
-        stompers = items.register("stompers", ReplikaPartItem::new).asDeferredItem();
-        bootSprings = items.register("boot_springs", ReplikaPartItem::new).asDeferredItem();
-        semisonicSpeeders = items.register("semisonic_speeders", ReplikaPartItem::new).asDeferredItem();
+        slowphasers = items.register("slowphasers", ReplikaPartItem::new, it -> withAbility(it, SlowphaseAbility.ID)).asDeferredItem();
+        stompers = items.register("stompers", ReplikaPartItem::new, it -> withAbility(it, StompingAbility.ID)).asDeferredItem();
+        springBouncers = items.register("spring_bouncers", ReplikaPartItem::new, it -> withAbility(it, JumpBoostAbility.ID)).asDeferredItem();
+        semisonicSpeeders = items.register("semisonic_speeders", ReplikaPartItem::new, it -> withAbility(it, SpeedBoostAbility.ID)).asDeferredItem();
         biosteelHelmet = items.register("biosteel_helmet", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.HELMET)).asDeferredItem();
         biosteelChestplate = items.register("biosteel_chestplate", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.CHESTPLATE)).asDeferredItem();
         biosteelLeggings = items.register("biosteel_leggings", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.LEGGINGS)).asDeferredItem();
@@ -152,7 +158,7 @@ public class ModItems {
                     output.accept(hazmatBoots);
                     output.accept(graviliftHarness);
                     output.accept(semisonicSpeeders);
-                    output.accept(bootSprings);
+                    output.accept(springBouncers);
                     output.accept(stompers);
                     output.accept(slowphasers);
                     output.accept(magphasers);
@@ -170,6 +176,10 @@ public class ModItems {
             result = result.enchantable(material.enchantmentValue());
         }
         return result;
+    }
+
+    private static Item.Properties withAbility(Item.Properties properties, Identifier... abilityIds) {
+        return properties.component(ModDataComponents.abilityHolder(), new AbilityHolder(List.of(abilityIds)));
     }
 
 }

@@ -2,16 +2,14 @@ package net.blay09.mods.replikaentropie.core.abilities;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class LocalAbilityStateManager implements AbilityStateManager {
 
     private final Set<Identifier> activeAbilities = new HashSet<>();
-    private final Map<Identifier, Float> abilityBurstCosts = new HashMap<>();
 
     @Override
     public boolean isActive(Player player, Ability ability) {
@@ -19,7 +17,7 @@ public class LocalAbilityStateManager implements AbilityStateManager {
     }
 
     @Override
-    public void setActive(Player player, Ability ability, boolean active) {
+    public void setActive(Player player, Ability ability, boolean active, @Nullable AbilitySourceContext source) {
         final var wasActive = activeAbilities.contains(ability.getId());
         if (active) {
             activeAbilities.add(ability.getId());
@@ -28,18 +26,9 @@ public class LocalAbilityStateManager implements AbilityStateManager {
         }
 
         if (!wasActive && active) {
-            ability.activate(player);
+            ability.activate(player, source);
         } else if (wasActive && !active) {
-            ability.deactivate(player);
+            ability.deactivate(player, source);
         }
-    }
-
-    @Override
-    public float getBurstCost(Player player, Ability ability) {
-        return abilityBurstCosts.getOrDefault(ability.getId(), 0f);
-    }
-
-    public void setBurstCost(Player player, Ability ability, float burstCost) {
-        abilityBurstCosts.put(ability.getId(), burstCost);
     }
 }

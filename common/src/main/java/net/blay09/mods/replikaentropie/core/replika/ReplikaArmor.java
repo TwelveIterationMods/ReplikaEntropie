@@ -1,12 +1,14 @@
 package net.blay09.mods.replikaentropie.core.replika;
 
+import net.blay09.mods.replikaentropie.core.abilities.AbilitySourceContext;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.component.ReplikaParts;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +26,8 @@ public class ReplikaArmor {
         return false;
     }
 
-    private static boolean testForPart(Player player, ArmorType armorType, Predicate<ItemStack> predicate) {
-        final var itemStack = player.getItemBySlot(armorType.getSlot());
+    private static boolean testForPart(Player player, EquipmentSlot equipmentSlot, Predicate<ItemStack> predicate) {
+        final var itemStack = player.getItemBySlot(equipmentSlot);
         if (predicate.test(itemStack)) {
             return true;
         }
@@ -33,8 +35,22 @@ public class ReplikaArmor {
         return testForPart(itemStack, predicate);
     }
 
-    public static boolean hasPart(Player player, ArmorType armorType, ItemLike target) {
-        return testForPart(player, armorType, it -> it.is(target.asItem()));
+    public static boolean hasPart(Player player, EquipmentSlot equipmentSlot, ItemLike target) {
+        return testForPart(player, equipmentSlot, it -> it.is(target.asItem()));
+    }
+
+    @Nullable
+    public static AbilitySourceContext findAbilitySource(Player player, EquipmentSlot equipmentSlot, ItemLike target) {
+        final var itemStack = player.getItemBySlot(equipmentSlot);
+        if (itemStack.isEmpty()) {
+            return null;
+        }
+
+        if (itemStack.is(target.asItem()) || testForPart(itemStack, it -> it.is(target.asItem()))) {
+            return new AbilitySourceContext(player, equipmentSlot, itemStack);
+        }
+
+        return null;
     }
 
     public static List<ItemStack> getParts(ItemStack itemStack) {

@@ -10,15 +10,13 @@ import net.minecraft.world.entity.player.Player;
 
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 
-public record AbilityStateMessage(Identifier id, boolean active, float burstCost) implements CustomPacketPayload {
+public record AbilityStateMessage(Identifier id, boolean active) implements CustomPacketPayload {
     public static final Type<AbilityStateMessage> TYPE = new Type<>(ReplikaEntropie.id("ability_state"));
     public static final StreamCodec<RegistryFriendlyByteBuf, AbilityStateMessage> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC,
             AbilityStateMessage::id,
             ByteBufCodecs.BOOL,
             AbilityStateMessage::active,
-            ByteBufCodecs.FLOAT,
-            AbilityStateMessage::burstCost,
             AbilityStateMessage::new
     );
 
@@ -30,7 +28,6 @@ public record AbilityStateMessage(Identifier id, boolean active, float burstCost
     public static void handle(Player player, AbilityStateMessage message) {
         final var manager = AbilityManager.getLocalStateManager();
         final var ability = AbilityManager.getAbility(player, message.id);
-        manager.setActive(player, ability, message.active);
-        manager.setBurstCost(player, ability, message.burstCost);
+        manager.setActive(player, ability, message.active, AbilityManager.resolveSource(player, ability));
     }
 }

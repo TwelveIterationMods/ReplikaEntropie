@@ -2,7 +2,6 @@ package net.blay09.mods.replikaentropie.item;
 
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
 import net.blay09.mods.replikaentropie.network.protocol.ParticleTrailMessage;
 import net.blay09.mods.replikaentropie.recipe.VacuumableOreRecipe;
 import net.minecraft.core.BlockPos;
@@ -33,7 +32,7 @@ public class OreVacuumItem extends Item {
 
     private static final int TICKS_PER_BLOCK = 4;
     private static final int TICKS_PER_SHEAR = 12;
-    private static final float COST_PER_BLOCK = 8f;
+    private static final int DURABILITY_COST = 1;
     private static final double SHEAR_SWEEP_RADIUS = 1.25;
 
     public OreVacuumItem(Properties properties) {
@@ -62,12 +61,17 @@ public class OreVacuumItem extends Item {
             return;
         }
 
+        if (!ItemDurability.hasCharges(stack)) {
+            living.stopUsingItem();
+            return;
+        }
+
         if (living.getTicksUsingItem() % TICKS_PER_BLOCK != 0) {
             return;
         }
 
         tryShearEntities(level, player, stack);
-        tryVacuumOre(level, player);
+        tryVacuumOre(level, player, stack);
     }
 
     private void tryShearEntities(Level level, Player player, ItemStack stack) {
@@ -99,7 +103,7 @@ public class OreVacuumItem extends Item {
 
         targets.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(eyePosition)));
         final var entity = targets.isEmpty() ? null : targets.getFirst();
-        if (entity == null || !BurstEnergy.consumeEnergy(player, COST_PER_BLOCK)) {
+        if (entity == null || !ItemDurability.spend(stack, player, player.getUsedItemHand(), DURABILITY_COST)) {
             return;
         }
 
@@ -110,7 +114,7 @@ public class OreVacuumItem extends Item {
         }
     }
 
-    private void tryVacuumOre(Level level, Player player) {
+    private void tryVacuumOre(Level level, Player player, ItemStack stack) {
         final var blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         if (blockHitResult.getType() != HitResult.Type.BLOCK) {
             return;
@@ -123,7 +127,7 @@ public class OreVacuumItem extends Item {
             return;
         }
 
-        if (!BurstEnergy.consumeEnergy(player, COST_PER_BLOCK)) {
+        if (!ItemDurability.spend(stack, player, player.getUsedItemHand(), DURABILITY_COST)) {
             return;
         }
 

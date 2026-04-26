@@ -1,12 +1,9 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
-import net.blay09.mods.replikaentropie.item.ModItems;
-import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.equipment.ArmorType;
+import org.jetbrains.annotations.Nullable;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -29,38 +26,38 @@ public class GraviliftAbility implements Ability {
     }
 
     @Override
-    public void tick(Player player) {
+    public void tick(Player player, AbilitySourceContext source) {
         player.getAbilities().mayfly = true;
 
-        if (player.getAbilities().flying) {
-            BurstEnergy.consumeEnergy(player, getDefaultBurstCost());
+        if (player.getAbilities().flying && !AbilityManager.consumeDurability(player, source, this)) {
+            deactivate(player, source);
         }
     }
 
     @Override
-    public void activate(Player player) {
+    public void activate(Player player, @Nullable AbilitySourceContext source) {
         player.getAbilities().mayfly = true;
         player.onUpdateAbilities();
     }
 
     @Override
-    public void deactivate(Player player) {
+    public void deactivate(Player player, @Nullable AbilitySourceContext source) {
         player.getAbilities().flying = false;
         player.getAbilities().mayfly = false;
         player.onUpdateAbilities();
     }
 
     @Override
-    public boolean isAvailable(ServerPlayer player) {
-        if (!AbilityManager.canAffordBurst(player, this)) {
+    public boolean isAvailable(ServerPlayer player, AbilitySourceContext source) {
+        if (!AbilityManager.canAffordDurability(source, this)) {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorType.CHESTPLATE, ModItems.graviliftHarness);
+        return true;
     }
 
     @Override
-    public boolean canActivate(ServerPlayer player) {
-        return BurstEnergy.getEnergy(player) >= getDefaultBurstCost();
+    public boolean canActivate(ServerPlayer player, AbilitySourceContext source) {
+        return AbilityManager.canAffordDurability(source, this);
     }
 }

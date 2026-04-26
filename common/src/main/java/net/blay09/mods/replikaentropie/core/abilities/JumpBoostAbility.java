@@ -1,13 +1,11 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.equipment.ArmorType;
+import org.jetbrains.annotations.Nullable;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -27,7 +25,7 @@ public class JumpBoostAbility implements Ability {
     }
 
     @Override
-    public void tick(Player player) {
+    public void tick(Player player, AbilitySourceContext source) {
         if (!player.level().isClientSide()) {
             if (!player.hasEffect(MobEffects.JUMP_BOOST)) {
                 player.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, -1, 2, false, false));
@@ -36,27 +34,26 @@ public class JumpBoostAbility implements Ability {
     }
 
     @Override
-    public void deactivate(Player player) {
+    public void deactivate(Player player, @Nullable AbilitySourceContext source) {
         if (!player.level().isClientSide()) {
             player.removeEffect(MobEffects.JUMP_BOOST);
         }
     }
 
     @Override
-    public boolean isAvailable(ServerPlayer player) {
-        return ReplikaArmor.hasPart(player, ArmorType.BOOTS, ModItems.bootSprings)
-                && AbilityManager.canAffordBurst(player, this);
+    public boolean isAvailable(ServerPlayer player, AbilitySourceContext source) {
+        return AbilityManager.canAffordDurability(source, this);
     }
 
     @Override
-    public boolean canActivate(ServerPlayer player) {
-        return isAvailable(player) && AbilityManager.canAffordBurst(player, this);
+    public boolean canActivate(ServerPlayer player, AbilitySourceContext source) {
+        return isAvailable(player, source) && AbilityManager.canAffordDurability(source, this);
     }
 
     public static void onJumpFromGround(Player player) {
-        if (AbilityManager.isAbilityActive(player, INSTANCE)) {
-            AbilityManager.consumeBurst(player, INSTANCE);
+        final var source = AbilityManager.getActiveSource(player, INSTANCE);
+        if (source != null) {
+            AbilityManager.consumeDurability(player, source, INSTANCE);
         }
     }
 }
-

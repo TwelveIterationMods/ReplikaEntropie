@@ -4,7 +4,7 @@
   "data": 12,
   "fragments": 2,
   "hardDependencies": [
-    "replikaentropie:research/burst_energy"
+    "replikaentropie:research/assembler"
   ],
   "icon": {
     "id": "replikaentropie:semisonic_speeders"

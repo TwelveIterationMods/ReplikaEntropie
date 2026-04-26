@@ -1,14 +1,11 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
-import net.blay09.mods.replikaentropie.item.ModItems;
-import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.equipment.ArmorType;
+import org.jetbrains.annotations.Nullable;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -31,8 +28,8 @@ public class BrightVisionAbility implements Ability {
     }
 
     @Override
-    public void tick(Player player) {
-        if (!AbilityManager.consumeBurst(player, this)) {
+    public void tick(Player player, AbilitySourceContext source) {
+        if (!AbilityManager.consumeDurability(player, source, this)) {
             return;
         }
 
@@ -47,7 +44,7 @@ public class BrightVisionAbility implements Ability {
     }
 
     @Override
-    public void deactivate(Player player) {
+    public void deactivate(Player player, @Nullable AbilitySourceContext source) {
         if (!player.level().isClientSide()) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (player instanceof ServerPlayer serverPlayer) {
@@ -57,8 +54,8 @@ public class BrightVisionAbility implements Ability {
     }
 
     @Override
-    public boolean isAvailable(ServerPlayer player) {
-        if (!AbilityManager.canAffordBurst(player, this)) {
+    public boolean isAvailable(ServerPlayer player, AbilitySourceContext source) {
+        if (!AbilityManager.canAffordDurability(source, this)) {
             return false;
         }
 
@@ -66,12 +63,12 @@ public class BrightVisionAbility implements Ability {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorType.HELMET, ModItems.brightVisionGoggles);
+        return true;
     }
 
     @Override
-    public boolean canActivate(ServerPlayer player) {
-        return BurstEnergy.getEnergy(player) >= BurstEnergy.MAX_ENERGY / 2f
+    public boolean canActivate(ServerPlayer player, AbilitySourceContext source) {
+        return AbilityManager.canAffordDurability(source, this)
                 && DarknessTracker.isInTheDark(player);
     }
 

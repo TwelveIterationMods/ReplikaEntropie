@@ -240,7 +240,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .save(output);
 
                 research(id("spring_boots"))
-                        .icon(ModItems.bootSprings)
+                        .icon(ModItems.springBouncers)
                         .dependsOn(id("research/burst_energy"))
                         .unlocksRecipe(id("assembler/spring_boots"))
                         .nonogram(id("spring_boots"))

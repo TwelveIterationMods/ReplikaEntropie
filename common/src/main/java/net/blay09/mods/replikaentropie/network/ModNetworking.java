@@ -13,7 +13,6 @@ public class ModNetworking {
         networking.registerServerboundPacket(AnalyzePosMessage.TYPE, AnalyzePosMessage.class, AnalyzePosMessage.STREAM_CODEC, AnalyzePosMessage::handle);
         networking.registerServerboundPacket(AnalyzeEntityMessage.TYPE, AnalyzeEntityMessage.class, AnalyzeEntityMessage.STREAM_CODEC, AnalyzeEntityMessage::handle);
         networking.registerClientboundPacket(DataCollectedMessage.TYPE, DataCollectedMessage.class, DataCollectedMessage.STREAM_CODEC, DataCollectedMessage::handle);
-        networking.registerClientboundPacket(BurstEnergyMessage.TYPE, BurstEnergyMessage.class, BurstEnergyMessage.STREAM_CODEC, BurstEnergyMessage::handle);
         networking.registerClientboundPacket(AbilityStateMessage.TYPE, AbilityStateMessage.class, AbilityStateMessage.STREAM_CODEC, AbilityStateMessage::handle);
         networking.registerServerboundPacket(ToggleAbilityMessage.TYPE, ToggleAbilityMessage.class, ToggleAbilityMessage.STREAM_CODEC, ToggleAbilityMessage::handle);
         networking.registerClientboundPacket(NonogramAutoHackResultMessage.TYPE, NonogramAutoHackResultMessage.class, NonogramAutoHackResultMessage.STREAM_CODEC, NonogramAutoHackResultMessage::handle);

@@ -1,9 +1,6 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
 import net.blay09.mods.balm.platform.event.callback.ServerTickCallback;
-import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
-import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -13,7 +10,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +27,7 @@ public class MagphaseAbility implements Ability {
     public static final Identifier ID = id("magphase");
     private static final Map<BlockGetter, Set<BlockPos>> magphasedPositionsByLevel = new WeakHashMap<>();
 
-    private record Magphaseable(float burstCost) {
+    private record Magphaseable(float durabilityCost) {
         public static final Magphaseable WATER = new Magphaseable(0.15f);
         public static final Magphaseable LAVA = new Magphaseable(0.3f);
     }
@@ -50,12 +46,12 @@ public class MagphaseAbility implements Ability {
     }
 
     @Override
-    public void tick(Player player) {
+    public void tick(Player player, AbilitySourceContext source) {
         final var level = player.level();
         final var pos = player.blockPosition().below();
         final var target = findTargetAt(level, pos);
         if (target != null) {
-            if (BurstEnergy.consumeEnergy(player, target.burstCost())) {
+            if (AbilityManager.consumeDurability(player, source, target.durabilityCost())) {
                 final var magphasedPositions = magphasedPositionsByLevel.computeIfAbsent(level, it -> new HashSet<>());
                 magphasedPositions.add(pos);
                 spawnFootParticles(level, player, ParticleTypes.ELECTRIC_SPARK);
@@ -64,7 +60,7 @@ public class MagphaseAbility implements Ability {
     }
 
     @Override
-    public boolean isAvailable(ServerPlayer player) {
+    public boolean isAvailable(ServerPlayer player, AbilitySourceContext source) {
         if (!player.onGround() && player.hasPose(Pose.CROUCHING)) {
             return false;
         }
@@ -77,7 +73,7 @@ public class MagphaseAbility implements Ability {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorType.BOOTS, ModItems.magphasers);
+        return AbilityManager.canAffordDurability(source, 1f);
     }
 
     public static void initialize() {

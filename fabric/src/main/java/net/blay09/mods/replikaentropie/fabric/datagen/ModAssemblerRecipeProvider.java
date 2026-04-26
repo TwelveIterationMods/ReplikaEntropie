@@ -191,7 +191,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.OBSIDIAN, 2)
                 .save(output);
 
-        assemblerRecipe(ModItems.bootSprings, 1)
+        assemblerRecipe(ModItems.springBouncers, 1)
                 .ingredient(Items.IRON_INGOT, 4)
                 .ingredient(Items.STRING, 2)
                 .ingredient(Items.IRON_CHAIN, 2)

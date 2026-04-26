@@ -1,8 +1,5 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
-import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
-import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -12,7 +9,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +20,7 @@ public class SlowphaseAbility implements Ability {
     public static final SlowphaseAbility INSTANCE = new SlowphaseAbility();
     public static final Identifier ID = id("slowphase");
 
-    private record Slowphaseable(float burstCost) {
+    private record Slowphaseable(float durabilityCost) {
         public static final Slowphaseable WATER = new Slowphaseable(0.2f);
         public static final Slowphaseable LAVA = new Slowphaseable(0.5f);
     }
@@ -43,12 +39,12 @@ public class SlowphaseAbility implements Ability {
     }
 
     @Override
-    public void tick(Player player) {
+    public void tick(Player player, AbilitySourceContext source) {
         final var level = player.level();
         final var pos = player.blockPosition().below();
         final var target = findTargetAt(level, pos);
         if (target != null) {
-            if (BurstEnergy.consumeEnergy(player, target.burstCost())) {
+            if (AbilityManager.consumeDurability(player, source, target.durabilityCost())) {
                 transformBlock(level, pos, target);
                 spawnFootParticles(level, player, target == Slowphaseable.LAVA ? ParticleTypes.SMOKE : ParticleTypes.SNOWFLAKE);
             }
@@ -56,7 +52,7 @@ public class SlowphaseAbility implements Ability {
     }
 
     @Override
-    public boolean isAvailable(ServerPlayer player) {
+    public boolean isAvailable(ServerPlayer player, AbilitySourceContext source) {
         if (!player.onGround() && player.hasPose(Pose.CROUCHING)) {
             return false;
         }
@@ -69,7 +65,7 @@ public class SlowphaseAbility implements Ability {
             return false;
         }
 
-        return ReplikaArmor.hasPart(player, ArmorType.BOOTS, ModItems.slowphasers);
+        return AbilityManager.canAffordDurability(source, 1f);
     }
 
     @Nullable

@@ -7,7 +7,6 @@ import net.blay09.mods.balm.client.platform.event.callback.RenderCallback;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.block.entity.WorldEaterBlockEntity;
-import net.blay09.mods.replikaentropie.client.gui.components.BurstEnergyBarRenderer;
 import net.blay09.mods.replikaentropie.client.gui.screens.ModScreens;
 import net.blay09.mods.replikaentropie.client.handler.ClientDataNotifications;
 import net.blay09.mods.replikaentropie.client.handler.HandheldAnalyzerClient;
@@ -31,7 +30,6 @@ public class ReplikaEntropieClient {
 
         HandheldAnalyzerClient.initialize();
         ClientDataNotifications.initialize();
-        BurstEnergyBarRenderer.initialize();
 
         Balm.modSupport().recipeViewers().register(ReplikaEntropie.id("recipes"), new ReplikaEntropieRecipeViewerProvider());
 

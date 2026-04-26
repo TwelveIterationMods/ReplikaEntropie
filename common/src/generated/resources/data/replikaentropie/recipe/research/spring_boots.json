@@ -3,7 +3,7 @@
   "biomass": 2,
   "data": 12,
   "hardDependencies": [
-    "replikaentropie:research/burst_energy"
+    "replikaentropie:research/assembler"
   ],
   "icon": {
     "id": "replikaentropie:spring_boots"

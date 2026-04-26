@@ -5,6 +5,7 @@ import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.network.protocol.AbilityStateMessage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
 public class AuthoritativeAbilityStateManager implements AbilityStateManager {
 
@@ -18,7 +19,7 @@ public class AuthoritativeAbilityStateManager implements AbilityStateManager {
     }
 
     @Override
-    public void setActive(Player player, Ability ability, boolean active) {
+    public void setActive(Player player, Ability ability, boolean active, @Nullable AbilitySourceContext source) {
         final var data = getPersistentData(player);
         final var abilityStates = data.getCompoundOrEmpty(ABILITY_STATES);
         data.put(ABILITY_STATES, abilityStates);
@@ -27,17 +28,12 @@ public class AuthoritativeAbilityStateManager implements AbilityStateManager {
         abilityStates.putBoolean(abilityKey, active);
 
         if (!wasActive && active) {
-            ability.activate(player);
+            ability.activate(player, source);
         } else if(wasActive && !active) {
-            ability.deactivate(player);
+            ability.deactivate(player, source);
         }
 
-        Balm.networking().sendTo(player, new AbilityStateMessage(ability.getId(), active, ability.getDefaultBurstCost()));
-    }
-
-    @Override
-    public float getBurstCost(Player player, Ability ability) {
-        return ability.getDefaultBurstCost();
+        Balm.networking().sendTo(player, new AbilityStateMessage(ability.getId(), active));
     }
 
     private static CompoundTag getPersistentData(Player player) {

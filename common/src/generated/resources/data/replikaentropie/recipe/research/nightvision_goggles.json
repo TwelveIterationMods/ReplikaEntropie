@@ -3,7 +3,7 @@
   "data": 12,
   "fragments": 4,
   "hardDependencies": [
-    "replikaentropie:research/burst_energy"
+    "replikaentropie:research/assembler"
   ],
   "icon": {
     "id": "replikaentropie:nightvision_goggles"

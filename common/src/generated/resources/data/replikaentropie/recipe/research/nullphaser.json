@@ -3,7 +3,7 @@
   "data": 8,
   "fragments": 8,
   "hardDependencies": [
-    "replikaentropie:research/burst_energy"
+    "replikaentropie:research/assembler"
   ],
   "icon": {
     "id": "replikaentropie:nullphaser"

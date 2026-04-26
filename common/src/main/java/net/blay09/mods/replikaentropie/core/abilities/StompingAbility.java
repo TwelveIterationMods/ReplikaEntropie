@@ -1,8 +1,6 @@
 package net.blay09.mods.replikaentropie.core.abilities;
 
 import net.blay09.mods.balm.platform.event.callback.LivingEntityCallback;
-import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
-import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -13,11 +11,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Nullable;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -45,13 +43,12 @@ public class StompingAbility implements Ability {
     }
 
     @Override
-    public void tick(Player player) {
+    public void tick(Player player, AbilitySourceContext source) {
     }
 
     @Override
-    public boolean isAvailable(ServerPlayer player) {
-        return ReplikaArmor.hasPart(player, ArmorType.BOOTS, ModItems.stompers)
-                && AbilityManager.canAffordBurst(player, this);
+    public boolean isAvailable(ServerPlayer player, AbilitySourceContext source) {
+        return AbilityManager.canAffordDurability(source, this);
     }
 
     public static void initialize() {
@@ -70,9 +67,16 @@ public class StompingAbility implements Ability {
             return;
         }
 
+        final var source = AbilityManager.getActiveSource(player, INSTANCE);
+        if (source == null) {
+            return;
+        }
+
         final var level = player.level();
         final var pos = player.blockPosition();
-        AbilityManager.consumeBurst(player, this);
+        if (!AbilityManager.consumeDurability(player, source, this)) {
+            return;
+        }
 
         if (!level.isClientSide()) {
             createCrater(level, pos, CRATER_RADIUS);

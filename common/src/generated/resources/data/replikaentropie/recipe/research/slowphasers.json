@@ -3,7 +3,7 @@
   "data": 10,
   "fragments": 4,
   "hardDependencies": [
-    "replikaentropie:research/burst_energy"
+    "replikaentropie:research/assembler"
   ],
   "icon": {
     "id": "replikaentropie:slowphasers"

@@ -8,7 +8,6 @@ import net.blay09.mods.replikaentropie.command.ReplikaEntropieCommand;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.core.abilities.*;
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
-import net.blay09.mods.replikaentropie.core.burst.BurstEnergy;
 import net.blay09.mods.replikaentropie.core.dataminer.GlobalEventLog;
 import net.blay09.mods.replikaentropie.core.dataminer.LocalEventLog;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
@@ -28,9 +27,7 @@ import org.slf4j.LoggerFactory;
 public class ReplikaEntropie {
 
     // Highest Priority
-    // - Replika Workbench is trash right now. Should be redesigned to be a block for overall upgrading and configuration of RE items.
     // - Fragmental Generator, generates power from fragments
-    // - Introduce durability (energy-based) for all items. Burst still exists, and can be separately upgraded. Essentially, durability recharges the burst, while burst determines use duration at a time.
     // - "Blue Printer" to print custom assembly tickets (or duplicate them), needs paper, ink, and cyan dye
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
@@ -58,8 +55,6 @@ public class ReplikaEntropie {
         LocalEventLog.initialize();
         Analyzer.initialize();
         FragmentalWaste.initialize();
-        BurstEnergy.initialize();
-
         AbilityManager.initialize();
         MagphaseAbility.initialize();
         StompingAbility.initialize();
