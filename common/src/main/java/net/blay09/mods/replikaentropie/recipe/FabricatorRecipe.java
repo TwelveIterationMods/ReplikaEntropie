@@ -3,26 +3,23 @@ package net.blay09.mods.replikaentropie.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.blay09.mods.balm.mixin.RecipeManagerAccessor;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
-import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public record FabricatorRecipe(int scrap, int biomass, int fragments,
-                               ItemStackTemplate result, int sortOrder) implements Recipe<RecipeInput>, PreviewableRecipe {
+                               ItemStackTemplate result,
+                               int sortOrder) implements Recipe<RecipeInput>, PreviewableRecipe {
     private static final MapCodec<FabricatorRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.optionalFieldOf("scrap", 0).forGetter(FabricatorRecipe::scrap),
             Codec.INT.optionalFieldOf("biomass", 0).forGetter(FabricatorRecipe::biomass),
@@ -45,14 +42,11 @@ public record FabricatorRecipe(int scrap, int biomass, int fragments,
             FabricatorRecipe::new
     );
 
-    public static List<FabricatorRecipe> getRecipes(Level level) {
-        return level != null
-                && level instanceof ServerLevel serverLevel
-                ? serverLevel.recipeAccess().getRecipes().stream()
-                .filter(holder -> holder.value().getType() == ModRecipes.fabricator.type())
-                .map(holder -> (FabricatorRecipe) holder.value())
-                .sorted(Comparator.comparingInt(FabricatorRecipe::sortOrder))
-                .toList()
+    public static List<RecipeHolder<FabricatorRecipe>> getRecipes(Level level) {
+        return level instanceof ServerLevel serverLevel
+                ? ((RecipeManagerAccessor) serverLevel.recipeAccess()).balm$getRecipeMap().byType(ModRecipes.fabricator.type()).stream()
+                  .sorted(Comparator.comparingInt(it -> it.value().sortOrder()))
+                  .toList()
                 : Collections.emptyList();
     }
 
@@ -79,10 +73,6 @@ public record FabricatorRecipe(int scrap, int biomass, int fragments,
     @Override
     public String group() {
         return "";
-    }
-
-    public ItemStack getResultItem() {
-        return result.create();
     }
 
     @Override

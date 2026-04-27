@@ -13,8 +13,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.util.Collections;
 import java.util.List;
 
 public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
@@ -23,7 +25,7 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
     private final Container container;
     private final ContainerData data;
     private final ContainerLevelAccess access;
-    private final List<FabricatorRecipe> recipes;
+    private final List<RecipeHolder<FabricatorRecipe>> recipes;
     private final RecipeContainer<FabricatorRecipe> recipeContainer = new RecipeContainer<>(7 * 4);
     private final QuickMove.Routing quickMove;
 
@@ -40,11 +42,11 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
 
     public static final int DATA_COUNT = DATA_RECIPES_END;
 
-    public FabricatorMenu(int containerId, Inventory playerInventory, List<FabricatorRecipe> recipes) {
-        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, recipes);
+    public FabricatorMenu(int containerId, Inventory playerInventory) {
+        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, Collections.emptyList());
     }
 
-    public FabricatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access, List<FabricatorRecipe> recipes) {
+    public FabricatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access, List<RecipeHolder<FabricatorRecipe>> recipes) {
         super(ModMenus.fabricator.value(), containerId);
         this.playerInventory = playerInventory;
         this.container = container;
@@ -96,7 +98,7 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
     private void updateRecipeDisplays() {
         for (int i = 0; i < recipeContainer.getContainerSize(); i++) {
             final var recipe = i < recipes.size() ? recipes.get(i) : null;
-            recipeContainer.setRecipe(i, recipe);
+            recipeContainer.setRecipe(i, recipe != null ? recipe.value() : null);
         }
     }
 

@@ -56,7 +56,7 @@ public class ModMenus {
         fabricator = menus.register("fabricator", new BalmMenuFactory<FabricatorMenu, Unit>() {
             @Override
             public FabricatorMenu create(int syncId, Inventory inventory, Unit unit) {
-                return new FabricatorMenu(syncId, inventory, FabricatorRecipe.getRecipes(inventory.player.level()));
+                return new FabricatorMenu(syncId, inventory);
             }
 
             @Override
