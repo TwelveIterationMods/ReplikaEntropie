@@ -123,6 +123,7 @@ public class ModItems {
                     output.accept(ModBlocks.solarSink);
                     output.accept(ModBlocks.waterSink);
                     output.accept(ModBlocks.lavaSink);
+                    output.accept(ModBlocks.bluePrinter);
                     output.accept(ModBlocks.funnel);
                     output.accept(ModBlocks.fabricator);
                     output.accept(ModBlocks.entropicDataMiner);

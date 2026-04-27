@@ -25,6 +25,7 @@ public class ModMenus {
     public static Holder<MenuType<BiomassIncubatorMenu>> biomassIncubator;
     public static Holder<MenuType<EntropicDataMinerMenu>> entropicDataMiner;
     public static Holder<MenuType<RecyclerMenu>> recycler;
+    public static Holder<MenuType<BluePrinterMenu>> bluePrinter;
     public static Holder<MenuType<AbstractNonogramMenu>> nonogram;
     public static Holder<MenuType<AbstractNonogramMenu>> nonogramEditor;
 
@@ -189,6 +190,18 @@ public class ModMenus {
             @Override
             public RecyclerMenu create(int syncId, Inventory inventory, Unit unit) {
                 return new RecyclerMenu(syncId, inventory);
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, Unit> getStreamCodec() {
+                return Unit.STREAM_CODEC.cast();
+            }
+        }).asHolder();
+
+        bluePrinter = menus.register("blue_printer", new BalmMenuFactory<BluePrinterMenu, Unit>() {
+            @Override
+            public BluePrinterMenu create(int syncId, Inventory inventory, Unit unit) {
+                return new BluePrinterMenu(syncId, inventory);
             }
 
             @Override

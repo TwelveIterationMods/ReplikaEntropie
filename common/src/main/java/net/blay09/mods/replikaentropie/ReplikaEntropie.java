@@ -26,10 +26,6 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
-    // Highest Priority
-    // - Fragmental Generator, generates power from fragments
-    // - "Blue Printer" to print custom assembly tickets (or duplicate them), needs paper, ink, and cyan dye
-
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 
     public static final String MOD_ID = "replikaentropie";

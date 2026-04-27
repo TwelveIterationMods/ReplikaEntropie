@@ -20,6 +20,7 @@ public class ModScreens {
         screens.register(ModMenus.biomassIncubator, BiomassIncubatorScreen::new);
         screens.register(ModMenus.entropicDataMiner, EntropicDataMinerScreen::new);
         screens.register(ModMenus.recycler, RecyclerScreen::new);
+        screens.register(ModMenus.bluePrinter, BluePrinterScreen::new);
         screens.register(ModMenus.nonogram, NonogramScreen::new);
         screens.register(ModMenus.nonogramEditor, NonogramScreen::new);
     }

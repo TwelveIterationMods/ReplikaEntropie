@@ -22,6 +22,7 @@ public class ModBlockEntities {
     public static Holder<BlockEntityType<ChaosEngineBlockEntity>> chaosEngine;
     public static Holder<BlockEntityType<WaterSinkBlockEntity>> waterSink;
     public static Holder<BlockEntityType<LavaSinkBlockEntity>> lavaSink;
+    public static Holder<BlockEntityType<BluePrinterBlockEntity>> bluePrinter;
     public static Holder<BlockEntityType<SolarSinkBlockEntity>> solarSink;
     public static Holder<BlockEntityType<FunnelBlockEntity>> funnel;
     public static Holder<BlockEntityType<DigSpotBlockEntity>> digSpot;
@@ -90,6 +91,10 @@ public class ModBlockEntities {
         lavaSink = blockEntities.register("lava_sink",
                 LavaSinkBlockEntity::new,
                 ModBlocks.lavaSink).asHolder();
+
+        bluePrinter = blockEntities.register("blue_printer",
+                BluePrinterBlockEntity::new,
+                ModBlocks.bluePrinter).asHolder();
 
         solarSink = blockEntities.register("solar_sink",
                 SolarSinkBlockEntity::new,
