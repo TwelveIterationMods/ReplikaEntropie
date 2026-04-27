@@ -34,6 +34,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
     private static final Identifier LAVASCRAP_TEXTURE = id("textures/gui/jei/lavascrap.png");
     private static final Identifier COBBLESCRAP_TEXTURE = id("textures/gui/jei/cobblescrap.png");
     private static final Identifier FRAGMENT_ACCELERATOR_TEXTURE = id("textures/gui/jei/fragment_accelerator.png");
+    private static final Identifier FRAGMENTAL_GENERATOR_TEXTURE = id("textures/gui/jei/fragmental_generator.png");
     private static final Identifier BIOMASS_HARVESTER_TEXTURE = id("textures/gui/jei/biomass_harvester.png");
 
     @Override
@@ -50,6 +51,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
         registerFabricatorRecipes(registrar);
         registerResearchRecipes(registrar);
         registerFragmentAcceleratorRecipes(registrar);
+        registerFragmentalGeneratorRecipes(registrar);
         registerLavascrapRecipe(registrar);
         registerCobblescrapRecipe(registrar);
         registerBiomassHarvesterRecipe(registrar);
@@ -191,6 +193,26 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                             slots.inputSlot(30, 59).add(recipe.ingredient());
                             slots.outputSlot(30, 30).add(resourceStack(ModItems.fragments, FragmentAcceleratorBlockEntity.OUTPUT_MULTIPLIER));
                             slots.outputSlot(61, 30).add(ModBlocks.wasteBarrel);
+                        }));
+    }
+
+    private static void registerFragmentalGeneratorRecipes(RecipeViewerRegistrar registrar) {
+        registrar.registerRecipeType(id("fragmental_generator"), FragmentalGeneratorRecipe.class)
+                .withSyncedRecipes(ModRecipes.fragmentalGenerator)
+                .withCraftingStation(ModBlocks.fragmentalGenerator)
+                .buildDisplay(display -> display
+                        .title(Component.translatable(id("fragmental_generator").toLanguageKey("jei")))
+                        .icon(ModBlocks.fragmentalGenerator)
+                        .size(129, 87)
+                        .background(FRAGMENTAL_GENERATOR_TEXTURE)
+                        .slots((recipe, slots) -> {
+                            for (int row = 0; row < 3; row++) {
+                                for (int column = 0; column < 4; column++) {
+                                    if((column + row * 3) % 2 == 0) {
+                                        slots.inputSlot(1 + column * 37, 1 + row * 25).add(recipe.ingredient());
+                                    }
+                                }
+                            }
                         }));
     }
 
