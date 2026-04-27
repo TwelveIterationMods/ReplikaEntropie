@@ -6,12 +6,15 @@ import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -20,21 +23,27 @@ import net.minecraft.world.item.crafting.Ingredient;
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
 public class BluePrinterMenu extends AbstractContainerMenu {
+    public static final int DATA_PROCESSING_TIME = 0;
+    public static final int DATA_MAX_PROCESSING_TIME = 1;
+    public static final int DATA_COUNT = 2;
 
     private final Inventory inventory;
     private final Container container;
+    private final ContainerData data;
     private final Container previewContainer = new SimpleContainer(1);
     private final QuickMove.Routing quickMove;
 
     public BluePrinterMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(BluePrinterBlockEntity.CONTAINER_SIZE), ContainerLevelAccess.NULL);
+        this(id, inventory, new SimpleContainer(BluePrinterBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
-    public BluePrinterMenu(int id, Inventory inventory, Container container, ContainerLevelAccess access) {
+    public BluePrinterMenu(int id, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.bluePrinter.value(), id);
         this.inventory = inventory;
         this.container = container;
+        this.data = data;
         checkContainerSize(container, BluePrinterBlockEntity.CONTAINER_SIZE);
+        addDataSlots(data);
 
         addSlot(new IngredientSlot(container, BluePrinterBlockEntity.PAPER_SLOT, 81, 50, Ingredient.of(Items.PAPER), id("container/slot/paper")));
         addSlot(new IngredientSlot(container, BluePrinterBlockEntity.INK_SLOT, 81, 25, Ingredient.of(Items.INK_SAC), id("container/slot/ink_sac")));
@@ -86,6 +95,15 @@ public class BluePrinterMenu extends AbstractContainerMenu {
     public void removed(Player player) {
         super.removed(player);
         container.stopOpen(player);
+    }
+
+    public float getProcessingProgress() {
+        final var maxProcessingTime = data.get(DATA_MAX_PROCESSING_TIME);
+        if (maxProcessingTime <= 0) {
+            return 0f;
+        }
+
+        return Mth.clamp(data.get(DATA_PROCESSING_TIME) / (float) maxProcessingTime, 0f, 1f);
     }
 
     @Override

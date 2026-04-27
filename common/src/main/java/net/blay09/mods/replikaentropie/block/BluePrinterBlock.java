@@ -5,9 +5,11 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.block.entity.BluePrinterBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -19,10 +21,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Map;
 
 public class BluePrinterBlock extends BaseEntityBlock {
     public static final MapCodec<BluePrinterBlock> CODEC = simpleCodec(BluePrinterBlock::new);
+    private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(Shapes.or(
+            Shapes.box(0, 0, 2 / 16f, 1, 9 / 16f, 14 / 16f),
+            Shapes.box(0, 0, 14 / 16f, 1, 11 / 16f, 1)
+    ).optimize());
 
     protected BluePrinterBlock(Properties properties) {
         super(properties);
@@ -51,6 +62,11 @@ public class BluePrinterBlock extends BaseEntityBlock {
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide() ? null : createTickerHelper(type, ModBlockEntities.bluePrinter.value(), BluePrinterBlockEntity::serverTick);
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPES.get(state.getValue(BlockStateProperties.HORIZONTAL_FACING));
     }
 
     @Override

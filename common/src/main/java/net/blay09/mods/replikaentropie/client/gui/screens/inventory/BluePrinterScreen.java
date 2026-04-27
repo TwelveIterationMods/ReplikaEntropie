@@ -21,5 +21,11 @@ public class BluePrinterScreen extends AbstractContainerScreen<BluePrinterMenu> 
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(graphics, mouseX, mouseY, partialTick);
         graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+
+        final var progress = menu.getProcessingProgress();
+        if (progress > 0f) {
+            final var width = Math.max(1, Math.round(24 * progress));
+            graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos + 104, topPos + 49, 176, 0, width, 16, 256, 256);
+        }
     }
 }

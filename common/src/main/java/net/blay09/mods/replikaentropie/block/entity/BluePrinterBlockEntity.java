@@ -22,6 +22,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class BluePrinterBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
-    private static final int PROCESSING_TICKS = 20;
+    private static final int PROCESSING_TICKS = 30;
 
     public static final int CONTAINER_SIZE = 13;
     public static final int PAPER_SLOT = 0;
@@ -69,6 +70,25 @@ public class BluePrinterBlockEntity extends BlockEntity implements BalmContainer
 
     private final Container outputContainer = new SubContainer(backingContainer, OUTPUT_SLOT, OUTPUT_SLOT + 1);
     private int processingTicks;
+    private final ContainerData dataAccess = new ContainerData() {
+        @Override
+        public int get(int index) {
+            return switch (index) {
+                case BluePrinterMenu.DATA_PROCESSING_TIME -> processingTicks;
+                case BluePrinterMenu.DATA_MAX_PROCESSING_TIME -> PROCESSING_TICKS;
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(int index, int value) {
+        }
+
+        @Override
+        public int getCount() {
+            return BluePrinterMenu.DATA_COUNT;
+        }
+    };
 
     public BluePrinterBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.bluePrinter.value(), pos, state);
@@ -81,7 +101,7 @@ public class BluePrinterBlockEntity extends BlockEntity implements BalmContainer
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-        return new BluePrinterMenu(id, inv, backingContainer, ContainerLevelAccess.create(level, worldPosition));
+        return new BluePrinterMenu(id, inv, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
     }
 
     @Override

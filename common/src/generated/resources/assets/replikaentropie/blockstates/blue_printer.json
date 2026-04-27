@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/blue_printer",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/blue_printer"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/blue_printer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/blue_printer",
+      "y": 270
+    }
+  }
+}
