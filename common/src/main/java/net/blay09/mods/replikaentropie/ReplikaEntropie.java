@@ -29,7 +29,6 @@ public class ReplikaEntropie {
     // TODO Blue Printer has no recipe
     // TODO Energy Bar shifts UV every second step
     // TODO Tooltip for Makeshift PSU Button
-    // TODO World Eater should play block break sounds
     // TODO Fragmental Generator should have a tooltip on the Temperature Bar
     // TODO Energy Bars should have a tooltip
     // TODO Fragment Accelerator should probably accept fragments as inputs too

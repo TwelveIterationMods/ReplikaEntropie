@@ -26,6 +26,8 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -225,6 +227,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                                 .ifPresent(scannedBlock -> {
                                     scannedPositions.put(slotToFill, scannedBlock.pos());
                                     previewContainer.setItem(slotToFill, scannedBlock.itemStack());
+                                    level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5f, (float) (0.5 + Math.random()));
                                     sendTrailParticles(level, Vec3.atCenterOf(scannedBlock.pos()), Vec3.atCenterOf(worldPosition));
                                 });
                     }
@@ -252,7 +255,9 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                             final var targetPos = scannedPositions.get(currentDestroySlot);
                             final var targetState = level.getBlockState(targetPos);
                             if (isQuestionablyEdibleBlock(level, targetPos, targetState)) {
+                                final var breakSound = targetState.getSoundType().getBreakSound();
                                 level.removeBlock(targetPos, false);
+                                level.playSound(null, worldPosition, breakSound, SoundSource.BLOCKS, 0.5f, (float) (0.5 + Math.random()));
                                 Block.getDrops(targetState, level, targetPos, null)
                                         .forEach(this::insertOrBuffer);
                             }
