@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 public class ReplikaEntropie {
 
     // TODO Blue Printer has no recipe
-    // TODO Energy Bar shifts UV every second step
     // TODO Fragmental Generator should have a tooltip on the Temperature Bar
 
     // TODO Handheld Analyzer item is too big in hand
@@ -40,7 +39,6 @@ public class ReplikaEntropie {
     // TODO Ore Vacuum behaves badly on redstone because it gets lit
     // TODO Nullphaser should be able to be used to climb up a ledge
     // TODO Replika Suit needs a crafting recipe
-    // TODO Use Magphasers for Replika Striders
     // TODO The part upgrades should get their graphics tweaked
     // TODO How to get Power from A to B?
     // TODO Waste Barrel Minecarts would be cool
