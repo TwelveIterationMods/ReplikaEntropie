@@ -1,6 +1,9 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
 import net.blay09.mods.balm.world.BalmContainerProvider;
+import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
+import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
+import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.ContainerUtils;
 import net.blay09.mods.balm.world.DefaultContainer;
@@ -9,6 +12,7 @@ import net.blay09.mods.replikaentropie.item.DataItem;
 import net.blay09.mods.replikaentropie.menu.EntropicDataMinerMenu;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,6 +27,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,9 +37,12 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
-public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
+public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
 
     public static final int CONTAINER_SIZE = 10;
+    private static final int ENERGY_CAPACITY = 10000;
+    private static final int ENERGY_INPUT_RATE = 1000;
+    private static final int ENERGY_COST_PER_EVENT = 10;
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override
@@ -45,6 +53,33 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
             return false;
+        }
+    };
+
+    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+        @Override
+        public void setChanged() {
+            EntropicDataMinerBlockEntity.this.setChanged();
+        }
+    };
+
+    private final ContainerData dataAccess = new ContainerData() {
+        @Override
+        public int get(int index) {
+            return switch (index) {
+                case EntropicDataMinerMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
+                case EntropicDataMinerMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(int index, int value) {
+        }
+
+        @Override
+        public int getCount() {
+            return EntropicDataMinerMenu.DATA_COUNT;
         }
     };
 
@@ -63,7 +98,7 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new EntropicDataMinerMenu(containerId, inventory, backingContainer, ContainerLevelAccess.create(level, worldPosition));
+        return new EntropicDataMinerMenu(containerId, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
     }
 
     @Override
@@ -81,20 +116,39 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
         return backingContainer;
     }
 
+    @Override
+    public EnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
+    @Override
+    public EnergyStorage getEnergyStorage(Direction side) {
+        return energyStorage;
+    }
+
     public void addEvent(DataMinedEvent event) {
-        ContainerUtils.insertItem(backingContainer, DataItem.create(event), false);
-        setChanged();
+        if (energyStorage.getEnergy() < ENERGY_COST_PER_EVENT) {
+            return;
+        }
+
+        final var remainingItem = ContainerUtils.insertItem(backingContainer, DataItem.create(event), false);
+        if (remainingItem.isEmpty()) {
+            energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_EVENT);
+            setChanged();
+        }
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         backingContainer.getItems().clear();
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
+        energyStorage.deserialize(input);
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
         ContainerHelper.saveAllItems(output, backingContainer.getItems());
+        energyStorage.serialize(output);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
+import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
+import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.EntropicDataMinerMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -13,9 +15,18 @@ import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 public class EntropicDataMinerScreen extends AbstractContainerScreen<EntropicDataMinerMenu> {
 
     private static final Identifier TEXTURE = id("textures/gui/container/entropic_data_miner.png");
+    private static final Identifier LEFT_WING = id("left_wing");
+    private final EnergyBar energyBar = new EnergyBar(-23, 5);
 
     public EntropicDataMinerScreen(EntropicDataMinerMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
+        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 166);
+        inventoryLabelY = imageHeight - 94;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 96, menu.containerId));
     }
 
     @Override
@@ -23,6 +34,9 @@ public class EntropicDataMinerScreen extends AbstractContainerScreen<EntropicDat
         super.extractBackground(graphics, mouseX, mouseY, a);
 
         graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 1, 24, 90);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 92, 28, 28);
+        energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 
 }
