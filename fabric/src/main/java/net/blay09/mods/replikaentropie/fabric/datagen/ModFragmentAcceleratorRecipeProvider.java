@@ -1,6 +1,7 @@
 package net.blay09.mods.replikaentropie.fabric.datagen;
 
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
+import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.recipe.FragmentAcceleratorRecipe;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -73,6 +74,8 @@ public class ModFragmentAcceleratorRecipeProvider extends FabricRecipeProvider {
             @Override
             public void buildRecipes() {
                 EXOTIC_PLANTS.forEach(exoticPlant -> fragmentAcceleratorRecipe(exoticPlant, 0.2f).save(output));
+
+                fragmentAcceleratorRecipe(ModItems.fragments.asItem(), 0.1f).save(output);
 
                 fragmentAcceleratorRecipe(Items.SOUL_TORCH, SOUL_FRAGMENTS).save(output);
                 fragmentAcceleratorRecipe(Items.REDSTONE_TORCH, REDSTONE_FRAGMENTS).save(output);
