@@ -111,6 +111,16 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_biomass", has(ModItems.biomass))
                         .save(output);
 
+                shapeless(RecipeCategory.COMBAT, ModItems.replikaAlloy)
+                        .requires(ModItems.biosteel)
+                        .requires(ModItems.scrap)
+                        .requires(ModItems.scrap)
+                        .requires(ModItems.fragments)
+                        .requires(ModItems.fragments)
+                        .requires(ModItems.fragments)
+                        .unlockedBy("has_biosteel", has(ModItems.biosteel))
+                        .save(output);
+
                 shapeless(RecipeCategory.COMBAT, ModItems.hazmatLining, 4)
                         .requires(Items.LEATHER)
                         .requires(Items.ARMADILLO_SCUTE)

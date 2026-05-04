@@ -42,6 +42,7 @@ public class ModItems {
     public static DeferredItem hazmatChestplate;
     public static DeferredItem hazmatLeggings;
     public static DeferredItem hazmatBoots;
+    public static DeferredItem replikaAlloy;
     public static DeferredItem replikaHelmet;
     public static DeferredItem replikaChestplate;
     public static DeferredItem replikaLeggings;
@@ -72,6 +73,7 @@ public class ModItems {
         fragments = items.register("fragments", Item::new, it -> it).asDeferredItem();
         chipset = items.register("chipset", Item::new, it -> it).asDeferredItem();
         biosteel = items.register("biosteel", Item::new, it -> it).asDeferredItem();
+        replikaAlloy = items.register("replika_alloy", Item::new, it -> it).asDeferredItem();
         assemblyTicket = items.register("assembly_ticket", AssemblyTicketItem::new, it -> it).asDeferredItem();
         biomash = items.register("biomash", Item::new, it -> it.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.1f).build())).asDeferredItem();
         nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> withAbility(humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET), NightVisionAbility.ID)).asDeferredItem();
@@ -148,6 +150,7 @@ public class ModItems {
                     output.accept(biosteelChestplate);
                     output.accept(biosteelLeggings);
                     output.accept(biosteelBoots);
+                    output.accept(replikaAlloy);
                     output.accept(replikaHelmet);
                     output.accept(replikaChestplate);
                     output.accept(replikaLeggings);

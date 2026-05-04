@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "replikaentropie:biosteel",
+    "replikaentropie:scrap",
+    "replikaentropie:scrap",
+    "replikaentropie:fragments",
+    "replikaentropie:fragments",
+    "replikaentropie:fragments"
+  ],
+  "result": {
+    "id": "replikaentropie:replika_alloy"
+  }
+}

@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 public class ReplikaEntropie {
 
     // TODO Blue Printer has no recipe
-
     // TODO Blue Printer model is ugly and broken
     // TODO Entropic Data Miner is spammed with the same events
     // TODO Fragment Accelerator is a bit confusing right now - no output at all on low speeds?
@@ -39,6 +38,9 @@ public class ReplikaEntropie {
     // TODO The part upgrades should get their graphics tweaked
     // TODO How to get Power from A to B?
     // TODO Waste Barrel Minecarts would be cool
+    // TODO Charging Rail
+    // TODO Crane
+    // TODO Biomass Incubator not using up water, no progress in UI
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 
