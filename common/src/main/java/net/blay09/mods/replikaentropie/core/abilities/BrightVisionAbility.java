@@ -55,21 +55,12 @@ public class BrightVisionAbility implements Ability {
 
     @Override
     public boolean isAvailable(ServerPlayer player, AbilitySourceContext source) {
-        if (!AbilityManager.canAffordDurability(source, this)) {
-            return false;
-        }
-
-        if (DarknessTracker.isWithTheLight(player)) {
-            return false;
-        }
-
-        return true;
+        return AbilityManager.canAffordDurability(source, this);
     }
 
     @Override
     public boolean canActivate(ServerPlayer player, AbilitySourceContext source) {
-        return AbilityManager.canAffordDurability(source, this)
-                && DarknessTracker.isInTheDark(player);
+        return AbilityManager.canAffordDurability(source, this);
     }
 
     @Override
