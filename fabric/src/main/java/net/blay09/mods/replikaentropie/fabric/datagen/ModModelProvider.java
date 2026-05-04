@@ -118,12 +118,12 @@ public class ModModelProvider extends FabricModelProvider {
 
         generators.generateFlatItem(ModItems.nightVisionGoggles.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.brightVisionGoggles.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.graviliftHarness.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.graviliftEngine.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.semisonicSpeeders.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.magphasers.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.slowphasers.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.stompers.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.springBouncers.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.bouncers.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.automaticHackTool.asItem(), ModelTemplates.FLAT_ITEM);
     }
 }

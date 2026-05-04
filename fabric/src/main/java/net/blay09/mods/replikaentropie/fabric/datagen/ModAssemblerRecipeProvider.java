@@ -67,7 +67,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.GLOW_INK_SAC, 2)
                 .save(output);
 
-        assemblerRecipe(ModItems.graviliftHarness, 1)
+        assemblerRecipe(ModItems.graviliftEngine, 1)
                 .ingredient(Items.IRON_INGOT, 8)
                 .ingredient(Items.FEATHER, 8)
                 .ingredient(Items.GHAST_TEAR, 2)
@@ -191,7 +191,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.OBSIDIAN, 2)
                 .save(output);
 
-        assemblerRecipe(ModItems.springBouncers, 1)
+        assemblerRecipe(ModItems.bouncers, 1)
                 .ingredient(Items.IRON_INGOT, 4)
                 .ingredient(Items.STRING, 2)
                 .ingredient(Items.IRON_CHAIN, 2)

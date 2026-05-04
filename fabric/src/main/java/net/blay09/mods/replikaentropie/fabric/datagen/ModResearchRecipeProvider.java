@@ -240,7 +240,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .save(output);
 
                 research(id("spring_boots"))
-                        .icon(ModItems.springBouncers)
+                        .icon(ModItems.bouncers)
                         .dependsOn(id("research/burst_energy"))
                         .unlocksRecipe(id("assembler/spring_boots"))
                         .nonogram(id("spring_boots"))
@@ -280,7 +280,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .save(output);
 
                 research(id("gravilift_harness"))
-                        .icon(ModItems.graviliftHarness)
+                        .icon(ModItems.graviliftEngine)
                         .dependsOn(id("research/burst_energy"))
                         .unlocksRecipe(id("assembler/gravilift_harness"))
                         .nonogram(id("gravilift_harness"))
