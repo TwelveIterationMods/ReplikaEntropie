@@ -9,6 +9,10 @@
     "id": "replikaentropie:chipset"
   },
   "nonogram": "replikaentropie:chipset",
+  "research_type": "assembler",
   "scrap": 1,
-  "sort_order": 1700
+  "sort_order": 1700,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/chipset"
+  ]
 }

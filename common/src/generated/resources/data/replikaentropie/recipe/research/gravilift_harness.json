@@ -7,7 +7,7 @@
     "replikaentropie:research/burst_energy"
   ],
   "icon": {
-    "id": "replikaentropie:gravilift_harness"
+    "id": "replikaentropie:gravilift_engine"
   },
   "nonogram": "replikaentropie:gravilift_harness",
   "research_type": "assembler",

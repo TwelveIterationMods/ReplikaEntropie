@@ -6,7 +6,7 @@
     "replikaentropie:research/burst_energy"
   ],
   "icon": {
-    "id": "replikaentropie:spring_bouncers"
+    "id": "replikaentropie:bouncers"
   },
   "nonogram": "replikaentropie:spring_boots",
   "research_type": "assembler",

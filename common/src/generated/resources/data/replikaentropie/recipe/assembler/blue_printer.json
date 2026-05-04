@@ -1,0 +1,26 @@
+{
+  "type": "replikaentropie:assembler",
+  "ingredients": [
+    {
+      "count": 9,
+      "ingredient": "minecraft:iron_ingot"
+    },
+    {
+      "ingredient": "replikaentropie:chipset"
+    },
+    {
+      "count": 4,
+      "ingredient": "minecraft:paper"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:ink_sac"
+    },
+    {
+      "ingredient": "minecraft:cyan_dye"
+    }
+  ],
+  "result": {
+    "id": "replikaentropie:blue_printer"
+  }
+}

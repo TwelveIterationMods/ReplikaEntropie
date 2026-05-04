@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "replikaentropie:item/gravilift_harness"
+    "layer0": "replikaentropie:item/gravilift_engine"
   }
 }

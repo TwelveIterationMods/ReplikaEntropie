@@ -1,0 +1,5 @@
+{
+  "type": "replikaentropie:fragment_accelerator",
+  "fragments": 0.1,
+  "ingredient": "minecraft:redstone"
+}
