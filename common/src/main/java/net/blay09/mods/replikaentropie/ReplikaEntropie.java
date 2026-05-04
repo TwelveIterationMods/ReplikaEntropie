@@ -30,7 +30,6 @@ public class ReplikaEntropie {
     // TODO Energy Bar shifts UV every second step
     // TODO Tooltip for Makeshift PSU Button
     // TODO Entropic Data Miner should take power
-    // TODO Hopper cannot insert into Lava Sink
     // TODO Biomass Harvester breaks blocks above/below too
     // TODO Biomass Harvester plays no block break sounds
     // TODO World Eater should play block break sounds

@@ -4,7 +4,9 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.platform.capabilities.CommonCapabilities;
 import net.blay09.mods.balm.platform.fluid.DefaultFluidTank;
 import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
+import net.blay09.mods.balm.world.SubContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -29,7 +31,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.blay09.mods.replikaentropie.menu.LavaSinkMenu;
 
-public class LavaSinkBlockEntity extends BlockEntity {
+public class LavaSinkBlockEntity extends BlockEntity implements BalmContainerProvider {
     public static final int INPUT_SLOT = 0;
     public static final int BUCKET_SLOT = 1;
     public static final int CONTAINER_SIZE = 2;
@@ -47,11 +49,24 @@ public class LavaSinkBlockEntity extends BlockEntity {
         public boolean canPlaceItem(int index, ItemStack stack) {
             return switch (index) {
                 case INPUT_SLOT -> stack.is(Items.COBBLESTONE);
-                case BUCKET_SLOT -> stack.is(Items.BUCKET);
+                case BUCKET_SLOT -> stack.is(Items.BUCKET) && getItem(index).isEmpty();
                 default -> false;
             };
         }
+
+
+
+        @Override
+        public int getMaxStackSize(ItemStack itemStack) {
+            return itemStack.is(Items.BUCKET) || itemStack.is(Items.LAVA_BUCKET) ? 1 : super.getMaxStackSize(itemStack);
+        }
+
+        @Override
+        public boolean canTakeItem(Container target, int index, ItemStack stack) {
+            return index == BUCKET_SLOT && stack.is(Items.LAVA_BUCKET);
+        }
     };
+    private final Container bucketOutputContainer = new SubContainer(backingContainer, BUCKET_SLOT, BUCKET_SLOT + 1);
     private final DefaultFluidTank lavaTank = new DefaultFluidTank(LAVA_CAPACITY);
     private int processingTicks;
 
@@ -115,7 +130,7 @@ public class LavaSinkBlockEntity extends BlockEntity {
 
     private void fillBuckets() {
         final var bucketStack = backingContainer.getItem(BUCKET_SLOT);
-        if (bucketStack.is(Items.BUCKET) && lavaTank.getAmount() >= 1000) {
+        if (bucketStack.is(Items.BUCKET) && bucketStack.count() == 1 && lavaTank.getAmount() >= 1000) {
             lavaTank.drain(Fluids.LAVA, 1000, false);
             backingContainer.setItem(BUCKET_SLOT, new ItemStack(Items.LAVA_BUCKET));
             setChanged();
@@ -164,6 +179,16 @@ public class LavaSinkBlockEntity extends BlockEntity {
         ContainerHelper.saveAllItems(output, backingContainer.getItems());
         lavaTank.serialize(output.child("LavaTank"));
         output.putInt("ProcessingTicks", processingTicks);
+    }
+
+    @Override
+    public Container getContainer() {
+        return backingContainer;
+    }
+
+    @Override
+    public Container getContainer(Direction side) {
+        return side == Direction.DOWN ? bucketOutputContainer : backingContainer;
     }
 
     public BalmMenuProvider<Unit> getMenuProvider() {
