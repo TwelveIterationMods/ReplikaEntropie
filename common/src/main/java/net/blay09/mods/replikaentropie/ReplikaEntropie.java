@@ -26,6 +26,37 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
+    // TODO Chipset cannot print Ticket
+    // TODO Handheld Analyzer item is too big in hand
+    // TODO Recycler JEI slots are misplaced
+    // TODO Assembler JEI is outdated
+    // TODO Blue Printer has no recipe
+    // TODO Blue Printer model is ugly and broken
+    // TODO Funnel cannot funnel into another funnel
+    // TODO Energy Bar shifts UV every second step
+    // TODO Tooltip for Makeshift PSU Button
+    // TODO Entropic Data Miner is spammed with the same events
+    // TODO Entropic Data Miner should take power
+    // TODO Hopper cannot insert into Lava Sink
+    // TODO Biomass Incubator has no outputs
+    // TODO Biomass Harvester breaks blocks above/below too
+    // TODO Biomass Harvester plays no block break sounds
+    // TODO World Eater should play block break sounds
+    // TODO Fragmental Generator should have a tooltip on the Temperature Bar
+    // TODO Energy Bars should have a tooltip
+    // TODO Fragment Accelerator is a bit confusing right now - no output at all on low speeds?
+    // TODO Fragment Accelerator should probably accept fragments as inputs too
+    // TODO Disable auto toggle in night/brightvision
+    // TODO Ore Vacuum behaves badly on redstone because it gets lit
+    // TODO Nullphaser should be able to be used to climb up a ledge
+    // TODO Replika Suit needs a crafting recipe
+    // TODO Use Magphasers for Replika Striders
+    // TODO The boot upgrades should get their graphics tweaked
+    // TODO Gravilift Harness needs to become a part rather than armor
+    // TODO The parts should still be non-stackable
+    // TODO How to get Power from A to B?
+    // TODO Waste Barrel Minecarts would be cool
+
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 
     public static final String MOD_ID = "replikaentropie";
