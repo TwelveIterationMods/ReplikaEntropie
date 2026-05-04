@@ -68,7 +68,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                             final var outputs = recipe.outputs();
                             for (int i = 0; i < outputs.size(); i++) {
                                 var output = outputs.get(i);
-                                slots.outputSlot(61, 5 + i * 18).add(output);
+                                slots.outputSlot(61, 5 + i * 31).add(output);
                             }
                         }));
     }

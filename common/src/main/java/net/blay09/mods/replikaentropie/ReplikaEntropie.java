@@ -27,10 +27,7 @@ import org.slf4j.LoggerFactory;
 public class ReplikaEntropie {
 
     // TODO Blue Printer has no recipe
-    // TODO Fragmental Generator should have a tooltip on the Temperature Bar
 
-    // TODO Handheld Analyzer item is too big in hand
-    // TODO Recycler JEI slots are misplaced
     // TODO Assembler JEI is outdated
     // TODO Blue Printer model is ugly and broken
     // TODO Entropic Data Miner is spammed with the same events
