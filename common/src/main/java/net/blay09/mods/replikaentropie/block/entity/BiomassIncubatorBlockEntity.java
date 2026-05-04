@@ -8,6 +8,7 @@ import net.blay09.mods.balm.platform.fluid.DefaultFluidTank;
 import net.blay09.mods.balm.platform.fluid.FluidTank;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
+import net.blay09.mods.balm.world.ContainerUtils;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
@@ -16,6 +17,7 @@ import net.blay09.mods.replikaentropie.recipe.BiomassIncubatorRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -81,6 +83,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     private final Container waterContainer = new SubContainer(backingContainer, 0, 1);
     private final Container seedsContainer = new SubContainer(backingContainer, 1, 2);
     private final Container soilContainer = new SubContainer(backingContainer, 2, 3);
+    private final SubContainer outputContainer = new SubContainer(backingContainer, 3, 7);
     private final DefaultFluidTank waterTank = new DefaultFluidTank(1000);
     private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
         @Override
@@ -89,6 +92,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
             isSyncDirty = true;
         }
     };
+    private final NonNullList<ItemStack> outputBuffer = NonNullList.create();
 
     private int growthTicks;
 
@@ -125,6 +129,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, BiomassIncubatorBlockEntity blockEntity) {
         blockEntity.broadcastChanges();
+        blockEntity.flushOutputBuffer();
         blockEntity.processBuckets();
         blockEntity.processGrowth();
     }
@@ -156,6 +161,10 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     }
 
     private void processGrowth() {
+        if (!outputBuffer.isEmpty()) {
+            return;
+        }
+
         if (hasWater() && hasValidSeed()) {
             if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK) {
                 return;
@@ -179,9 +188,40 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     private void completeGrowth() {
         final var seedStack = seedsContainer.getItem(0);
         final var recipe = BiomassIncubatorRecipe.getRecipe(level, seedStack);
-        // TODO
+        if (recipe.isEmpty()) {
+            growthTicks = 0;
+            return;
+        }
+
+        insertOrBuffer(recipe.get().result().create());
         growthTicks = 0;
         setChanged();
+    }
+
+    private void insertOrBuffer(ItemStack itemStack) {
+        final var remainingItem = ContainerUtils.insertItem(outputContainer, itemStack, false);
+        if (!remainingItem.isEmpty()) {
+            outputBuffer.add(remainingItem);
+            setChanged();
+        }
+    }
+
+    private void flushOutputBuffer() {
+        boolean changed = false;
+        for (int i = 0; i < outputBuffer.size(); ) {
+            final var remainingItem = ContainerUtils.insertItem(outputContainer, outputBuffer.get(i), false);
+            if (remainingItem.isEmpty()) {
+                outputBuffer.remove(i);
+                changed = true;
+            } else {
+                outputBuffer.set(i, remainingItem);
+                i++;
+            }
+        }
+
+        if (changed) {
+            setChanged();
+        }
     }
 
     @Override
@@ -189,6 +229,8 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         backingContainer.getItems().clear();
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
         input.child("WaterTank").ifPresent(waterTank::deserialize);
+        outputBuffer.clear();
+        input.child("OutputBuffer").ifPresent(child -> ContainerHelper.loadAllItems(child, outputBuffer));
 
         growthTicks = input.getIntOr("GrowthTicks", 0);
         energyStorage.deserialize(input);
@@ -198,6 +240,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     protected void saveAdditional(ValueOutput output) {
         ContainerHelper.saveAllItems(output, backingContainer.getItems());
         waterTank.serialize(output.child("WaterTank"));
+        ContainerHelper.saveAllItems(output.child("OutputBuffer"), outputBuffer);
 
         output.putInt("GrowthTicks", growthTicks);
 
