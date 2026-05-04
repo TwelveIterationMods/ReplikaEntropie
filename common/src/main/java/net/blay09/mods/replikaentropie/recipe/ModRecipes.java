@@ -12,7 +12,7 @@ public class ModRecipes {
     public static DeferredRecipeType<SingleRecipeInput, FragmentalGeneratorRecipe> fragmentalGenerator;
     public static DeferredRecipeType<RecipeInput, FabricatorRecipe> fabricator;
     public static DeferredRecipeType<SingleRecipeInput, BiomassIncubatorRecipe> biomassIncubator;
-    public static DeferredRecipeType<SingleRecipeInput, VacuumableOreRecipe> oreVacuum;
+    public static DeferredRecipeType<SingleRecipeInput, OreVacuumRecipe> oreVacuum;
     public static DeferredRecipeType<RecipeInput, MetalDetectorRecipe> metalDetector;
     public static DeferredRecipeType<RecipeInput, AssemblerRecipe> assembler;
     public static DeferredRecipeType<RecipeInput, ResearchRecipe> research;
@@ -43,8 +43,8 @@ public class ModRecipes {
                 .withRecipeBookCategory()
                 .asDeferredRecipeType();
 
-        oreVacuum = recipes.register("ore_vacuum", VacuumableOreRecipe.class)
-                .withSerializer(VacuumableOreRecipe::serializer)
+        oreVacuum = recipes.register("ore_vacuum", OreVacuumRecipe.class)
+                .withSerializer(OreVacuumRecipe::serializer)
                 .withRecipeBookCategory()
                 .asDeferredRecipeType();
 

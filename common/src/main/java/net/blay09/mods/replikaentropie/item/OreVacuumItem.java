@@ -3,7 +3,7 @@ package net.blay09.mods.replikaentropie.item;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.network.protocol.ParticleTrailMessage;
-import net.blay09.mods.replikaentropie.recipe.VacuumableOreRecipe;
+import net.blay09.mods.replikaentropie.recipe.OreVacuumRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -122,7 +122,7 @@ public class OreVacuumItem extends Item {
 
         final var pos = blockHitResult.getBlockPos();
         final var state = level.getBlockState(pos);
-        final var foundRecipe = VacuumableOreRecipe.getRecipe(level, state);
+        final var foundRecipe = OreVacuumRecipe.getRecipe(level, state);
         if (foundRecipe.isEmpty()) {
             return;
         }

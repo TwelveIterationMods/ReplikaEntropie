@@ -20,18 +20,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Optional;
 
 // POSTJAM Should we make this use BlockState instead of Ingredient?
-public record VacuumableOreRecipe(Ingredient ingredient, Block emptyBlock) implements Recipe<SingleRecipeInput>, PreviewableRecipe {
-    private static final MapCodec<VacuumableOreRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Ingredient.CODEC.fieldOf("ingredient").forGetter(VacuumableOreRecipe::ingredient),
-            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("empty_block").forGetter(VacuumableOreRecipe::emptyBlock)
-    ).apply(instance, VacuumableOreRecipe::new));
+public record OreVacuumRecipe(Ingredient ingredient, Block emptyBlock) implements Recipe<SingleRecipeInput>, PreviewableRecipe {
+    private static final MapCodec<OreVacuumRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Ingredient.CODEC.fieldOf("ingredient").forGetter(OreVacuumRecipe::ingredient),
+            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("empty_block").forGetter(OreVacuumRecipe::emptyBlock)
+    ).apply(instance, OreVacuumRecipe::new));
 
-    private static final StreamCodec<RegistryFriendlyByteBuf, VacuumableOreRecipe> STREAM_CODEC = StreamCodec.of(
-            VacuumableOreRecipe::toNetwork,
-            VacuumableOreRecipe::fromNetwork
+    private static final StreamCodec<RegistryFriendlyByteBuf, OreVacuumRecipe> STREAM_CODEC = StreamCodec.of(
+            OreVacuumRecipe::toNetwork,
+            OreVacuumRecipe::fromNetwork
     );
 
-    public static Optional<VacuumableOreRecipe> getRecipe(Level level, BlockState state) {
+    public static Optional<OreVacuumRecipe> getRecipe(Level level, BlockState state) {
         final var blockAsItem = new ItemStack(state.getBlock().asItem());
         return level != null && !blockAsItem.isEmpty()
                 ? ModRecipes.oreVacuum.getRecipeFor(level, new SingleRecipeInput(blockAsItem))
@@ -69,12 +69,12 @@ public record VacuumableOreRecipe(Ingredient ingredient, Block emptyBlock) imple
     }
 
     @Override
-    public RecipeSerializer<VacuumableOreRecipe> getSerializer() {
+    public RecipeSerializer<OreVacuumRecipe> getSerializer() {
         return ModRecipes.oreVacuum.serializer();
     }
 
     @Override
-    public RecipeType<VacuumableOreRecipe> getType() {
+    public RecipeType<OreVacuumRecipe> getType() {
         return ModRecipes.oreVacuum.type();
     }
 
@@ -88,18 +88,18 @@ public record VacuumableOreRecipe(Ingredient ingredient, Block emptyBlock) imple
         return ModRecipes.oreVacuum.bookCategory();
     }
 
-    private static VacuumableOreRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
+    private static OreVacuumRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
         final var ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
         final var emptyBlock = BuiltInRegistries.BLOCK.getValue(buf.readIdentifier());
-        return new VacuumableOreRecipe(ingredient, emptyBlock);
+        return new OreVacuumRecipe(ingredient, emptyBlock);
     }
 
-    private static void toNetwork(RegistryFriendlyByteBuf buf, VacuumableOreRecipe recipe) {
+    private static void toNetwork(RegistryFriendlyByteBuf buf, OreVacuumRecipe recipe) {
         Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.ingredient);
         buf.writeIdentifier(BuiltInRegistries.BLOCK.getKey(recipe.emptyBlock));
     }
 
-    public static RecipeSerializer<VacuumableOreRecipe> serializer() {
+    public static RecipeSerializer<OreVacuumRecipe> serializer() {
         return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }
