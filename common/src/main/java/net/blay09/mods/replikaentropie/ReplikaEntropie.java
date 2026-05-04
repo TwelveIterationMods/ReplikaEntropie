@@ -36,7 +36,6 @@ public class ReplikaEntropie {
     // TODO Entropic Data Miner is spammed with the same events
     // TODO Biomass Incubator has no outputs
     // TODO Fragment Accelerator is a bit confusing right now - no output at all on low speeds?
-    // TODO Nullphaser should be able to be used to climb up a ledge
     // TODO Replika Suit needs a crafting recipe
     // TODO The part upgrades should get their graphics tweaked
     // TODO How to get Power from A to B?
