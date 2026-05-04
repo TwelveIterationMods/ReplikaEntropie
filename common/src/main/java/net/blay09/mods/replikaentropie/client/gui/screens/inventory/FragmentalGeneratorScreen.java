@@ -56,8 +56,8 @@ public class FragmentalGeneratorScreen extends AbstractContainerScreen<Fragmenta
             return;
         }
 
-        if (isHovering(22, 98, 127, 11, mouseX, mouseY)) {
-            graphics.setTooltipForNextFrame(font, Component.translatable("gui.replikaentropie.fragmental_generator.temperature", menu.getTemperature(), menu.getMaxTemperature()), mouseX, mouseY);
+        if (isHovering(22, 98, 127, 11, mouseX, mouseY) && menu.getTemperature() > 0) {
+            graphics.setTooltipForNextFrame(font, menu.getTemperatureTooltip(), mouseX, mouseY);
             return;
         }
 

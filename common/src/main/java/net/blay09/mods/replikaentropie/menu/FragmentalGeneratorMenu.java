@@ -2,6 +2,7 @@ package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
 import net.blay09.mods.replikaentropie.util.QuickMove;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -108,6 +109,18 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
         }
 
         return Mth.clamp(getTemperature() / (float) maxTemperature, 0f, 1f);
+    }
+
+    public Component getTemperatureTooltip() {
+        final var temperature = getTemperature();
+        final var temperatureOffset = temperature - FragmentalGeneratorBlockEntity.IDEAL_TEMPERATURE;
+        if (Math.abs(temperatureOffset) <= 10) {
+            return Component.translatable("gui.replikaentropie.fragmental_generator.temperature.nominal");
+        }
+
+        return temperatureOffset < 0
+                ? Component.translatable("gui.replikaentropie.fragmental_generator.temperature.too_cold")
+                : Component.translatable("gui.replikaentropie.fragmental_generator.temperature.too_hot");
     }
 
     @Override

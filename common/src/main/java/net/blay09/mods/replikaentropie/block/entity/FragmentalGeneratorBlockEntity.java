@@ -42,9 +42,9 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
 
     public static final int CONTAINER_SIZE = 12;
     private static final int MAX_ENERGY_DRAIN = 1000;
-    private static final int MIN_TEMPERATURE = 0;
-    private static final int MAX_TEMPERATURE = 100;
-    private static final int IDEAL_TEMPERATURE = 50;
+    public static final int MIN_TEMPERATURE = 0;
+    public static final int MAX_TEMPERATURE = 100;
+    public static final int IDEAL_TEMPERATURE = 50;
     private static final float PASSIVE_COOLING_TEMPERATURE_PER_TICK = 0.1f;
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
