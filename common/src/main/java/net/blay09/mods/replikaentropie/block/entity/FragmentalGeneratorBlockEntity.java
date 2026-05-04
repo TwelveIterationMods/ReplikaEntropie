@@ -188,8 +188,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
 
     private void coolDownIfIdle() {
         if (!isProcessing()) {
-            temperature = Mth.clamp(temperature - PASSIVE_COOLING_TEMPERATURE_PER_TICK, MIN_TEMPERATURE, MAX_TEMPERATURE);
-            setChanged();
+            adjustTemperature(-PASSIVE_COOLING_TEMPERATURE_PER_TICK);
         }
     }
 
@@ -237,8 +236,18 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
         final var inputStack = backingContainer.getItem(slot);
         final var recipe = FragmentalGeneratorRecipe.getRecipe(level, inputStack).orElse(null);
         if (recipe != null) {
-            temperature = Mth.clamp(temperature + recipe.temperature(), MIN_TEMPERATURE, MAX_TEMPERATURE);
+            adjustTemperature(recipe.temperature());
         }
+    }
+
+    public boolean adjustTemperature(float delta) {
+        final float newTemperature = Mth.clamp(temperature + delta, MIN_TEMPERATURE, MAX_TEMPERATURE);
+        if (newTemperature != temperature) {
+            temperature = newTemperature;
+            setChanged();
+            return true;
+        }
+        return false;
     }
 
     private static float getEfficiencyForTemperature(float temperature) {

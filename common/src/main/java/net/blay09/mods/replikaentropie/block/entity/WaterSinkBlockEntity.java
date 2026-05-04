@@ -27,6 +27,10 @@ public class WaterSinkBlockEntity extends BlockEntity {
                 }
                 return;
             }
+            if (blockEntity instanceof FragmentalGeneratorBlockEntity fragmentalGeneratorBlockEntity) {
+                fragmentalGeneratorBlockEntity.adjustTemperature(-0.1f);
+                return;
+            }
 
             final var targetTank = blockEntity != null
                     ? Balm.capabilities().getCapability(blockEntity, Direction.UP, CommonCapabilities.FLUID_TANK)

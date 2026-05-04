@@ -144,6 +144,14 @@ public class LavaSinkBlockEntity extends BlockEntity implements BalmContainerPro
 
         for (BlockPos currentPos = pos.below(); currentPos.getY() >= level.getMinY(); currentPos = currentPos.below()) {
             final var blockEntity = level.getBlockEntity(currentPos);
+            if (blockEntity instanceof FragmentalGeneratorBlockEntity fragmentalGeneratorBlockEntity) {
+                if (fragmentalGeneratorBlockEntity.adjustTemperature(0.1f)) {
+                    lavaTank.drain(Fluids.LAVA, 1, false);
+                    setChanged();
+                }
+                return;
+            }
+
             final var targetTank = blockEntity != null
                     ? Balm.capabilities().getCapability(blockEntity, Direction.UP, CommonCapabilities.FLUID_TANK)
                     : null;
