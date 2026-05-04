@@ -8,6 +8,7 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 public class ModRecipes {
 
     public static DeferredRecipeType<SingleRecipeInput, RecyclerRecipe> recycler;
+    public static DeferredRecipeType<SingleRecipeInput, FragmentAcceleratorRecipe> fragmentAccelerator;
     public static DeferredRecipeType<SingleRecipeInput, FragmentalGeneratorRecipe> fragmentalGenerator;
     public static DeferredRecipeType<RecipeInput, FabricatorRecipe> fabricator;
     public static DeferredRecipeType<SingleRecipeInput, BiomassIncubatorRecipe> biomassIncubator;
@@ -19,6 +20,11 @@ public class ModRecipes {
     public static void initialize(BalmRecipeTypeRegistrar recipes) {
         recycler = recipes.register("recycler", RecyclerRecipe.class)
                 .withSerializer(RecyclerRecipe::serializer)
+                .withRecipeBookCategory()
+                .asDeferredRecipeType();
+
+        fragmentAccelerator = recipes.register("fragment_accelerator", FragmentAcceleratorRecipe.class)
+                .withSerializer(FragmentAcceleratorRecipe::serializer)
                 .withRecipeBookCategory()
                 .asDeferredRecipeType();
 

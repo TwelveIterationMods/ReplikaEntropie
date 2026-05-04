@@ -1,6 +1,5 @@
 package net.blay09.mods.replikaentropie.compat.recipeviewers;
 
-import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.platform.compatibility.recipeviewer.RecipeViewerInfoProvider;
 import net.blay09.mods.balm.platform.compatibility.recipeviewer.RecipeViewerRegistrar;
 import net.blay09.mods.balm.world.item.DeferredItem;
@@ -17,8 +16,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeMap;
 
 import java.util.List;
 import java.util.Optional;
@@ -179,8 +176,8 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
     }
 
     private static void registerFragmentAcceleratorRecipes(RecipeViewerRegistrar registrar) {
-        registrar.registerCustomRecipeType(id("fragment_accelerator"), RecyclerRecipe.class)
-                .withRecipes(getFragmentRecipes())
+        registrar.registerRecipeType(id("fragment_accelerator"), FragmentAcceleratorRecipe.class)
+                .withSyncedRecipes(ModRecipes.fragmentAccelerator)
                 .withCraftingStation(ModBlocks.fragmentAccelerator)
                 .buildDisplay(display -> display
                         .title(Component.translatable(id("fragment_accelerator").toLanguageKey("jei")))
@@ -191,7 +188,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                             slots.inputSlot(30, 1).add(recipe.ingredient());
                             slots.inputSlot(90, 30).add(recipe.ingredient());
                             slots.inputSlot(30, 59).add(recipe.ingredient());
-                            slots.outputSlot(30, 30).add(resourceStack(ModItems.fragments, FragmentAcceleratorBlockEntity.OUTPUT_MULTIPLIER));
+                            slots.outputSlot(30, 30).add(resourceStack(ModItems.fragments, recipe.fragments() * FragmentAcceleratorBlockEntity.OUTPUT_MULTIPLIER));
                             slots.outputSlot(61, 30).add(ModBlocks.wasteBarrel);
                         }));
     }
@@ -268,21 +265,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                                 toolSlot.add(Items.SHEARS);
                             }
                         }));
-    }
-
-    private static List<RecyclerRecipe> getFragmentRecipes() {
-        return Balm.safeClientAccess().getRecipeMap()
-                .map(ReplikaEntropieRecipeViewerProvider::getRecyclerRecipes)
-                .orElse(List.of())
-                .stream()
-                .filter(it -> !it.outputs().isEmpty())
-                .toList();
-    }
-
-    private static List<RecyclerRecipe> getRecyclerRecipes(RecipeMap recipeMap) {
-        return recipeMap.byType(ModRecipes.recycler.type()).stream()
-                .map(RecipeHolder::value)
-                .toList();
     }
 
     private static ItemStack createAssemblyTicket(ItemStack result) {

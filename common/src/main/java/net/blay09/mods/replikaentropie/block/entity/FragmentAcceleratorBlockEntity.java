@@ -10,7 +10,7 @@ import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.core.waste.FragmentalWaste;
 import net.blay09.mods.replikaentropie.menu.FragmentAcceleratorMenu;
-import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
+import net.blay09.mods.replikaentropie.recipe.FragmentAcceleratorRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -214,7 +214,7 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private boolean isValidInput(ItemStack itemStack) {
-        return !itemStack.isEmpty() && RecyclerRecipe.getRecipe(level, itemStack).isPresent();
+        return !itemStack.isEmpty() && FragmentAcceleratorRecipe.getRecipe(level, itemStack).isPresent();
     }
 
     private boolean hasAnyValidInput() {
@@ -252,10 +252,10 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         var output = 0f;
         for (int i = 0; i < inputContainer.getContainerSize(); i++) {
             final var itemStack = inputContainer.getItem(i);
-            final int recipeFragments = RecyclerRecipe.getRecipe(level, itemStack)
-                    .map(it -> 1)
-                    .orElse(0);
-            if (recipeFragments > 0) {
+            final float recipeFragments = FragmentAcceleratorRecipe.getRecipe(level, itemStack)
+                    .map(FragmentAcceleratorRecipe::fragments)
+                    .orElse(0f);
+            if (recipeFragments > 0f) {
                 final var item = itemStack.getItem();
                 final var existing = uniqueKinds.count(item);
                 output += (float) (recipeFragments * Math.pow(DIMINISHING_RETURNS, existing));
