@@ -39,4 +39,13 @@ public class ReplikaWorkbenchScreen extends AbstractContainerScreen<ReplikaWorkb
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 92, 28, 28);
         energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
+
+    @Override
+    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        if (energyBar.extractTooltip(graphics, font, leftPos, topPos, mouseX, mouseY, menu.getCurrentPower(), menu.getMaxPower())) {
+            return;
+        }
+
+        super.extractTooltip(graphics, mouseX, mouseY);
+    }
 }

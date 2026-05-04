@@ -80,6 +80,14 @@ public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPowe
         return Math.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
     }
 
+    public int getCurrentPower() {
+        return data.get(DATA_CURRENT_POWER);
+    }
+
+    public int getMaxPower() {
+        return data.get(DATA_MAX_POWER);
+    }
+
     @Override
     public void convertClickToPower() {
         access.execute((level, pos) -> {

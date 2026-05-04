@@ -50,4 +50,18 @@ public class FragmentalGeneratorScreen extends AbstractContainerScreen<Fragmenta
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos + 22 + (int) (123 * temperatureProgress), topPos + 98, 176, 5, 4, 11, 256, 256);
     }
 
+    @Override
+    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        if (energyBar.extractTooltip(graphics, font, leftPos, topPos, mouseX, mouseY, menu.getCurrentPower(), menu.getMaxPower())) {
+            return;
+        }
+
+        if (isHovering(22, 98, 127, 11, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.replikaentropie.fragmental_generator.temperature", menu.getTemperature(), menu.getMaxTemperature()), mouseX, mouseY);
+            return;
+        }
+
+        super.extractTooltip(graphics, mouseX, mouseY);
+    }
+
 }

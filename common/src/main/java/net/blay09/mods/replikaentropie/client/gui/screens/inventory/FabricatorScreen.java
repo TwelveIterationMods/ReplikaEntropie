@@ -103,6 +103,10 @@ public class FabricatorScreen extends AbstractContainerScreen<FabricatorMenu> {
 
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        if (energyBar.extractTooltip(graphics, font, leftPos, topPos, mouseX, mouseY, menu.getCurrentPower(), menu.getMaxPower())) {
+            return;
+        }
+
         if (hoveredSlot instanceof FabricatorRecipeSlot recipeSlot) {
             // TODO This needs to be updated so it works on RecipeDisplays instead of Recipes
             final var containerSlot = recipeSlot.getContainerSlot();

@@ -3,6 +3,7 @@ package net.blay09.mods.replikaentropie.client.gui.components;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.network.protocol.MakeshiftPowerMessage;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -22,6 +23,7 @@ public class MakeshiftPowerButton extends ImageButton {
 
     public MakeshiftPowerButton(int x, int y, int containerId) {
         super(x, y, WIDTH, HEIGHT, SPRITES, _ -> Balm.networking().sendToServer(new MakeshiftPowerMessage(containerId)), MESSAGE);
+        setTooltip(Tooltip.create(MESSAGE));
     }
 
     @Override

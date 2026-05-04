@@ -56,4 +56,13 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
         energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 
+    @Override
+    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        if (energyBar.extractTooltip(graphics, font, leftPos, topPos, mouseX, mouseY, menu.getCurrentPower(), menu.getMaxPower())) {
+            return;
+        }
+
+        super.extractTooltip(graphics, mouseX, mouseY);
+    }
+
 }

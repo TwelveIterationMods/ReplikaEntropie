@@ -28,9 +28,7 @@ public class ReplikaEntropie {
 
     // TODO Blue Printer has no recipe
     // TODO Energy Bar shifts UV every second step
-    // TODO Tooltip for Makeshift PSU Button
     // TODO Fragmental Generator should have a tooltip on the Temperature Bar
-    // TODO Energy Bars should have a tooltip
 
     // TODO Handheld Analyzer item is too big in hand
     // TODO Recycler JEI slots are misplaced

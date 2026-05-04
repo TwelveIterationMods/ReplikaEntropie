@@ -1,7 +1,9 @@
 package net.blay09.mods.replikaentropie.client.gui.components;
 
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
@@ -28,5 +30,20 @@ public class EnergyBar {
         if (energyHeight > 0) {
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ENERGY_BAR, leftPos + x, topPos + y - 1 + HEIGHT - energyHeight, WIDTH, energyHeight);
         }
+    }
+
+    public boolean isHovering(int leftPos, int topPos, int mouseX, int mouseY) {
+        final var x = leftPos + this.x;
+        final var y = topPos + this.y;
+        return mouseX >= x && mouseX < x + WIDTH && mouseY >= y && mouseY < y + HEIGHT;
+    }
+
+    public boolean extractTooltip(GuiGraphicsExtractor graphics, Font font, int leftPos, int topPos, int mouseX, int mouseY, int currentEnergy, int maxEnergy) {
+        if (isHovering(leftPos, topPos, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.replikaentropie.energy_bar", currentEnergy, maxEnergy), mouseX, mouseY);
+            return true;
+        }
+
+        return false;
     }
 }

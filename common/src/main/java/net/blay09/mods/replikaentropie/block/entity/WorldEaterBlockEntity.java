@@ -227,7 +227,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
                                 .ifPresent(scannedBlock -> {
                                     scannedPositions.put(slotToFill, scannedBlock.pos());
                                     previewContainer.setItem(slotToFill, scannedBlock.itemStack());
-                                    level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5f, (float) (0.5 + Math.random()));
+                                    level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.25f, (float) (0.5 + Math.random()));
                                     sendTrailParticles(level, Vec3.atCenterOf(scannedBlock.pos()), Vec3.atCenterOf(worldPosition));
                                 });
                     }

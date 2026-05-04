@@ -69,6 +69,14 @@ public class EntropicDataMinerMenu extends AbstractContainerMenu implements Make
         return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
     }
 
+    public int getCurrentPower() {
+        return data.get(DATA_CURRENT_POWER);
+    }
+
+    public int getMaxPower() {
+        return data.get(DATA_MAX_POWER);
+    }
+
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         return quickMove.transfer(this, player, index);
