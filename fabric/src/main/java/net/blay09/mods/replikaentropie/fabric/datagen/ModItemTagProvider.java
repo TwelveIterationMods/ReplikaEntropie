@@ -16,6 +16,17 @@ public class ModItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider lookup) {
+        valueLookupBuilder(ModItemTags.CHARGEABLE).add(
+                ModItems.nullphaser.value(),
+                ModItems.oreVacuum.value(),
+                ModItems.nightVisionGoggles.value(),
+                ModItems.brightVisionGoggles.value(),
+                ModItems.replikaHelmet.value(),
+                ModItems.replikaChestplate.value(),
+                ModItems.replikaLeggings.value(),
+                ModItems.replikaBoots.value()
+        );
+
         valueLookupBuilder(ModItemTags.PROTECTS_FROM_FRAGMENTAL_WASTE).add(
                 ModItems.hazmatHelmet.value(),
                 ModItems.hazmatChestplate.value(),
