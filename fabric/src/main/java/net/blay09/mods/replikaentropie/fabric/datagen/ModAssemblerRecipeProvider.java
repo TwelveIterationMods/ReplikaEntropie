@@ -80,6 +80,14 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.GREEN_DYE, 1)
                 .save(output);
 
+        assemblerRecipe(ModBlocks.bluePrinter, 1)
+                .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
+                .ingredient(Items.PAPER, 4)
+                .ingredient(Items.INK_SAC, 2)
+                .ingredient(Items.CYAN_DYE, 1)
+                .save(output);
+
         assemblerRecipe(ModBlocks.biomassIncubator, 1)
                 .ingredient(Items.IRON_INGOT, 9)
                 .ingredient(ModItems.biomass, 4)
