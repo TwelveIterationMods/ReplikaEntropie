@@ -76,7 +76,7 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu implements Makes
                 .slot("soil", 2)
                 .route(it -> it.is(Items.WATER_BUCKET), QuickMove.PLAYER, "water")
                 .route(it -> it.is(ModItemTags.BIOMASS_INCUBATOR_SEEDS), QuickMove.PLAYER, "seeds")
-                .route(it -> it.is(ModItemTags.BIOMASS_INCUBATOR_SOILS), QuickMove.PLAYER, "soils")
+                .route(it -> it.is(ModItemTags.BIOMASS_INCUBATOR_SOILS), QuickMove.PLAYER, "soil")
                 .build();
 
         container.startOpen(inventory.player);
