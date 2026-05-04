@@ -2,6 +2,8 @@ package net.blay09.mods.replikaentropie;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.core.BalmRegistrars;
+import net.blay09.mods.balm.platform.event.callback.BlockCallback;
+import net.blay09.mods.balm.platform.event.callback.InteractionEventResult;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.blay09.mods.replikaentropie.command.ReplikaEntropieCommand;
@@ -21,6 +23,8 @@ import net.blay09.mods.replikaentropie.recipe.ModRecipes;
 import net.blay09.mods.replikaentropie.worldgen.ModPoiTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +36,6 @@ public class ReplikaEntropie {
     // TODO Entropic Data Miner is spammed with the same events
     // TODO Biomass Incubator has no outputs
     // TODO Fragment Accelerator is a bit confusing right now - no output at all on low speeds?
-    // TODO Ore Vacuum behaves badly on redstone because it gets lit
     // TODO Nullphaser should be able to be used to climb up a ledge
     // TODO Replika Suit needs a crafting recipe
     // TODO The part upgrades should get their graphics tweaked
@@ -78,6 +81,17 @@ public class ReplikaEntropie {
         AbilityManager.registerAbility(GraviliftAbility.INSTANCE);
         AbilityManager.registerAbility(JumpBoostAbility.INSTANCE);
         AbilityManager.registerAbility(SpeedBoostAbility.INSTANCE);
+
+        // Redstone ore hijacks use interactions, so we hijack them back for the Vacuum Ore
+        BlockCallback.Use.EVENT.register((player, level, hand, hitResult) -> {
+            if (player.getMainHandItem().is(ModItems.oreVacuum)
+                    && hitResult instanceof BlockHitResult blockHitResult
+                    && level.getBlockState(blockHitResult.getBlockPos()).is(Blocks.REDSTONE_ORE)) {
+                player.startUsingItem(hand);
+                return InteractionEventResult.SUCCESS;
+            }
+            return InteractionEventResult.DEFAULT;
+        });
     }
 
     public static Identifier id(String path) {
