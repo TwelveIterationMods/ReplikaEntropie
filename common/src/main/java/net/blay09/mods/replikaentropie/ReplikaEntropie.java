@@ -28,7 +28,6 @@ public class ReplikaEntropie {
 
     // TODO Blue Printer has no recipe
 
-    // TODO Assembler JEI is outdated
     // TODO Blue Printer model is ugly and broken
     // TODO Entropic Data Miner is spammed with the same events
     // TODO Biomass Incubator has no outputs

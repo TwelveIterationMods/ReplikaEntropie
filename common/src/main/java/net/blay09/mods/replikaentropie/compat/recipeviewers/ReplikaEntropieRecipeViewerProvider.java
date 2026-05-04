@@ -80,14 +80,23 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                 .buildDisplay(display -> display
                         .title(Component.translatable(id("assembler").toLanguageKey("jei")))
                         .icon(ModBlocks.assembler)
-                        .size(115, 59)
+                        .size(115, 77)
                         .background(ASSEMBLER_TEXTURE)
                         .slots((recipe, slots) -> {
                             slots.craftingStationSlot(1, 13).add(createAssemblyTicket(recipe.result().create()));
 
-                            for (int i = 0; i < recipe.ingredients().size(); i++) {
+                            for (int i = 0; i < Math.min(5, recipe.ingredients().size()); i++) {
                                 final var countedIngredient = recipe.ingredients().get(i);
                                 final var slot = slots.inputSlot(26 + i * 18, 42);
+                                for (final var itemHolder : countedIngredient.ingredient().items().toList()) {
+                                    final var itemStack = new ItemStack(itemHolder);
+                                    itemStack.setCount(Math.max(1, countedIngredient.count()));
+                                    slot.add(itemStack);
+                                }
+                            }
+                            for (int i = 5; i < recipe.ingredients().size(); i++) {
+                                final var countedIngredient = recipe.ingredients().get(i);
+                                final var slot = slots.inputSlot(34 + i * 18, 60);
                                 for (final var itemHolder : countedIngredient.ingredient().items().toList()) {
                                     final var itemStack = new ItemStack(itemHolder);
                                     itemStack.setCount(Math.max(1, countedIngredient.count()));
