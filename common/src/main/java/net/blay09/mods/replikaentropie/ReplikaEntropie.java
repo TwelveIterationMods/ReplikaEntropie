@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 public class ReplikaEntropie {
 
     // TODO Blue Printer has no recipe
-    // TODO Funnel cannot funnel into another funnel
     // TODO Energy Bar shifts UV every second step
     // TODO Tooltip for Makeshift PSU Button
     // TODO Entropic Data Miner should take power

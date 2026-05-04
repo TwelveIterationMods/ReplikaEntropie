@@ -105,16 +105,12 @@ public class FunnelBlockEntity extends BlockEntity implements BalmFluidTankProvi
 
     @Override
     public @Nullable FluidTank getFluidTank(Direction side) {
-        if (side == Direction.UP) {
-            return inputAccess;
-        }
-
         final Direction outputDirection = getBlockState().getValue(FunnelBlock.FACING);
         if (side == outputDirection) {
             return outputAccess;
         }
 
-        return null;
+        return inputAccess;
     }
 
     private class SidedFluidTankAccess implements FluidTank {
