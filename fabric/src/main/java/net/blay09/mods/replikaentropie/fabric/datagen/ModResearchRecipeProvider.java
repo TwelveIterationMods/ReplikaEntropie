@@ -184,8 +184,10 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                 research(id("chipset"))
                         .icon(ModItems.chipset)
                         .dependsOn(id("research/assembler"))
+                        .unlocksRecipe(id("assembler/chipset"))
                         .nonogram(id("chipset"))
                         .costs(4, 1, 0, 1)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
                         .sortOrder(sortOrder += 100)
                         .save(output);
 

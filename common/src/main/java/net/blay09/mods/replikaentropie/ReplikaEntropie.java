@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
-    // TODO Chipset cannot print Ticket
     // TODO Blue Printer has no recipe
     // TODO Funnel cannot funnel into another funnel
     // TODO Energy Bar shifts UV every second step
