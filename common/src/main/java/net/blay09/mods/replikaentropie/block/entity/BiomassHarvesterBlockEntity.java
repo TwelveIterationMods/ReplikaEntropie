@@ -416,8 +416,8 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
             return new HarvestableBlockTargets(crops, blocks);
         }
 
-        final var minPos = worldPosition.offset(-1, -1, -1);
-        final var maxPos = worldPosition.offset(1, 1, 1);
+        final var minPos = worldPosition.offset(-1, 0, -1);
+        final var maxPos = worldPosition.offset(1, 0, 1);
         for (final var pos : BlockPos.betweenClosed(minPos, maxPos)) {
             final var state = level.getBlockState(pos);
             if (state.getBlock() instanceof CropBlock cropBlock && cropBlock.isMaxAge(state)) {
@@ -455,28 +455,10 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
             return;
         }
 
-        Block.dropResources(state, serverLevel, pos, level.getBlockEntity(pos));
-        level.removeBlock(pos, false);
+        level.destroyBlock(pos, true);
     }
 
     private record HarvestableBlockTargets(ArrayList<BlockPos> harvestableCrops, ArrayList<BlockPos> slashableBlocks) {
-    }
-
-    private float getBiomassForEntity(LivingEntity entity) {
-        // Players always give one biomass
-        if (entity instanceof Player) {
-            return 1f;
-        }
-
-        final var baseBiomass = 0.5f;
-
-        // Animals give more because they're harder to farm
-        var typeMultiplier = entity instanceof Animal ? 2f : 0f;
-
-        // Scale by max health so entities that take longer to kill give more biomass
-        final var healthMultiplier = entity.getMaxHealth() / 20f;
-
-        return baseBiomass * typeMultiplier * healthMultiplier;
     }
 
     @Override

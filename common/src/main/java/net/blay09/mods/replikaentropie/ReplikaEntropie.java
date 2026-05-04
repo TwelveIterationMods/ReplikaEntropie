@@ -30,8 +30,6 @@ public class ReplikaEntropie {
     // TODO Energy Bar shifts UV every second step
     // TODO Tooltip for Makeshift PSU Button
     // TODO Entropic Data Miner should take power
-    // TODO Biomass Harvester breaks blocks above/below too
-    // TODO Biomass Harvester plays no block break sounds
     // TODO World Eater should play block break sounds
     // TODO Fragmental Generator should have a tooltip on the Temperature Bar
     // TODO Energy Bars should have a tooltip
