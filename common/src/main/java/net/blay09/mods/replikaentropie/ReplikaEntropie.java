@@ -15,6 +15,7 @@ import net.blay09.mods.replikaentropie.core.dataminer.LocalEventLog;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
 import net.blay09.mods.replikaentropie.core.waste.FragmentalWaste;
 import net.blay09.mods.replikaentropie.effect.ModEffects;
+import net.blay09.mods.replikaentropie.entity.ModEntities;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.loot.ModLoot;
 import net.blay09.mods.replikaentropie.menu.ModMenus;
@@ -31,13 +32,11 @@ import org.slf4j.LoggerFactory;
 public class ReplikaEntropie {
 
     // TODO Blue Printer has no recipe
-    // TODO Blue Printer model is ugly and broken
     // TODO Entropic Data Miner is spammed with the same events
     // TODO Fragment Accelerator is a bit confusing right now - no output at all on low speeds?
     // TODO Replika Suit needs a crafting recipe
     // TODO The part upgrades should get their graphics tweaked
     // TODO How to get Power from A to B?
-    // TODO Waste Barrel Minecarts would be cool
     // TODO Charging Rail
     // TODO Crane
     // TODO Biomass Incubator not using up water, no progress in UI
@@ -50,6 +49,7 @@ public class ReplikaEntropie {
         Balm.config().registerConfig(ReplikaEntropieConfig.class);
 
         registrars.blocks(ModBlocks::initialize);
+        registrars.entityTypes(ModEntities::initialize);
         registrars.blockEntityTypes(ModBlockEntities::initialize);
         registrars.dataComponentTypes(ModDataComponents::initialize);
         registrars.items(ModItems::initialize);

@@ -101,6 +101,18 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_obsidian", has(Items.OBSIDIAN))
                         .save(output);
 
+                shapeless(RecipeCategory.TRANSPORTATION, ModItems.wasteBarrelMinecart)
+                        .requires(ModBlocks.wasteBarrel)
+                        .requires(Items.MINECART)
+                        .unlockedBy("has_waste_barrel", has(ModBlocks.wasteBarrel))
+                        .save(output);
+
+                shapeless(RecipeCategory.TRANSPORTATION, ModItems.fragmentalWasteMinecart)
+                        .requires(ModBlocks.fragmentalWaste)
+                        .requires(Items.MINECART)
+                        .unlockedBy("has_fragmental_waste", has(ModBlocks.fragmentalWaste))
+                        .save(output);
+
                 shapeless(RecipeCategory.COMBAT, ModItems.biosteel)
                         .requires(Items.IRON_INGOT)
                         .requires(ModItems.scrap)

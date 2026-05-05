@@ -2,10 +2,15 @@ package net.blay09.mods.replikaentropie.client;
 
 import net.blay09.mods.balm.client.color.block.BalmBlockColorRegistrar;
 import net.blay09.mods.balm.client.renderer.blockentity.BalmBlockEntityRendererRegistrar;
+import net.blay09.mods.balm.client.renderer.entity.BalmEntityRendererRegistrar;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
+import net.blay09.mods.replikaentropie.entity.ModEntities;
 import net.blay09.mods.replikaentropie.client.renderer.*;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.color.block.BlockTintSources;
+import net.minecraft.client.renderer.entity.MinecartRenderer;
+import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 
 import java.util.List;
 
@@ -22,5 +27,9 @@ public class ModRenderers {
         registrar.register(ModBlockEntities.chaosEngine, ChaosEngineRenderer::new);
         registrar.register(ModBlockEntities.fragmentAccelerator, FragmentAcceleratorRenderer::new);
     }
-}
 
+    public static void initialize(BalmEntityRendererRegistrar registrar) {
+        registrar.register(ModEntities.wasteBarrelMinecart, context -> new MinecartRenderer(context, ModelLayers.MINECART));
+        registrar.register(ModEntities.fragmentalWasteMinecart, context -> new MinecartRenderer(context, ModelLayers.MINECART));
+    }
+}

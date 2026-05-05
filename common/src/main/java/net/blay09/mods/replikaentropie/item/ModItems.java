@@ -7,6 +7,9 @@ import net.blay09.mods.replikaentropie.component.AbilityHolder;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
+import net.blay09.mods.replikaentropie.entity.FragmentalWasteMinecart;
+import net.blay09.mods.replikaentropie.entity.ModEntities;
+import net.blay09.mods.replikaentropie.entity.WasteBarrelMinecart;
 import net.blay09.mods.replikaentropie.core.abilities.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -14,6 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.MinecartItem;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.Equippable;
@@ -61,6 +65,8 @@ public class ModItems {
     public static DeferredItem assemblyTicket;
     public static DeferredItem makeshiftPSU;
     public static DeferredItem metalDetector;
+    public static DeferredItem wasteBarrelMinecart;
+    public static DeferredItem fragmentalWasteMinecart;
 
     public static void initialize(BalmItemRegistrar items) {
         handheldAnalyzer = items.register("handheld_analyzer", HandheldAnalyzerItem::new, it -> it.stacksTo(1)).asDeferredItem();
@@ -82,6 +88,8 @@ public class ModItems {
         automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> it.durability(16).component(DataComponents.BREAK_SOUND, SoundEvents.ITEM_BREAK)).asDeferredItem();
         oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(256)).asDeferredItem();
         metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(600)).asDeferredItem();
+        wasteBarrelMinecart = items.register("waste_barrel_minecart", properties -> new MinecartItem(ModEntities.wasteBarrelMinecart.value(), properties), it -> it.stacksTo(1)).asDeferredItem();
+        fragmentalWasteMinecart = items.register("fragmental_waste_minecart", properties -> new MinecartItem(ModEntities.fragmentalWasteMinecart.value(), properties), it -> it.stacksTo(1)).asDeferredItem();
         graviliftEngine = items.register("gravilift_engine", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), GraviliftAbility.ID)).asDeferredItem();
         magphasers = items.register("magphasers", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), MagphaseAbility.ID)).asDeferredItem();
         slowphasers = items.register("slowphasers", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), SlowphaseAbility.ID)).asDeferredItem();
@@ -139,6 +147,8 @@ public class ModItems {
                     output.accept(ModBlocks.chaosEngine);
                     output.accept(ModBlocks.wasteBarrel);
                     output.accept(ModBlocks.fragmentalWaste);
+                    output.accept(wasteBarrelMinecart);
+                    output.accept(fragmentalWasteMinecart);
                     output.accept(ModBlocks.replikaWorkbench);
                     output.accept(oreVacuum);
                     output.accept(nullphaser);

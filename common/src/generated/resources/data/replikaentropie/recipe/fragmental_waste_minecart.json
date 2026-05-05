@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "replikaentropie:fragmental_waste",
+    "minecraft:minecart"
+  ],
+  "result": {
+    "id": "replikaentropie:fragmental_waste_minecart"
+  }
+}

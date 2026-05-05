@@ -31,8 +31,15 @@ import java.util.Map;
 public class BluePrinterBlock extends BaseEntityBlock {
     public static final MapCodec<BluePrinterBlock> CODEC = simpleCodec(BluePrinterBlock::new);
     private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(Shapes.or(
-            Shapes.box(0, 0, 2 / 16f, 1, 9 / 16f, 14 / 16f),
-            Shapes.box(0, 0, 14 / 16f, 1, 11 / 16f, 1)
+            Shapes.box(2 / 16f, 2 / 16f, 2 / 16f, 4 / 16f, 14 / 16f, 14 / 16f),
+            Shapes.box(4 / 16f, 2 / 16f, 12 / 16f, 12 / 16f, 14 / 16f, 14 / 16f),
+            Shapes.box(4 / 16f, 2 / 16f, 2.5 / 16f, 12 / 16f, 14 / 16f, 4.5 / 16f),
+            Shapes.box(2 / 16f, 14 / 16f, 2 / 16f, 14 / 16f, 1, 14 / 16f),
+            Shapes.box(2 / 16f, 0, 2 / 16f, 14 / 16f, 2 / 16f, 14 / 16f),
+            Shapes.box(7 / 16f, 2 / 16f, 7 / 16f, 9 / 16f, 4 / 16f, 9 / 16f),
+            Shapes.box(7.5 / 16f, 11 / 16f, 8 / 16f, 8.5 / 16f, 14 / 16f, 9 / 16f),
+            Shapes.box(5 / 16f, 4 / 16f, 5 / 16f, 11 / 16f, 5 / 16f, 11 / 16f),
+            Shapes.box(12 / 16f, 2 / 16f, 2 / 16f, 14 / 16f, 14 / 16f, 14 / 16f)
     ).optimize());
 
     protected BluePrinterBlock(Properties properties) {

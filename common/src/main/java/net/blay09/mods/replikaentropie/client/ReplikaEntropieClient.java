@@ -26,6 +26,7 @@ public class ReplikaEntropieClient {
 
         registrars.menuScreens(ModScreens::initialize);
         registrars.blockEntityRenderers(ModRenderers::initialize);
+        registrars.entityRenderers(ModRenderers::initialize);
         registrars.blockColors(ModRenderers::initialize);
 
         HandheldAnalyzerClient.initialize();
