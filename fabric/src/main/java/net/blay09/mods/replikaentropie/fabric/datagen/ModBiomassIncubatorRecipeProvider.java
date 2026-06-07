@@ -13,8 +13,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
@@ -61,7 +59,7 @@ public class ModBiomassIncubatorRecipeProvider extends FabricRecipeProvider {
     public record BiomassIncubatorRecipeBuilder(Ingredient seed, Ingredient soil, ItemStackTemplate result) {
         public void save(RecipeOutput output) {
             final var id = ReplikaEntropie.id("biomass_incubator/" + ingredientPath(seed));
-            output.accept(ResourceKey.create(Registries.RECIPE, id), new BiomassIncubatorRecipe(seed, soil, result), null);
+            output.accept(ResourceKey.create(Registries.RECIPE, id), new BiomassIncubatorRecipe(seed, soil, result, 10), null);
         }
 
         private static String ingredientPath(Ingredient ingredient) {
