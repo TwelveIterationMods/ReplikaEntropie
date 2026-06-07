@@ -34,7 +34,6 @@ public class ReplikaEntropie {
     // TODO Blue Printer has no recipe
     // TODO Entropic Data Miner is spammed with the same events
     // TODO Fragment Accelerator is a bit confusing right now - no output at all on low speeds?
-    // TODO Replika Suit needs a crafting recipe
     // TODO The part upgrades should get their graphics tweaked
     // TODO How to get Power from A to B?
     // TODO Charging Rail

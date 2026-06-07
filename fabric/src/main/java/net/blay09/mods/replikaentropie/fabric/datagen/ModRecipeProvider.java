@@ -191,6 +191,36 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_biosteel", has(ModItems.biosteel))
                         .save(output);
 
+                shaped(RecipeCategory.COMBAT, ModItems.replikaHelmet)
+                        .pattern("BBB")
+                        .pattern("B B")
+                        .define('B', ModItems.replikaAlloy)
+                        .unlockedBy("has_replika_alloy", has(ModItems.replikaAlloy))
+                        .save(output);
+
+                shaped(RecipeCategory.COMBAT, ModItems.replikaChestplate)
+                        .pattern("B B")
+                        .pattern("BBB")
+                        .pattern("BBB")
+                        .define('B', ModItems.replikaAlloy)
+                        .unlockedBy("has_replika_alloy", has(ModItems.replikaAlloy))
+                        .save(output);
+
+                shaped(RecipeCategory.COMBAT, ModItems.replikaLeggings)
+                        .pattern("BBB")
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('B', ModItems.replikaAlloy)
+                        .unlockedBy("has_replika_alloy", has(ModItems.replikaAlloy))
+                        .save(output);
+
+                shaped(RecipeCategory.COMBAT, ModItems.replikaBoots)
+                        .pattern("B B")
+                        .pattern("B B")
+                        .define('B', ModItems.replikaAlloy)
+                        .unlockedBy("has_replika_alloy", has(ModItems.replikaAlloy))
+                        .save(output);
+
                 shaped(RecipeCategory.COMBAT, ModItems.hazmatHelmet)
                         .pattern("BBB")
                         .pattern("B B")
