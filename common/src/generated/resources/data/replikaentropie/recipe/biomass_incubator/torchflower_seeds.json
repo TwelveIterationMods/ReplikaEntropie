@@ -4,5 +4,6 @@
     "id": "minecraft:torchflower"
   },
   "seed": "minecraft:torchflower_seeds",
-  "soil": "#replikaentropie:biomass_incubator/farmland_like"
+  "soil": "#replikaentropie:biomass_incubator/farmland_like",
+  "water": 10
 }

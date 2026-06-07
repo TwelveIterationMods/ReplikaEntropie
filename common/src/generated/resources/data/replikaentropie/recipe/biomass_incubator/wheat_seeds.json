@@ -4,5 +4,6 @@
     "id": "minecraft:wheat"
   },
   "seed": "minecraft:wheat_seeds",
-  "soil": "#replikaentropie:biomass_incubator/farmland_like"
+  "soil": "#replikaentropie:biomass_incubator/farmland_like",
+  "water": 10
 }

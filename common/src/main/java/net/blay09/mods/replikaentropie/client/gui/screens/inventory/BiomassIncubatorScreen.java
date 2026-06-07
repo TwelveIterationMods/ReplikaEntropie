@@ -20,6 +20,7 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
     private static final Identifier LEFT_WING = id("left_wing");
 
     private final ProgressRenderer waterTank = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(45, 23).size(16, 48).uv(183, 30);
+    private final ProgressRenderer growthProgress = SimpleProgressRenderer.horizontal(BACKGROUND, 256, 256).pos(80, 56).size(16, 4).uv(199, 14);
     private final EnergyBar energyBar = new EnergyBar(-23, 6);
 
     public BiomassIncubatorScreen(BiomassIncubatorMenu menu, Inventory playerInventory, Component title) {
@@ -53,6 +54,7 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 2, 24, 90);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 93, 28, 28);
         waterTank.render(graphics, leftPos, topPos, menu.getWaterTankProgress());
+        growthProgress.render(graphics, leftPos, topPos, menu.getGrowthProgress());
         energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 

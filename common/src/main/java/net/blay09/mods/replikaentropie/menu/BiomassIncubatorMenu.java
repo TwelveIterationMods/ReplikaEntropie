@@ -53,7 +53,7 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu implements Makes
         addSlot(new IngredientSlot(container, 0, 45, 80, Ingredient.of(Items.WATER_BUCKET)));
 
         addSlot(new Slot(container, 1, 80, 37));
-        addSlot(new Slot(container, 2, 80, 62));
+        addSlot(new Slot(container, 2, 80, 63));
 
         addSlot(new Slot(container, 3, 115, 26));
         addSlot(new Slot(container, 4, 115, 44));

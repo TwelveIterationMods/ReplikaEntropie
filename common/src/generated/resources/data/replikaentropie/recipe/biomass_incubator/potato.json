@@ -4,5 +4,6 @@
     "id": "minecraft:potato"
   },
   "seed": "minecraft:potato",
-  "soil": "#replikaentropie:biomass_incubator/farmland_like"
+  "soil": "#replikaentropie:biomass_incubator/farmland_like",
+  "water": 10
 }

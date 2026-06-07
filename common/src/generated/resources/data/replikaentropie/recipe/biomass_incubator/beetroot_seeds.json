@@ -4,5 +4,6 @@
     "id": "minecraft:beetroot"
   },
   "seed": "minecraft:beetroot_seeds",
-  "soil": "#replikaentropie:biomass_incubator/farmland_like"
+  "soil": "#replikaentropie:biomass_incubator/farmland_like",
+  "water": 10
 }

@@ -4,5 +4,6 @@
     "id": "minecraft:chorus_plant"
   },
   "seed": "minecraft:chorus_fruit",
-  "soil": "minecraft:end_stone"
+  "soil": "minecraft:end_stone",
+  "water": 10
 }

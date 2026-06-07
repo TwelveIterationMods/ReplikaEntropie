@@ -4,5 +4,6 @@
     "id": "minecraft:melon"
   },
   "seed": "minecraft:melon_seeds",
-  "soil": "#replikaentropie:biomass_incubator/farmland_like"
+  "soil": "#replikaentropie:biomass_incubator/farmland_like",
+  "water": 10
 }

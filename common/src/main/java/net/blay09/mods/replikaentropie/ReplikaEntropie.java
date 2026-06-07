@@ -39,7 +39,6 @@ public class ReplikaEntropie {
     // TODO How to get Power from A to B?
     // TODO Charging Rail
     // TODO Crane
-    // TODO Biomass Incubator not using up water, no progress in UI
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 

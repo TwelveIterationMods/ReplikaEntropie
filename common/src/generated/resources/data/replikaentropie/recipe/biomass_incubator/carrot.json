@@ -4,5 +4,6 @@
     "id": "minecraft:carrot"
   },
   "seed": "minecraft:carrot",
-  "soil": "#replikaentropie:biomass_incubator/farmland_like"
+  "soil": "#replikaentropie:biomass_incubator/farmland_like",
+  "water": 10
 }
