@@ -12,7 +12,7 @@
   "nonogram": "replikaentropie:gravilift_harness",
   "research_type": "assembler",
   "scrap": 16,
-  "sort_order": 2700,
+  "sort_order": 2800,
   "unlocked_recipes": [
     "replikaentropie:assembler/gravilift_harness"
   ]

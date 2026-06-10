@@ -11,7 +11,7 @@
   "nonogram": "replikaentropie:nullphaser",
   "research_type": "assembler",
   "scrap": 4,
-  "sort_order": 2100,
+  "sort_order": 2200,
   "unlocked_recipes": [
     "replikaentropie:assembler/nullphaser"
   ]

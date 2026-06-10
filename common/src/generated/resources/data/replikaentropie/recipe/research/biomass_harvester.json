@@ -10,7 +10,7 @@
   },
   "nonogram": "replikaentropie:biomass_harvester",
   "research_type": "assembler",
-  "sort_order": 3200,
+  "sort_order": 3300,
   "unlocked_recipes": [
     "replikaentropie:assembler/biomass_incubator"
   ]

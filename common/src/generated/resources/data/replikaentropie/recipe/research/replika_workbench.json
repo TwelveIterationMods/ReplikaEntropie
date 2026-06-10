@@ -12,7 +12,7 @@
   "nonogram": "replikaentropie:replika_workbench",
   "research_type": "assembler",
   "scrap": 32,
-  "sort_order": 3900,
+  "sort_order": 4000,
   "unlocked_recipes": [
     "replikaentropie:assembler/replika_workbench"
   ]

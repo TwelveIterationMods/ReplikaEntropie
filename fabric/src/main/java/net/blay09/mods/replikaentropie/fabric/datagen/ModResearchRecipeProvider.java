@@ -191,6 +191,17 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .sortOrder(sortOrder += 100)
                         .save(output);
 
+                research(id("blue_printer"))
+                        .icon(ModBlocks.bluePrinter)
+                        .dependsOn(id("research/assembly_ticket"))
+                        .dependsOn(id("research/chipset"))
+                        .unlocksRecipe(id("assembler/blue_printer"))
+                        .nonogram(id("blue_printer"))
+                        .costs(8, 4, 0, 2)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .sortOrder(sortOrder += 100)
+                        .save(output);
+
                 research(id("ore_vacuum"))
                         .icon(ModItems.oreVacuum)
                         .dependsOn(id("research/burst_energy"))
