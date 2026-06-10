@@ -5,6 +5,7 @@ import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 
@@ -20,6 +21,13 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
         valueLookupBuilder(ModBlockTags.BLOCKS_NULLPHASE).add(Blocks.BEDROCK, Blocks.BARRIER, Blocks.OBSIDIAN);
         valueLookupBuilder(ModBlockTags.IMMUNE_TO_STOMPING).add(Blocks.BEDROCK, Blocks.BARRIER);
         valueLookupBuilder(ModBlockTags.IMMUNE_TO_WORLD_EATER).add(Blocks.BEDROCK, Blocks.BARRIER);
+        valueLookupBuilder(ModBlockTags.CRANE_RELOCATION_NOT_SUPPORTED).add(
+                Blocks.RAIL,
+                Blocks.POWERED_RAIL,
+                Blocks.DETECTOR_RAIL,
+                Blocks.ACTIVATOR_RAIL
+        );
+        getOrCreateRawBuilder(ModBlockTags.CRANE_RELOCATION_NOT_SUPPORTED).addOptionalTag(Identifier.fromNamespaceAndPath("c", "relocation_not_supported"));
         valueLookupBuilder(ModBlockTags.SLASHED_BY_BIOMASS_HARVESTER).add(Blocks.SUGAR_CANE);
 
         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(
@@ -39,7 +47,8 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
                 ModBlocks.waterSink.value(),
                 ModBlocks.lavaSink.value(),
                 ModBlocks.solarSink.value(),
-                ModBlocks.recycler.value()
+                ModBlocks.recycler.value(),
+                ModBlocks.crane.value()
         );
     }
 }

@@ -26,6 +26,7 @@ public class ModBlockEntities {
     public static Holder<BlockEntityType<SolarSinkBlockEntity>> solarSink;
     public static Holder<BlockEntityType<FunnelBlockEntity>> funnel;
     public static Holder<BlockEntityType<DigSpotBlockEntity>> digSpot;
+    public static Holder<BlockEntityType<CraneBlockEntity>> crane;
 
     public static void initialize(BalmBlockEntityTypeRegistrar blockEntities) {
         replikaWorkbench = blockEntities.register("replika_workbench",
@@ -103,6 +104,10 @@ public class ModBlockEntities {
         funnel = blockEntities.register("funnel",
                 FunnelBlockEntity::new,
                 ModBlocks.funnel).asHolder();
+
+        crane = blockEntities.register("crane",
+                CraneBlockEntity::new,
+                ModBlocks.crane).asHolder();
 
         digSpot = blockEntities.register("dig_spot",
                 DigSpotBlockEntity::new,

@@ -45,6 +45,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateHorizontalBlock(ModBlocks.lavaSink.value());
         generators.createNonTemplateModelBlock(ModBlocks.solarSink.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.bluePrinter.value());
+        generators.createNonTemplateHorizontalBlock(ModBlocks.crane.value());
 
         createFunnel(generators, ModBlocks.funnel.asBlock());
 
@@ -66,6 +67,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.registerSimpleItemModel(ModBlocks.lavaSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.lavaSink.value()));
         generators.registerSimpleItemModel(ModBlocks.solarSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.solarSink.value()));
         generators.registerSimpleItemModel(ModBlocks.bluePrinter.value(), ModelLocationUtils.getModelLocation(ModBlocks.bluePrinter.value()));
+        generators.registerSimpleItemModel(ModBlocks.crane.value(), ModelLocationUtils.getModelLocation(ModBlocks.crane.value()));
     }
 
     private void createFunnel(BlockModelGenerators generators, Block funnel) {

@@ -135,6 +135,7 @@ public class ModItems {
                     output.accept(ModBlocks.lavaSink);
                     output.accept(ModBlocks.bluePrinter);
                     output.accept(ModBlocks.funnel);
+                    output.accept(ModBlocks.crane);
                     output.accept(ModBlocks.fabricator);
                     output.accept(ModBlocks.entropicDataMiner);
                     output.accept(ModBlocks.cobblescrap);

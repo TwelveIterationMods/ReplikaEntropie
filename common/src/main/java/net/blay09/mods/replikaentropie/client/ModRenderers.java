@@ -26,6 +26,7 @@ public class ModRenderers {
         registrar.register(ModBlockEntities.fragmentalGenerator, FragmentalGeneratorRenderer::new);
         registrar.register(ModBlockEntities.chaosEngine, ChaosEngineRenderer::new);
         registrar.register(ModBlockEntities.fragmentAccelerator, FragmentAcceleratorRenderer::new);
+        registrar.register(ModBlockEntities.crane, CraneRenderer::new);
     }
 
     public static void initialize(BalmEntityRendererRegistrar registrar) {

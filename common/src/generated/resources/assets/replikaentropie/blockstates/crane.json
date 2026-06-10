@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "replikaentropie:block/crane",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "replikaentropie:block/crane"
+    },
+    "facing=south": {
+      "model": "replikaentropie:block/crane",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "replikaentropie:block/crane",
+      "y": 270
+    }
+  }
+}
