@@ -1,17 +1,32 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,powered=false": {
       "model": "replikaentropie:block/crane",
       "y": 90
     },
-    "facing=north": {
+    "facing=east,powered=true": {
+      "model": "replikaentropie:block/crane",
+      "y": 90
+    },
+    "facing=north,powered=false": {
       "model": "replikaentropie:block/crane"
     },
-    "facing=south": {
+    "facing=north,powered=true": {
+      "model": "replikaentropie:block/crane"
+    },
+    "facing=south,powered=false": {
       "model": "replikaentropie:block/crane",
       "y": 180
     },
-    "facing=west": {
+    "facing=south,powered=true": {
+      "model": "replikaentropie:block/crane",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "replikaentropie:block/crane",
+      "y": 270
+    },
+    "facing=west,powered=true": {
       "model": "replikaentropie:block/crane",
       "y": 270
     }

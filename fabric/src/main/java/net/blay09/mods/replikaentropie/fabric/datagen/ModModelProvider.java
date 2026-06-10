@@ -45,7 +45,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateHorizontalBlock(ModBlocks.lavaSink.value());
         generators.createNonTemplateModelBlock(ModBlocks.solarSink.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.bluePrinter.value());
-        generators.createNonTemplateHorizontalBlock(ModBlocks.crane.value());
+        createCrane(generators, ModBlocks.crane.value());
 
         createFunnel(generators, ModBlocks.funnel.asBlock());
 
@@ -68,6 +68,20 @@ public class ModModelProvider extends FabricModelProvider {
         generators.registerSimpleItemModel(ModBlocks.solarSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.solarSink.value()));
         generators.registerSimpleItemModel(ModBlocks.bluePrinter.value(), ModelLocationUtils.getModelLocation(ModBlocks.bluePrinter.value()));
         generators.registerSimpleItemModel(ModBlocks.crane.value(), ModelLocationUtils.getModelLocation(ModBlocks.crane.value()));
+    }
+
+    private void createCrane(BlockModelGenerators generators, Block crane) {
+        final var model = plainVariant(ModelLocationUtils.getModelLocation(crane));
+        generators.blockStateOutput.accept(MultiVariantGenerator.dispatch(crane)
+                .with(PropertyDispatch.initial(BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.POWERED)
+                        .select(Direction.NORTH, false, model)
+                        .select(Direction.NORTH, true, model)
+                        .select(Direction.EAST, false, model.with(Y_ROT_90))
+                        .select(Direction.EAST, true, model.with(Y_ROT_90))
+                        .select(Direction.SOUTH, false, model.with(Y_ROT_180))
+                        .select(Direction.SOUTH, true, model.with(Y_ROT_180))
+                        .select(Direction.WEST, false, model.with(Y_ROT_270))
+                        .select(Direction.WEST, true, model.with(Y_ROT_270))));
     }
 
     private void createFunnel(BlockModelGenerators generators, Block funnel) {

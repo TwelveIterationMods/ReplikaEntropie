@@ -24,6 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 public class CraneBlockEntity extends BlockEntity {
     public static final int TRANSFER_TICKS = 40;
+    public static final int REDSTONE_PULSE_TICKS = 10;
 
     private BlockState carriedState = Blocks.AIR.defaultBlockState();
     private @Nullable CompoundTag carriedBlockEntityData;
@@ -84,9 +85,19 @@ public class CraneBlockEntity extends BlockEntity {
         if (tryPlaceCarriedBlock(destinationPos)) {
             level.playSound(null, worldPosition, SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 0.5f, 1f);
             clearCarriedBlock();
+            emitRedstonePulse();
             setChanged();
             BalmBlockEntityUtils.sync(this);
         }
+    }
+
+    private void emitRedstonePulse() {
+        final var state = getBlockState();
+        if (!state.getValue(BlockStateProperties.POWERED)) {
+            level.setBlock(worldPosition, state.setValue(BlockStateProperties.POWERED, true), Block.UPDATE_CLIENTS);
+            level.updateNeighborsAt(worldPosition, state.getBlock());
+        }
+        level.scheduleTick(worldPosition, state.getBlock(), REDSTONE_PULSE_TICKS);
     }
 
     public void releaseCarriedBlock() {
