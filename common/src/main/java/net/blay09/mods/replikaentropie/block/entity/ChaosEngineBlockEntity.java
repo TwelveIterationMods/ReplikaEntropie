@@ -80,7 +80,7 @@ public class ChaosEngineBlockEntity extends BlockEntity {
                 final var gibberish = GIBBERISH.get(level.getRandom().nextInt(GIBBERISH.size()));
                 final var label = Component.translatable(gibberish, new ItemStack(randomBlock.getBlock()).getHoverName());
                 final var event = DataMinedEvent.of(DataMinedEvent.Type.CHAOS, variant, new ItemStack(ModBlocks.chaosEngine), label);
-                dataMiner.addEvent(event);
+                dataMiner.addEvent(event, worldPosition);
             });
             ticksSinceEventGenerated = 0;
         }

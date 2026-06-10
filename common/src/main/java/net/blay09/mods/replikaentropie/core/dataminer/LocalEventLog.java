@@ -39,7 +39,7 @@ public class LocalEventLog {
             serverLevel.getPoiManager().getInRange(it -> it.is(ModPoiTypes.ENTROPIC_DATA_MINER_POI), pos, EVENT_RANGE, PoiManager.Occupancy.ANY)
                     .forEach(record -> {
                         if (serverLevel.getBlockEntity(record.getPos()) instanceof EntropicDataMinerBlockEntity blockEntity) {
-                            blockEntity.addEvent(event);
+                            blockEntity.addEvent(event, pos);
                         }
                     });
         }

@@ -1,6 +1,7 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
 import com.mojang.serialization.Codec;
+import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
 import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
@@ -12,16 +13,21 @@ import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.item.DataItem;
 import net.blay09.mods.replikaentropie.menu.EntropicDataMinerMenu;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
+import net.blay09.mods.replikaentropie.network.protocol.ParticleTrailMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -36,6 +42,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
@@ -133,7 +140,7 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
         return energyStorage;
     }
 
-    public void addEvent(DataMinedEvent event) {
+    public void addEvent(DataMinedEvent event, BlockPos eventPos) {
         final var eventKey = event.asKey();
         if (generatedEventKeys.contains(eventKey) || energyStorage.getEnergy() < ENERGY_COST_PER_EVENT) {
             return;
@@ -144,7 +151,21 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
             generatedEventKeys.add(eventKey);
             energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_EVENT);
             setChanged();
+            playCaptureEffects(eventPos);
         }
+    }
+
+    private void playCaptureEffects(BlockPos eventPos) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        final var start = Vec3.atCenterOf(eventPos);
+        final var end = Vec3.atCenterOf(worldPosition);
+        final var midPoint = start.lerp(end, 0.5);
+        final var message = new ParticleTrailMessage(start.toVector3f(), end.toVector3f(), 12, ParticleTypes.ENCHANT);
+        Balm.networking().sendToTracking(serverLevel, BlockPos.containing(midPoint), message);
+        serverLevel.playSound(null, worldPosition, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.5f, 1f);
     }
 
     @Override
