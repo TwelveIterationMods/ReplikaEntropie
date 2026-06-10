@@ -12,7 +12,6 @@ import net.blay09.mods.replikaentropie.core.abilities.*;
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.blay09.mods.replikaentropie.core.crane.BlockCraneHandlers;
 import net.blay09.mods.replikaentropie.core.crane.MinecartCraneHandlers;
-import net.blay09.mods.replikaentropie.core.dataminer.GlobalEventLog;
 import net.blay09.mods.replikaentropie.core.dataminer.LocalEventLog;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
 import net.blay09.mods.replikaentropie.core.waste.FragmentalWaste;
@@ -36,8 +35,8 @@ public class ReplikaEntropie {
     // TODO Entropic Data Miner is spammed with the same events
     // TODO Fragment Accelerator is a bit confusing right now - no output at all on low speeds?
     // TODO How to get Power from A to B?
-    // TODO Charging Rail
-    // TODO Crane
+    // TODO Biomass Harvester Cart
+    // TODO Crane Rendering
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 
@@ -61,7 +60,6 @@ public class ReplikaEntropie {
         ModLoot.initialize(Balm.lootModifiers());
         Balm.commands().register(ReplikaEntropieCommand::register);
 
-        GlobalEventLog.initialize();
         LocalEventLog.initialize();
         Analyzer.initialize();
         MinecartCraneHandlers.initialize();
