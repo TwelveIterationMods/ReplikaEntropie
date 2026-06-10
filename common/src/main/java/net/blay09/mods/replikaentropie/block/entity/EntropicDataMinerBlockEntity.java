@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
+import com.mojang.serialization.Codec;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
 import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
@@ -37,12 +38,18 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
 
     public static final int CONTAINER_SIZE = 10;
     private static final int ENERGY_CAPACITY = 10000;
     private static final int ENERGY_INPUT_RATE = 1000;
     private static final int ENERGY_COST_PER_EVENT = 10;
+    private static final String GENERATED_EVENT_KEYS_TAG = "GeneratedEventKeys";
+
+    private final Set<String> generatedEventKeys = new HashSet<>();
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override
@@ -127,12 +134,14 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
     }
 
     public void addEvent(DataMinedEvent event) {
-        if (energyStorage.getEnergy() < ENERGY_COST_PER_EVENT) {
+        final var eventKey = event.asKey();
+        if (generatedEventKeys.contains(eventKey) || energyStorage.getEnergy() < ENERGY_COST_PER_EVENT) {
             return;
         }
 
         final var remainingItem = ContainerUtils.insertItem(backingContainer, DataItem.create(event), false);
         if (remainingItem.isEmpty()) {
+            generatedEventKeys.add(eventKey);
             energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_EVENT);
             setChanged();
         }
@@ -143,12 +152,16 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
         backingContainer.getItems().clear();
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
         energyStorage.deserialize(input);
+        generatedEventKeys.clear();
+        input.listOrEmpty(GENERATED_EVENT_KEYS_TAG, Codec.STRING).forEach(generatedEventKeys::add);
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
         ContainerHelper.saveAllItems(output, backingContainer.getItems());
         energyStorage.serialize(output);
+        final var generatedEventKeysList = output.list(GENERATED_EVENT_KEYS_TAG, Codec.STRING);
+        generatedEventKeys.forEach(generatedEventKeysList::add);
     }
 
     @Override
