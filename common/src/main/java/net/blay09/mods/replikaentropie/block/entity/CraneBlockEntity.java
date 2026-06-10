@@ -1,7 +1,8 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
-import net.blay09.mods.replikaentropie.tag.ModBlockTags;
+import net.blay09.mods.replikaentropie.api.crane.CraneHandlerRegistry;
+import net.blay09.mods.replikaentropie.api.crane.CraneTransfer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -53,31 +54,23 @@ public class CraneBlockEntity extends BlockEntity {
 
         final var sourcePos = getSourcePos();
         final var destinationPos = getDestinationPos();
-        if (!serverLevel.isLoaded(sourcePos) || !serverLevel.isLoaded(destinationPos) || !serverLevel.getBlockState(destinationPos).isAir()) {
+        if (!serverLevel.isLoaded(sourcePos) || !serverLevel.isLoaded(destinationPos)) {
             return;
         }
 
-        final var sourceState = serverLevel.getBlockState(sourcePos);
-        if (!canMove(serverLevel, sourcePos, sourceState)) {
-            return;
+        final var transfer = CraneHandlerRegistry.tryPickup(serverLevel, sourcePos, destinationPos);
+        if (transfer.isPresent()) {
+            startTransfer(transfer.get().state(), transfer.get().blockEntityData());
         }
-
-        carriedState = sourceState;
-        final var sourceBlockEntity = serverLevel.getBlockEntity(sourcePos);
-        carriedBlockEntityData = sourceBlockEntity != null ? sourceBlockEntity.saveWithFullMetadata(serverLevel.registryAccess()) : null;
-        transferTicks = 0;
-        serverLevel.removeBlockEntity(sourcePos);
-        serverLevel.setBlock(sourcePos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-        serverLevel.playSound(null, worldPosition, SoundEvents.PISTON_EXTEND, SoundSource.BLOCKS, 0.5f, 1f);
-        setChanged();
-        BalmBlockEntityUtils.sync(this);
     }
 
-    private static boolean canMove(ServerLevel level, BlockPos pos, BlockState state) {
-        return !state.isAir()
-                && state.getFluidState().isEmpty()
-                && state.getDestroySpeed(level, pos) >= 0f
-                && !state.is(ModBlockTags.CRANE_RELOCATION_NOT_SUPPORTED);
+    private void startTransfer(BlockState carriedState, @Nullable CompoundTag carriedBlockEntityData) {
+        this.carriedState = carriedState;
+        this.carriedBlockEntityData = carriedBlockEntityData;
+        transferTicks = 0;
+        level.playSound(null, worldPosition, SoundEvents.PISTON_EXTEND, SoundSource.BLOCKS, 0.5f, 1f);
+        setChanged();
+        BalmBlockEntityUtils.sync(this);
     }
 
     private void continueTransfer() {
@@ -113,21 +106,12 @@ public class CraneBlockEntity extends BlockEntity {
     }
 
     private boolean tryPlaceCarriedBlock(BlockPos pos) {
-        if (level == null || !level.getBlockState(pos).isAir()) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             return false;
         }
 
-        if (!level.setBlock(pos, carriedState, Block.UPDATE_ALL)) {
-            return false;
-        }
-        if (carriedBlockEntityData != null) {
-            final var blockEntity = BlockEntity.loadStatic(pos, level.getBlockState(pos), carriedBlockEntityData, level.registryAccess());
-            if (blockEntity != null) {
-                level.setBlockEntity(blockEntity);
-                blockEntity.setChanged();
-            }
-        }
-        return true;
+        final var transfer = new CraneTransfer(carriedState, carriedBlockEntityData);
+        return CraneHandlerRegistry.tryPlace(serverLevel, pos, transfer);
     }
 
     private void clearCarriedBlock() {

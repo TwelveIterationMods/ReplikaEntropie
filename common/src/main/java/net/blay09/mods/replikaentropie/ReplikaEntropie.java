@@ -10,6 +10,8 @@ import net.blay09.mods.replikaentropie.command.ReplikaEntropieCommand;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.core.abilities.*;
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
+import net.blay09.mods.replikaentropie.core.crane.BlockCraneHandlers;
+import net.blay09.mods.replikaentropie.core.crane.MinecartCraneHandlers;
 import net.blay09.mods.replikaentropie.core.dataminer.GlobalEventLog;
 import net.blay09.mods.replikaentropie.core.dataminer.LocalEventLog;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
@@ -62,6 +64,8 @@ public class ReplikaEntropie {
         GlobalEventLog.initialize();
         LocalEventLog.initialize();
         Analyzer.initialize();
+        MinecartCraneHandlers.initialize();
+        BlockCraneHandlers.initialize();
         FragmentalWaste.initialize();
         AbilityManager.initialize();
         MagphaseAbility.initialize();
