@@ -35,7 +35,6 @@ public class ReplikaEntropie {
 
     // TODO Fragment Accelerator is a bit confusing right now - no output at all on low speeds?
     // TODO How to get Power from A to B?
-    // TODO Biomass Harvester Cart
     // TODO Crane Rendering
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);

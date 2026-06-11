@@ -113,6 +113,12 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_fragmental_waste", has(ModBlocks.fragmentalWaste))
                         .save(output);
 
+                shapeless(RecipeCategory.TRANSPORTATION, ModItems.biomassHarvesterMinecart)
+                        .requires(ModBlocks.biomassHarvester)
+                        .requires(Items.MINECART)
+                        .unlockedBy("has_biomass_harvester", has(ModBlocks.biomassHarvester))
+                        .save(output);
+
                 shapeless(RecipeCategory.COMBAT, ModItems.biosteel)
                         .requires(Items.IRON_INGOT)
                         .requires(ModItems.scrap)

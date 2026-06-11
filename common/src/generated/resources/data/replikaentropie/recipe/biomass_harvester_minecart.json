@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "replikaentropie:biomass_harvester",
+    "minecraft:minecart"
+  ],
+  "result": {
+    "id": "replikaentropie:biomass_harvester_minecart"
+  }
+}

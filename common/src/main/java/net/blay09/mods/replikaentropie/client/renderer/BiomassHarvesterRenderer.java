@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.HashCommon;
 import net.blay09.mods.replikaentropie.block.entity.BiomassHarvesterBlockEntity;
+import net.blay09.mods.replikaentropie.core.harvester.BiomassHarvesterLogic;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -45,7 +46,7 @@ public class BiomassHarvesterRenderer implements BlockEntityRenderer<BiomassHarv
 
         final var warningWobble = (float) Math.sin(time * Math.PI * 4f) * 0.02f;
         state.spinDegrees = blockEntity.getClientSpinDegrees(partialTick);
-        state.warningWobble = blockEntityState == BiomassHarvesterBlockEntity.State.WARNING ? warningWobble : 0f;
+        state.warningWobble = blockEntityState == BiomassHarvesterLogic.State.WARNING ? warningWobble : 0f;
 
         final var seed = HashCommon.long2int(blockEntity.getBlockPos().asLong());
         for (int i = 0; i < weaponsContainer.getContainerSize(); i++) {

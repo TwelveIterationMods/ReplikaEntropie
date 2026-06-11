@@ -145,5 +145,6 @@ public class ModModelProvider extends FabricModelProvider {
 
         generators.generateFlatItem(ModItems.wasteBarrelMinecart.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.fragmentalWasteMinecart.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.biomassHarvesterMinecart.asItem(), ModelTemplates.FLAT_ITEM);
     }
 }

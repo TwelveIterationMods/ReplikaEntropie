@@ -70,6 +70,7 @@ public class ModItems {
     public static DeferredItem metalDetector;
     public static DeferredItem wasteBarrelMinecart;
     public static DeferredItem fragmentalWasteMinecart;
+    public static DeferredItem biomassHarvesterMinecart;
 
     public static void initialize(BalmItemRegistrar items) {
         handheldAnalyzer = items.register("handheld_analyzer", HandheldAnalyzerItem::new, it -> it.stacksTo(1)).asDeferredItem();
@@ -93,6 +94,7 @@ public class ModItems {
         metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(600)).asDeferredItem();
         wasteBarrelMinecart = items.register("waste_barrel_minecart", properties -> createMinecartItem(ModEntities.wasteBarrelMinecart.value(), properties), it -> it.stacksTo(1)).asDeferredItem();
         fragmentalWasteMinecart = items.register("fragmental_waste_minecart", properties -> createMinecartItem(ModEntities.fragmentalWasteMinecart.value(), properties), it -> it.stacksTo(1)).asDeferredItem();
+        biomassHarvesterMinecart = items.register("biomass_harvester_minecart", properties -> createMinecartItem(ModEntities.biomassHarvesterMinecart.value(), properties), it -> it.stacksTo(1)).asDeferredItem();
         graviliftEngine = items.register("gravilift_engine", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), GraviliftAbility.ID)).asDeferredItem();
         magphasers = items.register("magphasers", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), MagphaseAbility.ID)).asDeferredItem();
         slowphasers = items.register("slowphasers", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), SlowphaseAbility.ID)).asDeferredItem();
@@ -159,6 +161,7 @@ public class ModItems {
                     output.accept(ModBlocks.fragmentalWaste);
                     output.accept(wasteBarrelMinecart);
                     output.accept(fragmentalWasteMinecart);
+                    output.accept(biomassHarvesterMinecart);
                     output.accept(ModBlocks.replikaWorkbench);
                     output.accept(oreVacuum);
                     output.accept(nullphaser);

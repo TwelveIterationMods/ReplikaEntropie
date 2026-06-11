@@ -9,17 +9,25 @@ public class ModEntities {
 
     public static Holder<EntityType<WasteBarrelMinecart>> wasteBarrelMinecart;
     public static Holder<EntityType<FragmentalWasteMinecart>> fragmentalWasteMinecart;
+    public static Holder<EntityType<BiomassHarvesterMinecart>> biomassHarvesterMinecart;
 
     public static void initialize(BalmEntityTypeRegistrar entities) {
         wasteBarrelMinecart = entities.register("waste_barrel_minecart",
-                () -> EntityType.Builder.<WasteBarrelMinecart>of(WasteBarrelMinecart::new, MobCategory.MISC)
+                () -> EntityType.Builder.of(WasteBarrelMinecart::new, MobCategory.MISC)
                         .sized(0.98f, 0.7f)
                         .clientTrackingRange(8)
                         .updateInterval(3))
                 .asHolder();
 
         fragmentalWasteMinecart = entities.register("fragmental_waste_minecart",
-                () -> EntityType.Builder.<FragmentalWasteMinecart>of(FragmentalWasteMinecart::new, MobCategory.MISC)
+                () -> EntityType.Builder.of(FragmentalWasteMinecart::new, MobCategory.MISC)
+                        .sized(0.98f, 0.7f)
+                        .clientTrackingRange(8)
+                        .updateInterval(3))
+                .asHolder();
+
+        biomassHarvesterMinecart = entities.register("biomass_harvester_minecart",
+                () -> EntityType.Builder.of(BiomassHarvesterMinecart::new, MobCategory.MISC)
                         .sized(0.98f, 0.7f)
                         .clientTrackingRange(8)
                         .updateInterval(3))
