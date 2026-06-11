@@ -24,7 +24,7 @@ public class WaterSinkBlockEntity extends BlockEntity {
         for (BlockPos currentPos = pos.below(); currentPos.getY() >= level.getMinY(); currentPos = currentPos.below()) {
             final var blockEntity = level.getBlockEntity(currentPos);
             if (blockEntity instanceof FragmentalWasteBlockEntity fragmentalWasteBlockEntity) {
-                if (fragmentalWasteBlockEntity.addDecontaminationTick()) {
+                if (fragmentalWasteBlockEntity.decontaminationTick()) {
                     fragmentalWasteBlockEntity.convertToWasteBarrel();
                 }
                 return;
