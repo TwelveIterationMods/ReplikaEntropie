@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.MinecartItem;
+import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.Equippable;
@@ -73,7 +74,7 @@ public class ModItems {
         skyScraper = items.register("sky_scraper", SkyScraperItem::new, it -> it.stacksTo(1)).asDeferredItem();
         makeshiftPSU = items.register("makeshift_psu", Item::new, it -> it).asDeferredItem();
         damagedChipset = items.register("damaged_chipset", Item::new, it -> it).asDeferredItem();
-        data = items.register("data", DataItem::new, it -> it.food(new FoodProperties.Builder().alwaysEdible().build())).asDeferredItem();
+        data = items.register("data", DataItem::new, it -> it.food(new FoodProperties.Builder().alwaysEdible().build(), Consumable.builder().consumeSeconds(0.1f).build())).asDeferredItem();
         scrap = items.register("scrap", Item::new, it -> it).asDeferredItem();
         biomass = items.register("biomass", Item::new, it -> it).asDeferredItem();
         fragments = items.register("fragments", Item::new, it -> it).asDeferredItem();

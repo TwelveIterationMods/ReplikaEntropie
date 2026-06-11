@@ -17,6 +17,7 @@ import net.blay09.mods.replikaentropie.network.protocol.ParticleTrailMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -45,18 +46,23 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
 
-    public static final int CONTAINER_SIZE = 10;
+    public static final int CONTAINER_SIZE = 1;
+    public static final int EVENT_HISTORY_SIZE = 8;
     private static final int ENERGY_CAPACITY = 10000;
     private static final int ENERGY_INPUT_RATE = 1000;
     private static final int ENERGY_COST_PER_EVENT = 10;
     private static final String GENERATED_EVENT_KEYS_TAG = "GeneratedEventKeys";
+    private static final String RECENT_EVENTS_TAG = "RecentEvents";
 
     private final Set<String> generatedEventKeys = new HashSet<>();
+    private final List<DataMinedEvent> recentEvents = new ArrayList<>(EVENT_HISTORY_SIZE);
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override
@@ -74,6 +80,13 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
         @Override
         public void setChanged() {
             EntropicDataMinerBlockEntity.this.setChanged();
+        }
+    };
+
+    private final DefaultContainer eventHistoryContainer = new DefaultContainer(EVENT_HISTORY_SIZE) {
+        @Override
+        public boolean canPlaceItem(int slot, ItemStack itemStack) {
+            return false;
         }
     };
 
@@ -112,7 +125,7 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new EntropicDataMinerMenu(containerId, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
+        return new EntropicDataMinerMenu(containerId, inventory, eventHistoryContainer, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
     }
 
     @Override
@@ -149,9 +162,32 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
         final var remainingItem = ContainerUtils.insertItem(backingContainer, DataItem.create(event), false);
         if (remainingItem.isEmpty()) {
             generatedEventKeys.add(eventKey);
+            addToEventHistory(event);
             energyStorage.setEnergy(energyStorage.getEnergy() - ENERGY_COST_PER_EVENT);
             setChanged();
             playCaptureEffects(eventPos);
+        }
+    }
+
+    private void addToEventHistory(DataMinedEvent event) {
+        recentEvents.addFirst(event);
+        if (recentEvents.size() > EVENT_HISTORY_SIZE) {
+            recentEvents.removeLast();
+        }
+        updateEventHistoryContainer();
+    }
+
+    private void updateEventHistoryContainer() {
+        for (int i = 0; i < EVENT_HISTORY_SIZE; i++) {
+            if (i < recentEvents.size()) {
+                final var event = recentEvents.get(i);
+                final var icon = event.icon().isEmpty() ? DataItem.create(event) : event.icon().copy();
+                icon.setCount(1);
+                icon.set(DataComponents.CUSTOM_NAME, event.getDisplayName());
+                eventHistoryContainer.setItem(i, icon);
+            } else {
+                eventHistoryContainer.setItem(i, ItemStack.EMPTY);
+            }
         }
     }
 
@@ -175,6 +211,11 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
         energyStorage.deserialize(input);
         generatedEventKeys.clear();
         input.listOrEmpty(GENERATED_EVENT_KEYS_TAG, Codec.STRING).forEach(generatedEventKeys::add);
+        recentEvents.clear();
+        input.listOrEmpty(RECENT_EVENTS_TAG, DataMinedEvent.CODEC).stream()
+                .limit(EVENT_HISTORY_SIZE)
+                .forEach(recentEvents::add);
+        updateEventHistoryContainer();
     }
 
     @Override
@@ -183,6 +224,8 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
         energyStorage.serialize(output);
         final var generatedEventKeysList = output.list(GENERATED_EVENT_KEYS_TAG, Codec.STRING);
         generatedEventKeys.forEach(generatedEventKeysList::add);
+        final var recentEventsList = output.list(RECENT_EVENTS_TAG, DataMinedEvent.CODEC);
+        recentEvents.forEach(recentEventsList::add);
     }
 
     @Override

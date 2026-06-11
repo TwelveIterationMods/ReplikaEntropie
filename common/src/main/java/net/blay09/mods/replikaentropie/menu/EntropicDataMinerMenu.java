@@ -3,6 +3,7 @@ package net.blay09.mods.replikaentropie.menu;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.block.entity.EntropicDataMinerBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
+import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -31,25 +32,28 @@ public class EntropicDataMinerMenu extends AbstractContainerMenu implements Make
     private final QuickMove.Routing quickMove;
 
     public EntropicDataMinerMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(EntropicDataMinerBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+        this(containerId, inventory, new SimpleContainer(EntropicDataMinerBlockEntity.EVENT_HISTORY_SIZE), new SimpleContainer(EntropicDataMinerBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
-    public EntropicDataMinerMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
-        this(ModMenus.entropicDataMiner.value(), containerId, inventory, container, data, access);
+    public EntropicDataMinerMenu(int containerId, Inventory inventory, Container eventHistoryContainer, Container container, ContainerData data, ContainerLevelAccess access) {
+        this(ModMenus.entropicDataMiner.value(), containerId, inventory, eventHistoryContainer, container, data, access);
     }
 
-    public EntropicDataMinerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
+    public EntropicDataMinerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container eventHistoryContainer, Container container, ContainerData data, ContainerLevelAccess access) {
         super(menuType, containerId);
         this.inventory = inventory;
         this.container = container;
         this.data = data;
         this.access = access;
         checkContainerSize(container, EntropicDataMinerBlockEntity.CONTAINER_SIZE);
+        checkContainerSize(eventHistoryContainer, EntropicDataMinerBlockEntity.EVENT_HISTORY_SIZE);
         addDataSlots(data);
 
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 5; j++) {
-                addSlot(new OutputSlot(container, j + i * 5, 75 + j * 18, 20 + i * 30));
+        addSlot(new OutputSlot(container, 0, 30, 35));
+
+        for (int row = 0; row < 2; row++) {
+            for (int column = 0; column < 4; column++) {
+                addSlot(new ReadonlySlot(eventHistoryContainer, column + row * 4, 79 + column * 21, 24 + row * 21));
             }
         }
 

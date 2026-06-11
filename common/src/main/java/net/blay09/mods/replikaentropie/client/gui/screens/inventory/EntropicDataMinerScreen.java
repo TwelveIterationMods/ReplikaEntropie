@@ -3,12 +3,15 @@ package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
 import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.EntropicDataMinerMenu;
+import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.List;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -42,6 +45,12 @@ public class EntropicDataMinerScreen extends AbstractContainerScreen<EntropicDat
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (energyBar.extractTooltip(graphics, font, leftPos, topPos, mouseX, mouseY, menu.getCurrentPower(), menu.getMaxPower())) {
+            return;
+        }
+
+        if (hoveredSlot instanceof ReadonlySlot && hoveredSlot.hasItem()) {
+            final var itemStack = hoveredSlot.getItem();
+            graphics.setTooltipForNextFrame(font, List.of(itemStack.getHoverName()), itemStack.getTooltipImage(), mouseX, mouseY);
             return;
         }
 
