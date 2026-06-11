@@ -4,6 +4,7 @@ import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
 import net.blay09.mods.balm.world.item.BalmItemRegistrar;
 import net.blay09.mods.balm.world.item.DeferredItem;
 import net.blay09.mods.replikaentropie.component.AbilityHolder;
+import net.blay09.mods.replikaentropie.component.ItemDescription;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
@@ -73,8 +74,8 @@ public class ModItems {
     public static DeferredItem biomassHarvesterMinecart;
 
     public static void initialize(BalmItemRegistrar items) {
-        handheldAnalyzer = items.register("handheld_analyzer", HandheldAnalyzerItem::new, it -> it.stacksTo(1)).asDeferredItem();
-        skyScraper = items.register("sky_scraper", SkyScraperItem::new, it -> it.stacksTo(1)).asDeferredItem();
+        handheldAnalyzer = items.register("handheld_analyzer", HandheldAnalyzerItem::new, it -> withTooltip(it.stacksTo(1), "handheld_analyzer")).asDeferredItem();
+        skyScraper = items.register("sky_scraper", SkyScraperItem::new, it -> withTooltip(it.stacksTo(1), "sky_scraper")).asDeferredItem();
         makeshiftPSU = items.register("makeshift_psu", Item::new, it -> it).asDeferredItem();
         damagedChipset = items.register("damaged_chipset", Item::new, it -> it).asDeferredItem();
         data = items.register("data", DataItem::new, it -> it.food(new FoodProperties.Builder().alwaysEdible().build(), Consumable.builder().consumeSeconds(0.1f).build())).asDeferredItem();
@@ -86,21 +87,21 @@ public class ModItems {
         replikaAlloy = items.register("replika_alloy", Item::new, it -> it).asDeferredItem();
         assemblyTicket = items.register("assembly_ticket", AssemblyTicketItem::new, it -> it).asDeferredItem();
         biomash = items.register("biomash", Item::new, it -> it.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.1f).build())).asDeferredItem();
-        nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> withAbility(humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET), NightVisionAbility.ID)).asDeferredItem();
-        brightVisionGoggles = items.register("brightvision_goggles", ReplikaPieceArmorItem::new, it -> withAbility(humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET), BrightVisionAbility.ID)).asDeferredItem();
-        nullphaser = items.register("nullphaser", NullphaserItem::new, it -> it.durability(64)).asDeferredItem();
-        automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> it.durability(16).component(DataComponents.BREAK_SOUND, SoundEvents.ITEM_BREAK)).asDeferredItem();
-        oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> it.durability(256)).asDeferredItem();
-        metalDetector = items.register("metal_detector", MetalDetectorItem::new, it -> it.durability(600)).asDeferredItem();
+        nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> withTooltip(withAbility(humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET), NightVisionAbility.ID), "nightvision_goggles")).asDeferredItem();
+        brightVisionGoggles = items.register("brightvision_goggles", ReplikaPieceArmorItem::new, it -> withTooltip(withAbility(humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET), BrightVisionAbility.ID), "brightvision_goggles")).asDeferredItem();
+        nullphaser = items.register("nullphaser", NullphaserItem::new, it -> withTooltip(it.durability(64), "nullphaser")).asDeferredItem();
+        automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> withTooltip(it.durability(16).component(DataComponents.BREAK_SOUND, SoundEvents.ITEM_BREAK), "automatic_hack_tool")).asDeferredItem();
+        oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> withTooltip(it.durability(256), "ore_vacuum")).asDeferredItem();
+        metalDetector = items.register("metal_detector", MetalDetectorItem::new, it ->it.durability(600)).asDeferredItem();
         wasteBarrelMinecart = items.register("waste_barrel_minecart", properties -> createMinecartItem(ModEntities.wasteBarrelMinecart.value(), properties), it -> it.stacksTo(1)).asDeferredItem();
         fragmentalWasteMinecart = items.register("fragmental_waste_minecart", properties -> createMinecartItem(ModEntities.fragmentalWasteMinecart.value(), properties), it -> it.stacksTo(1)).asDeferredItem();
         biomassHarvesterMinecart = items.register("biomass_harvester_minecart", properties -> createMinecartItem(ModEntities.biomassHarvesterMinecart.value(), properties), it -> it.stacksTo(1)).asDeferredItem();
-        graviliftEngine = items.register("gravilift_engine", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), GraviliftAbility.ID)).asDeferredItem();
-        magphasers = items.register("magphasers", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), MagphaseAbility.ID)).asDeferredItem();
-        slowphasers = items.register("slowphasers", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), SlowphaseAbility.ID)).asDeferredItem();
-        stompers = items.register("stompers", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), StompingAbility.ID)).asDeferredItem();
-        bouncers = items.register("bouncers", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), JumpBoostAbility.ID)).asDeferredItem();
-        semisonicSpeeders = items.register("semisonic_speeders", ReplikaPartItem::new, it -> withAbility(it.stacksTo(1), SpeedBoostAbility.ID)).asDeferredItem();
+        graviliftEngine = items.register("gravilift_engine", ReplikaPartItem::new, it -> withTooltip(withAbility(it.stacksTo(1), GraviliftAbility.ID), "gravilift_engine")).asDeferredItem();
+        magphasers = items.register("magphasers", ReplikaPartItem::new, it -> withTooltip(withAbility(it.stacksTo(1), MagphaseAbility.ID), "magphasers")).asDeferredItem();
+        slowphasers = items.register("slowphasers", ReplikaPartItem::new, it -> withTooltip(withAbility(it.stacksTo(1), SlowphaseAbility.ID), "slowphasers")).asDeferredItem();
+        stompers = items.register("stompers", ReplikaPartItem::new, it -> withTooltip(withAbility(it.stacksTo(1), StompingAbility.ID), "stompers")).asDeferredItem();
+        bouncers = items.register("bouncers", ReplikaPartItem::new, it -> withTooltip(withAbility(it.stacksTo(1), JumpBoostAbility.ID), "bouncers")).asDeferredItem();
+        semisonicSpeeders = items.register("semisonic_speeders", ReplikaPartItem::new, it -> withTooltip(withAbility(it.stacksTo(1), SpeedBoostAbility.ID), "semisonic_speeders")).asDeferredItem();
         biosteelHelmet = items.register("biosteel_helmet", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.HELMET)).asDeferredItem();
         biosteelChestplate = items.register("biosteel_chestplate", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.CHESTPLATE)).asDeferredItem();
         biosteelLeggings = items.register("biosteel_leggings", BiosteelArmorItem::new, it -> humanoidArmor(it, ModArmorMaterials.BIOSTEEL, ArmorType.LEGGINGS)).asDeferredItem();
@@ -207,6 +208,10 @@ public class ModItems {
 
     private static Item.Properties withAbility(Item.Properties properties, Identifier... abilityIds) {
         return properties.component(ModDataComponents.abilityHolder(), new AbilityHolder(List.of(abilityIds)));
+    }
+
+    private static Item.Properties withTooltip(Item.Properties properties, String name) {
+        return properties.component(ModDataComponents.itemDescription(), new ItemDescription("item." + ReplikaEntropie.MOD_ID + "." + name + ".tooltip"));
     }
 
 }

@@ -2,7 +2,11 @@ package net.blay09.mods.replikaentropie.block;
 
 import net.blay09.mods.balm.world.level.block.BalmBlockRegistrar;
 import net.blay09.mods.balm.world.level.block.DeferredBlock;
+import net.blay09.mods.replikaentropie.ReplikaEntropie;
+import net.blay09.mods.replikaentropie.component.ItemDescription;
+import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.item.FragmentalWasteItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -37,19 +41,19 @@ public class ModBlocks {
         blocks.enableBlockDescriptionPrefixForItems();
 
         replikaWorkbench = blocks.register("replika_workbench", ReplikaWorkbenchBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "replika_workbench"))
                 .asDeferredBlock();
 
         entropicDataMiner = blocks.register("entropic_data_miner", EntropicDataMinerBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "entropic_data_miner"))
                 .asDeferredBlock();
 
         fabricator = blocks.register("fabricator", FabricatorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "fabricator"))
                 .asDeferredBlock();
 
         assembler = blocks.register("assembler", AssemblerBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "assembler"))
                 .asDeferredBlock();
 
         wasteBarrel = blocks.register("waste_barrel", WasteBarrelBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
@@ -57,71 +61,75 @@ public class ModBlocks {
                 .asDeferredBlock();
 
         fragmentalWaste = blocks.register("fragmental_waste", FragmentalWasteBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 0f).sound(SoundType.METAL))
-                .withItem(FragmentalWasteItem::new, it -> it.stacksTo(1))
+                .withItem(FragmentalWasteItem::new, it -> withTooltip(it.stacksTo(1), "fragmental_waste"))
                 .asDeferredBlock();
 
         biomassIncubator = blocks.register("biomass_incubator", BiomassIncubatorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "biomass_incubator"))
                 .asDeferredBlock();
 
         biomassHarvester = blocks.register("biomass_harvester", BiomassHarvesterBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "biomass_harvester"))
                 .asDeferredBlock();
 
         cobblescrap = blocks.register("cobblescrap", CobblescrapBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "cobblescrap"))
                 .asDeferredBlock();
 
         lavascrap = blocks.register("lavascrap", LavaScrapBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "lavascrap"))
                 .asDeferredBlock();
 
         worldEater = blocks.register("world_eater", WorldEaterBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "world_eater"))
                 .asDeferredBlock();
 
         fragmentalGenerator = blocks.register("fragmental_generator", FragmentalGeneratorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "fragmental_generator"))
                 .asDeferredBlock();
 
         fragmentAccelerator = blocks.register("fragment_accelerator", FragmentAcceleratorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "fragment_accelerator"))
                 .asDeferredBlock();
 
         chaosEngine = blocks.register("chaos_engine", ChaosEngineBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "chaos_engine"))
                 .asDeferredBlock();
 
         recycler = blocks.register("recycler", RecyclerBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "recycler"))
                 .asDeferredBlock();
 
         waterSink = blocks.register("water_sink", WaterSinkBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "water_sink"))
                 .asDeferredBlock();
 
         lavaSink = blocks.register("lava_sink", LavaSinkBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "lava_sink"))
                 .asDeferredBlock();
 
         bluePrinter = blocks.register("blue_printer", BluePrinterBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "blue_printer"))
                 .asDeferredBlock();
 
         solarSink = blocks.register("solar_sink", SolarSinkBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "solar_sink"))
                 .asDeferredBlock();
 
         funnel = blocks.register("funnel", FunnelBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "funnel"))
                 .asDeferredBlock();
 
         crane = blocks.register("crane", CraneBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem()
+                .withDefaultItem(it -> withTooltip(it, "crane"))
                 .asDeferredBlock();
 
         digSpot = blocks.register("dig_spot", DigSpotBlock::new, it -> it)
                 .withDefaultItem()
                 .asDeferredBlock();
+    }
+
+    private static Item.Properties withTooltip(Item.Properties properties, String name) {
+        return properties.component(ModDataComponents.itemDescription(), new ItemDescription("block." + ReplikaEntropie.MOD_ID + "." + name + ".tooltip"));
     }
 }

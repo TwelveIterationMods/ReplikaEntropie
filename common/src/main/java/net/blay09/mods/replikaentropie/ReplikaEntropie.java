@@ -4,6 +4,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.core.BalmRegistrars;
 import net.blay09.mods.balm.platform.event.callback.BlockCallback;
 import net.blay09.mods.balm.platform.event.callback.InteractionEventResult;
+import net.blay09.mods.balm.platform.event.callback.ItemCallback;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.blay09.mods.replikaentropie.command.ReplikaEntropieCommand;
@@ -26,6 +27,7 @@ import net.blay09.mods.replikaentropie.recipe.ModRecipes;
 import net.blay09.mods.replikaentropie.worldgen.ModPoiTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import org.slf4j.Logger;
@@ -44,10 +46,10 @@ public class ReplikaEntropie {
     public static void initialize(BalmRegistrars registrars) {
         Balm.config().registerConfig(ReplikaEntropieConfig.class);
 
+        registrars.dataComponentTypes(ModDataComponents::initialize);
         registrars.blocks(ModBlocks::initialize);
         registrars.entityTypes(ModEntities::initialize);
         registrars.blockEntityTypes(ModBlockEntities::initialize);
-        registrars.dataComponentTypes(ModDataComponents::initialize);
         registrars.items(ModItems::initialize);
         registrars.creativeModeTabs(ModItems::initialize);
         registrars.menuTypes(ModMenus::initialize);
@@ -70,6 +72,13 @@ public class ReplikaEntropie {
         StompingAbility.initialize();
 
         registrars.resourceReloadListeners(registrar -> registrar.register("nonogram_loader", new NonogramLoader()));
+
+        ItemCallback.Tooltip.EVENT.register((itemStack, tooltip, flags) -> {
+            final var itemDescription = itemStack.get(ModDataComponents.itemDescription());
+            if (itemDescription != null) {
+                itemDescription.addToTooltip(Item.TooltipContext.EMPTY, tooltip::add, flags, itemStack);
+            }
+        });
 
         AbilityManager.registerAbility(MagphaseAbility.INSTANCE);
         AbilityManager.registerAbility(SlowphaseAbility.INSTANCE);
