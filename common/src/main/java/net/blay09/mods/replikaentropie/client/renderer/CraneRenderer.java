@@ -5,17 +5,22 @@ import net.blay09.mods.replikaentropie.block.entity.CraneBlockEntity;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class CraneRenderer implements BlockEntityRenderer<CraneBlockEntity, CraneRenderer.State> {
+    private final BlockEntityRenderDispatcher blockEntityRenderDispatcher;
+
     public CraneRenderer(BlockEntityRendererProvider.Context context) {
+        blockEntityRenderDispatcher = context.blockEntityRenderDispatcher();
     }
 
     @Override
@@ -27,6 +32,7 @@ public class CraneRenderer implements BlockEntityRenderer<CraneBlockEntity, Cran
     public void extractRenderState(CraneBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
         state.block = null;
+        state.blockEntity = null;
         final var carriedState = blockEntity.getCarriedState();
         if (!(blockEntity.getLevel() instanceof ClientLevel level) || carriedState.isAir()) {
             return;
@@ -50,6 +56,14 @@ public class CraneRenderer implements BlockEntityRenderer<CraneBlockEntity, Cran
         state.block.biome = level.getBiome(renderPos);
         state.block.cardinalLighting = level.cardinalLighting();
         state.block.lightEngine = level.getLightEngine();
+
+        if (carriedState.getBlock() instanceof EntityBlock entityBlock) {
+            final var carriedBlockEntity = entityBlock.newBlockEntity(renderPos, carriedState);
+            if (carriedBlockEntity != null) {
+                carriedBlockEntity.setLevel(level);
+                state.blockEntity = blockEntityRenderDispatcher.tryExtractRenderState(carriedBlockEntity, partialTick, breakProgress);
+            }
+        }
     }
 
     @Override
@@ -61,11 +75,15 @@ public class CraneRenderer implements BlockEntityRenderer<CraneBlockEntity, Cran
         poseStack.pushPose();
         poseStack.translate(state.offset);
         submitNodeCollector.submitMovingBlock(poseStack, state.block);
+        if (state.blockEntity != null) {
+            blockEntityRenderDispatcher.submit(state.blockEntity, poseStack, submitNodeCollector, camera);
+        }
         poseStack.popPose();
     }
 
     public static class State extends BlockEntityRenderState {
         public @Nullable MovingBlockRenderState block;
+        public @Nullable BlockEntityRenderState blockEntity;
         public Vec3 offset = Vec3.ZERO;
     }
 }
