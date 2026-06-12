@@ -29,6 +29,7 @@ public class CraneBlockEntity extends BlockEntity {
     private BlockState carriedState = Blocks.AIR.defaultBlockState();
     private @Nullable CompoundTag carriedBlockEntityData;
     private int transferTicks;
+    private boolean returningToSource;
 
     public CraneBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.crane.value(), pos, state);
@@ -69,6 +70,7 @@ public class CraneBlockEntity extends BlockEntity {
         this.carriedState = carriedState;
         this.carriedBlockEntityData = carriedBlockEntityData;
         transferTicks = 0;
+        returningToSource = false;
         level.playSound(null, worldPosition, SoundEvents.PISTON_EXTEND, SoundSource.BLOCKS, 0.5f, 1f);
         setChanged();
         BalmBlockEntityUtils.sync(this);
@@ -81,14 +83,21 @@ public class CraneBlockEntity extends BlockEntity {
             return;
         }
 
-        final var destinationPos = getDestinationPos();
-        if (tryPlaceCarriedBlock(destinationPos)) {
+        final var targetPos = returningToSource ? getSourcePos() : getDestinationPos();
+        if (tryPlaceCarriedBlock(targetPos)) {
+            final boolean placedAtDestination = !returningToSource;
             level.playSound(null, worldPosition, SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 0.5f, 1f);
             clearCarriedBlock();
-            emitRedstonePulse();
-            setChanged();
-            BalmBlockEntityUtils.sync(this);
+            if (placedAtDestination) {
+                emitRedstonePulse();
+            }
+        } else {
+            returningToSource = !returningToSource;
+            transferTicks = 0;
+            level.playSound(null, worldPosition, SoundEvents.PISTON_EXTEND, SoundSource.BLOCKS, 0.5f, 1f);
         }
+        setChanged();
+        BalmBlockEntityUtils.sync(this);
     }
 
     private void emitRedstonePulse() {
@@ -129,6 +138,7 @@ public class CraneBlockEntity extends BlockEntity {
         carriedState = Blocks.AIR.defaultBlockState();
         carriedBlockEntityData = null;
         transferTicks = 0;
+        returningToSource = false;
     }
 
     @Override
@@ -151,7 +161,12 @@ public class CraneBlockEntity extends BlockEntity {
     }
 
     public float getTransferProgress(float partialTick) {
-        return carriedState.isAir() ? 0f : Math.min(1f, (transferTicks + partialTick) / TRANSFER_TICKS);
+        if (carriedState.isAir()) {
+            return 0f;
+        }
+
+        final float progress = Math.min(1f, (transferTicks + partialTick) / TRANSFER_TICKS);
+        return returningToSource ? 1f - progress : progress;
     }
 
     @Override
@@ -159,6 +174,7 @@ public class CraneBlockEntity extends BlockEntity {
         carriedState = input.read("CarriedState", BlockState.CODEC).orElse(Blocks.AIR.defaultBlockState());
         carriedBlockEntityData = input.read("CarriedBlockEntity", CompoundTag.CODEC).orElse(null);
         transferTicks = input.getIntOr("TransferTicks", 0);
+        returningToSource = input.getBooleanOr("ReturningToSource", false);
     }
 
     @Override
@@ -167,6 +183,7 @@ public class CraneBlockEntity extends BlockEntity {
             output.store("CarriedState", BlockState.CODEC, carriedState);
             output.storeNullable("CarriedBlockEntity", CompoundTag.CODEC, carriedBlockEntityData);
             output.putInt("TransferTicks", transferTicks);
+            output.putBoolean("ReturningToSource", returningToSource);
         }
     }
 
@@ -184,6 +201,7 @@ public class CraneBlockEntity extends BlockEntity {
         if (!carriedState.isAir()) {
             output.store("CarriedState", BlockState.CODEC, carriedState);
             output.putInt("TransferTicks", transferTicks);
+            output.putBoolean("ReturningToSource", returningToSource);
         }
     }
 }
