@@ -93,6 +93,9 @@ public class MinecartCraneHandlers {
                     continue;
                 }
 
+                if (minecart instanceof Container container) {
+                    container.clearContent();
+                }
                 minecart.discard();
                 return transfer;
             }
