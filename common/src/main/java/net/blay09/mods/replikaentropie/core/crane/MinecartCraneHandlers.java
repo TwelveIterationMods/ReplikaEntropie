@@ -5,6 +5,8 @@ import net.blay09.mods.replikaentropie.api.crane.CraneHandlerRegistry;
 import net.blay09.mods.replikaentropie.api.crane.CranePickupHandler;
 import net.blay09.mods.replikaentropie.api.crane.CranePlacementHandler;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
+import net.blay09.mods.replikaentropie.block.entity.BiomassHarvesterBlockEntity;
+import net.blay09.mods.replikaentropie.entity.BiomassHarvesterMinecart;
 import net.blay09.mods.replikaentropie.entity.ModEntities;
 import net.blay09.mods.replikaentropie.entity.WasteBarrelMinecart;
 import net.minecraft.core.BlockPos;
@@ -38,6 +40,7 @@ public class MinecartCraneHandlers {
         registerPickup(MinecartChest.class);
         registerPickup(MinecartTNT.class);
         registerPickup(WasteBarrelMinecart.class);
+        registerPickup(BiomassHarvesterMinecart.class);
         CraneHandlerRegistry.registerPlacement(new MinecartPlacementHandler());
     }
 
@@ -153,6 +156,8 @@ public class MinecartCraneHandlers {
             return new MinecartTNT(EntityType.TNT_MINECART, level);
         } else if (state.is(ModBlocks.wasteBarrel)) {
             return new WasteBarrelMinecart(ModEntities.wasteBarrelMinecart.value(), level);
+        } else if (state.is(ModBlocks.biomassHarvester)) {
+            return new BiomassHarvesterMinecart(ModEntities.biomassHarvesterMinecart.value(), level);
         }
         return null;
     }
@@ -163,6 +168,11 @@ public class MinecartCraneHandlers {
         }
 
         final var blockEntity = BlockEntity.loadStatic(destinationPos, transfer.state(), transfer.blockEntityData(), level.registryAccess());
+        if (blockEntity instanceof BiomassHarvesterBlockEntity sourceHarvester
+                && minecart instanceof BiomassHarvesterMinecart destinationHarvester) {
+            copyHarvesterState(sourceHarvester, destinationHarvester);
+            return;
+        }
         if (!(blockEntity instanceof Container sourceContainer)) {
             return;
         }
@@ -176,6 +186,11 @@ public class MinecartCraneHandlers {
         }
 
         final var blockEntity = entityBlock.newBlockEntity(sourcePos, carriedState);
+        if (minecart instanceof BiomassHarvesterMinecart sourceHarvester
+                && blockEntity instanceof BiomassHarvesterBlockEntity destinationHarvester) {
+            copyHarvesterState(sourceHarvester, destinationHarvester);
+            return blockEntity.saveWithFullMetadata(level.registryAccess());
+        }
         if (!(blockEntity instanceof Container destinationContainer)) {
             return null;
         }
@@ -189,6 +204,18 @@ public class MinecartCraneHandlers {
         for (int i = 0; i < size; i++) {
             destinationContainer.setItem(i, sourceContainer.getItem(i).copy());
         }
+    }
+
+    private static void copyHarvesterState(BiomassHarvesterBlockEntity source, BiomassHarvesterMinecart destination) {
+        copyContainer(source.getContainer(), destination);
+        destination.getEnergyStorage().setEnergy(source.getEnergyStorage().getEnergy());
+        destination.restoreState(source.getState(), source.getStateTicks());
+    }
+
+    private static void copyHarvesterState(BiomassHarvesterMinecart source, BiomassHarvesterBlockEntity destination) {
+        copyContainer(source, destination.getContainer());
+        destination.getEnergyStorage().setEnergy(source.getEnergyStorage().getEnergy());
+        destination.restoreState(source.getState(), source.getStateTicks());
     }
 
     private static boolean isCenteredAt(AbstractMinecart minecart, BlockPos pos) {

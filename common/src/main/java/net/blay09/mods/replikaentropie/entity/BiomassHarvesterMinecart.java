@@ -140,7 +140,18 @@ public class BiomassHarvesterMinecart extends AbstractMinecartContainer implemen
     }
 
     public BiomassHarvesterLogic.State getState() {
-        return BiomassHarvesterLogic.State.values()[entityData.get(DATA_STATE)];
+        return level().isClientSide()
+                ? BiomassHarvesterLogic.State.values()[entityData.get(DATA_STATE)]
+                : logic.getState();
+    }
+
+    public int getStateTicks() {
+        return logic.getStateTicks();
+    }
+
+    public void restoreState(BiomassHarvesterLogic.State state, int stateTicks) {
+        logic.restoreState(state, stateTicks);
+        syncRenderData();
     }
 
     @Override

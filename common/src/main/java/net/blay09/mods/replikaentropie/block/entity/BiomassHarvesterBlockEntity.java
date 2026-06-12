@@ -206,4 +206,12 @@ public class BiomassHarvesterBlockEntity extends BlockEntity implements BalmCont
     public BiomassHarvesterLogic.State getState() {
         return logic.getState();
     }
+
+    public int getStateTicks() {
+        return logic.getStateTicks();
+    }
+
+    public void restoreState(BiomassHarvesterLogic.State state, int stateTicks) {
+        logic.restoreState(state, stateTicks);
+    }
 }

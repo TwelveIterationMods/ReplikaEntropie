@@ -274,6 +274,15 @@ public class BiomassHarvesterLogic {
         return state;
     }
 
+    public int getStateTicks() {
+        return stateTicks;
+    }
+
+    public void restoreState(State state, int stateTicks) {
+        this.state = state;
+        this.stateTicks = stateTicks;
+    }
+
     private record HarvestableBlockTargets(ArrayList<BlockPos> harvestableCrops, ArrayList<BlockPos> slashableBlocks) {
     }
 }
