@@ -60,7 +60,7 @@ public class SolarSinkBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (itemStack.is(ModBlocks.fragmentalSun.asItem())) {
+        if (itemStack.is(ModBlocks.fragmentedSun.asItem())) {
             return InteractionResult.FAIL;
         }
 
@@ -84,7 +84,7 @@ public class SolarSinkBlock extends BaseEntityBlock {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (!level.getBlockState(pos.above()).is(ModBlocks.fragmentalSun.asBlock()) || random.nextFloat() > 0.25f) {
+        if (!level.getBlockState(pos.above()).is(ModBlocks.fragmentedSun.asBlock()) || random.nextFloat() > 0.25f) {
             return;
         }
 

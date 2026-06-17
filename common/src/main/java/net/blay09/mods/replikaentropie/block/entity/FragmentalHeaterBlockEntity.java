@@ -227,7 +227,7 @@ public class FragmentalHeaterBlockEntity extends BlockEntity implements BalmCont
             return;
         }
 
-        backingContainer.setItem(OUTPUT_SLOT, ModBlocks.fragmentalSun.createStack());
+        backingContainer.setItem(OUTPUT_SLOT, ModBlocks.fragmentedSun.createStack());
         setChanged();
         isSyncDirty = true;
     }

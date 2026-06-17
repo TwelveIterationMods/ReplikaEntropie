@@ -33,7 +33,7 @@ public class ModBlocks {
     public static DeferredBlock lavaSink;
     public static DeferredBlock bluePrinter;
     public static DeferredBlock solarSink;
-    public static DeferredBlock fragmentalSun;
+    public static DeferredBlock fragmentedSun;
     public static DeferredBlock entropicGenerator;
     public static DeferredBlock funnel;
     public static DeferredBlock crane;
@@ -117,7 +117,7 @@ public class ModBlocks {
                 .withDefaultItem(it -> withTooltip(it, "solar_sink"))
                 .asDeferredBlock();
 
-        fragmentalSun = blocks.register("fragmental_sun", FragmentalSunBlock::new, it -> it.mapColor(MapColor.COLOR_YELLOW).instrument(NoteBlockInstrument.BELL).strength(0f, 0f).sound(SoundType.AMETHYST).lightLevel(_ -> 15))
+        fragmentedSun = blocks.register("fragmented_sun", FragmentedSunBlock::new, it -> it.mapColor(MapColor.COLOR_YELLOW).instrument(NoteBlockInstrument.BELL).strength(0f, 0f).sound(SoundType.AMETHYST).lightLevel(_ -> 15))
                 .withDefaultItem()
                 .asDeferredBlock();
 

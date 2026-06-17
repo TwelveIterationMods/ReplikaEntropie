@@ -137,7 +137,7 @@ public class ModItems {
                     output.accept(scrap);
                     output.accept(biomass);
                     output.accept(fragments);
-                    output.accept(ModBlocks.fragmentalSun);
+                    output.accept(ModBlocks.fragmentedSun);
                     output.accept(biomash);
                     output.accept(data);
                     output.accept(makeshiftPSU);

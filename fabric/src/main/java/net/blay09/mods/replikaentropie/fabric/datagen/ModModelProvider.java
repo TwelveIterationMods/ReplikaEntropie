@@ -44,7 +44,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateHorizontalBlock(ModBlocks.waterSink.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.lavaSink.value());
         generators.createNonTemplateModelBlock(ModBlocks.solarSink.value());
-        generators.createNonTemplateModelBlock(ModBlocks.fragmentalSun.value());
+        generators.createNonTemplateModelBlock(ModBlocks.fragmentedSun.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.bluePrinter.value());
         createCrane(generators, ModBlocks.crane.value());
 
@@ -148,6 +148,6 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.fragmentalWasteMinecart.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.biomassHarvesterMinecart.asItem(), ModelTemplates.FLAT_ITEM);
 
-        generators.generateFlatItem(ModBlocks.fragmentalSun.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModBlocks.fragmentedSun.asItem(), ModelTemplates.FLAT_ITEM);
     }
 }

@@ -18,9 +18,9 @@ import org.jetbrains.annotations.Nullable;
 public class SolarSinkBlockEntity extends BlockEntity implements BalmEnergyStorageProvider {
     private static final int ENERGY_CAPACITY = 1000;
     private static final int ENERGY_GENERATION_RATE = 20;
-    private static final int FRAGMENTAL_SUN_MULTIPLIER = 10;
+    private static final int FRAGMENTED_SUN_MULTIPLIER = 10;
     private static final int ENERGY_OUTPUT_RATE = 100;
-    private static final int BOOSTED_ENERGY_OUTPUT_RATE = ENERGY_OUTPUT_RATE * FRAGMENTAL_SUN_MULTIPLIER;
+    private static final int BOOSTED_ENERGY_OUTPUT_RATE = ENERGY_OUTPUT_RATE * FRAGMENTED_SUN_MULTIPLIER;
 
     private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(BOOSTED_ENERGY_OUTPUT_RATE, ENERGY_CAPACITY, 0, 0) {
         @Override
@@ -95,18 +95,18 @@ public class SolarSinkBlockEntity extends BlockEntity implements BalmEnergyStora
     }
 
     public boolean canSeeSun() {
-        return hasFragmentalSunAbove() || (level.isBrightOutside() && level.canSeeSky(worldPosition.above()));
+        return hasFragmentedSunAbove() || (level.isBrightOutside() && level.canSeeSky(worldPosition.above()));
     }
 
     private int getEnergyGenerationRate() {
-        return hasFragmentalSunAbove() ? ENERGY_GENERATION_RATE * FRAGMENTAL_SUN_MULTIPLIER : ENERGY_GENERATION_RATE;
+        return hasFragmentedSunAbove() ? ENERGY_GENERATION_RATE * FRAGMENTED_SUN_MULTIPLIER : ENERGY_GENERATION_RATE;
     }
 
     private int getEnergyOutputRate() {
-        return hasFragmentalSunAbove() ? BOOSTED_ENERGY_OUTPUT_RATE : ENERGY_OUTPUT_RATE;
+        return hasFragmentedSunAbove() ? BOOSTED_ENERGY_OUTPUT_RATE : ENERGY_OUTPUT_RATE;
     }
 
-    private boolean hasFragmentalSunAbove() {
-        return level != null && level.getBlockState(worldPosition.above()).is(ModBlocks.fragmentalSun.asBlock());
+    private boolean hasFragmentedSunAbove() {
+        return level != null && level.getBlockState(worldPosition.above()).is(ModBlocks.fragmentedSun.asBlock());
     }
 }

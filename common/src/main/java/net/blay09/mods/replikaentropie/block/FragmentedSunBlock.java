@@ -13,12 +13,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class FragmentalSunBlock extends Block {
-    public static final MapCodec<FragmentalSunBlock> CODEC = simpleCodec(FragmentalSunBlock::new);
+public class FragmentedSunBlock extends Block {
+    public static final MapCodec<FragmentedSunBlock> CODEC = simpleCodec(FragmentedSunBlock::new);
 
     private static final VoxelShape SHAPE = Shapes.box(4.5 / 16f, 3.5 / 16f, 4.5 / 16f, 11.5 / 16f, 10.5 / 16f, 11.5 / 16f);
 
-    public FragmentalSunBlock(Properties properties) {
+    public FragmentedSunBlock(Properties properties) {
         super(properties);
     }
 
@@ -34,8 +34,7 @@ public class FragmentalSunBlock extends Block {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        //return SHAPE;
-        return Shapes.box(4.5 / 16f, 3.5 / 16f, 4.5 / 16f, 11.5 / 16f, 10.5 / 16f, 11.5 / 16f);
+        return SHAPE;
     }
 
     @Override

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "replikaentropie:item/fragmental_sun"
+    "layer0": "replikaentropie:item/fragmented_sun"
   }
 }
