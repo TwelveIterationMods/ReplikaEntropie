@@ -48,7 +48,7 @@ public class ModFragmentalGeneratorRecipeProvider extends FabricRecipeProvider {
 
     @Override
     public String getName() {
-        return ReplikaEntropie.MOD_ID + " Fragmental Generator Recipes";
+        return ReplikaEntropie.MOD_ID + " Fragmental Heater Recipes";
     }
 
     public record FragmentalGeneratorRecipeBuilder(Ingredient ingredient, int energy, float temperature) {

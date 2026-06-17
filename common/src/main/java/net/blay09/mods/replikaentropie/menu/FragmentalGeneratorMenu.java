@@ -1,8 +1,12 @@
 package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
+import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -15,7 +19,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class FragmentalGeneratorMenu extends AbstractContainerMenu {
-    private static final int INPUTS_COUNT = FragmentalGeneratorBlockEntity.CONTAINER_SIZE;
+    private static final int INPUTS_COUNT = FragmentalGeneratorBlockEntity.INPUT_SLOT_COUNT;
+    private static final int MAX_TEMPERATURE_CELSIUS = 5500;
 
     private final Container container;
     private final ContainerData data;
@@ -27,9 +32,7 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
     public static final int DATA_MAX_PROCESSING_TIME_END = DATA_MAX_PROCESSING_TIME_START + INPUTS_COUNT - 1;
     public static final int DATA_TEMPERATURE = DATA_MAX_PROCESSING_TIME_END + 1;
     public static final int DATA_MAX_TEMPERATURE = DATA_TEMPERATURE + 1;
-    public static final int DATA_CURRENT_POWER = DATA_MAX_TEMPERATURE + 1;
-    public static final int DATA_MAX_POWER = DATA_CURRENT_POWER + 1;
-    public static final int DATA_COUNT = DATA_MAX_POWER + 1;
+    public static final int DATA_COUNT = DATA_MAX_TEMPERATURE + 1;
 
     public FragmentalGeneratorMenu(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory, new SimpleContainer(FragmentalGeneratorBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT));
@@ -42,16 +45,14 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
         this.data = data;
         addDataSlots(data);
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 4; j++) {
-                addSlot(new Slot(container, j + i * 4, 22 + j * 37, 21 + i * 25) {
-                    @Override
-                    public int getMaxStackSize() {
-                        return 1;
-                    }
-                });
-            }
-        }
+        addSlot(new FragmentalHeaterOutputSlot(container, FragmentalGeneratorBlockEntity.OUTPUT_SLOT, 77, 48));
+
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START, 47, 21));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 1, 108, 21));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 2, 22, 46));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 3, 133, 46));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 4, 47, 71));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 5, 108, 71));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
@@ -64,7 +65,7 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
         }
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
-                .slotRange("inputs", 0, 12)
+                .slotRange("inputs", 1, 1 + INPUTS_COUNT)
                 .route(QuickMove.PLAYER, "inputs")
                 .build();
 
@@ -75,23 +76,6 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
         final var processingTime = data.get(DATA_PROCESSING_TIME_START + slot);
         final var maxProcessingTime = data.get(DATA_MAX_PROCESSING_TIME_START + slot);
         return maxProcessingTime == 0 ? 0f : (float) processingTime / maxProcessingTime;
-    }
-
-    public float getPowerProgress() {
-        final var maxPower = data.get(DATA_MAX_POWER);
-        if (maxPower <= 0) {
-            return 0f;
-        }
-
-        return Mth.clamp(data.get(DATA_CURRENT_POWER) / (float) maxPower, 0f, 1f);
-    }
-
-    public int getCurrentPower() {
-        return data.get(DATA_CURRENT_POWER);
-    }
-
-    public int getMaxPower() {
-        return data.get(DATA_MAX_POWER);
     }
 
     public int getTemperature() {
@@ -111,20 +95,18 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
         return Mth.clamp(getTemperature() / (float) maxTemperature, 0f, 1f);
     }
 
-    public Component getTemperatureTooltip() {
-        final var temperature = getTemperature();
-        final var temperatureOffset = temperature - FragmentalGeneratorBlockEntity.IDEAL_TEMPERATURE;
-        if (Math.abs(temperatureOffset) <= 10) {
-            return Component.translatable("gui.replikaentropie.fragmental_generator.temperature.nominal");
-        }
-
-        return temperatureOffset < 0
-                ? Component.translatable("gui.replikaentropie.fragmental_generator.temperature.too_cold")
-                : Component.translatable("gui.replikaentropie.fragmental_generator.temperature.too_hot");
+    public Component getProgressTooltip() {
+        final var temperatureCelsius = Math.round(getTemperatureProgress() * MAX_TEMPERATURE_CELSIUS);
+        return Component.translatable("gui.replikaentropie.fragmental_generator.progress", temperatureCelsius, MAX_TEMPERATURE_CELSIUS);
     }
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
+        if (index == 0 && !canExtractOutput()) {
+            punishUnsafeOutputPickup(player);
+            return ItemStack.EMPTY;
+        }
+
         return quickMove.transfer(this, player, index);
     }
 
@@ -137,5 +119,48 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
     public void removed(Player player) {
         super.removed(player);
         container.stopOpen(player);
+    }
+
+    private static class FragmentalHeaterInputSlot extends Slot {
+        public FragmentalHeaterInputSlot(Container container, int slot, int x, int y) {
+            super(container, slot, x, y);
+        }
+
+        @Override
+        public int getMaxStackSize() {
+            return 1;
+        }
+    }
+
+    private boolean canExtractOutput() {
+        return getTemperatureProgress() <= 0.25f;
+    }
+
+    private void punishUnsafeOutputPickup(Player player) {
+        if (player.level() instanceof ServerLevel serverLevel) {
+            serverLevel.playSound(null, player, SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1f, 1f);
+            player.igniteForSeconds(4f);
+        }
+    }
+
+    private class FragmentalHeaterOutputSlot extends OutputSlot {
+        public FragmentalHeaterOutputSlot(Container container, int slot, int x, int y) {
+            super(container, slot, x, y);
+        }
+
+        @Override
+        public boolean mayPickup(Player player) {
+            final var canExtractOutput = canExtractOutput();
+            if (!canExtractOutput) {
+                punishUnsafeOutputPickup(player);
+            }
+
+            return canExtractOutput;
+        }
+
+        @Override
+        public boolean isHighlightable() {
+            return canExtractOutput();
+        }
     }
 }

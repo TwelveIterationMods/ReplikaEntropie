@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -67,25 +68,28 @@ public class FragmentalGeneratorRenderer implements BlockEntityRenderer<Fragment
         }
 
         final var xs = new float[]{
-                5f / 16f,
-                5f / 16f,
-                10f / 16f,
-                10f / 16f
+                4f / 16f,
+                8f / 16f,
+                12f / 16f,
+                4f / 16f,
+                8f / 16f,
+                12f / 16f
         };
         final var zs = new float[]{
-                5f / 16f,
-                10f / 16f,
-                5f / 16f,
-                10f / 16f
+                4f / 16f,
+                4f / 16f,
+                4f / 16f,
+                12f / 16f,
+                12f / 16f,
+                12f / 16f
         };
 
         final var inputs = blockEntity.getContainer();
 
-        final var shardStack = ModItems.fragments.createStack();
         final var seed = HashCommon.long2int(blockEntity.getBlockPos().asLong());
 
-        for (int i = 0; i < 4; i++) {
-            final var inputStack = inputs.getItem(i);
+        for (int i = 0; i < FragmentalGeneratorBlockEntity.INPUT_SLOT_COUNT; i++) {
+            final var inputStack = inputs.getItem(FragmentalGeneratorBlockEntity.INPUT_SLOT_START + i);
             if (inputStack.isEmpty()) {
                 continue;
             }
@@ -114,7 +118,7 @@ public class FragmentalGeneratorRenderer implements BlockEntityRenderer<Fragment
             final var wobbleZ = stage.computeWobbleZ(time);
 
             final var contentState = state.content.get(i);
-            itemModelResolver.updateForTopItem(contentState.item, progress < 0.66f ? inputStack : shardStack, ItemDisplayContext.GROUND, blockEntity.getLevel(), null, seed + i);
+            itemModelResolver.updateForTopItem(contentState.item, progress < 0.66f ? inputStack : ItemStack.EMPTY, ItemDisplayContext.GROUND, blockEntity.getLevel(), null, seed + i);
             contentState.x = baseX + wobbleX;
             contentState.y = y;
             contentState.z = baseZ + wobbleZ;
@@ -140,6 +144,8 @@ public class FragmentalGeneratorRenderer implements BlockEntityRenderer<Fragment
 
     public static class State extends BlockEntityRenderState {
         public final List<ContentRenderState> content = List.of(
+                new ContentRenderState(),
+                new ContentRenderState(),
                 new ContentRenderState(),
                 new ContentRenderState(),
                 new ContentRenderState(),

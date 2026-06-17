@@ -1,18 +1,13 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
-import net.blay09.mods.balm.Balm;
-import net.blay09.mods.balm.platform.capabilities.CommonCapabilities;
-import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
-import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
-import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
+import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.FragmentalGeneratorMenu;
 import net.blay09.mods.replikaentropie.recipe.FragmentalGeneratorRecipe;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -29,6 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,14 +34,14 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
-public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
+public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
-    public static final int CONTAINER_SIZE = 12;
-    private static final int MAX_ENERGY_DRAIN = 1000;
+    public static final int OUTPUT_SLOT = 0;
+    public static final int INPUT_SLOT_START = 1;
+    public static final int INPUT_SLOT_COUNT = 6;
+    public static final int CONTAINER_SIZE = INPUT_SLOT_COUNT + 1;
     public static final int MIN_TEMPERATURE = 0;
     public static final int MAX_TEMPERATURE = 100;
-    public static final int IDEAL_TEMPERATURE = 50;
-    private static final float PASSIVE_COOLING_TEMPERATURE_PER_TICK = 0.1f;
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override
@@ -58,23 +54,43 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
         public int getMaxStackSize() {
             return 1;
         }
-    };
 
-    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(10000, 0, MAX_ENERGY_DRAIN) {
         @Override
-        public void setChanged() {
-            FragmentalGeneratorBlockEntity.this.setChanged();
-            isSyncDirty = true;
+        public boolean canPlaceItem(int slot, ItemStack stack) {
+            return slot != OUTPUT_SLOT;
+        }
+
+        @Override
+        public boolean canTakeItem(Container target, int slot, ItemStack stack) {
+            return slot != OUTPUT_SLOT || canExtractOutput();
+        }
+
+        @Override
+        public ItemStack removeItem(int slot, int amount) {
+            if (slot == OUTPUT_SLOT && !canExtractOutput()) {
+                return ItemStack.EMPTY;
+            }
+
+            return super.removeItem(slot, amount);
+        }
+
+        @Override
+        public ItemStack removeItemNoUpdate(int slot) {
+            if (slot == OUTPUT_SLOT && !canExtractOutput()) {
+                return ItemStack.EMPTY;
+            }
+
+            return super.removeItemNoUpdate(slot);
         }
     };
 
-    private final int[] processingTicks = new int[CONTAINER_SIZE];
-    private final int[] maxProcessingTicks = new int[CONTAINER_SIZE];
+    private final int[] processingTicks = new int[INPUT_SLOT_COUNT];
+    private final int[] maxProcessingTicks = new int[INPUT_SLOT_COUNT];
     private float temperature;
 
-    private final float[] clientPrevProgress = new float[CONTAINER_SIZE];
-    private final float[] clientProgress = new float[CONTAINER_SIZE];
-    private final float[] clientItemRotation = new float[CONTAINER_SIZE];
+    private final float[] clientPrevProgress = new float[INPUT_SLOT_COUNT];
+    private final float[] clientProgress = new float[INPUT_SLOT_COUNT];
+    private final float[] clientItemRotation = new float[INPUT_SLOT_COUNT];
     private boolean isSyncDirty;
     private int ticksSinceSync;
 
@@ -93,8 +109,6 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
                 case FragmentalGeneratorMenu.DATA_TEMPERATURE ->
                         Mth.clamp(Math.round(temperature), MIN_TEMPERATURE, MAX_TEMPERATURE);
                 case FragmentalGeneratorMenu.DATA_MAX_TEMPERATURE -> MAX_TEMPERATURE;
-                case FragmentalGeneratorMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
-                case FragmentalGeneratorMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
                 default -> 0;
             };
         }
@@ -116,7 +130,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, FragmentalGeneratorBlockEntity blockEntity) {
-        for (int i = 0; i < CONTAINER_SIZE; i++) {
+        for (int i = 0; i < INPUT_SLOT_COUNT; i++) {
             if (blockEntity.canStartProcessing(i)) {
                 blockEntity.processingTicks[i] = 0;
                 blockEntity.maxProcessingTicks[i] = 60;
@@ -132,9 +146,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
             }
         }
 
-        blockEntity.coolDownIfIdle();
-        blockEntity.pushEnergy(level, pos.above(), Direction.DOWN);
-        blockEntity.pushEnergy(level, pos.below(), Direction.UP);
+        blockEntity.createOutputIfComplete();
         blockEntity.broadcastChanges();
     }
 
@@ -143,7 +155,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private boolean canStartProcessing(int slot) {
-        final var inputStack = backingContainer.getItem(slot);
+        final var inputStack = backingContainer.getItem(INPUT_SLOT_START + slot);
         if (inputStack.isEmpty() || maxProcessingTicks[slot] > 0) {
             return false;
         }
@@ -153,21 +165,13 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
             return false;
         }
 
-        if (recipe.energy() > 0 && energyStorage.getEnergy() >= energyStorage.getCapacity()) {
-            return false;
-        }
-
-        return recipe.energy() > 0 || recipe.temperature() != 0f;
+        return recipe.temperature() != 0f;
     }
 
     private void completeProcessing(int slot) {
-        final var inputStack = backingContainer.getItem(slot);
+        final var inputStack = backingContainer.getItem(INPUT_SLOT_START + slot);
         final var recipe = FragmentalGeneratorRecipe.getRecipe(level, inputStack).orElse(null);
         if (recipe != null) {
-            final var energyProduced = Mth.floor(recipe.energy() * getEfficiencyForTemperature(temperature));
-            if (energyProduced > 0) {
-                energyStorage.setEnergy(Mth.clamp(energyStorage.getEnergy() + energyProduced, 0, energyStorage.getCapacity()));
-            }
             inputStack.shrink(1);
         }
 
@@ -177,7 +181,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private boolean isProcessing() {
-        for (int i = 0; i < CONTAINER_SIZE; i++) {
+        for (int i = 0; i < INPUT_SLOT_COUNT; i++) {
             if (maxProcessingTicks[i] > 0) {
                 return true;
             }
@@ -186,10 +190,22 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
         return false;
     }
 
-    private void coolDownIfIdle() {
-        if (!isProcessing()) {
-            adjustTemperature(-PASSIVE_COOLING_TEMPERATURE_PER_TICK);
+    private boolean canOutput() {
+        return backingContainer.getItem(OUTPUT_SLOT).isEmpty();
+    }
+
+    public boolean canExtractOutput() {
+        return temperature <= MAX_TEMPERATURE * 0.25f;
+    }
+
+    private void createOutputIfComplete() {
+        if (temperature < MAX_TEMPERATURE || !canOutput()) {
+            return;
         }
+
+        backingContainer.setItem(OUTPUT_SLOT, ModItems.fragmentalSun.createStack());
+        setChanged();
+        isSyncDirty = true;
     }
 
     private void broadcastChanges() {
@@ -203,7 +219,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private void updateClientProgress() {
-        for (int i = 0; i < CONTAINER_SIZE; i++) {
+        for (int i = 0; i < INPUT_SLOT_COUNT; i++) {
             clientPrevProgress[i] = clientProgress[i];
             if (maxProcessingTicks[i] > 0) {
                 if (clientItemRotation[i] == -1f) {
@@ -233,7 +249,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private void applyProcessingTemperature(int slot) {
-        final var inputStack = backingContainer.getItem(slot);
+        final var inputStack = backingContainer.getItem(INPUT_SLOT_START + slot);
         final var recipe = FragmentalGeneratorRecipe.getRecipe(level, inputStack).orElse(null);
         if (recipe != null) {
             adjustTemperature(recipe.temperature());
@@ -250,48 +266,9 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
         return false;
     }
 
-    private static float getEfficiencyForTemperature(float temperature) {
-        return Math.max(0.1f, 1f - Math.abs(temperature - IDEAL_TEMPERATURE) / IDEAL_TEMPERATURE);
-    }
-
-    private void pushEnergy(Level level, BlockPos targetPos, Direction targetSide) {
-        if (energyStorage.getEnergy() <= 0) {
-            return;
-        }
-
-        final var targetBlockEntity = level.getBlockEntity(targetPos);
-        final var targetStorage = targetBlockEntity != null
-                ? Balm.capabilities().getCapability(targetBlockEntity, targetSide, CommonCapabilities.ENERGY_STORAGE)
-                : null;
-        if (targetStorage == null || !targetStorage.canFill()) {
-            return;
-        }
-
-        final int maxTransfer = Math.min(MAX_ENERGY_DRAIN, energyStorage.getEnergy());
-        final int accepted = targetStorage.fill(maxTransfer, true);
-        if (accepted <= 0) {
-            return;
-        }
-
-        final int drained = energyStorage.drain(accepted, false);
-        if (drained > 0) {
-            targetStorage.fill(drained, false);
-        }
-    }
-
     @Override
     public Container getContainer() {
         return backingContainer;
-    }
-
-    @Override
-    public EnergyStorage getEnergyStorage() {
-        return energyStorage;
-    }
-
-    @Override
-    public EnergyStorage getEnergyStorage(Direction side) {
-        return energyStorage;
     }
 
     @Override
@@ -318,12 +295,11 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     protected void saveAdditional(ValueOutput output) {
         ContainerHelper.saveAllItems(output, backingContainer.getItems());
 
-        for (int i = 0; i < CONTAINER_SIZE; i++) {
+        for (int i = 0; i < INPUT_SLOT_COUNT; i++) {
             output.putInt("ProcessingTicks" + i, processingTicks[i]);
             output.putInt("MaxProcessingTicks" + i, maxProcessingTicks[i]);
         }
         output.putFloat("Temperature", temperature);
-        energyStorage.serialize(output);
     }
 
     @Override
@@ -342,11 +318,10 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
         backingContainer.getItems().clear();
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
 
-        for (int i = 0; i < CONTAINER_SIZE; i++) {
+        for (int i = 0; i < INPUT_SLOT_COUNT; i++) {
             processingTicks[i] = input.getIntOr("ProcessingTicks" + i, 0);
             maxProcessingTicks[i] = input.getIntOr("MaxProcessingTicks" + i, 0);
         }
         temperature = Mth.clamp(input.getFloatOr("Temperature", 0f), MIN_TEMPERATURE, MAX_TEMPERATURE);
-        energyStorage.deserialize(input);
     }
 }

@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 public class ReplikaEntropie {
 
     // TODO Fragment Accelerator is a bit confusing right now - no output at all on low speeds?
-    // TODO Fragmental Sun
     // TODO Crane Rendering
 
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);

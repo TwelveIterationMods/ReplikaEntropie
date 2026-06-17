@@ -105,6 +105,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.scrap.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.biomass.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.fragments.asItem(), ModelTemplates.FLAT_ITEM);
+        generators.generateFlatItem(ModItems.fragmentalSun.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.chipset.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.biosteel.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.replikaAlloy.asItem(), ModelTemplates.FLAT_ITEM);
