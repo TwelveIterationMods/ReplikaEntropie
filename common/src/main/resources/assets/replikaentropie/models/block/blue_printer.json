@@ -5,7 +5,7 @@
 	"textures": {
 		"0": "replikaentropie:block/machine_side",
 		"1": "replikaentropie:block/machine_top",
-		"2": "replikaentropie:block/fragmental_generator_inside",
+		"2": "replikaentropie:block/fragmental_heater_inside",
 		"particle": "replikaentropie:block/machine_side"
 	},
 	"elements": [

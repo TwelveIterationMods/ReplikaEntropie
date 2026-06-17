@@ -19,30 +19,30 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-public record FragmentalGeneratorRecipe(Ingredient ingredient, int energy, float temperature) implements Recipe<SingleRecipeInput>, PreviewableRecipe {
-    private static final MapCodec<FragmentalGeneratorRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Ingredient.CODEC.fieldOf("ingredient").forGetter(FragmentalGeneratorRecipe::ingredient),
-            Codec.INT.optionalFieldOf("energy", 0).forGetter(FragmentalGeneratorRecipe::energy),
-            Codec.FLOAT.optionalFieldOf("temperature", 0f).forGetter(FragmentalGeneratorRecipe::temperature)
-    ).apply(instance, FragmentalGeneratorRecipe::new));
+public record FragmentalHeaterRecipe(Ingredient ingredient, int energy, float temperature) implements Recipe<SingleRecipeInput>, PreviewableRecipe {
+    private static final MapCodec<FragmentalHeaterRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Ingredient.CODEC.fieldOf("ingredient").forGetter(FragmentalHeaterRecipe::ingredient),
+            Codec.INT.optionalFieldOf("energy", 0).forGetter(FragmentalHeaterRecipe::energy),
+            Codec.FLOAT.optionalFieldOf("temperature", 0f).forGetter(FragmentalHeaterRecipe::temperature)
+    ).apply(instance, FragmentalHeaterRecipe::new));
 
-    private static final StreamCodec<RegistryFriendlyByteBuf, FragmentalGeneratorRecipe> STREAM_CODEC = StreamCodec.composite(
+    private static final StreamCodec<RegistryFriendlyByteBuf, FragmentalHeaterRecipe> STREAM_CODEC = StreamCodec.composite(
             Ingredient.CONTENTS_STREAM_CODEC,
-            FragmentalGeneratorRecipe::ingredient,
+            FragmentalHeaterRecipe::ingredient,
             ByteBufCodecs.VAR_INT,
-            FragmentalGeneratorRecipe::energy,
+            FragmentalHeaterRecipe::energy,
             ByteBufCodecs.FLOAT,
-            FragmentalGeneratorRecipe::temperature,
-            FragmentalGeneratorRecipe::new
+            FragmentalHeaterRecipe::temperature,
+            FragmentalHeaterRecipe::new
     );
 
-    public static Optional<FragmentalGeneratorRecipe> getRecipe(Level level, ItemStack itemStack) {
+    public static Optional<FragmentalHeaterRecipe> getRecipe(Level level, ItemStack itemStack) {
         if (itemStack.isEmpty()) {
             return Optional.empty();
         }
 
         return level != null
-                ? ModRecipes.fragmentalGenerator.getRecipeFor(level, new SingleRecipeInput(itemStack)).map(RecipeHolder::value)
+                ? ModRecipes.fragmentalHeater.getRecipeFor(level, new SingleRecipeInput(itemStack)).map(RecipeHolder::value)
                 : Optional.empty();
     }
 
@@ -72,13 +72,13 @@ public record FragmentalGeneratorRecipe(Ingredient ingredient, int energy, float
     }
 
     @Override
-    public RecipeSerializer<FragmentalGeneratorRecipe> getSerializer() {
-        return ModRecipes.fragmentalGenerator.serializer();
+    public RecipeSerializer<FragmentalHeaterRecipe> getSerializer() {
+        return ModRecipes.fragmentalHeater.serializer();
     }
 
     @Override
-    public RecipeType<FragmentalGeneratorRecipe> getType() {
-        return ModRecipes.fragmentalGenerator.type();
+    public RecipeType<FragmentalHeaterRecipe> getType() {
+        return ModRecipes.fragmentalHeater.type();
     }
 
     @Override
@@ -88,10 +88,10 @@ public record FragmentalGeneratorRecipe(Ingredient ingredient, int energy, float
 
     @Override
     public RecipeBookCategory recipeBookCategory() {
-        return ModRecipes.fragmentalGenerator.bookCategory();
+        return ModRecipes.fragmentalHeater.bookCategory();
     }
 
-    public static RecipeSerializer<FragmentalGeneratorRecipe> serializer() {
+    public static RecipeSerializer<FragmentalHeaterRecipe> serializer() {
         return new RecipeSerializer<>(CODEC, STREAM_CODEC);
     }
 }

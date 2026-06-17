@@ -41,7 +41,7 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
                 ModBlocks.cobblescrap.value(),
                 ModBlocks.lavascrap.value(),
                 ModBlocks.worldEater.value(),
-                ModBlocks.fragmentalGenerator.value(),
+                ModBlocks.fragmentalHeater.value(),
                 ModBlocks.fragmentAccelerator.value(),
                 ModBlocks.chaosEngine.value(),
                 ModBlocks.waterSink.value(),

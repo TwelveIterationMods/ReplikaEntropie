@@ -18,7 +18,7 @@ public class ModDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(ModBiomassIncubatorRecipeProvider::new);
         pack.addProvider(ModVacuumableOreRecipeProvider::new);
         pack.addProvider(ModFabricatorRecipeProvider::new);
-        pack.addProvider(ModFragmentalGeneratorRecipeProvider::new);
+        pack.addProvider(ModFragmentalHeaterRecipeProvider::new);
         pack.addProvider(ModAssemblerRecipeProvider::new);
         pack.addProvider(ModResearchRecipeProvider::new);
     }

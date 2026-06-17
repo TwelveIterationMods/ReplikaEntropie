@@ -29,8 +29,8 @@ public class WaterSinkBlockEntity extends BlockEntity {
                 }
                 return;
             }
-            if (blockEntity instanceof FragmentalGeneratorBlockEntity fragmentalGeneratorBlockEntity) {
-                fragmentalGeneratorBlockEntity.adjustTemperature(-0.1f);
+            if (blockEntity instanceof FragmentalHeaterBlockEntity fragmentalHeaterBlockEntity) {
+                fragmentalHeaterBlockEntity.adjustTemperature(-0.1f);
                 return;
             }
 

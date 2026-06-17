@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.HashCommon;
-import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
-import net.blay09.mods.replikaentropie.item.ModItems;
+import net.blay09.mods.replikaentropie.block.entity.FragmentalHeaterBlockEntity;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -22,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
-public class FragmentalGeneratorRenderer implements BlockEntityRenderer<FragmentalGeneratorBlockEntity, FragmentalGeneratorRenderer.State> {
+public class FragmentalHeaterRenderer implements BlockEntityRenderer<FragmentalHeaterBlockEntity, FragmentalHeaterRenderer.State> {
 
     record AnimationStage(float lerpStartY, float lerpEndY, float wobbleAmplitude, float wobbleSpeed, float scale) {
         public float computeOffset(float time) {
@@ -51,7 +50,7 @@ public class FragmentalGeneratorRenderer implements BlockEntityRenderer<Fragment
 
     private final ItemModelResolver itemModelResolver;
 
-    public FragmentalGeneratorRenderer(BlockEntityRendererProvider.Context context) {
+    public FragmentalHeaterRenderer(BlockEntityRendererProvider.Context context) {
         this.itemModelResolver = context.itemModelResolver();
     }
 
@@ -61,7 +60,7 @@ public class FragmentalGeneratorRenderer implements BlockEntityRenderer<Fragment
     }
 
     @Override
-    public void extractRenderState(FragmentalGeneratorBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+    public void extractRenderState(FragmentalHeaterBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
         for (final var contentState : state.content) {
             contentState.item.clear();
@@ -88,8 +87,8 @@ public class FragmentalGeneratorRenderer implements BlockEntityRenderer<Fragment
 
         final var seed = HashCommon.long2int(blockEntity.getBlockPos().asLong());
 
-        for (int i = 0; i < FragmentalGeneratorBlockEntity.INPUT_SLOT_COUNT; i++) {
-            final var inputStack = inputs.getItem(FragmentalGeneratorBlockEntity.INPUT_SLOT_START + i);
+        for (int i = 0; i < FragmentalHeaterBlockEntity.INPUT_SLOT_COUNT; i++) {
+            final var inputStack = inputs.getItem(FragmentalHeaterBlockEntity.INPUT_SLOT_START + i);
             if (inputStack.isEmpty()) {
                 continue;
             }

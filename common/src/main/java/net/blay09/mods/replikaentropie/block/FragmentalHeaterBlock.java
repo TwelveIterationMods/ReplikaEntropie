@@ -2,7 +2,7 @@ package net.blay09.mods.replikaentropie.block;
 
 import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.Balm;
-import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
+import net.blay09.mods.replikaentropie.block.entity.FragmentalHeaterBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,8 +22,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class FragmentalGeneratorBlock extends BaseEntityBlock {
-    public static final MapCodec<FragmentalGeneratorBlock> CODEC = simpleCodec(FragmentalGeneratorBlock::new);
+public class FragmentalHeaterBlock extends BaseEntityBlock {
+    public static final MapCodec<FragmentalHeaterBlock> CODEC = simpleCodec(FragmentalHeaterBlock::new);
 
     public static final VoxelShape SHAPE = Shapes.or(
             Shapes.box(0, 0, 0, 1, 1/16f, 1),
@@ -31,7 +31,7 @@ public class FragmentalGeneratorBlock extends BaseEntityBlock {
             Shapes.box(0, 15/16f, 0, 1, 1f, 1)
     ).optimize();
 
-    public FragmentalGeneratorBlock(Properties properties) {
+    public FragmentalHeaterBlock(Properties properties) {
         super(properties);
     }
 
@@ -42,14 +42,14 @@ public class FragmentalGeneratorBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new FragmentalGeneratorBlockEntity(blockPos, blockState);
+        return new FragmentalHeaterBlockEntity(blockPos, blockState);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide()) {
-            if (level.getBlockEntity(pos) instanceof FragmentalGeneratorBlockEntity fragmentalGeneratorBlockEntity) {
-                Balm.networking().openMenu(player, fragmentalGeneratorBlockEntity);
+            if (level.getBlockEntity(pos) instanceof FragmentalHeaterBlockEntity fragmentalHeaterBlockEntity) {
+                Balm.networking().openMenu(player, fragmentalHeaterBlockEntity);
             }
         }
         return InteractionResult.CONSUME;
@@ -72,7 +72,7 @@ public class FragmentalGeneratorBlock extends BaseEntityBlock {
 
     @Override
     protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos, Direction direction) {
-        if (level.getBlockEntity(pos) instanceof FragmentalGeneratorBlockEntity blockEntity) {
+        if (level.getBlockEntity(pos) instanceof FragmentalHeaterBlockEntity blockEntity) {
             return blockEntity.getComparatorOutput();
         }
 
@@ -82,7 +82,7 @@ public class FragmentalGeneratorBlock extends BaseEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide()
-                ? createTickerHelper(type, ModBlockEntities.fragmentalGenerator.value(), FragmentalGeneratorBlockEntity::clientTick)
-                : createTickerHelper(type, ModBlockEntities.fragmentalGenerator.value(), FragmentalGeneratorBlockEntity::serverTick);
+                ? createTickerHelper(type, ModBlockEntities.fragmentalHeater.value(), FragmentalHeaterBlockEntity::clientTick)
+                : createTickerHelper(type, ModBlockEntities.fragmentalHeater.value(), FragmentalHeaterBlockEntity::serverTick);
     }
 }

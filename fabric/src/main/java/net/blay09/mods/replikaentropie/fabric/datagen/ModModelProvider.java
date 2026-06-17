@@ -39,7 +39,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateHorizontalBlock(ModBlocks.lavascrap.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.worldEater.value());
         generators.createNonTemplateModelBlock(ModBlocks.fragmentAccelerator.value());
-        generators.createNonTemplateModelBlock(ModBlocks.fragmentalGenerator.value());
+        generators.createNonTemplateModelBlock(ModBlocks.fragmentalHeater.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.chaosEngine.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.waterSink.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.lavaSink.value());
@@ -62,7 +62,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.registerSimpleTintedItemModel(ModBlocks.lavascrap.value(), ModelLocationUtils.getModelLocation(ModBlocks.lavascrap.value()), new Constant(0xFF3F76E4));
         generators.registerSimpleItemModel(ModBlocks.worldEater.value(), ModelLocationUtils.getModelLocation(ModBlocks.worldEater.value()));
         generators.registerSimpleItemModel(ModBlocks.fragmentAccelerator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentAccelerator.value()));
-        generators.registerSimpleItemModel(ModBlocks.fragmentalGenerator.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentalGenerator.value()));
+        generators.registerSimpleItemModel(ModBlocks.fragmentalHeater.value(), ModelLocationUtils.getModelLocation(ModBlocks.fragmentalHeater.value()));
         generators.registerSimpleItemModel(ModBlocks.chaosEngine.value(), ModelLocationUtils.getModelLocation(ModBlocks.chaosEngine.value()));
         generators.registerSimpleTintedItemModel(ModBlocks.waterSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.waterSink.value()), new Constant(0xFF3F76E4));
         generators.registerSimpleItemModel(ModBlocks.lavaSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.lavaSink.value()));

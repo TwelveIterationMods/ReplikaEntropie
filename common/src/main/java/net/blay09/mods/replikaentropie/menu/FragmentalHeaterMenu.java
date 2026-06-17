@@ -1,6 +1,6 @@
 package net.blay09.mods.replikaentropie.menu;
 
-import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
+import net.blay09.mods.replikaentropie.block.entity.FragmentalHeaterBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.network.chat.Component;
@@ -18,8 +18,8 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class FragmentalGeneratorMenu extends AbstractContainerMenu {
-    private static final int INPUTS_COUNT = FragmentalGeneratorBlockEntity.INPUT_SLOT_COUNT;
+public class FragmentalHeaterMenu extends AbstractContainerMenu {
+    private static final int INPUTS_COUNT = FragmentalHeaterBlockEntity.INPUT_SLOT_COUNT;
     private static final int MAX_TEMPERATURE_CELSIUS = 5500;
 
     private final Container container;
@@ -34,25 +34,25 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
     public static final int DATA_MAX_TEMPERATURE = DATA_TEMPERATURE + 1;
     public static final int DATA_COUNT = DATA_MAX_TEMPERATURE + 1;
 
-    public FragmentalGeneratorMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(FragmentalGeneratorBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT));
+    public FragmentalHeaterMenu(int containerId, Inventory playerInventory) {
+        this(containerId, playerInventory, new SimpleContainer(FragmentalHeaterBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT));
     }
 
-    public FragmentalGeneratorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
-        super(ModMenus.fragmentalGenerator.value(), containerId);
+    public FragmentalHeaterMenu(int containerId, Inventory playerInventory, Container container, ContainerData data) {
+        super(ModMenus.fragmentalHeater.value(), containerId);
         this.container = container;
-        checkContainerSize(container, FragmentalGeneratorBlockEntity.CONTAINER_SIZE);
+        checkContainerSize(container, FragmentalHeaterBlockEntity.CONTAINER_SIZE);
         this.data = data;
         addDataSlots(data);
 
-        addSlot(new FragmentalHeaterOutputSlot(container, FragmentalGeneratorBlockEntity.OUTPUT_SLOT, 77, 48));
+        addSlot(new FragmentalHeaterOutputSlot(container, FragmentalHeaterBlockEntity.OUTPUT_SLOT, 77, 48));
 
-        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START, 47, 21));
-        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 1, 108, 21));
-        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 2, 22, 46));
-        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 3, 133, 46));
-        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 4, 47, 71));
-        addSlot(new FragmentalHeaterInputSlot(container, FragmentalGeneratorBlockEntity.INPUT_SLOT_START + 5, 108, 71));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalHeaterBlockEntity.INPUT_SLOT_START, 47, 21));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalHeaterBlockEntity.INPUT_SLOT_START + 1, 108, 21));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalHeaterBlockEntity.INPUT_SLOT_START + 2, 22, 46));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalHeaterBlockEntity.INPUT_SLOT_START + 3, 133, 46));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalHeaterBlockEntity.INPUT_SLOT_START + 4, 47, 71));
+        addSlot(new FragmentalHeaterInputSlot(container, FragmentalHeaterBlockEntity.INPUT_SLOT_START + 5, 108, 71));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
@@ -97,7 +97,7 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
 
     public Component getProgressTooltip() {
         final var temperatureCelsius = Math.round(getTemperatureProgress() * MAX_TEMPERATURE_CELSIUS);
-        return Component.translatable("gui.replikaentropie.fragmental_generator.progress", temperatureCelsius, MAX_TEMPERATURE_CELSIUS);
+        return Component.translatable("gui.replikaentropie.fragmental_heater.progress", temperatureCelsius, MAX_TEMPERATURE_CELSIUS);
     }
 
     @Override

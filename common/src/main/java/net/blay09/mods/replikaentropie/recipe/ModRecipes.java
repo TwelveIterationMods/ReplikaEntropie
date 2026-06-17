@@ -9,7 +9,7 @@ public class ModRecipes {
 
     public static DeferredRecipeType<SingleRecipeInput, RecyclerRecipe> recycler;
     public static DeferredRecipeType<SingleRecipeInput, FragmentAcceleratorRecipe> fragmentAccelerator;
-    public static DeferredRecipeType<SingleRecipeInput, FragmentalGeneratorRecipe> fragmentalGenerator;
+    public static DeferredRecipeType<SingleRecipeInput, FragmentalHeaterRecipe> fragmentalHeater;
     public static DeferredRecipeType<RecipeInput, FabricatorRecipe> fabricator;
     public static DeferredRecipeType<SingleRecipeInput, BiomassIncubatorRecipe> biomassIncubator;
     public static DeferredRecipeType<SingleRecipeInput, OreVacuumRecipe> oreVacuum;
@@ -28,8 +28,8 @@ public class ModRecipes {
                 .withRecipeBookCategory()
                 .asDeferredRecipeType();
 
-        fragmentalGenerator = recipes.register("fragmental_generator", FragmentalGeneratorRecipe.class)
-                .withSerializer(FragmentalGeneratorRecipe::serializer)
+        fragmentalHeater = recipes.register("fragmental_heater", FragmentalHeaterRecipe.class)
+                .withSerializer(FragmentalHeaterRecipe::serializer)
                 .withRecipeBookCategory()
                 .asDeferredRecipeType();
 

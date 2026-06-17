@@ -2,7 +2,7 @@ package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
 import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
-import net.blay09.mods.replikaentropie.menu.FragmentalGeneratorMenu;
+import net.blay09.mods.replikaentropie.menu.FragmentalHeaterMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -14,11 +14,11 @@ import net.minecraft.world.entity.player.Inventory;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
-public class FragmentalGeneratorScreen extends AbstractContainerScreen<FragmentalGeneratorMenu> {
-    private static final Identifier BACKGROUND = id("textures/gui/container/fragmental_generator.png");
+public class FragmentalHeaterScreen extends AbstractContainerScreen<FragmentalHeaterMenu> {
+    private static final Identifier BACKGROUND = id("textures/gui/container/fragmental_heater.png");
     private final ProgressRenderer[] processingRenderers = new ProgressRenderer[6];
 
-    public FragmentalGeneratorScreen(FragmentalGeneratorMenu menu, Inventory playerInventory, Component title) {
+    public FragmentalHeaterScreen(FragmentalHeaterMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 207);
 
         inventoryLabelY = imageHeight - 94;
@@ -57,7 +57,7 @@ public class FragmentalGeneratorScreen extends AbstractContainerScreen<Fragmenta
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (!menu.canExtractOutput() && isHovering(72, 43, 26, 26, mouseX, mouseY)) {
-            graphics.setTooltipForNextFrame(font, Component.translatable("gui.replikaentropie.fragmental_generator.cooling_required").withStyle(ChatFormatting.RED), mouseX, mouseY);
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.replikaentropie.fragmental_heater.cooling_required").withStyle(ChatFormatting.RED), mouseX, mouseY);
             return;
         }
 

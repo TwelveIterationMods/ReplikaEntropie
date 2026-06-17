@@ -24,7 +24,7 @@ public class ModBlocks {
     public static DeferredBlock cobblescrap;
     public static DeferredBlock lavascrap;
     public static DeferredBlock worldEater;
-    public static DeferredBlock fragmentalGenerator;
+    public static DeferredBlock fragmentalHeater;
     public static DeferredBlock fragmentAccelerator;
     public static DeferredBlock chaosEngine;
     public static DeferredBlock recycler;
@@ -85,8 +85,8 @@ public class ModBlocks {
                 .withDefaultItem(it -> withTooltip(it, "world_eater"))
                 .asDeferredBlock();
 
-        fragmentalGenerator = blocks.register("fragmental_generator", FragmentalGeneratorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
-                .withDefaultItem(it -> withTooltip(it, "fragmental_generator"))
+        fragmentalHeater = blocks.register("fragmental_heater", FragmentalHeaterBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
+                .withDefaultItem(it -> withTooltip(it, "fragmental_heater"))
                 .asDeferredBlock();
 
         fragmentAccelerator = blocks.register("fragment_accelerator", FragmentAcceleratorBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))

@@ -5,8 +5,8 @@ import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
-import net.blay09.mods.replikaentropie.menu.FragmentalGeneratorMenu;
-import net.blay09.mods.replikaentropie.recipe.FragmentalGeneratorRecipe;
+import net.blay09.mods.replikaentropie.menu.FragmentalHeaterMenu;
+import net.blay09.mods.replikaentropie.recipe.FragmentalHeaterRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +34,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
-public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
+public class FragmentalHeaterBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
     public static final int OUTPUT_SLOT = 0;
     public static final int INPUT_SLOT_START = 1;
@@ -48,7 +48,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override
         public void setChanged() {
-            FragmentalGeneratorBlockEntity.this.setChanged();
+            FragmentalHeaterBlockEntity.this.setChanged();
             isSyncDirty = true;
         }
 
@@ -99,18 +99,18 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     private final ContainerData data = new ContainerData() {
         @Override
         public int get(int index) {
-            if (index >= FragmentalGeneratorMenu.DATA_PROCESSING_TIME_START && index <= FragmentalGeneratorMenu.DATA_PROCESSING_TIME_END) {
-                return processingTicks[index - FragmentalGeneratorMenu.DATA_PROCESSING_TIME_START];
+            if (index >= FragmentalHeaterMenu.DATA_PROCESSING_TIME_START && index <= FragmentalHeaterMenu.DATA_PROCESSING_TIME_END) {
+                return processingTicks[index - FragmentalHeaterMenu.DATA_PROCESSING_TIME_START];
             }
 
-            if (index >= FragmentalGeneratorMenu.DATA_MAX_PROCESSING_TIME_START && index <= FragmentalGeneratorMenu.DATA_MAX_PROCESSING_TIME_END) {
-                return maxProcessingTicks[index - FragmentalGeneratorMenu.DATA_MAX_PROCESSING_TIME_START];
+            if (index >= FragmentalHeaterMenu.DATA_MAX_PROCESSING_TIME_START && index <= FragmentalHeaterMenu.DATA_MAX_PROCESSING_TIME_END) {
+                return maxProcessingTicks[index - FragmentalHeaterMenu.DATA_MAX_PROCESSING_TIME_START];
             }
 
             return switch (index) {
-                case FragmentalGeneratorMenu.DATA_TEMPERATURE ->
+                case FragmentalHeaterMenu.DATA_TEMPERATURE ->
                         Mth.clamp(Math.round(temperature), MIN_TEMPERATURE, MAX_TEMPERATURE);
-                case FragmentalGeneratorMenu.DATA_MAX_TEMPERATURE -> MAX_TEMPERATURE;
+                case FragmentalHeaterMenu.DATA_MAX_TEMPERATURE -> MAX_TEMPERATURE;
                 default -> 0;
             };
         }
@@ -121,17 +121,17 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
 
         @Override
         public int getCount() {
-            return FragmentalGeneratorMenu.DATA_COUNT;
+            return FragmentalHeaterMenu.DATA_COUNT;
         }
     };
 
-    public FragmentalGeneratorBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModBlockEntities.fragmentalGenerator.value(), blockPos, blockState);
+    public FragmentalHeaterBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(ModBlockEntities.fragmentalHeater.value(), blockPos, blockState);
         Arrays.fill(maxProcessingTicks, 0);
         Arrays.fill(clientItemRotation, -1f);
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, FragmentalGeneratorBlockEntity blockEntity) {
+    public static void serverTick(Level level, BlockPos pos, BlockState state, FragmentalHeaterBlockEntity blockEntity) {
         for (int i = 0; i < INPUT_SLOT_COUNT; i++) {
             if (blockEntity.canStartProcessing(i)) {
                 blockEntity.processingTicks[i] = 0;
@@ -154,7 +154,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
         blockEntity.broadcastChanges();
     }
 
-    public static void clientTick(Level level, BlockPos pos, BlockState state, FragmentalGeneratorBlockEntity blockEntity) {
+    public static void clientTick(Level level, BlockPos pos, BlockState state, FragmentalHeaterBlockEntity blockEntity) {
         blockEntity.updateClientProgress();
     }
 
@@ -164,7 +164,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
             return false;
         }
 
-        final var recipe = FragmentalGeneratorRecipe.getRecipe(level, inputStack).orElse(null);
+        final var recipe = FragmentalHeaterRecipe.getRecipe(level, inputStack).orElse(null);
         if (recipe == null) {
             return false;
         }
@@ -174,7 +174,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
 
     private void completeProcessing(int slot) {
         final var inputStack = backingContainer.getItem(INPUT_SLOT_START + slot);
-        final var recipe = FragmentalGeneratorRecipe.getRecipe(level, inputStack).orElse(null);
+        final var recipe = FragmentalHeaterRecipe.getRecipe(level, inputStack).orElse(null);
         if (recipe != null) {
             inputStack.shrink(1);
         }
@@ -274,7 +274,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
 
     private void applyProcessingTemperature(int slot) {
         final var inputStack = backingContainer.getItem(INPUT_SLOT_START + slot);
-        final var recipe = FragmentalGeneratorRecipe.getRecipe(level, inputStack).orElse(null);
+        final var recipe = FragmentalHeaterRecipe.getRecipe(level, inputStack).orElse(null);
         if (recipe != null) {
             adjustTemperature(recipe.temperature());
         }
@@ -305,12 +305,12 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("container.replikaentropie.fragmental_generator");
+        return Component.translatable("container.replikaentropie.fragmental_heater");
     }
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new FragmentalGeneratorMenu(containerId, playerInventory, backingContainer, data);
+        return new FragmentalHeaterMenu(containerId, playerInventory, backingContainer, data);
     }
 
     @Override

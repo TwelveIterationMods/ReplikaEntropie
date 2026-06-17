@@ -127,7 +127,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.FISHING_ROD, 1)
                 .save(output);
 
-        assemblerRecipe(ModBlocks.fragmentalGenerator, 1)
+        assemblerRecipe(ModBlocks.fragmentalHeater, 1)
                 .ingredient(Items.IRON_INGOT, 9)
                 .ingredient(Items.GLASS, 8)
                 .ingredient(Items.GUNPOWDER, 4)

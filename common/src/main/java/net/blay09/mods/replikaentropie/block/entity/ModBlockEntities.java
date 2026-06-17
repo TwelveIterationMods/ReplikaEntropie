@@ -13,7 +13,7 @@ public class ModBlockEntities {
     public static Holder<BlockEntityType<LavascrapBlockEntity>> lavascrap;
     public static Holder<BlockEntityType<WorldEaterBlockEntity>> worldEater;
     public static Holder<BlockEntityType<FragmentAcceleratorBlockEntity>> fragmentAccelerator;
-    public static Holder<BlockEntityType<FragmentalGeneratorBlockEntity>> fragmentalGenerator;
+    public static Holder<BlockEntityType<FragmentalHeaterBlockEntity>> fragmentalHeater;
     public static Holder<BlockEntityType<BiomassHarvesterBlockEntity>> biomassHarvester;
     public static Holder<BlockEntityType<BiomassIncubatorBlockEntity>> biomassIncubator;
     public static Holder<BlockEntityType<FragmentalWasteBlockEntity>> fragmentalWaste;
@@ -57,9 +57,9 @@ public class ModBlockEntities {
                 FragmentAcceleratorBlockEntity::new,
                 ModBlocks.fragmentAccelerator).asHolder();
 
-        fragmentalGenerator = blockEntities.register("fragmental_generator",
-                FragmentalGeneratorBlockEntity::new,
-                ModBlocks.fragmentalGenerator).asHolder();
+        fragmentalHeater = blockEntities.register("fragmental_heater",
+                FragmentalHeaterBlockEntity::new,
+                ModBlocks.fragmentalHeater).asHolder();
 
         biomassHarvester = blockEntities.register("biomass_harvester",
                 BiomassHarvesterBlockEntity::new,

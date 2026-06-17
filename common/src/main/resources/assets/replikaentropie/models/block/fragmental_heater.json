@@ -3,9 +3,9 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"0": "replikaentropie:block/fragmental_generator",
-		"4": "replikaentropie:block/fragmental_generator_bottom",
-		"5": "replikaentropie:block/fragmental_generator_inside",
+		"0": "replikaentropie:block/fragmental_heater",
+		"4": "replikaentropie:block/fragmental_heater_bottom",
+		"5": "replikaentropie:block/fragmental_heater_inside",
 		"6": "replikaentropie:block/machine_top_danger",
 		"particle": "replikaentropie:block/machine_top"
 	},

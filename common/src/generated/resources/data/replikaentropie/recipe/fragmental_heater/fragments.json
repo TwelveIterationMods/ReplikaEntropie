@@ -1,5 +1,5 @@
 {
-  "type": "replikaentropie:fragmental_generator",
+  "type": "replikaentropie:fragmental_heater",
   "energy": 100,
   "ingredient": "replikaentropie:fragments",
   "temperature": 0.1

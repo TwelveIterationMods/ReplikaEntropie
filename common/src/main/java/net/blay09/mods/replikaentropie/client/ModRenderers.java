@@ -22,7 +22,7 @@ public class ModRenderers {
         registrar.register(ModBlockEntities.biomassHarvester, BiomassHarvesterRenderer::new);
         registrar.register(ModBlockEntities.biomassIncubator, BiomassIncubatorRenderer::new);
         registrar.register(ModBlockEntities.worldEater, WorldEaterRenderer::new);
-        registrar.register(ModBlockEntities.fragmentalGenerator, FragmentalGeneratorRenderer::new);
+        registrar.register(ModBlockEntities.fragmentalHeater, FragmentalHeaterRenderer::new);
         registrar.register(ModBlockEntities.chaosEngine, ChaosEngineRenderer::new);
         registrar.register(ModBlockEntities.fragmentAccelerator, FragmentAcceleratorRenderer::new);
         registrar.register(ModBlockEntities.crane, CraneRenderer::new);

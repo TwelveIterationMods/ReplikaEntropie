@@ -2,7 +2,7 @@ package net.blay09.mods.replikaentropie.fabric.datagen;
 
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.item.ModItems;
-import net.blay09.mods.replikaentropie.recipe.FragmentalGeneratorRecipe;
+import net.blay09.mods.replikaentropie.recipe.FragmentalHeaterRecipe;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.Holder;
@@ -19,8 +19,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModFragmentalGeneratorRecipeProvider extends FabricRecipeProvider {
-    public ModFragmentalGeneratorRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+public class ModFragmentalHeaterRecipeProvider extends FabricRecipeProvider {
+    public ModFragmentalHeaterRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
@@ -31,17 +31,17 @@ public class ModFragmentalGeneratorRecipeProvider extends FabricRecipeProvider {
             public void buildRecipes() {
                 final var fragmentTemperatureModifier = 1f / 10f;
                 final var iceTemperatureModifier = -1f / 5f;
-                fragmentalGeneratorRecipe(ModItems.fragments.value(), 100, fragmentTemperatureModifier).save(output);
-                fragmentalGeneratorRecipe(Items.SNOWBALL, 0, iceTemperatureModifier).save(output);
-                fragmentalGeneratorRecipe(Items.ICE, 0, iceTemperatureModifier).save(output);
-                fragmentalGeneratorRecipe(Items.PACKED_ICE, 0, iceTemperatureModifier * 9).save(output);
-                fragmentalGeneratorRecipe(Items.BLUE_ICE, 0, iceTemperatureModifier * 27).save(output);
+                fragmentalHeaterRecipe(ModItems.fragments.value(), 100, fragmentTemperatureModifier).save(output);
+                fragmentalHeaterRecipe(Items.SNOWBALL, 0, iceTemperatureModifier).save(output);
+                fragmentalHeaterRecipe(Items.ICE, 0, iceTemperatureModifier).save(output);
+                fragmentalHeaterRecipe(Items.PACKED_ICE, 0, iceTemperatureModifier * 9).save(output);
+                fragmentalHeaterRecipe(Items.BLUE_ICE, 0, iceTemperatureModifier * 27).save(output);
             }
         };
     }
 
-    private FragmentalGeneratorRecipeBuilder fragmentalGeneratorRecipe(Item ingredient, int energy, float temperature) {
-        return new FragmentalGeneratorRecipeBuilder(Ingredient.of(ingredient), energy, temperature);
+    private FragmentalHeaterRecipeBuilder fragmentalHeaterRecipe(Item ingredient, int energy, float temperature) {
+        return new FragmentalHeaterRecipeBuilder(Ingredient.of(ingredient), energy, temperature);
     }
 
     @Override
@@ -49,10 +49,10 @@ public class ModFragmentalGeneratorRecipeProvider extends FabricRecipeProvider {
         return ReplikaEntropie.MOD_ID + " Fragmental Heater Recipes";
     }
 
-    public record FragmentalGeneratorRecipeBuilder(Ingredient ingredient, int energy, float temperature) {
+    public record FragmentalHeaterRecipeBuilder(Ingredient ingredient, int energy, float temperature) {
         public void save(RecipeOutput output) {
-            final var id = ReplikaEntropie.id("fragmental_generator/" + ingredientPath(ingredient));
-            output.accept(ResourceKey.create(Registries.RECIPE, id), new FragmentalGeneratorRecipe(ingredient, energy, temperature), null);
+            final var id = ReplikaEntropie.id("fragmental_heater/" + ingredientPath(ingredient));
+            output.accept(ResourceKey.create(Registries.RECIPE, id), new FragmentalHeaterRecipe(ingredient, energy, temperature), null);
         }
 
         private static String ingredientPath(Ingredient ingredient) {

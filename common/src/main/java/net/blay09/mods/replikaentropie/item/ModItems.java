@@ -156,7 +156,7 @@ public class ModItems {
                     output.accept(ModBlocks.biomassIncubator);
                     output.accept(ModBlocks.biomassHarvester);
                     output.accept(ModBlocks.worldEater);
-                    output.accept(ModBlocks.fragmentalGenerator);
+                    output.accept(ModBlocks.fragmentalHeater);
                     output.accept(ModBlocks.fragmentAccelerator);
                     output.accept(ModBlocks.chaosEngine);
                     output.accept(ModBlocks.wasteBarrel);

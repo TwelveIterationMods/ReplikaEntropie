@@ -6,12 +6,12 @@
     "replikaentropie:research/fragment_accelerator"
   ],
   "icon": {
-    "id": "replikaentropie:fragmental_generator"
+    "id": "replikaentropie:fragmental_heater"
   },
-  "nonogram": "replikaentropie:fragmental_generator",
+  "nonogram": "replikaentropie:fragmental_heater",
   "research_type": "assembler",
   "sort_order": 3700,
   "unlocked_recipes": [
-    "replikaentropie:assembler/fragmental_generator"
+    "replikaentropie:assembler/fragmental_heater"
   ]
 }

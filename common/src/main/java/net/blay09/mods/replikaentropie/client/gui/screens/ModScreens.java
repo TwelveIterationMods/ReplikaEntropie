@@ -15,7 +15,7 @@ public class ModScreens {
         screens.register(ModMenus.lavaSink, LavaSinkScreen::new);
         screens.register(ModMenus.worldEater, WorldEaterScreen::new);
         screens.register(ModMenus.fragmentAccelerator, FragmentAcceleratorScreen::new);
-        screens.register(ModMenus.fragmentalGenerator, FragmentalGeneratorScreen::new);
+        screens.register(ModMenus.fragmentalHeater, FragmentalHeaterScreen::new);
         screens.register(ModMenus.biomassHarvester, BiomassHarvesterScreen::new);
         screens.register(ModMenus.biomassIncubator, BiomassIncubatorScreen::new);
         screens.register(ModMenus.entropicDataMiner, EntropicDataMinerScreen::new);

@@ -2,7 +2,6 @@ package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.balm.world.BalmMenuFactory;
 import net.blay09.mods.balm.world.inventory.BalmMenuTypeRegistrar;
-import net.blay09.mods.replikaentropie.recipe.FabricatorRecipe;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -20,7 +19,7 @@ public class ModMenus {
     public static Holder<MenuType<LavaSinkMenu>> lavaSink;
     public static Holder<MenuType<WorldEaterMenu>> worldEater;
     public static Holder<MenuType<FragmentAcceleratorMenu>> fragmentAccelerator;
-    public static Holder<MenuType<FragmentalGeneratorMenu>> fragmentalGenerator;
+    public static Holder<MenuType<FragmentalHeaterMenu>> fragmentalHeater;
     public static Holder<MenuType<BiomassHarvesterMenu>> biomassHarvester;
     public static Holder<MenuType<BiomassIncubatorMenu>> biomassIncubator;
     public static Holder<MenuType<EntropicDataMinerMenu>> entropicDataMiner;
@@ -138,10 +137,10 @@ public class ModMenus {
             }
         }).asHolder();
 
-        fragmentalGenerator = menus.register("fragmental_generator", new BalmMenuFactory<FragmentalGeneratorMenu, Unit>() {
+        fragmentalHeater = menus.register("fragmental_heater", new BalmMenuFactory<FragmentalHeaterMenu, Unit>() {
             @Override
-            public FragmentalGeneratorMenu create(int syncId, Inventory inventory, Unit unit) {
-                return new FragmentalGeneratorMenu(syncId, inventory);
+            public FragmentalHeaterMenu create(int syncId, Inventory inventory, Unit unit) {
+                return new FragmentalHeaterMenu(syncId, inventory);
             }
 
             @Override

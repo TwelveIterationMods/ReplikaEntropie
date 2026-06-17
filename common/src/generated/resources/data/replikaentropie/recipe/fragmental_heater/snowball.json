@@ -1,5 +1,5 @@
 {
-  "type": "replikaentropie:fragmental_generator",
+  "type": "replikaentropie:fragmental_heater",
   "ingredient": "minecraft:snowball",
   "temperature": -0.2
 }

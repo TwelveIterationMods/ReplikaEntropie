@@ -383,11 +383,11 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .sortOrder(sortOrder += 100)
                         .save(output);
 
-                research(id("fragmental_generator"))
-                        .icon(ModBlocks.fragmentalGenerator)
+                research(id("fragmental_heater"))
+                        .icon(ModBlocks.fragmentalHeater)
                         .dependsOn(id("research/fragment_accelerator"))
-                        .unlocksRecipe(id("assembler/fragmental_generator"))
-                        .nonogram(id("fragmental_generator"))
+                        .unlocksRecipe(id("assembler/fragmental_heater"))
+                        .nonogram(id("fragmental_heater"))
                         .costs(5, 0, 0, 2)
                         .sortOrder(sortOrder += 100)
                         .type(ResearchRecipe.Type.ASSEMBLER)

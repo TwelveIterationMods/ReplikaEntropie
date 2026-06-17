@@ -31,7 +31,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
     private static final Identifier LAVASCRAP_TEXTURE = id("textures/gui/jei/lavascrap.png");
     private static final Identifier COBBLESCRAP_TEXTURE = id("textures/gui/jei/cobblescrap.png");
     private static final Identifier FRAGMENT_ACCELERATOR_TEXTURE = id("textures/gui/jei/fragment_accelerator.png");
-    private static final Identifier FRAGMENTAL_GENERATOR_TEXTURE = id("textures/gui/jei/fragmental_generator.png");
+    private static final Identifier FRAGMENTAL_HEATER_TEXTURE = id("textures/gui/jei/fragmental_heater.png");
     private static final Identifier BIOMASS_HARVESTER_TEXTURE = id("textures/gui/jei/biomass_harvester.png");
 
     @Override
@@ -48,7 +48,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
         registerFabricatorRecipes(registrar);
         registerResearchRecipes(registrar);
         registerFragmentAcceleratorRecipes(registrar);
-        registerFragmentalGeneratorRecipes(registrar);
+        registerFragmentalHeaterRecipes(registrar);
         registerLavascrapRecipe(registrar);
         registerCobblescrapRecipe(registrar);
         registerBiomassHarvesterRecipe(registrar);
@@ -202,15 +202,15 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                         }));
     }
 
-    private static void registerFragmentalGeneratorRecipes(RecipeViewerRegistrar registrar) {
-        registrar.registerRecipeType(id("fragmental_generator"), FragmentalGeneratorRecipe.class)
-                .withSyncedRecipes(ModRecipes.fragmentalGenerator)
-                .withCraftingStation(ModBlocks.fragmentalGenerator)
+    private static void registerFragmentalHeaterRecipes(RecipeViewerRegistrar registrar) {
+        registrar.registerRecipeType(id("fragmental_heater"), FragmentalHeaterRecipe.class)
+                .withSyncedRecipes(ModRecipes.fragmentalHeater)
+                .withCraftingStation(ModBlocks.fragmentalHeater)
                 .buildDisplay(display -> display
-                        .title(Component.translatable(id("fragmental_generator").toLanguageKey("jei")))
-                        .icon(ModBlocks.fragmentalGenerator)
+                        .title(Component.translatable(id("fragmental_heater").toLanguageKey("jei")))
+                        .icon(ModBlocks.fragmentalHeater)
                         .size(129, 87)
-                        .background(FRAGMENTAL_GENERATOR_TEXTURE)
+                        .background(FRAGMENTAL_HEATER_TEXTURE)
                         .slots((recipe, slots) -> {
                             for (int row = 0; row < 3; row++) {
                                 for (int column = 0; column < 4; column++) {

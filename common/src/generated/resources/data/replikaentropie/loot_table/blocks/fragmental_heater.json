@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "replikaentropie:fragmental_generator"
+          "name": "replikaentropie:fragmental_heater"
         }
       ],
       "rolls": 1.0
