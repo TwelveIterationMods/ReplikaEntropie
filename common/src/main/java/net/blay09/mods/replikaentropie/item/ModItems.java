@@ -38,7 +38,6 @@ public class ModItems {
     public static DeferredItem scrap;
     public static DeferredItem biomass;
     public static DeferredItem fragments;
-    public static DeferredItem fragmentalSun;
     public static DeferredItem biomash;
     public static DeferredItem chipset;
     public static DeferredItem biosteel;
@@ -83,7 +82,6 @@ public class ModItems {
         scrap = items.register("scrap", Item::new, it -> it).asDeferredItem();
         biomass = items.register("biomass", Item::new, it -> it).asDeferredItem();
         fragments = items.register("fragments", Item::new, it -> it).asDeferredItem();
-        fragmentalSun = items.register("fragmental_sun", Item::new, it -> it).asDeferredItem();
         chipset = items.register("chipset", Item::new, it -> it).asDeferredItem();
         biosteel = items.register("biosteel", Item::new, it -> it).asDeferredItem();
         replikaAlloy = items.register("replika_alloy", Item::new, it -> it).asDeferredItem();
@@ -139,7 +137,7 @@ public class ModItems {
                     output.accept(scrap);
                     output.accept(biomass);
                     output.accept(fragments);
-                    output.accept(fragmentalSun);
+                    output.accept(ModBlocks.fragmentalSun);
                     output.accept(biomash);
                     output.accept(data);
                     output.accept(makeshiftPSU);

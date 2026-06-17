@@ -6,8 +6,11 @@ import net.blay09.mods.replikaentropie.block.entity.SolarSinkBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -56,6 +59,15 @@ public class SolarSinkBlock extends BaseEntityBlock {
     }
 
     @Override
+    protected InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (itemStack.is(ModBlocks.fragmentalSun.asItem())) {
+            return InteractionResult.FAIL;
+        }
+
+        return super.useItemOn(itemStack, state, level, pos, player, hand, hitResult);
+    }
+
+    @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
@@ -68,5 +80,17 @@ public class SolarSinkBlock extends BaseEntityBlock {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        if (!level.getBlockState(pos.above()).is(ModBlocks.fragmentalSun.asBlock()) || random.nextFloat() > 0.25f) {
+            return;
+        }
+
+        final double x = pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.5;
+        final double y = pos.getY() + 0.4f;
+        final double z = pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.5;
+        level.addParticle(ParticleTypes.ELECTRIC_SPARK, x, y, z, 0, 0, 0);
     }
 }

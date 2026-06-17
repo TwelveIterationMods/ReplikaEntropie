@@ -48,7 +48,7 @@ public class FragmentalGeneratorScreen extends AbstractContainerScreen<Fragmenta
 
         final var temperatureProgress = menu.getTemperatureProgress();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos + 22 + (int) (123 * temperatureProgress), topPos + 98, 176, 5, 4, 11, 256, 256);
-        if (temperatureProgress >= 1f) {
+        if (!menu.canExtractOutput()) {
             final var frameIndex = (int) (Util.getMillis() / 200) % 2;
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos + 72, topPos + 43, 176 + frameIndex * 26, 16, 26, 26, 256, 256);
         }
@@ -56,7 +56,7 @@ public class FragmentalGeneratorScreen extends AbstractContainerScreen<Fragmenta
 
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        if (menu.getTemperatureProgress() >= 1f && isHovering(72, 43, 26, 26, mouseX, mouseY)) {
+        if (!menu.canExtractOutput() && isHovering(72, 43, 26, 26, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.replikaentropie.fragmental_generator.cooling_required").withStyle(ChatFormatting.RED), mouseX, mouseY);
             return;
         }

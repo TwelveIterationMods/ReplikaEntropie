@@ -31,6 +31,7 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
         dropSelf(ModBlocks.waterSink.value());
         dropSelf(ModBlocks.lavaSink.value());
         dropSelf(ModBlocks.solarSink.value());
+        dropSelf(ModBlocks.fragmentalSun.value());
         dropSelf(ModBlocks.recycler.value());
         dropSelf(ModBlocks.bluePrinter.value());
         dropSelf(ModBlocks.crane.value());

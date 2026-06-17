@@ -5,6 +5,7 @@ import net.blay09.mods.balm.platform.capabilities.CommonCapabilities;
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
 import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
 import net.blay09.mods.balm.platform.energy.EnergyStorage;
+import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -17,9 +18,11 @@ import org.jetbrains.annotations.Nullable;
 public class SolarSinkBlockEntity extends BlockEntity implements BalmEnergyStorageProvider {
     private static final int ENERGY_CAPACITY = 1000;
     private static final int ENERGY_GENERATION_RATE = 20;
+    private static final int FRAGMENTAL_SUN_MULTIPLIER = 10;
     private static final int ENERGY_OUTPUT_RATE = 100;
+    private static final int BOOSTED_ENERGY_OUTPUT_RATE = ENERGY_OUTPUT_RATE * FRAGMENTAL_SUN_MULTIPLIER;
 
-    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(ENERGY_OUTPUT_RATE, ENERGY_CAPACITY, 0, 0) {
+    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(BOOSTED_ENERGY_OUTPUT_RATE, ENERGY_CAPACITY, 0, 0) {
         @Override
         public void setChanged() {
             SolarSinkBlockEntity.this.setChanged();
@@ -40,7 +43,7 @@ public class SolarSinkBlockEntity extends BlockEntity implements BalmEnergyStora
             return;
         }
 
-        final int generated = Math.min(ENERGY_GENERATION_RATE, energyStorage.getCapacity() - energyStorage.getEnergy());
+        final int generated = Math.min(getEnergyGenerationRate(), energyStorage.getCapacity() - energyStorage.getEnergy());
         if (generated > 0) {
             energyStorage.setEnergy(energyStorage.getEnergy() + generated);
         }
@@ -59,7 +62,7 @@ public class SolarSinkBlockEntity extends BlockEntity implements BalmEnergyStora
             return;
         }
 
-        final int maxTransfer = Math.min(ENERGY_OUTPUT_RATE, energyStorage.getEnergy());
+        final int maxTransfer = Math.min(getEnergyOutputRate(), energyStorage.getEnergy());
         final int accepted = targetStorage.fill(maxTransfer, true);
         if (accepted <= 0) {
             return;
@@ -92,6 +95,18 @@ public class SolarSinkBlockEntity extends BlockEntity implements BalmEnergyStora
     }
 
     public boolean canSeeSun() {
-        return level.isBrightOutside() && level.canSeeSky(worldPosition.above());
+        return hasFragmentalSunAbove() || (level.isBrightOutside() && level.canSeeSky(worldPosition.above()));
+    }
+
+    private int getEnergyGenerationRate() {
+        return hasFragmentalSunAbove() ? ENERGY_GENERATION_RATE * FRAGMENTAL_SUN_MULTIPLIER : ENERGY_GENERATION_RATE;
+    }
+
+    private int getEnergyOutputRate() {
+        return hasFragmentalSunAbove() ? BOOSTED_ENERGY_OUTPUT_RATE : ENERGY_OUTPUT_RATE;
+    }
+
+    private boolean hasFragmentalSunAbove() {
+        return level != null && level.getBlockState(worldPosition.above()).is(ModBlocks.fragmentalSun.asBlock());
     }
 }

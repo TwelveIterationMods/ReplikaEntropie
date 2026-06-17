@@ -5,6 +5,7 @@ import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.block.entity.FragmentalGeneratorBlockEntity;
 import net.blay09.mods.replikaentropie.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -62,6 +63,20 @@ public class FragmentalGeneratorBlock extends BaseEntityBlock {
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
+    }
+
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos, Direction direction) {
+        if (level.getBlockEntity(pos) instanceof FragmentalGeneratorBlockEntity blockEntity) {
+            return blockEntity.getComparatorOutput();
+        }
+
+        return 0;
     }
 
     @Override

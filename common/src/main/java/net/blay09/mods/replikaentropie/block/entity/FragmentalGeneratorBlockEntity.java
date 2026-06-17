@@ -4,7 +4,7 @@ import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
-import net.blay09.mods.replikaentropie.item.ModItems;
+import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.menu.FragmentalGeneratorMenu;
 import net.blay09.mods.replikaentropie.recipe.FragmentalGeneratorRecipe;
 import net.minecraft.core.BlockPos;
@@ -41,7 +41,9 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     public static final int INPUT_SLOT_COUNT = 6;
     public static final int CONTAINER_SIZE = INPUT_SLOT_COUNT + 1;
     public static final int MIN_TEMPERATURE = 0;
-    public static final int MAX_TEMPERATURE = 100;
+    public static final int MAX_TEMPERATURE = 5500;
+    private static final float OVERHEATED_OUTPUT_TEMPERATURE_PER_TICK = 0.1f;
+    private static final float IDLE_COOLING_TEMPERATURE_PER_TICK = -0.02f;
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override
@@ -62,7 +64,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
 
         @Override
         public boolean canTakeItem(Container target, int slot, ItemStack stack) {
-            return slot != OUTPUT_SLOT || canExtractOutput();
+            return slot == OUTPUT_SLOT && canExtractOutput();
         }
 
         @Override
@@ -146,7 +148,9 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
             }
         }
 
+        blockEntity.applyOverheatedOutputTemperature();
         blockEntity.createOutputIfComplete();
+        blockEntity.applyIdleCooling();
         blockEntity.broadcastChanges();
     }
 
@@ -198,12 +202,32 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
         return temperature <= MAX_TEMPERATURE * 0.25f;
     }
 
+    private boolean hasOverheatedOutput() {
+        return !backingContainer.getItem(OUTPUT_SLOT).isEmpty() && !canExtractOutput();
+    }
+
+    private void applyOverheatedOutputTemperature() {
+        if (hasOverheatedOutput()) {
+            adjustTemperature(OVERHEATED_OUTPUT_TEMPERATURE_PER_TICK);
+        }
+    }
+
+    private boolean isIdleCooling() {
+        return canOutput() && !isProcessing() && temperature > MIN_TEMPERATURE;
+    }
+
+    private void applyIdleCooling() {
+        if (isIdleCooling()) {
+            adjustTemperature(IDLE_COOLING_TEMPERATURE_PER_TICK);
+        }
+    }
+
     private void createOutputIfComplete() {
         if (temperature < MAX_TEMPERATURE || !canOutput()) {
             return;
         }
 
-        backingContainer.setItem(OUTPUT_SLOT, ModItems.fragmentalSun.createStack());
+        backingContainer.setItem(OUTPUT_SLOT, ModBlocks.fragmentalSun.createStack());
         setChanged();
         isSyncDirty = true;
     }
@@ -211,7 +235,7 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     private void broadcastChanges() {
         ticksSinceSync++;
 
-        if (isSyncDirty || (ticksSinceSync >= 10 && isProcessing())) {
+        if (isSyncDirty || (ticksSinceSync >= 10 && (isProcessing() || hasOverheatedOutput() || isIdleCooling()))) {
             BalmBlockEntityUtils.sync(this);
             isSyncDirty = false;
             ticksSinceSync = 0;
@@ -257,13 +281,21 @@ public class FragmentalGeneratorBlockEntity extends BlockEntity implements BalmC
     }
 
     public boolean adjustTemperature(float delta) {
+        final int oldComparatorOutput = getComparatorOutput();
         final float newTemperature = Mth.clamp(temperature + delta, MIN_TEMPERATURE, MAX_TEMPERATURE);
         if (newTemperature != temperature) {
             temperature = newTemperature;
             setChanged();
+            if (level != null && getComparatorOutput() != oldComparatorOutput) {
+                level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+            }
             return true;
         }
         return false;
+    }
+
+    public int getComparatorOutput() {
+        return Mth.clamp(Math.round((temperature - MIN_TEMPERATURE) / (MAX_TEMPERATURE - MIN_TEMPERATURE) * 15f), 0, 15);
     }
 
     @Override

@@ -44,6 +44,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.createNonTemplateHorizontalBlock(ModBlocks.waterSink.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.lavaSink.value());
         generators.createNonTemplateModelBlock(ModBlocks.solarSink.value());
+        generators.createNonTemplateModelBlock(ModBlocks.fragmentalSun.value());
         generators.createNonTemplateHorizontalBlock(ModBlocks.bluePrinter.value());
         createCrane(generators, ModBlocks.crane.value());
 
@@ -105,7 +106,6 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.scrap.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.biomass.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.fragments.asItem(), ModelTemplates.FLAT_ITEM);
-        generators.generateFlatItem(ModItems.fragmentalSun.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.chipset.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.biosteel.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.replikaAlloy.asItem(), ModelTemplates.FLAT_ITEM);
@@ -147,5 +147,7 @@ public class ModModelProvider extends FabricModelProvider {
         generators.generateFlatItem(ModItems.wasteBarrelMinecart.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.fragmentalWasteMinecart.asItem(), ModelTemplates.FLAT_ITEM);
         generators.generateFlatItem(ModItems.biomassHarvesterMinecart.asItem(), ModelTemplates.FLAT_ITEM);
+
+        generators.generateFlatItem(ModBlocks.fragmentalSun.asItem(), ModelTemplates.FLAT_ITEM);
     }
 }

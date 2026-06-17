@@ -132,13 +132,13 @@ public class FragmentalGeneratorMenu extends AbstractContainerMenu {
         }
     }
 
-    private boolean canExtractOutput() {
+    public boolean canExtractOutput() {
         return getTemperatureProgress() <= 0.25f;
     }
 
     private void punishUnsafeOutputPickup(Player player) {
         if (player.level() instanceof ServerLevel serverLevel) {
-            serverLevel.playSound(null, player, SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1f, 1f);
+            serverLevel.playSound(null, player, SoundEvents.GENERIC_BURN, SoundSource.PLAYERS, 1f, 1f);
             player.igniteForSeconds(4f);
         }
     }

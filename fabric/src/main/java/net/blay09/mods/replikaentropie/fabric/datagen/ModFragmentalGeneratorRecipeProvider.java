@@ -29,15 +29,13 @@ public class ModFragmentalGeneratorRecipeProvider extends FabricRecipeProvider {
         return new RecipeProvider(registries, output) {
             @Override
             public void buildRecipes() {
-                fragmentalGeneratorRecipe(ModItems.fragments.value(), 100, 0.1f).save(output);
-                final var iceTemperatureModifier = -0.1f;
+                final var fragmentTemperatureModifier = 1f / 10f;
+                final var iceTemperatureModifier = -1f / 5f;
+                fragmentalGeneratorRecipe(ModItems.fragments.value(), 100, fragmentTemperatureModifier).save(output);
                 fragmentalGeneratorRecipe(Items.SNOWBALL, 0, iceTemperatureModifier).save(output);
                 fragmentalGeneratorRecipe(Items.ICE, 0, iceTemperatureModifier).save(output);
                 fragmentalGeneratorRecipe(Items.PACKED_ICE, 0, iceTemperatureModifier * 9).save(output);
-                fragmentalGeneratorRecipe(Items.BLUE_ICE, 0, iceTemperatureModifier * 9 * 9).save(output);
-                fragmentalGeneratorRecipe(Items.GUNPOWDER, 0, 0.1f).save(output);
-                fragmentalGeneratorRecipe(Items.BLAZE_POWDER, 0, 0.2f).save(output);
-                fragmentalGeneratorRecipe(Items.FIRE_CHARGE, 0, 0.4f).save(output);
+                fragmentalGeneratorRecipe(Items.BLUE_ICE, 0, iceTemperatureModifier * 27).save(output);
             }
         };
     }
