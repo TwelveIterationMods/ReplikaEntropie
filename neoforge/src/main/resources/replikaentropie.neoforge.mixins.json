@@ -3,7 +3,6 @@
   "minVersion": "0.8",
   "package": "net.blay09.mods.replikaentropie.neoforge.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "replikaentropie.refmap.json",
   "mixins": [
   ],
   "client": [
