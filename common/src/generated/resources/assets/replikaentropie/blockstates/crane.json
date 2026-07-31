@@ -1,33 +1,63 @@
 {
   "variants": {
-    "facing=east,powered=false": {
-      "model": "replikaentropie:block/crane",
+    "facing=east,half=lower,powered=false": {
+      "model": "replikaentropie:block/crane_bottom",
       "y": 90
     },
-    "facing=east,powered=true": {
-      "model": "replikaentropie:block/crane",
+    "facing=east,half=lower,powered=true": {
+      "model": "replikaentropie:block/crane_bottom",
       "y": 90
     },
-    "facing=north,powered=false": {
-      "model": "replikaentropie:block/crane"
+    "facing=east,half=upper,powered=false": {
+      "model": "replikaentropie:block/crane_top",
+      "y": 90
     },
-    "facing=north,powered=true": {
-      "model": "replikaentropie:block/crane"
+    "facing=east,half=upper,powered=true": {
+      "model": "replikaentropie:block/crane_top",
+      "y": 90
     },
-    "facing=south,powered=false": {
-      "model": "replikaentropie:block/crane",
+    "facing=north,half=lower,powered=false": {
+      "model": "replikaentropie:block/crane_bottom"
+    },
+    "facing=north,half=lower,powered=true": {
+      "model": "replikaentropie:block/crane_bottom"
+    },
+    "facing=north,half=upper,powered=false": {
+      "model": "replikaentropie:block/crane_top"
+    },
+    "facing=north,half=upper,powered=true": {
+      "model": "replikaentropie:block/crane_top"
+    },
+    "facing=south,half=lower,powered=false": {
+      "model": "replikaentropie:block/crane_bottom",
       "y": 180
     },
-    "facing=south,powered=true": {
-      "model": "replikaentropie:block/crane",
+    "facing=south,half=lower,powered=true": {
+      "model": "replikaentropie:block/crane_bottom",
       "y": 180
     },
-    "facing=west,powered=false": {
-      "model": "replikaentropie:block/crane",
+    "facing=south,half=upper,powered=false": {
+      "model": "replikaentropie:block/crane_top",
+      "y": 180
+    },
+    "facing=south,half=upper,powered=true": {
+      "model": "replikaentropie:block/crane_top",
+      "y": 180
+    },
+    "facing=west,half=lower,powered=false": {
+      "model": "replikaentropie:block/crane_bottom",
       "y": 270
     },
-    "facing=west,powered=true": {
-      "model": "replikaentropie:block/crane",
+    "facing=west,half=lower,powered=true": {
+      "model": "replikaentropie:block/crane_bottom",
+      "y": 270
+    },
+    "facing=west,half=upper,powered=false": {
+      "model": "replikaentropie:block/crane_top",
+      "y": 270
+    },
+    "facing=west,half=upper,powered=true": {
+      "model": "replikaentropie:block/crane_top",
       "y": 270
     }
   }

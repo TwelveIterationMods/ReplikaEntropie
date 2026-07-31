@@ -28,6 +28,7 @@ public class ReplikaEntropieClient {
         registrars.blockEntityRenderers(ModRenderers::initialize);
         registrars.entityRenderers(ModRenderers::initialize);
         registrars.blockColors(ModRenderers::initialize);
+        registrars.blockStateModels(ModBlockStateModels::initialize);
 
         HandheldAnalyzerClient.initialize();
         ClientDataNotifications.initialize();

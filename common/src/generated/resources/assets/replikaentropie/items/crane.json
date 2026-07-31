@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "replikaentropie:block/crane"
+    "model": "replikaentropie:block/crane_bottom"
   }
 }

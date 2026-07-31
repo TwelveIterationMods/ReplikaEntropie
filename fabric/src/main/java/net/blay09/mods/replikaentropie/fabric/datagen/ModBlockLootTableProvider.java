@@ -4,6 +4,8 @@ import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -34,6 +36,6 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
         dropSelf(ModBlocks.fragmentedSun.value());
         dropSelf(ModBlocks.recycler.value());
         dropSelf(ModBlocks.bluePrinter.value());
-        dropSelf(ModBlocks.crane.value());
+        add(ModBlocks.crane.value(), createSinglePropConditionTable(ModBlocks.crane.value(), BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER));
     }
 }

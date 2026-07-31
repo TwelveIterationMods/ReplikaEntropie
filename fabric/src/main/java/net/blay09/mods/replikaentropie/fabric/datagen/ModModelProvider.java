@@ -14,6 +14,7 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 import static net.minecraft.client.data.models.BlockModelGenerators.*;
 
@@ -68,21 +69,30 @@ public class ModModelProvider extends FabricModelProvider {
         generators.registerSimpleItemModel(ModBlocks.lavaSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.lavaSink.value()));
         generators.registerSimpleItemModel(ModBlocks.solarSink.value(), ModelLocationUtils.getModelLocation(ModBlocks.solarSink.value()));
         generators.registerSimpleItemModel(ModBlocks.bluePrinter.value(), ModelLocationUtils.getModelLocation(ModBlocks.bluePrinter.value()));
-        generators.registerSimpleItemModel(ModBlocks.crane.value(), ModelLocationUtils.getModelLocation(ModBlocks.crane.value()));
+        generators.registerSimpleItemModel(ModBlocks.crane.value(), ModelLocationUtils.getModelLocation(ModBlocks.crane.value(), "_bottom"));
     }
 
     private void createCrane(BlockModelGenerators generators, Block crane) {
-        final var model = plainVariant(ModelLocationUtils.getModelLocation(crane));
+        final var bottomModel = plainVariant(ModelLocationUtils.getModelLocation(crane, "_bottom"));
+        final var topModel = plainVariant(ModelLocationUtils.getModelLocation(crane, "_top"));
         generators.blockStateOutput.accept(MultiVariantGenerator.dispatch(crane)
-                .with(PropertyDispatch.initial(BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.POWERED)
-                        .select(Direction.NORTH, false, model)
-                        .select(Direction.NORTH, true, model)
-                        .select(Direction.EAST, false, model.with(Y_ROT_90))
-                        .select(Direction.EAST, true, model.with(Y_ROT_90))
-                        .select(Direction.SOUTH, false, model.with(Y_ROT_180))
-                        .select(Direction.SOUTH, true, model.with(Y_ROT_180))
-                        .select(Direction.WEST, false, model.with(Y_ROT_270))
-                        .select(Direction.WEST, true, model.with(Y_ROT_270))));
+                .with(PropertyDispatch.initial(BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.DOUBLE_BLOCK_HALF, BlockStateProperties.POWERED)
+                        .select(Direction.NORTH, DoubleBlockHalf.LOWER, false, bottomModel)
+                        .select(Direction.NORTH, DoubleBlockHalf.LOWER, true, bottomModel)
+                        .select(Direction.EAST, DoubleBlockHalf.LOWER, false, bottomModel.with(Y_ROT_90))
+                        .select(Direction.EAST, DoubleBlockHalf.LOWER, true, bottomModel.with(Y_ROT_90))
+                        .select(Direction.SOUTH, DoubleBlockHalf.LOWER, false, bottomModel.with(Y_ROT_180))
+                        .select(Direction.SOUTH, DoubleBlockHalf.LOWER, true, bottomModel.with(Y_ROT_180))
+                        .select(Direction.WEST, DoubleBlockHalf.LOWER, false, bottomModel.with(Y_ROT_270))
+                        .select(Direction.WEST, DoubleBlockHalf.LOWER, true, bottomModel.with(Y_ROT_270))
+                        .select(Direction.NORTH, DoubleBlockHalf.UPPER, false, topModel)
+                        .select(Direction.NORTH, DoubleBlockHalf.UPPER, true, topModel)
+                        .select(Direction.EAST, DoubleBlockHalf.UPPER, false, topModel.with(Y_ROT_90))
+                        .select(Direction.EAST, DoubleBlockHalf.UPPER, true, topModel.with(Y_ROT_90))
+                        .select(Direction.SOUTH, DoubleBlockHalf.UPPER, false, topModel.with(Y_ROT_180))
+                        .select(Direction.SOUTH, DoubleBlockHalf.UPPER, true, topModel.with(Y_ROT_180))
+                        .select(Direction.WEST, DoubleBlockHalf.UPPER, false, topModel.with(Y_ROT_270))
+                        .select(Direction.WEST, DoubleBlockHalf.UPPER, true, topModel.with(Y_ROT_270))));
     }
 
     private void createFunnel(BlockModelGenerators generators, Block funnel) {
