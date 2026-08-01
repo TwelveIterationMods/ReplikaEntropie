@@ -1,13 +1,11 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
 import net.blay09.mods.balm.client.gui.components.SegmentedProgressRenderer;
-import net.blay09.mods.replikaentropie.container.RecipeContainer;
 import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
 import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.FabricatorMenu;
 import net.blay09.mods.replikaentropie.menu.slot.FabricatorBufferSlot;
 import net.blay09.mods.replikaentropie.menu.slot.FabricatorRecipeSlot;
-import net.blay09.mods.replikaentropie.recipe.FabricatorRecipe;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -108,33 +106,29 @@ public class FabricatorScreen extends AbstractContainerScreen<FabricatorMenu> {
         }
 
         if (hoveredSlot instanceof FabricatorRecipeSlot recipeSlot) {
-            // TODO This needs to be updated so it works on RecipeDisplays instead of Recipes
-            final var containerSlot = recipeSlot.getContainerSlot();
-            if (recipeSlot.container instanceof RecipeContainer<?> recipeContainer) {
-                @SuppressWarnings("unchecked") final var recipe = ((RecipeContainer<FabricatorRecipe>) recipeContainer).getRecipe(containerSlot);
-                if (recipe != null) {
-                    final var itemStack = recipeSlot.getItem();
-                    final var tooltip = new ArrayList<>(getTooltipFromContainerItem(itemStack));
+            final var display = menu.getDisplay(recipeSlot);
+            if (display != null) {
+                final var itemStack = recipeSlot.getItem();
+                final var tooltip = new ArrayList<>(getTooltipFromContainerItem(itemStack));
 
-                    if (recipe.scrap() > 0) {
-                        tooltip.add(Component.translatable("gui.replikaentropie.fabricator.tooltip.scrap", recipe.scrap()).withStyle(ChatFormatting.DARK_AQUA));
-                    }
+                if (display.scrap() > 0) {
+                    tooltip.add(Component.translatable("gui.replikaentropie.fabricator.tooltip.scrap", display.scrap()).withStyle(ChatFormatting.DARK_AQUA));
+                }
 
-                    if (recipe.biomass() > 0) {
-                        tooltip.add(Component.translatable("gui.replikaentropie.fabricator.tooltip.biomass", recipe.biomass()).withStyle(ChatFormatting.DARK_GREEN));
-                    }
+                if (display.biomass() > 0) {
+                    tooltip.add(Component.translatable("gui.replikaentropie.fabricator.tooltip.biomass", display.biomass()).withStyle(ChatFormatting.DARK_GREEN));
+                }
 
-                    if (recipe.fragments() > 0) {
-                        tooltip.add(Component.translatable("gui.replikaentropie.fabricator.tooltip.fragments", recipe.fragments()).withStyle(ChatFormatting.DARK_PURPLE));
-                    }
+                if (display.fragments() > 0) {
+                    tooltip.add(Component.translatable("gui.replikaentropie.fabricator.tooltip.fragments", display.fragments()).withStyle(ChatFormatting.DARK_PURPLE));
+                }
 
-                    if (recipe.scrap() == 0 && recipe.biomass() == 0 && recipe.fragments() == 0) {
-                        tooltip.add(Component.translatable("gui.replikaentropie.fabricator.tooltip.free").withStyle(ChatFormatting.GREEN));
-                    }
+                if (display.scrap() == 0 && display.biomass() == 0 && display.fragments() == 0) {
+                    tooltip.add(Component.translatable("gui.replikaentropie.fabricator.tooltip.free").withStyle(ChatFormatting.GREEN));
+                }
 
-                    if (menu.getCarried().isEmpty()) {
-                        graphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY);
-                    }
+                if (menu.getCarried().isEmpty()) {
+                    graphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY);
                 }
             }
         } else {

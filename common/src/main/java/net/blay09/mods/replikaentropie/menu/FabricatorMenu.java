@@ -1,22 +1,24 @@
 package net.blay09.mods.replikaentropie.menu;
 
-import net.blay09.mods.replikaentropie.container.RecipeContainer;
 import net.blay09.mods.replikaentropie.block.entity.FabricatorBlockEntity;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.slot.*;
-import net.blay09.mods.replikaentropie.recipe.FabricatorRecipe;
+import net.blay09.mods.replikaentropie.recipe.FabricatorRecipeDisplay;
 import net.blay09.mods.replikaentropie.util.QuickMove;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jspecify.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.List;
 
 public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
@@ -25,8 +27,8 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
     private final Container container;
     private final ContainerData data;
     private final ContainerLevelAccess access;
-    private final List<RecipeHolder<FabricatorRecipe>> recipes;
-    private final RecipeContainer<FabricatorRecipe> recipeContainer = new RecipeContainer<>(7 * 4);
+    private final List<FabricatorRecipeDisplay> displays;
+    private final Container displayContainer = new SimpleContainer(7 * 4);
     private final QuickMove.Routing quickMove;
 
     public static final int DATA_OUTPUT_PROCESSING_TIME = 0;
@@ -42,11 +44,17 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
 
     public static final int DATA_COUNT = DATA_RECIPES_END;
 
-    public FabricatorMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, Collections.emptyList());
+    public record Data(List<FabricatorRecipeDisplay> displays) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = FabricatorRecipeDisplay.STREAM_CODEC
+                .apply(ByteBufCodecs.list(DATA_RECIPES_SIZE))
+                .map(Data::new, Data::displays);
     }
 
-    public FabricatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access, List<RecipeHolder<FabricatorRecipe>> recipes) {
+    public FabricatorMenu(int containerId, Inventory playerInventory, Data menuData) {
+        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, menuData.displays());
+    }
+
+    public FabricatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access, List<FabricatorRecipeDisplay> displays) {
         super(ModMenus.fabricator.value(), containerId);
         this.playerInventory = playerInventory;
         this.container = container;
@@ -54,7 +62,7 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
         this.data = data;
         this.access = access;
         addDataSlots(data);
-        this.recipes = recipes;
+        this.displays = displays;
 
         addSlot(new OutputSlot(container, 0, 146, 99));
         addSlot(new ScrapSlot(container, 1, 37, 22));
@@ -67,7 +75,7 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 7; j++) {
-                addSlot(new FabricatorRecipeSlot(recipeContainer, j + i * 7, 8 + j * 18, 49 + i * 18));
+                addSlot(new FabricatorRecipeSlot(displayContainer, j + i * 7, 8 + j * 18, 49 + i * 18));
             }
         }
 
@@ -96,9 +104,10 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
     }
 
     private void updateRecipeDisplays() {
-        for (int i = 0; i < recipeContainer.getContainerSize(); i++) {
-            final var recipe = i < recipes.size() ? recipes.get(i) : null;
-            recipeContainer.setRecipe(i, recipe != null ? recipe.value() : null);
+        final var displayContext = SlotDisplayContext.fromLevel(playerInventory.player.level());
+        for (int i = 0; i < displayContainer.getContainerSize(); i++) {
+            final var display = i < displays.size() ? displays.get(i) : null;
+            displayContainer.setItem(i, display != null ? display.result().resolveForFirstStack(displayContext) : ItemStack.EMPTY);
         }
     }
 
@@ -106,8 +115,7 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
     public void clicked(int slotId, int button, ContainerInput clickType, Player player) {
         if (slotId >= 7 && slotId <= 34 && !player.level().isClientSide()) {
             int recipeIndex = slots.get(slotId).getContainerSlot();
-            final var recipe = recipeContainer.getRecipe(recipeIndex);
-            if (recipe != null) {
+            if (recipeIndex < displays.size()) {
                 if (clickType == ContainerInput.PICKUP) {
                     data.set(DATA_RECIPES_START + recipeIndex, Mth.clamp(data.get(DATA_RECIPES_START + recipeIndex) + (button == 1 ? -1 : 1), 0, 64));
                 } else if (clickType == ContainerInput.QUICK_MOVE) {
@@ -162,6 +170,11 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
 
     public int getQueuedCount(FabricatorRecipeSlot slot) {
         return Math.max(0, data.get(DATA_RECIPES_START + slot.getContainerSlot()));
+    }
+
+    public @Nullable FabricatorRecipeDisplay getDisplay(FabricatorRecipeSlot slot) {
+        final var containerSlot = slot.getContainerSlot();
+        return containerSlot < displays.size() ? displays.get(containerSlot) : null;
     }
 
     public boolean isMissingScrap() {

@@ -389,7 +389,7 @@ public class WorldEaterBlockEntity extends BlockEntity implements BalmContainerP
     protected void loadAdditional(ValueInput input) {
         ContainerHelper.loadAllItems(input, backingContainer.getItems());
         try {
-            state = input.getString("State").map(State::valueOf).orElse(State.IDLE); // TODO State.CODEC
+            state = input.getString("State").map(State::valueOf).orElse(State.IDLE);
         } catch (IllegalArgumentException e) {
             state = State.IDLE;
         }

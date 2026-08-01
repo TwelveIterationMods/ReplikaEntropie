@@ -35,8 +35,6 @@ import org.slf4j.LoggerFactory;
 
 public class ReplikaEntropie {
 
-    // TODO Crane Rendering
-
     public static final Logger logger = LoggerFactory.getLogger(ReplikaEntropie.class);
 
     public static final String MOD_ID = "replikaentropie";

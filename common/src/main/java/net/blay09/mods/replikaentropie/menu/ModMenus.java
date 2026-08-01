@@ -53,15 +53,15 @@ public class ModMenus {
             }
         }).asHolder();
 
-        fabricator = menus.register("fabricator", new BalmMenuFactory<FabricatorMenu, Unit>() {
+        fabricator = menus.register("fabricator", new BalmMenuFactory<FabricatorMenu, FabricatorMenu.Data>() {
             @Override
-            public FabricatorMenu create(int syncId, Inventory inventory, Unit unit) {
-                return new FabricatorMenu(syncId, inventory);
+            public FabricatorMenu create(int syncId, Inventory inventory, FabricatorMenu.Data data) {
+                return new FabricatorMenu(syncId, inventory, data);
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, Unit> getStreamCodec() {
-                return Unit.STREAM_CODEC.cast();
+            public StreamCodec<RegistryFriendlyByteBuf, FabricatorMenu.Data> getStreamCodec() {
+                return FabricatorMenu.Data.STREAM_CODEC;
             }
         }).asHolder();
 

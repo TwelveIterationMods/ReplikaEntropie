@@ -1,0 +1,59 @@
+{
+  "type": "minecraft:empty",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.2,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "translate": "item.replikaentropie.assembly_ticket.loot.chipset"
+              }
+            },
+            {
+              "components": {
+                "replikaentropie:assembly_ticket": {
+                  "recipe_id": "replikaentropie:assembler/chipset",
+                  "uses_left": 1
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "replikaentropie:assembly_ticket"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "translate": "item.replikaentropie.assembly_ticket.loot.chipset"
+              }
+            },
+            {
+              "components": {
+                "replikaentropie:assembly_ticket": {
+                  "recipe_id": "replikaentropie:assembler/chipset",
+                  "uses_left": 2
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "replikaentropie:assembly_ticket"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

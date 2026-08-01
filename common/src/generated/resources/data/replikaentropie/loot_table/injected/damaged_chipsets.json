@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:empty",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.6,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "replikaentropie:damaged_chipset"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

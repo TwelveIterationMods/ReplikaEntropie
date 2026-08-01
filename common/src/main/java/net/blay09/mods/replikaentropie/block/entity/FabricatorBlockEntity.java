@@ -10,7 +10,7 @@ import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.FabricatorMenu;
 import net.blay09.mods.replikaentropie.recipe.FabricatorRecipe;
-import net.blay09.mods.replikaentropie.recipe.ModRecipes;
+import net.blay09.mods.replikaentropie.recipe.FabricatorRecipeDisplay;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -20,7 +20,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -180,7 +179,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
         super(ModBlockEntities.fabricator.value(), pos, blockState);
     }
 
-    public BalmMenuProvider<Unit> getMenuProvider() {
+    public BalmMenuProvider<FabricatorMenu.Data> getMenuProvider() {
         return new BalmMenuProvider<>() {
             @Override
             public Component getDisplayName() {
@@ -190,19 +189,26 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                 final var recipes = FabricatorRecipe.getRecipes(level);
-                return new FabricatorMenu(i, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition), recipes);
+                return new FabricatorMenu(i, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition), createMenuData(recipes).displays());
             }
 
             @Override
-            public Unit getScreenOpeningData(ServerPlayer player) {
-                return Unit.INSTANCE;
+            public FabricatorMenu.Data getScreenOpeningData(ServerPlayer player) {
+                return createMenuData(FabricatorRecipe.getRecipes(level));
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, Unit> getScreenStreamCodec() {
-                return Unit.STREAM_CODEC.cast();
+            public StreamCodec<RegistryFriendlyByteBuf, FabricatorMenu.Data> getScreenStreamCodec() {
+                return FabricatorMenu.Data.STREAM_CODEC;
             }
         };
+    }
+
+    private static FabricatorMenu.Data createMenuData(List<RecipeHolder<FabricatorRecipe>> recipes) {
+        return new FabricatorMenu.Data(recipes.stream()
+                .flatMap(holder -> holder.value().display().stream()
+                        .map(FabricatorRecipeDisplay.class::cast))
+                .toList());
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.mixin.RecipeManagerAccessor;
+import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,6 +12,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 
 import java.util.Collections;
@@ -78,6 +81,16 @@ public record FabricatorRecipe(int scrap, int biomass, int fragments,
     @Override
     public ItemStack previewResultItem() {
         return result.create();
+    }
+
+    @Override
+    public List<RecipeDisplay> display() {
+        return List.of(new FabricatorRecipeDisplay(
+                new SlotDisplay.ItemStackSlotDisplay(result),
+                new SlotDisplay.ItemSlotDisplay(ModBlocks.fabricator.value().asItem()),
+                scrap,
+                biomass,
+                fragments));
     }
 
     @Override

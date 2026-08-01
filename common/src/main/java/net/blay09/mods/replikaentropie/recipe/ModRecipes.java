@@ -2,10 +2,14 @@ package net.blay09.mods.replikaentropie.recipe;
 
 import net.blay09.mods.balm.world.item.crafting.BalmRecipeTypeRegistrar;
 import net.blay09.mods.balm.world.item.crafting.DeferredRecipeType;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
 public class ModRecipes {
+
+    public static Holder<RecipeDisplay.Type<FabricatorRecipeDisplay>> fabricatorDisplay;
 
     public static DeferredRecipeType<SingleRecipeInput, RecyclerRecipe> recycler;
     public static DeferredRecipeType<SingleRecipeInput, FragmentAcceleratorRecipe> fragmentAccelerator;
@@ -18,6 +22,9 @@ public class ModRecipes {
     public static DeferredRecipeType<RecipeInput, ResearchRecipe> research;
 
     public static void initialize(BalmRecipeTypeRegistrar recipes) {
+        fabricatorDisplay = recipes.registerDisplayType("fabricator", _ -> new RecipeDisplay.Type<>(FabricatorRecipeDisplay.MAP_CODEC, FabricatorRecipeDisplay.STREAM_CODEC))
+                .asHolder();
+
         recycler = recipes.register("recycler", RecyclerRecipe.class)
                 .withSerializer(RecyclerRecipe::serializer)
                 .withRecipeBookCategory()
