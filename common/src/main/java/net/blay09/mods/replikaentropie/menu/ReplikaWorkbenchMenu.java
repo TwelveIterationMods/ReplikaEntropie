@@ -1,29 +1,33 @@
 package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.block.entity.ReplikaWorkbenchBlockEntity;
-import net.blay09.mods.replikaentropie.menu.slot.ReplikaWorkbenchSlot;
+import net.blay09.mods.replikaentropie.component.ReplikaParts;
+import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
 import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.blay09.mods.replikaentropie.util.QuickMove;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 
 public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
     public static final int DATA_CURRENT_POWER = 0;
     public static final int DATA_MAX_POWER = 1;
     public static final int DATA_COUNT = 2;
+    private static final int PART_SLOT_COUNT = 8;
+    private static final int CENTER_SLOT_X = 51;
+    private static final int CENTER_SLOT_Y = 55;
 
     private final Inventory inventory;
     private final Container container;
@@ -31,8 +35,15 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
     private final ContainerLevelAccess access;
     private final QuickMove.Routing quickMove;
 
+    private final SimpleContainer partContainer = new SimpleContainer(PART_SLOT_COUNT) {
+        @Override
+        public boolean canPlaceItem(int slot, ItemStack itemStack) {
+            return canInstallPart(itemStack);
+        }
+    };
+
     public ReplikaWorkbenchMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(9), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+        this(containerId, inventory, new SimpleContainer(1), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
     }
 
     public ReplikaWorkbenchMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
@@ -47,16 +58,18 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
         this.access = access;
         addDataSlots(data);
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                final var index = j * 3 + i;
-                final var x = 22 + i * 29;
-                final var y = 26 + j * 29;
-                if (index == 4) {
-                    addSlot(new ReplikaWorkbenchSlot(container, index, x, y));
-                } else {
-                    addSlot(new Slot(container, index, x, y));
+        addSlot(new ReplikaWorkbenchSlot(container, ReplikaWorkbenchBlockEntity.CENTER_SLOT, CENTER_SLOT_X, CENTER_SLOT_Y));
+
+        var partSlot = 0;
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 3; column++) {
+                if (column == 1 && row == 1) {
+                    continue;
                 }
+
+                final var x = 22 + column * 29;
+                final var y = 26 + row * 29;
+                addSlot(new ReplikaPartSlot(partContainer, partSlot++, x, y));
             }
         }
 
@@ -70,15 +83,14 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
         }
 
         quickMove = QuickMove.create(this, this::moveItemStackTo)
-                .slotRange("parts1", 0, 4)
-                .slotRange("parts2", 5, 9)
-                .slot("center", 4)
-                .route(itemStack -> itemStack.is(ModItemTags.CHARGEABLE), QuickMove.PLAYER, "center")
-                .route(QuickMove.PLAYER, "parts1")
-                .route(QuickMove.PLAYER, "parts2")
+                .slot("center", ReplikaWorkbenchBlockEntity.CENTER_SLOT)
+                .slotRange("parts", 1, 9)
+                .route(itemStack -> itemStack.is(ModItemTags.REPLIKA_WORKBENCH_MODDABLE) || itemStack.is(ModItemTags.CHARGEABLE), QuickMove.PLAYER, "center")
+                .route(itemStack -> itemStack.is(ModItemTags.REPLIKA_WORKBENCH_PARTS), QuickMove.PLAYER, "parts")
                 .build();
 
         container.startOpen(inventory.player);
+        refreshPartSlotsFromCenter();
     }
 
     @Override
@@ -95,6 +107,54 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
     @Override
     public boolean stillValid(Player player) {
         return container.stillValid(player);
+    }
+
+    private void refreshPartSlotsFromCenter() {
+        partContainer.clearContent();
+
+        final var centerStack = container.getItem(ReplikaWorkbenchBlockEntity.CENTER_SLOT);
+        if (!ReplikaArmor.isReplikaArmor(centerStack)) {
+            return;
+        }
+
+        for (final var installedPart : ReplikaArmor.getInstalledParts(centerStack)) {
+            final var partSlot = installedPart.slot() - 1;
+            final var part = installedPart.part().create();
+            if (partSlot >= 0 && partSlot < PART_SLOT_COUNT && ReplikaArmor.isMatchingPart(centerStack, part)) {
+                partContainer.setItem(partSlot, part.copyWithCount(1));
+            }
+        }
+    }
+
+    private void commitPartSlotsToCenter() {
+        final var centerStack = container.getItem(ReplikaWorkbenchBlockEntity.CENTER_SLOT);
+        if (!ReplikaArmor.isReplikaArmor(centerStack)) {
+            partContainer.clearContent();
+            return;
+        }
+
+        final var parts = new ArrayList<ReplikaParts.InstalledPart>();
+        for (int slot = 0; slot < PART_SLOT_COUNT; slot++) {
+            final var part = partContainer.getItem(slot);
+            if (part.isEmpty()) {
+                continue;
+            }
+
+            if (ReplikaArmor.isMatchingPart(centerStack, part)) {
+                parts.add(new ReplikaParts.InstalledPart(slot + 1, ItemStackTemplate.fromNonEmptyStack(part.copyWithCount(1))));
+            } else {
+                partContainer.setItem(slot, ItemStack.EMPTY);
+            }
+        }
+
+        ReplikaArmor.setInstalledParts(centerStack, parts);
+        container.setChanged();
+        broadcastChanges();
+    }
+
+    private boolean canInstallPart(ItemStack part) {
+        final var centerStack = container.getItem(ReplikaWorkbenchBlockEntity.CENTER_SLOT);
+        return ReplikaArmor.isReplikaArmor(centerStack) && ReplikaArmor.isMatchingPart(centerStack, part);
     }
 
     public float getPowerProgress() {
@@ -122,5 +182,82 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
                 replikaWorkbench.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
             }
         });
+    }
+
+    private class ReplikaWorkbenchSlot extends Slot {
+        public ReplikaWorkbenchSlot(Container container, int slot, int x, int y) {
+            super(container, slot, x, y);
+        }
+
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            refreshPartSlotsFromCenter();
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack itemStack) {
+            return container.canPlaceItem(getContainerSlot(), itemStack);
+        }
+
+        @Override
+        public int getMaxStackSize() {
+            return 1;
+        }
+    }
+
+    private class ReplikaPartSlot extends Slot {
+        private ItemStack previousStack = ItemStack.EMPTY;
+
+        public ReplikaPartSlot(Container container, int slot, int x, int y) {
+            super(container, slot, x, y);
+        }
+
+        @Override
+        public void set(ItemStack itemStack) {
+            previousStack = getItem().copy();
+            super.set(itemStack);
+        }
+
+        @Override
+        public ItemStack remove(int amount) {
+            previousStack = getItem().copy();
+            return super.remove(amount);
+        }
+
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            commitPartSlotsToCenter();
+
+            final var installedPart = getItem();
+            if (!ItemStack.matches(previousStack, installedPart)) {
+                if (!installedPart.isEmpty()) {
+                    access.execute((level, pos) -> {
+                        if (!level.isClientSide()) {
+                            level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 0.5f, 1f);
+                        }
+                    });
+                } else {
+                    access.execute((level, pos) -> {
+                        if (!level.isClientSide()) {
+                            level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.5f, 1f);
+                        }
+                    });
+                }
+            }
+
+            previousStack = ItemStack.EMPTY;
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack itemStack) {
+            return container.canPlaceItem(getContainerSlot(), itemStack);
+        }
+
+        @Override
+        public int getMaxStackSize() {
+            return 1;
+        }
     }
 }

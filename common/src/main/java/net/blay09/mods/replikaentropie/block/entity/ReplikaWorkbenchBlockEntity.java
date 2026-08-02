@@ -31,13 +31,13 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmContainerProvider, BalmEnergyStorageProvider {
 
-    public static final int RECHARGE_SLOT = 4;
+    public static final int CENTER_SLOT = 0;
     private static final int ENERGY_CAPACITY = 10000;
     private static final int ENERGY_INPUT_RATE = 1000;
     private static final int RECHARGE_ENERGY_COST = 100;
     private static final int RECHARGE_TICK_INTERVAL = 5;
 
-    private final DefaultContainer backingContainer = new DefaultContainer(9) {
+    private final DefaultContainer backingContainer = new DefaultContainer(1) {
         @Override
         public void setChanged() {
             ReplikaWorkbenchBlockEntity.this.setChanged();
@@ -45,15 +45,7 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
 
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
-            if (slot == 4 && !getItem(slot).isEmpty()) {
-                return false;
-            }
-            return super.canPlaceItem(slot, itemStack);
-        }
-
-        @Override
-        public boolean canTakeItem(Container target, int slot, ItemStack itemStack) {
-            return true;
+            return slot == CENTER_SLOT && getItem(slot).isEmpty() && canUseAsCenterItem(itemStack);
         }
     };
 
@@ -136,7 +128,7 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
             return;
         }
 
-        final var itemStack = backingContainer.getItem(RECHARGE_SLOT);
+        final var itemStack = backingContainer.getItem(CENTER_SLOT);
         if (!canRechargeItem(itemStack) || energyStorage.getEnergy() < RECHARGE_ENERGY_COST) {
             return;
         }
@@ -152,6 +144,10 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
 
     private static void rechargeItem(ItemStack itemStack, int amount) {
         itemStack.setDamageValue(Math.max(0, itemStack.getDamageValue() - amount));
+    }
+
+    private static boolean canUseAsCenterItem(ItemStack itemStack) {
+        return itemStack.is(ModItemTags.REPLIKA_WORKBENCH_MODDABLE) || itemStack.is(ModItemTags.CHARGEABLE);
     }
 
     @Override
