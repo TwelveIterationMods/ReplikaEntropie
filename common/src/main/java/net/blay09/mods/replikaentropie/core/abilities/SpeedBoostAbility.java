@@ -24,17 +24,17 @@ public class SpeedBoostAbility implements Ability {
 
     @Override
     public float getDefaultBurstCost() {
-        return 2f;
+        return 1f;
     }
 
     @Override
     public void tick(Player player, AbilitySourceContext source) {
-        if (player.isSprinting()) {
-            if (AbilityManager.consumeDurability(player, source, this)) {
-                if (!player.level().isClientSide()) {
-                    if (!player.hasEffect(ModEffects.entropicSpeed)) {
-                        player.addEffect(new MobEffectInstance(ModEffects.entropicSpeed, -1, 2, false, false));
-                    }
+        if (player.isSprinting() && AbilityManager.canAffordDurability(source, this)) {
+            if (!player.level().isClientSide()) {
+                if (!player.hasEffect(ModEffects.entropicSpeed) && AbilityManager.consumeDurability(player, source, this)) {
+                    player.addEffect(new MobEffectInstance(ModEffects.entropicSpeed, -1, 2, false, false));
+                } else if (player.tickCount % 20 == 0) {
+                    AbilityManager.consumeDurability(player, source, this);
                 }
             }
         } else {

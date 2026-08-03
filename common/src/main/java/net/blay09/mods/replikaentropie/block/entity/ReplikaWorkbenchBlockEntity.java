@@ -35,7 +35,8 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
     private static final int ENERGY_CAPACITY = 10000;
     private static final int ENERGY_INPUT_RATE = 1000;
     private static final int RECHARGE_ENERGY_COST = 100;
-    private static final int RECHARGE_TICK_INTERVAL = 5;
+    private static final int RECHARGE_TICK_INTERVAL = 1;
+    private static final int RECHARGE_PER_CYCLE = 10;
 
     private final DefaultContainer backingContainer = new DefaultContainer(1) {
         @Override
@@ -134,7 +135,7 @@ public class ReplikaWorkbenchBlockEntity extends BlockEntity implements BalmCont
         }
 
         energyStorage.setEnergy(energyStorage.getEnergy() - RECHARGE_ENERGY_COST);
-        rechargeItem(itemStack, 1);
+        rechargeItem(itemStack, RECHARGE_PER_CYCLE);
         setChanged();
     }
 

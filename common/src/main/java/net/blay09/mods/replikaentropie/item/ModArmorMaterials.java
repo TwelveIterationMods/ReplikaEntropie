@@ -26,7 +26,7 @@ public class ModArmorMaterials {
     );
 
     public static final ArmorMaterial REPLIKA = new ArmorMaterial(
-            ArmorMaterials.DIAMOND.durability(),
+            ArmorMaterials.DIAMOND.durability() * 2,
             ArmorMaterials.DIAMOND.defense(),
             0,
             ArmorMaterials.CHAINMAIL.equipSound(),
