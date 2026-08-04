@@ -9,6 +9,7 @@ import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.core.waste.FragmentalWaste;
+import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.FragmentAcceleratorMenu;
 import net.blay09.mods.replikaentropie.recipe.FragmentAcceleratorRecipe;
 import net.minecraft.core.BlockPos;
@@ -40,11 +41,12 @@ import java.util.ArrayList;
 
 public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmMenuProvider<Unit> {
 
+    private static final int OUTPUT_SLOT = 0;
+    private static final int WASTE_SLOT = 1;
     private static final int PROCESSING_TICKS = 100;
     private static final float SPEED_INCREMENT_PER_COMPLETION = 0.5f;
     private static final float MAX_SPEED_MULTIPLIER = 4f;
 
-    public static final float OUTPUT_MULTIPLIER = 0.25f;
     private static final float MULTIPLIER_BONUS_PER_TYPE = 0.1f;
     private static final float DIMINISHING_RETURNS = 0.5f;
     private static final float WASTE_CHANCE = 0.1f;
@@ -60,8 +62,8 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         @Override
         public boolean canTakeItem(Container target, int slot, ItemStack itemStack) {
             return switch (slot) {
-                case 0 -> true;
-                case 1 -> itemStack.is(ModBlocks.fragmentalWaste.asItem());
+                case OUTPUT_SLOT -> true;
+                case WASTE_SLOT -> itemStack.is(ModBlocks.fragmentalWaste.asItem());
                 default -> false;
             };
         }
@@ -69,8 +71,8 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
             return switch (slot) {
-                case 0 -> false;
-                case 1 -> itemStack.is(ModBlocks.wasteBarrel.asItem()) && getItem(1).isEmpty();
+                case OUTPUT_SLOT -> false;
+                case WASTE_SLOT -> itemStack.is(ModBlocks.wasteBarrel.asItem()) && getItem(WASTE_SLOT).isEmpty();
                 default -> !itemStack.is(ModBlocks.wasteBarrel.asItem());
             };
         }
@@ -173,8 +175,16 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
             if (level.getRandom().nextFloat() <= WASTE_CHANCE) {
                 generateWaste();
             }
-            final var results = calculateOutput();
-            final var maxSpeedMultiplier = Math.min(MAX_SPEED_MULTIPLIER, results.uniqueItems());
+            final var outputStack = backingContainer.getItem(OUTPUT_SLOT);
+            if (outputStack.isEmpty()) {
+                backingContainer.setItem(OUTPUT_SLOT, ModItems.fragments.createStack());
+            } else if (outputStack.is(ModItems.fragments)) {
+                if (outputStack.getCount() < outputStack.getMaxStackSize()) {
+                    outputStack.grow(1);
+                    backingContainer.setChanged();
+                }
+            }
+            final var maxSpeedMultiplier = calculateMaxSpeedMultiplier();
             speedMultiplier = Math.min(maxSpeedMultiplier, speedMultiplier + SPEED_INCREMENT_PER_COMPLETION);
 
             spinInputItems();
@@ -210,7 +220,7 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
     }
 
     private boolean canProcess() {
-        return hasAnyValidInput() && hasWasteBarrel();
+        return hasAnyValidInput() && hasWasteBarrel() && canAcceptOutput();
     }
 
     private boolean isValidInput(ItemStack itemStack) {
@@ -232,6 +242,11 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         return wasteSlotItem.is(ModBlocks.wasteBarrel.asItem());
     }
 
+    private boolean canAcceptOutput() {
+        final var outputStack = backingContainer.getItem(OUTPUT_SLOT);
+        return outputStack.isEmpty() || (outputStack.is(ModItems.fragments) && outputStack.getCount() < outputStack.getMaxStackSize());
+    }
+
     private void generateWaste() {
         final var wasteSlotItem = wasteContainer.getItem(0);
         if (wasteSlotItem.is(ModBlocks.wasteBarrel.asItem())) {
@@ -244,29 +259,25 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
         return Math.max(1, (int) Math.ceil(PROCESSING_TICKS / speedMultiplier));
     }
 
-    private record ProcessResults(float fragments, int uniqueItems) {
-    }
-
-    private ProcessResults calculateOutput() {
+    private float calculateMaxSpeedMultiplier() {
         final var uniqueKinds = HashMultiset.<Item>create();
-        var output = 0f;
+        var speedBonus = 0f;
         for (int i = 0; i < inputContainer.getContainerSize(); i++) {
             final var itemStack = inputContainer.getItem(i);
-            final float recipeFragments = FragmentAcceleratorRecipe.getRecipe(level, itemStack)
-                    .map(FragmentAcceleratorRecipe::fragments)
-                    .orElse(0f);
-            if (recipeFragments > 0f) {
+            final float recipeSpeedMultiplier = FragmentAcceleratorRecipe.getRecipe(level, itemStack)
+                    .map(FragmentAcceleratorRecipe::speedMultiplier)
+                    .orElse(1f);
+            if (recipeSpeedMultiplier > 1f) {
                 final var item = itemStack.getItem();
                 final var existing = uniqueKinds.count(item);
-                output += (float) (recipeFragments * Math.pow(DIMINISHING_RETURNS, existing));
+                speedBonus += (float) ((recipeSpeedMultiplier - 1f) * Math.pow(DIMINISHING_RETURNS, existing));
                 uniqueKinds.add(item);
             }
         }
 
         final var itemTypes = uniqueKinds.elementSet().size();
         final var varietyMultiplier = 1f + MULTIPLIER_BONUS_PER_TYPE * (itemTypes - 1);
-        final var result = output * OUTPUT_MULTIPLIER * varietyMultiplier;
-        return new ProcessResults(result, itemTypes);
+        return Math.min(MAX_SPEED_MULTIPLIER, 1f + speedBonus * varietyMultiplier);
     }
 
     @Override

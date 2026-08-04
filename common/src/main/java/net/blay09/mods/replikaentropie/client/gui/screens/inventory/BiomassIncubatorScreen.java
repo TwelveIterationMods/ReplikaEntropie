@@ -58,7 +58,7 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 27, topPos + 2, 24, 90);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LEFT_WING, leftPos - 29, topPos + 93, 28, 28);
         waterTank.render(graphics, leftPos, topPos, menu.getWaterTankProgress());
-        growthProgress.render(graphics, leftPos, topPos, menu.getGrowthProgress());
+        growthProgress.render(graphics, leftPos, topPos, menu.getGrowthProgress() > 0f ? Math.max(0.25f, menu.getGrowthProgress()) : 0f);
         energyBar.render(graphics, leftPos, topPos, menu.getPowerProgress());
     }
 

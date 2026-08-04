@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "fragments": 0.1,
+  "speed_multiplier": 1.1,
   "ingredient": "minecraft:music_disc_mellohi"
 }

@@ -53,8 +53,8 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     public static final int CONTAINER_SIZE = 7;
     private static final int GROWTH_TICKS = 6000;
     private static final int ENERGY_CAPACITY = 10000;
-    private static final int ENERGY_INPUT_RATE = 1000;
-    private static final int ENERGY_COST_PER_TICK = 100;
+    private static final int ENERGY_INPUT_RATE = 100;
+    private static final int ENERGY_COST_PER_TICK = 20;
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override

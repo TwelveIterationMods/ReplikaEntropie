@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "fragments": 0.2,
+  "speed_multiplier": 1.2,
   "ingredient": "minecraft:blaze_rod"
 }

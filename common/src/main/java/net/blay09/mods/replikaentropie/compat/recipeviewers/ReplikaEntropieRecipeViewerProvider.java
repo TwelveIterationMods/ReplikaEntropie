@@ -2,9 +2,7 @@ package net.blay09.mods.replikaentropie.compat.recipeviewers;
 
 import net.blay09.mods.balm.platform.compatibility.recipeviewer.RecipeViewerInfoProvider;
 import net.blay09.mods.balm.platform.compatibility.recipeviewer.RecipeViewerRegistrar;
-import net.blay09.mods.balm.world.item.DeferredItem;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
-import net.blay09.mods.replikaentropie.block.entity.FragmentAcceleratorBlockEntity;
 import net.blay09.mods.replikaentropie.component.AssemblyTicket;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.item.ModItems;
@@ -197,7 +195,7 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
                             slots.inputSlot(30, 1).add(recipe.ingredient());
                             slots.inputSlot(90, 30).add(recipe.ingredient());
                             slots.inputSlot(30, 59).add(recipe.ingredient());
-                            slots.outputSlot(30, 30).add(resourceStack(ModItems.fragments, recipe.fragments() * FragmentAcceleratorBlockEntity.OUTPUT_MULTIPLIER));
+                            slots.outputSlot(30, 30).add(ModItems.fragments.createStack());
                             slots.outputSlot(61, 30).add(ModBlocks.wasteBarrel);
                         }));
     }
@@ -281,10 +279,6 @@ public class ReplikaEntropieRecipeViewerProvider implements RecipeViewerInfoProv
         ticket.set(DataComponents.CUSTOM_NAME, Component.translatable("item.replikaentropie.assembly_ticket.tooltip.title", result.getHoverName()));
         ticket.set(ModDataComponents.assemblyTicket(), new AssemblyTicket(Optional.empty(), 0, true));
         return ticket;
-    }
-
-    private static ItemStack resourceStack(DeferredItem item, float amount) {
-        return amount > 0 ? item.createStack((int) Math.ceil(amount)) : ItemStack.EMPTY;
     }
 
     public record LavascrapRecipe() {

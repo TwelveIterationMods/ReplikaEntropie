@@ -19,17 +19,17 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-public record FragmentAcceleratorRecipe(Ingredient ingredient, float fragments) implements Recipe<SingleRecipeInput>, PreviewableRecipe {
+public record FragmentAcceleratorRecipe(Ingredient ingredient, float speedMultiplier) implements Recipe<SingleRecipeInput>, PreviewableRecipe {
     private static final MapCodec<FragmentAcceleratorRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Ingredient.CODEC.fieldOf("ingredient").forGetter(FragmentAcceleratorRecipe::ingredient),
-            Codec.FLOAT.optionalFieldOf("fragments", 0f).forGetter(FragmentAcceleratorRecipe::fragments)
+            Codec.FLOAT.optionalFieldOf("speed_multiplier", 1f).forGetter(FragmentAcceleratorRecipe::speedMultiplier)
     ).apply(instance, FragmentAcceleratorRecipe::new));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, FragmentAcceleratorRecipe> STREAM_CODEC = StreamCodec.composite(
             Ingredient.CONTENTS_STREAM_CODEC,
             FragmentAcceleratorRecipe::ingredient,
             ByteBufCodecs.FLOAT,
-            FragmentAcceleratorRecipe::fragments,
+            FragmentAcceleratorRecipe::speedMultiplier,
             FragmentAcceleratorRecipe::new
     );
 

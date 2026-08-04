@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "fragments": 1.0,
+  "speed_multiplier": 2,
   "ingredient": "minecraft:dragon_egg"
 }

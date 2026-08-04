@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ModFragmentAcceleratorRecipeProvider extends FabricRecipeProvider {
-    private static final float REDSTONE_FRAGMENTS = 0.1f;
-    private static final float SOUL_FRAGMENTS = 0.1f;
-    private static final float GLOW_INK_FRAGMENTS = 0.1f;
-    private static final float AMETHYST_FRAGMENTS = 0.1f;
+    private static final float REDSTONE_SPEED_MULTIPLIER = 1.1f;
+    private static final float SOUL_SPEED_MULTIPLIER = 1.1f;
+    private static final float GLOW_INK_SPEED_MULTIPLIER = 1.1f;
+    private static final float AMETHYST_SPEED_MULTIPLIER = 1.1f;
 
     private static final List<Item> EXOTIC_PLANTS = List.of(
             Items.TORCHFLOWER,
@@ -73,62 +73,62 @@ public class ModFragmentAcceleratorRecipeProvider extends FabricRecipeProvider {
         return new RecipeProvider(registries, output) {
             @Override
             public void buildRecipes() {
-                EXOTIC_PLANTS.forEach(exoticPlant -> fragmentAcceleratorRecipe(exoticPlant, 0.2f).save(output));
+                EXOTIC_PLANTS.forEach(exoticPlant -> fragmentAcceleratorRecipe(exoticPlant, 1.2f).save(output));
 
-                fragmentAcceleratorRecipe(ModItems.fragments.asItem(), 0.1f).save(output);
+                fragmentAcceleratorRecipe(ModItems.fragments.asItem(), 1.1f).save(output);
 
-                fragmentAcceleratorRecipe(Items.SOUL_TORCH, SOUL_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.REDSTONE_TORCH, REDSTONE_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.SOUL_LANTERN, SOUL_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.END_ROD, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.GLOW_ITEM_FRAME, GLOW_INK_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.WITHER_SKELETON_SKULL, 1f).save(output);
-                fragmentAcceleratorRecipe(Items.DRAGON_HEAD, 1f).save(output);
-                fragmentAcceleratorRecipe(Items.DRAGON_EGG, 1f).save(output);
-                fragmentAcceleratorRecipe(Items.ENDER_EYE, 1f).save(output);
-                fragmentAcceleratorRecipe(Items.REDSTONE, REDSTONE_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.REPEATER, REDSTONE_FRAGMENTS * 3).save(output);
-                fragmentAcceleratorRecipe(Items.COMPARATOR, REDSTONE_FRAGMENTS * 3).save(output);
-                fragmentAcceleratorRecipe(Items.FIRE_CHARGE, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.COMPASS, REDSTONE_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.RECOVERY_COMPASS, REDSTONE_FRAGMENTS + 0.8f).save(output);
-                fragmentAcceleratorRecipe(Items.CLOCK, REDSTONE_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.SPYGLASS, AMETHYST_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.ENDER_PEARL, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.ELYTRA, 1f).save(output);
-                fragmentAcceleratorRecipe(Items.WARPED_FUNGUS_ON_A_STICK, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.POWERED_RAIL, REDSTONE_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.DETECTOR_RAIL, REDSTONE_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.ACTIVATOR_RAIL, REDSTONE_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.TNT_MINECART, 0.1f).save(output);
-                MUSIC_DISCS.forEach(musicDisc -> fragmentAcceleratorRecipe(musicDisc, 0.1f).save(output));
-                fragmentAcceleratorRecipe(Items.TOTEM_OF_UNDYING, 1f).save(output);
-                fragmentAcceleratorRecipe(Items.SPECTRAL_ARROW, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.TIPPED_ARROW, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.GLOW_BERRIES, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.CHORUS_FRUIT, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.POISONOUS_POTATO, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.PUFFERFISH, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.AMETHYST_SHARD, AMETHYST_FRAGMENTS).save(output);
-                fragmentAcceleratorRecipe(Items.GLOW_INK_SAC, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.HEART_OF_THE_SEA, 1f).save(output);
-                fragmentAcceleratorRecipe(Items.BLAZE_ROD, 0.2f).save(output);
-                fragmentAcceleratorRecipe(Items.NETHER_STAR, 1f).save(output);
-                fragmentAcceleratorRecipe(Items.DISC_FRAGMENT_5, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.GLOWSTONE_DUST, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.GUNPOWDER, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.DRAGON_BREATH, 1f).save(output);
-                fragmentAcceleratorRecipe(Items.BLAZE_POWDER, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.MAGMA_CREAM, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.GHAST_TEAR, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.EXPERIENCE_BOTTLE, 0.1f).save(output);
-                fragmentAcceleratorRecipe(Items.ENCHANTED_BOOK, 0.1f).save(output);
+                fragmentAcceleratorRecipe(Items.SOUL_TORCH, SOUL_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.REDSTONE_TORCH, REDSTONE_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.SOUL_LANTERN, SOUL_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.END_ROD, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.GLOW_ITEM_FRAME, GLOW_INK_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.WITHER_SKELETON_SKULL, 2f).save(output);
+                fragmentAcceleratorRecipe(Items.DRAGON_HEAD, 2f).save(output);
+                fragmentAcceleratorRecipe(Items.DRAGON_EGG, 2f).save(output);
+                fragmentAcceleratorRecipe(Items.ENDER_EYE, 2f).save(output);
+                fragmentAcceleratorRecipe(Items.REDSTONE, REDSTONE_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.REPEATER, REDSTONE_SPEED_MULTIPLIER + 0.2f).save(output);
+                fragmentAcceleratorRecipe(Items.COMPARATOR, REDSTONE_SPEED_MULTIPLIER + 0.2f).save(output);
+                fragmentAcceleratorRecipe(Items.FIRE_CHARGE, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.COMPASS, REDSTONE_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.RECOVERY_COMPASS, REDSTONE_SPEED_MULTIPLIER + 0.8f).save(output);
+                fragmentAcceleratorRecipe(Items.CLOCK, REDSTONE_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.SPYGLASS, AMETHYST_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.ENDER_PEARL, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.ELYTRA, 2f).save(output);
+                fragmentAcceleratorRecipe(Items.WARPED_FUNGUS_ON_A_STICK, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.POWERED_RAIL, REDSTONE_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.DETECTOR_RAIL, REDSTONE_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.ACTIVATOR_RAIL, REDSTONE_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.TNT_MINECART, 1.1f).save(output);
+                MUSIC_DISCS.forEach(musicDisc -> fragmentAcceleratorRecipe(musicDisc, 1.1f).save(output));
+                fragmentAcceleratorRecipe(Items.TOTEM_OF_UNDYING, 2f).save(output);
+                fragmentAcceleratorRecipe(Items.SPECTRAL_ARROW, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.TIPPED_ARROW, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.GLOW_BERRIES, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.CHORUS_FRUIT, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.POISONOUS_POTATO, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.PUFFERFISH, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.AMETHYST_SHARD, AMETHYST_SPEED_MULTIPLIER).save(output);
+                fragmentAcceleratorRecipe(Items.GLOW_INK_SAC, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.HEART_OF_THE_SEA, 2f).save(output);
+                fragmentAcceleratorRecipe(Items.BLAZE_ROD, 1.2f).save(output);
+                fragmentAcceleratorRecipe(Items.NETHER_STAR, 2f).save(output);
+                fragmentAcceleratorRecipe(Items.DISC_FRAGMENT_5, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.GLOWSTONE_DUST, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.GUNPOWDER, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.DRAGON_BREATH, 2f).save(output);
+                fragmentAcceleratorRecipe(Items.BLAZE_POWDER, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.MAGMA_CREAM, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.GHAST_TEAR, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.EXPERIENCE_BOTTLE, 1.1f).save(output);
+                fragmentAcceleratorRecipe(Items.ENCHANTED_BOOK, 1.1f).save(output);
             }
         };
     }
 
-    private FragmentAcceleratorRecipeBuilder fragmentAcceleratorRecipe(Item ingredient, float fragments) {
-        return new FragmentAcceleratorRecipeBuilder(Ingredient.of(ingredient), fragments);
+    private FragmentAcceleratorRecipeBuilder fragmentAcceleratorRecipe(Item ingredient, float speedMultiplier) {
+        return new FragmentAcceleratorRecipeBuilder(Ingredient.of(ingredient), speedMultiplier);
     }
 
     @Override
@@ -136,10 +136,10 @@ public class ModFragmentAcceleratorRecipeProvider extends FabricRecipeProvider {
         return ReplikaEntropie.MOD_ID + " Fragment Accelerator Recipes";
     }
 
-    public record FragmentAcceleratorRecipeBuilder(Ingredient ingredient, float fragments) {
+    public record FragmentAcceleratorRecipeBuilder(Ingredient ingredient, float speedMultiplier) {
         public void save(RecipeOutput output) {
             final var id = ReplikaEntropie.id("fragment_accelerator/" + ingredientPath(ingredient));
-            output.accept(ResourceKey.create(Registries.RECIPE, id), new FragmentAcceleratorRecipe(ingredient, fragments), null);
+            output.accept(ResourceKey.create(Registries.RECIPE, id), new FragmentAcceleratorRecipe(ingredient, speedMultiplier), null);
         }
 
         private static String ingredientPath(Ingredient ingredient) {
