@@ -30,9 +30,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 public class RecyclerBlockEntity extends BlockEntity implements BalmContainerProvider, BalmEnergyStorageProvider {
 
     private static final int PROCESSING_TICKS = 100;
-    private static final int ENERGY_CAPACITY = 10000;
-    private static final int ENERGY_INPUT_RATE = 1000;
-    private static final int ENERGY_COST_PER_TICK = 10;
+    private static final int ENERGY_CAPACITY = 1000;
+    private static final int ENERGY_INPUT_RATE = 100;
+    private static final int ENERGY_COST_PER_TICK = 1;
 
     private final DefaultContainer backingContainer = new DefaultContainer(4) {
         @Override
