@@ -25,7 +25,7 @@ public record MakeshiftPowerMessage(int containerId) implements CustomPacketPayl
     public static void handle(ServerPlayer player, MakeshiftPowerMessage message) {
         if (player.containerMenu instanceof MakeshiftPoweredMenu menu
                 && player.containerMenu.containerId == message.containerId) {
-            menu.convertClickToPower();
+            menu.getMakeshiftPsu().convertClickToPower(player);
         }
     }
 }

@@ -39,7 +39,7 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
     protected void init() {
         super.init();
 
-        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 96, menu.containerId));
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 96, menu.containerId, menu::isMakeshiftPsuOverheated));
     }
 
     @Override

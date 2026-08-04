@@ -1,8 +1,8 @@
 package net.blay09.mods.replikaentropie.menu;
 
-import net.blay09.mods.replikaentropie.block.entity.FabricatorBlockEntity;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.slot.*;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.recipe.FabricatorRecipeDisplay;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
     private final Inventory playerInventory;
     private final Container container;
     private final ContainerData data;
-    private final ContainerLevelAccess access;
+    private final MakeshiftPsu makeshiftPsu;
     private final List<FabricatorRecipeDisplay> displays;
     private final Container displayContainer = new SimpleContainer(7 * 4);
     private final QuickMove.Routing quickMove;
@@ -41,8 +40,9 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
     public static final int DATA_RECIPES_START = 7;
     public static final int DATA_RECIPES_SIZE = 4 * 7;
     public static final int DATA_RECIPES_END = DATA_RECIPES_START + DATA_RECIPES_SIZE;
+    public static final int DATA_OVERHEATED = DATA_RECIPES_END;
 
-    public static final int DATA_COUNT = DATA_RECIPES_END;
+    public static final int DATA_COUNT = DATA_OVERHEATED + 1;
 
     public record Data(List<FabricatorRecipeDisplay> displays) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = FabricatorRecipeDisplay.STREAM_CODEC
@@ -51,16 +51,16 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
     }
 
     public FabricatorMenu(int containerId, Inventory playerInventory, Data menuData) {
-        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, menuData.displays());
+        this(containerId, playerInventory, new SimpleContainer(8), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, menuData.displays(), MakeshiftPsu.EMPTY);
     }
 
-    public FabricatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access, List<FabricatorRecipeDisplay> displays) {
+    public FabricatorMenu(int containerId, Inventory playerInventory, Container container, ContainerData data, ContainerLevelAccess access, List<FabricatorRecipeDisplay> displays, MakeshiftPsu makeshiftPsu) {
         super(ModMenus.fabricator.value(), containerId);
         this.playerInventory = playerInventory;
         this.container = container;
         checkContainerSize(container, 8);
         this.data = data;
-        this.access = access;
+        this.makeshiftPsu = makeshiftPsu;
         addDataSlots(data);
         this.displays = displays;
 
@@ -164,6 +164,11 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
         return data.get(DATA_MAX_POWER);
     }
 
+    @Override
+    public boolean isMakeshiftPsuOverheated() {
+        return data.get(DATA_OVERHEATED) != 0;
+    }
+
     public boolean isInfinitelyQueued(FabricatorRecipeSlot slot) {
         return data.get(DATA_RECIPES_START + slot.getContainerSlot()) == -1;
     }
@@ -190,12 +195,8 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
     }
 
     @Override
-    public void convertClickToPower() {
-        access.execute((level, pos) -> {
-            final BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof FabricatorBlockEntity fabricator) {
-                fabricator.getEnergyStorage().fill(playerInventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
-            }
-        });
+    public MakeshiftPsu getMakeshiftPsu() {
+        return makeshiftPsu;
     }
+
 }

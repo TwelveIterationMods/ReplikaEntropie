@@ -4,6 +4,7 @@ import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.block.entity.EntropicDataMinerBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -16,35 +17,37 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class EntropicDataMinerMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
     public static final int DATA_CURRENT_POWER = 0;
     public static final int DATA_MAX_POWER = 1;
-    public static final int DATA_COUNT = 2;
+    public static final int DATA_OVERHEATED = 2;
+    public static final int DATA_COUNT = 3;
 
     private final Inventory inventory;
     private final Container container;
     private final ContainerData data;
     private final ContainerLevelAccess access;
+    private final MakeshiftPsu makeshiftPsu;
     private final QuickMove.Routing quickMove;
 
     public EntropicDataMinerMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(EntropicDataMinerBlockEntity.EVENT_HISTORY_SIZE), new SimpleContainer(EntropicDataMinerBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+        this(containerId, inventory, new SimpleContainer(EntropicDataMinerBlockEntity.EVENT_HISTORY_SIZE), new SimpleContainer(EntropicDataMinerBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, MakeshiftPsu.EMPTY);
     }
 
-    public EntropicDataMinerMenu(int containerId, Inventory inventory, Container eventHistoryContainer, Container container, ContainerData data, ContainerLevelAccess access) {
-        this(ModMenus.entropicDataMiner.value(), containerId, inventory, eventHistoryContainer, container, data, access);
+    public EntropicDataMinerMenu(int containerId, Inventory inventory, Container eventHistoryContainer, Container container, ContainerData data, ContainerLevelAccess access, MakeshiftPsu makeshiftPsu) {
+        this(ModMenus.entropicDataMiner.value(), containerId, inventory, eventHistoryContainer, container, data, access, makeshiftPsu);
     }
 
-    public EntropicDataMinerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container eventHistoryContainer, Container container, ContainerData data, ContainerLevelAccess access) {
+    public EntropicDataMinerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container eventHistoryContainer, Container container, ContainerData data, ContainerLevelAccess access, MakeshiftPsu makeshiftPsu) {
         super(menuType, containerId);
         this.inventory = inventory;
         this.container = container;
         this.data = data;
         this.access = access;
+        this.makeshiftPsu = makeshiftPsu;
         checkContainerSize(container, EntropicDataMinerBlockEntity.CONTAINER_SIZE);
         checkContainerSize(eventHistoryContainer, EntropicDataMinerBlockEntity.EVENT_HISTORY_SIZE);
         addDataSlots(data);
@@ -62,6 +65,11 @@ public class EntropicDataMinerMenu extends AbstractContainerMenu implements Make
         quickMove = QuickMove.create(this, this::moveItemStackTo).build();
 
         container.startOpen(inventory.player);
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        return quickMove.transfer(this, player, index);
     }
 
     public float getPowerProgress() {
@@ -82,18 +90,13 @@ public class EntropicDataMinerMenu extends AbstractContainerMenu implements Make
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        return quickMove.transfer(this, player, index);
+    public boolean isMakeshiftPsuOverheated() {
+        return data.get(DATA_OVERHEATED) != 0;
     }
 
     @Override
-    public void convertClickToPower() {
-        access.execute((level, pos) -> {
-            final BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof EntropicDataMinerBlockEntity dataMiner) {
-                dataMiner.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
-            }
-        });
+    public MakeshiftPsu getMakeshiftPsu() {
+        return makeshiftPsu;
     }
 
     @Override

@@ -2,7 +2,6 @@ package net.blay09.mods.replikaentropie.entity;
 
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
-import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
 import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
@@ -10,6 +9,7 @@ import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.core.harvester.BiomassHarvesterLogic;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.BiomassHarvesterMenu;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -47,7 +47,7 @@ public class BiomassHarvesterMinecart extends AbstractMinecartContainer implemen
     private static final EntityDataAccessor<Integer> DATA_STATE = SynchedEntityData.defineId(BiomassHarvesterMinecart.class, EntityDataSerializers.INT);
     private static final List<EntityDataAccessor<ItemStack>> DATA_TOOLS = List.of(DATA_TOOL_0, DATA_TOOL_1, DATA_TOOL_2, DATA_TOOL_3);
 
-    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, BiomassHarvesterLogic.ENERGY_CAPACITY, BiomassHarvesterLogic.ENERGY_INPUT_RATE, 0);
+    private final MakeshiftPsu energyStorage = new MakeshiftPsu(0, BiomassHarvesterLogic.ENERGY_CAPACITY, BiomassHarvesterLogic.ENERGY_INPUT_RATE, 0);
     private final BiomassHarvesterLogic logic = new BiomassHarvesterLogic(this, energyStorage, () -> {
     }, () -> {
     });
@@ -193,8 +193,7 @@ public class BiomassHarvesterMinecart extends AbstractMinecartContainer implemen
 
     @Override
     protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
-        return new BiomassHarvesterMenu(containerId, inventory, this, dataAccess,
-                player -> energyStorage.fill(player.isCreative() ? Integer.MAX_VALUE : 250, false));
+        return new BiomassHarvesterMenu(containerId, inventory, this, dataAccess, energyStorage);
     }
 
     @Override

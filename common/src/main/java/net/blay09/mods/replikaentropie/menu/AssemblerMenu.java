@@ -1,11 +1,11 @@
 package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
-import net.blay09.mods.replikaentropie.block.entity.AssemblerBlockEntity;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.slot.AssemblerTicketSlot;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.recipe.AssemblerRecipe;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
@@ -22,7 +22,6 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
@@ -30,26 +29,27 @@ public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPow
     private final Container previewContainer = new SimpleContainer(9);
     private final Container container;
     private final ContainerData data;
-    private final ContainerLevelAccess access;
+    private final MakeshiftPsu makeshiftPsu;
     private final QuickMove.Routing quickMove;
 
     public static final int DATA_PROCESSING_TIME = 0;
     public static final int DATA_MAX_PROCESSING_TIME = 1;
     public static final int DATA_CURRENT_POWER = 2;
     public static final int DATA_MAX_POWER = 3;
-    public static final int DATA_COUNT = 4;
+    public static final int DATA_OVERHEATED = 4;
+    public static final int DATA_COUNT = 5;
 
     public AssemblerMenu(int id, Inventory inventory) {
-        this(id, inventory, new SimpleContainer(11), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+        this(id, inventory, new SimpleContainer(11), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, MakeshiftPsu.EMPTY);
     }
 
-    public AssemblerMenu(int id, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
+    public AssemblerMenu(int id, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access, MakeshiftPsu makeshiftPsu) {
         super(ModMenus.assembler.value(), id);
         this.inventory = inventory;
         this.container = container;
         checkContainerSize(container, 11);
         this.data = data;
-        this.access = access;
+        this.makeshiftPsu = makeshiftPsu;
         addDataSlots(data);
 
         addSlot(new OutputSlot(container, 0, 98, 63));
@@ -144,13 +144,13 @@ public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPow
     }
 
     @Override
-    public void convertClickToPower() {
-        access.execute((level, pos) -> {
-            final BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof AssemblerBlockEntity assembler) {
-                assembler.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
-            }
-        });
+    public boolean isMakeshiftPsuOverheated() {
+        return data.get(DATA_OVERHEATED) != 0;
+    }
+
+    @Override
+    public MakeshiftPsu getMakeshiftPsu() {
+        return makeshiftPsu;
     }
 
     private void updatePreviewFromTicket() {

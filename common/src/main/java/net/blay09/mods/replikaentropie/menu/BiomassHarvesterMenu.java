@@ -3,6 +3,7 @@ package net.blay09.mods.replikaentropie.menu;
 import net.blay09.mods.replikaentropie.block.entity.BiomassHarvesterBlockEntity;
 import net.blay09.mods.replikaentropie.core.harvester.BiomassHarvesterLogic;
 import net.blay09.mods.replikaentropie.menu.slot.BiomassHarvesterToolSlot;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -12,32 +13,30 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Consumer;
-
 public class BiomassHarvesterMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
     public static final int DATA_CURRENT_POWER = 0;
     public static final int DATA_MAX_POWER = 1;
-    public static final int DATA_COUNT = 2;
+    public static final int DATA_OVERHEATED = 2;
+    public static final int DATA_COUNT = 3;
 
     protected final Inventory inventory;
     protected final Container container;
     protected final ContainerData data;
-    private final Consumer<Player> powerAction;
+    private final MakeshiftPsu makeshiftPsu;
     private final QuickMove.Routing quickMove;
 
     public BiomassHarvesterMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(BiomassHarvesterBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT), player -> {
-        });
+        this(containerId, inventory, new SimpleContainer(BiomassHarvesterBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT), MakeshiftPsu.EMPTY);
     }
 
-    public BiomassHarvesterMenu(int containerId, Inventory inventory, Container container, ContainerData data, Consumer<Player> powerAction) {
+    public BiomassHarvesterMenu(int containerId, Inventory inventory, Container container, ContainerData data, MakeshiftPsu makeshiftPsu) {
         super(ModMenus.biomassHarvester.value(), containerId);
         this.inventory = inventory;
         this.container = container;
         checkContainerSize(container, BiomassHarvesterBlockEntity.CONTAINER_SIZE);
         this.data = data;
-        this.powerAction = powerAction;
+        this.makeshiftPsu = makeshiftPsu;
         addDataSlots(data);
 
         addSlot(new BiomassHarvesterToolSlot(container, 0, 78, 26));
@@ -97,7 +96,13 @@ public class BiomassHarvesterMenu extends AbstractContainerMenu implements Makes
     }
 
     @Override
-    public void convertClickToPower() {
-        powerAction.accept(inventory.player);
+    public boolean isMakeshiftPsuOverheated() {
+        return data.get(DATA_OVERHEATED) != 0;
     }
+
+    @Override
+    public MakeshiftPsu getMakeshiftPsu() {
+        return makeshiftPsu;
+    }
+
 }

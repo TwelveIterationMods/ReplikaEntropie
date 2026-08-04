@@ -1,7 +1,6 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
-import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
 import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.platform.fluid.BalmFluidTankProvider;
 import net.blay09.mods.balm.platform.fluid.DefaultFluidTank;
@@ -13,6 +12,7 @@ import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.menu.BiomassIncubatorMenu;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.recipe.BiomassIncubatorRecipe;
 import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.minecraft.core.BlockPos;
@@ -93,7 +93,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
             return fluid.isSame(Fluids.WATER);
         }
     };
-    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+    private final MakeshiftPsu energyStorage = new MakeshiftPsu(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
         @Override
         public void setChanged() {
             BiomassIncubatorBlockEntity.this.setChanged();
@@ -117,6 +117,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
                 case BiomassIncubatorMenu.DATA_MAX_GROWTH_TIME -> GROWTH_TICKS;
                 case BiomassIncubatorMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
                 case BiomassIncubatorMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
+                case BiomassIncubatorMenu.DATA_OVERHEATED -> energyStorage.isOverheated(level) ? 1 : 0;
                 default -> 0;
             };
         }
@@ -281,7 +282,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new BiomassIncubatorMenu(containerId, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
+        return new BiomassIncubatorMenu(containerId, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition), energyStorage);
     }
 
     @Override

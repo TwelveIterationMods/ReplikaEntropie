@@ -37,7 +37,7 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
     protected void init() {
         super.init();
 
-        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 97, menu.containerId));
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 97, menu.containerId, menu::isMakeshiftPsuOverheated));
     }
 
     @Override

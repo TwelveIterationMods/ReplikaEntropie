@@ -1,7 +1,6 @@
 package net.blay09.mods.replikaentropie.block.entity;
 
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
-import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
 import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.world.BalmMenuProvider;
@@ -9,6 +8,7 @@ import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.FabricatorMenu;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.recipe.FabricatorRecipe;
 import net.blay09.mods.replikaentropie.recipe.FabricatorRecipeDisplay;
 import net.minecraft.core.BlockPos;
@@ -64,7 +64,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
             };
         }
     };
-    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+    private final MakeshiftPsu energyStorage = new MakeshiftPsu(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
         @Override
         public void setChanged() {
             FabricatorBlockEntity.this.setChanged();
@@ -93,6 +93,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
                 case FabricatorMenu.DATA_MAX_OUTPUT_PROCESSING_TIME -> OUTPUT_PROCESSING_TICKS;
                 case FabricatorMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
                 case FabricatorMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
+                case FabricatorMenu.DATA_OVERHEATED -> energyStorage.isOverheated(level) ? 1 : 0;
                 case FabricatorMenu.DATA_MISSING_SCRAP -> {
                     final var nextRecipe = resolveNextOutputRecipe();
                     if (nextRecipe == null) {
@@ -118,7 +119,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
                     yield fragmentInput.getCount() < nextRecipe.fragments() ? 1 : 0;
                 }
                 default -> {
-                    if (index >= FabricatorMenu.DATA_RECIPES_START && index <= FabricatorMenu.DATA_RECIPES_END) {
+                    if (index >= FabricatorMenu.DATA_RECIPES_START && index < FabricatorMenu.DATA_RECIPES_END) {
                         int recipeIndex = index - FabricatorMenu.DATA_RECIPES_START;
                         final var recipes = FabricatorRecipe.getRecipes(level);
                         final var recipe = recipeIndex < recipes.size() ? recipes.get(recipeIndex) : null;
@@ -137,7 +138,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
 
         @Override
         public void set(int index, int value) {
-            if (index >= FabricatorMenu.DATA_RECIPES_START && index <= FabricatorMenu.DATA_RECIPES_END) {
+            if (index >= FabricatorMenu.DATA_RECIPES_START && index < FabricatorMenu.DATA_RECIPES_END) {
                 final var recipes = FabricatorRecipe.getRecipes(level);
                 final var recipe = recipes.get(index - FabricatorMenu.DATA_RECIPES_START);
                 boolean changed = false;
@@ -189,7 +190,7 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                 final var recipes = FabricatorRecipe.getRecipes(level);
-                return new FabricatorMenu(i, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition), createMenuData(recipes).displays());
+                return new FabricatorMenu(i, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition), createMenuData(recipes).displays(), energyStorage);
             }
 
             @Override

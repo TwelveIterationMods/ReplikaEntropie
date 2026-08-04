@@ -2,9 +2,9 @@ package net.blay09.mods.replikaentropie.block.entity;
 
 import net.blay09.mods.balm.world.*;
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
-import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
 import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.replikaentropie.menu.RecyclerMenu;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,7 +50,7 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
         }
     };
 
-    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+    private final MakeshiftPsu energyStorage = new MakeshiftPsu(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
         @Override
         public void setChanged() {
             RecyclerBlockEntity.this.setChanged();
@@ -70,6 +70,7 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
                 case RecyclerMenu.DATA_MAX_PROCESSING_TIME -> PROCESSING_TICKS;
                 case RecyclerMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
                 case RecyclerMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
+                case RecyclerMenu.DATA_OVERHEATED -> energyStorage.isOverheated(level) ? 1 : 0;
                 default -> 0;
             };
         }
@@ -97,7 +98,7 @@ public class RecyclerBlockEntity extends BlockEntity implements BalmContainerPro
 
             @Override
             public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-                return new RecyclerMenu(containerId, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
+                return new RecyclerMenu(containerId, inventory, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition), energyStorage);
             }
 
             @Override

@@ -47,7 +47,7 @@ public class AssemblerScreen extends AbstractContainerScreen<AssemblerMenu> {
     protected void init() {
         super.init();
 
-        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 102, menu.containerId));
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 102, menu.containerId, menu::isMakeshiftPsuOverheated));
     }
 
     @Override

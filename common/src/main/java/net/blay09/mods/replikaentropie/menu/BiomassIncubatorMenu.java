@@ -2,7 +2,7 @@ package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.block.entity.BiomassIncubatorBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.IngredientSlot;
-import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.minecraft.util.Mth;
@@ -18,7 +18,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class BiomassIncubatorMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
@@ -28,26 +27,27 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu implements Makes
     public static final int DATA_MAX_GROWTH_TIME = 3;
     public static final int DATA_CURRENT_POWER = 4;
     public static final int DATA_MAX_POWER = 5;
-    public static final int DATA_COUNT = 6;
+    public static final int DATA_OVERHEATED = 6;
+    public static final int DATA_COUNT = 7;
 
     private final Inventory inventory;
     private final Container container;
     private final ContainerData data;
-    private final ContainerLevelAccess access;
+    private final MakeshiftPsu makeshiftPsu;
 
     private final QuickMove.Routing quickMove;
 
     public BiomassIncubatorMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(BiomassIncubatorBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+        this(containerId, inventory, new SimpleContainer(BiomassIncubatorBlockEntity.CONTAINER_SIZE), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, MakeshiftPsu.EMPTY);
     }
 
-    public BiomassIncubatorMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
+    public BiomassIncubatorMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access, MakeshiftPsu makeshiftPsu) {
         super(ModMenus.biomassIncubator.value(), containerId);
         this.inventory = inventory;
         this.container = container;
         checkContainerSize(container, BiomassIncubatorBlockEntity.CONTAINER_SIZE);
         this.data = data;
-        this.access = access;
+        this.makeshiftPsu = makeshiftPsu;
         addDataSlots(data);
 
         addSlot(new IngredientSlot(container, 0, 45, 80, Ingredient.of(Items.WATER_BUCKET)));
@@ -140,13 +140,13 @@ public class BiomassIncubatorMenu extends AbstractContainerMenu implements Makes
     }
 
     @Override
-    public void convertClickToPower() {
-        access.execute((level, pos) -> {
-            final BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof BiomassIncubatorBlockEntity biomassIncubator) {
-                biomassIncubator.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
-            }
-        });
+    public boolean isMakeshiftPsuOverheated() {
+        return data.get(DATA_OVERHEATED) != 0;
+    }
+
+    @Override
+    public MakeshiftPsu getMakeshiftPsu() {
+        return makeshiftPsu;
     }
 
 }

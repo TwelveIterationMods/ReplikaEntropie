@@ -28,7 +28,7 @@ public class BiomassHarvesterScreen extends AbstractContainerScreen<BiomassHarve
     protected void init() {
         super.init();
 
-        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 97, menu.containerId));
+        addRenderableWidget(new MakeshiftPowerButton(leftPos - 25, topPos + 97, menu.containerId, menu::isMakeshiftPsuOverheated));
     }
 
     @Override

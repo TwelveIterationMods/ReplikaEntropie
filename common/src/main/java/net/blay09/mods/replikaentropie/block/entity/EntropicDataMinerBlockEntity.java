@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmContainerProvider;
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
-import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
 import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.ContainerUtils;
@@ -14,6 +13,7 @@ import net.blay09.mods.replikaentropie.item.DataItem;
 import net.blay09.mods.replikaentropie.menu.EntropicDataMinerMenu;
 import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.blay09.mods.replikaentropie.network.protocol.ParticleTrailMessage;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -76,7 +76,7 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
         }
     };
 
-    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+    private final MakeshiftPsu energyStorage = new MakeshiftPsu(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
         @Override
         public void setChanged() {
             EntropicDataMinerBlockEntity.this.setChanged();
@@ -96,6 +96,7 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
             return switch (index) {
                 case EntropicDataMinerMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
                 case EntropicDataMinerMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
+                case EntropicDataMinerMenu.DATA_OVERHEATED -> energyStorage.isOverheated(level) ? 1 : 0;
                 default -> 0;
             };
         }
@@ -125,7 +126,7 @@ public class EntropicDataMinerBlockEntity extends BlockEntity implements BalmCon
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new EntropicDataMinerMenu(containerId, inventory, eventHistoryContainer, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
+        return new EntropicDataMinerMenu(containerId, inventory, eventHistoryContainer, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition), energyStorage);
     }
 
     @Override

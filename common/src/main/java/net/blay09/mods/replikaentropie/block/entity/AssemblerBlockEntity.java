@@ -5,12 +5,12 @@ import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.balm.world.DefaultContainer;
 import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.balm.platform.energy.BalmEnergyStorageProvider;
-import net.blay09.mods.balm.platform.energy.DefaultEnergyStorage;
 import net.blay09.mods.balm.platform.energy.EnergyStorage;
 import net.blay09.mods.replikaentropie.component.AssemblyTicket;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.AssemblerMenu;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.recipe.AssemblerRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -63,7 +63,7 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
     private final Container ticketContainer = new SubContainer(backingContainer, 1, 2);
     private final Container inputContainer = new SubContainer(backingContainer, 2, 11);
 
-    private final DefaultEnergyStorage energyStorage = new DefaultEnergyStorage(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
+    private final MakeshiftPsu energyStorage = new MakeshiftPsu(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
         @Override
         public void setChanged() {
             AssemblerBlockEntity.this.setChanged();
@@ -80,6 +80,7 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
                 case AssemblerMenu.DATA_MAX_PROCESSING_TIME -> PROCESSING_TICKS;
                 case AssemblerMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
                 case AssemblerMenu.DATA_MAX_POWER -> energyStorage.getCapacity();
+                case AssemblerMenu.DATA_OVERHEATED -> energyStorage.isOverheated(level) ? 1 : 0;
                 default -> 0;
             };
         }
@@ -105,7 +106,7 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-        return new AssemblerMenu(id, inv, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition));
+        return new AssemblerMenu(id, inv, backingContainer, dataAccess, ContainerLevelAccess.create(level, worldPosition), energyStorage);
     }
 
     @Override

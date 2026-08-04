@@ -3,6 +3,7 @@ package net.blay09.mods.replikaentropie.menu;
 import net.blay09.mods.replikaentropie.block.entity.WorldEaterBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -15,14 +16,13 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class WorldEaterMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
 
     private final Inventory playerInventory;
     private final Container container;
     private final ContainerData data;
-    private final ContainerLevelAccess access;
+    private final MakeshiftPsu makeshiftPsu;
     private final QuickMove.Routing quickMove;
 
     public static final int DATA_SCANNING_TIME = 0;
@@ -32,16 +32,21 @@ public class WorldEaterMenu extends AbstractContainerMenu implements MakeshiftPo
     public static final int DATA_CURRENT_DESTROY_SLOT = 4;
     public static final int DATA_CURRENT_POWER = 5;
     public static final int DATA_MAX_POWER = 6;
-    public static final int DATA_COUNT = 7;
+    public static final int DATA_OVERHEATED = 7;
+    public static final int DATA_COUNT = 8;
 
     public WorldEaterMenu(int containerId, Inventory playerInventory, Container previewContainer, Container container, ContainerData data, ContainerLevelAccess access) {
+        this(containerId, playerInventory, previewContainer, container, data, access, MakeshiftPsu.EMPTY);
+    }
+
+    public WorldEaterMenu(int containerId, Inventory playerInventory, Container previewContainer, Container container, ContainerData data, ContainerLevelAccess access, MakeshiftPsu makeshiftPsu) {
         super(ModMenus.worldEater.value(), containerId);
         this.playerInventory = playerInventory;
         this.container = container;
         checkContainerSize(container, WorldEaterBlockEntity.CONTAINER_SIZE);
         checkContainerSize(previewContainer, 15);
         this.data = data;
-        this.access = access;
+        this.makeshiftPsu = makeshiftPsu;
         addDataSlots(data);
 
         for (int i = 0; i < 3; i++) {
@@ -136,13 +141,13 @@ public class WorldEaterMenu extends AbstractContainerMenu implements MakeshiftPo
     }
 
     @Override
-    public void convertClickToPower() {
-        access.execute((level, pos) -> {
-            final BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof WorldEaterBlockEntity worldEater) {
-                worldEater.getEnergyStorage().fill(playerInventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
-            }
-        });
+    public boolean isMakeshiftPsuOverheated() {
+        return data.get(DATA_OVERHEATED) != 0;
+    }
+
+    @Override
+    public MakeshiftPsu getMakeshiftPsu() {
+        return makeshiftPsu;
     }
 
 }

@@ -1,6 +1,9 @@
 package net.blay09.mods.replikaentropie.menu;
 
-public interface MakeshiftPoweredMenu {
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 
-    void convertClickToPower();
+public interface MakeshiftPoweredMenu {
+    MakeshiftPsu getMakeshiftPsu();
+
+    boolean isMakeshiftPsuOverheated();
 }

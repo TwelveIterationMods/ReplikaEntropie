@@ -1,8 +1,8 @@
 package net.blay09.mods.replikaentropie.menu;
 
-import net.blay09.mods.replikaentropie.block.entity.RecyclerBlockEntity;
 import net.blay09.mods.replikaentropie.menu.slot.OutputSlot;
 import net.blay09.mods.replikaentropie.menu.slot.RecyclerSlot;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.recipe.RecyclerRecipe;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.world.Container;
@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPoweredMenu {
@@ -19,30 +18,31 @@ public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPowe
     private final Inventory inventory;
     private final Container container;
     private final ContainerData data;
-    private final ContainerLevelAccess access;
+    private final MakeshiftPsu makeshiftPsu;
     private final QuickMove.Routing quickMove;
 
     public static final int DATA_PROCESSING_TIME = 0;
     public static final int DATA_MAX_PROCESSING_TIME = 1;
     public static final int DATA_CURRENT_POWER = 2;
     public static final int DATA_MAX_POWER = 3;
-    public static final int DATA_COUNT = 4;
+    public static final int DATA_OVERHEATED = 4;
+    public static final int DATA_COUNT = 5;
 
     public RecyclerMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(4), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+        this(containerId, inventory, new SimpleContainer(4), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, MakeshiftPsu.EMPTY);
     }
 
-    public RecyclerMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
-        this(ModMenus.recycler.value(), containerId, inventory, container, data, access);
+    public RecyclerMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access, MakeshiftPsu makeshiftPsu) {
+        this(ModMenus.recycler.value(), containerId, inventory, container, data, access, makeshiftPsu);
     }
 
-    public RecyclerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
+    public RecyclerMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access, MakeshiftPsu makeshiftPsu) {
         super(menuType, containerId);
         this.inventory = inventory;
         this.container = container;
         checkContainerSize(container, 4);
         this.data = data;
-        this.access = access;
+        this.makeshiftPsu = makeshiftPsu;
         addDataSlots(data);
 
         addSlot(new RecyclerSlot(container, 0, 48, 55));
@@ -89,13 +89,13 @@ public class RecyclerMenu extends AbstractContainerMenu implements MakeshiftPowe
     }
 
     @Override
-    public void convertClickToPower() {
-        access.execute((level, pos) -> {
-            final BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof RecyclerBlockEntity recycler) {
-                recycler.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
-            }
-        });
+    public boolean isMakeshiftPsuOverheated() {
+        return data.get(DATA_OVERHEATED) != 0;
+    }
+
+    @Override
+    public MakeshiftPsu getMakeshiftPsu() {
+        return makeshiftPsu;
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.blay09.mods.replikaentropie.menu;
 import net.blay09.mods.replikaentropie.block.entity.ReplikaWorkbenchBlockEntity;
 import net.blay09.mods.replikaentropie.component.ReplikaParts;
 import net.blay09.mods.replikaentropie.core.replika.ReplikaArmor;
+import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
 import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.blay09.mods.replikaentropie.util.QuickMove;
 import net.minecraft.sounds.SoundEvents;
@@ -15,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -24,7 +24,8 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
 
     public static final int DATA_CURRENT_POWER = 0;
     public static final int DATA_MAX_POWER = 1;
-    public static final int DATA_COUNT = 2;
+    public static final int DATA_OVERHEATED = 2;
+    public static final int DATA_COUNT = 3;
     private static final int PART_SLOT_COUNT = 8;
     private static final int CENTER_SLOT_X = 51;
     private static final int CENTER_SLOT_Y = 55;
@@ -33,6 +34,7 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
     private final Container container;
     private final ContainerData data;
     private final ContainerLevelAccess access;
+    private final MakeshiftPsu makeshiftPsu;
     private final QuickMove.Routing quickMove;
 
     private final SimpleContainer partContainer = new SimpleContainer(PART_SLOT_COUNT) {
@@ -43,19 +45,20 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
     };
 
     public ReplikaWorkbenchMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(1), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL);
+        this(containerId, inventory, new SimpleContainer(1), new SimpleContainerData(DATA_COUNT), ContainerLevelAccess.NULL, MakeshiftPsu.EMPTY);
     }
 
-    public ReplikaWorkbenchMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
-        this(ModMenus.replikaWorkbench.value(), containerId, inventory, container, data, access);
+    public ReplikaWorkbenchMenu(int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access, MakeshiftPsu makeshiftPsu) {
+        this(ModMenus.replikaWorkbench.value(), containerId, inventory, container, data, access, makeshiftPsu);
     }
 
-    public ReplikaWorkbenchMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access) {
+    public ReplikaWorkbenchMenu(@Nullable MenuType<?> menuType, int containerId, Inventory inventory, Container container, ContainerData data, ContainerLevelAccess access, MakeshiftPsu makeshiftPsu) {
         super(menuType, containerId);
         this.inventory = inventory;
         this.container = container;
         this.data = data;
         this.access = access;
+        this.makeshiftPsu = makeshiftPsu;
         addDataSlots(data);
 
         addSlot(new ReplikaWorkbenchSlot(container, ReplikaWorkbenchBlockEntity.CENTER_SLOT, CENTER_SLOT_X, CENTER_SLOT_Y));
@@ -175,13 +178,13 @@ public class ReplikaWorkbenchMenu extends AbstractContainerMenu implements Makes
     }
 
     @Override
-    public void convertClickToPower() {
-        access.execute((level, pos) -> {
-            final BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof ReplikaWorkbenchBlockEntity replikaWorkbench) {
-                replikaWorkbench.getEnergyStorage().fill(inventory.player.isCreative() ? Integer.MAX_VALUE : 250, false);
-            }
-        });
+    public boolean isMakeshiftPsuOverheated() {
+        return data.get(DATA_OVERHEATED) != 0;
+    }
+
+    @Override
+    public MakeshiftPsu getMakeshiftPsu() {
+        return makeshiftPsu;
     }
 
     private class ReplikaWorkbenchSlot extends Slot {
