@@ -6,6 +6,9 @@
       "ingredient": "minecraft:iron_ingot"
     },
     {
+      "ingredient": "replikaentropie:chipset"
+    },
+    {
       "count": 2,
       "ingredient": "minecraft:blaze_rod"
     }

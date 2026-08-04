@@ -22,12 +22,12 @@ import java.util.List;
 public record AssemblerRecipe(List<CountedIngredient> ingredients,
                               ItemStackTemplate result) implements Recipe<RecipeInput>, PreviewableRecipe {
     private static final MapCodec<AssemblerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            CountedIngredient.CODEC.listOf(1, 5).fieldOf("ingredients").forGetter(AssemblerRecipe::ingredients),
+            CountedIngredient.CODEC.listOf(1, 9).fieldOf("ingredients").forGetter(AssemblerRecipe::ingredients),
             ItemStackTemplate.CODEC.fieldOf("result").forGetter(AssemblerRecipe::result)
     ).apply(instance, AssemblerRecipe::new));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, AssemblerRecipe> STREAM_CODEC = StreamCodec.composite(
-            CountedIngredient.STREAM_CODEC.apply(ByteBufCodecs.list(5)),
+            CountedIngredient.STREAM_CODEC.apply(ByteBufCodecs.list(9)),
             AssemblerRecipe::ingredients,
             ItemStackTemplate.STREAM_CODEC,
             AssemblerRecipe::result,

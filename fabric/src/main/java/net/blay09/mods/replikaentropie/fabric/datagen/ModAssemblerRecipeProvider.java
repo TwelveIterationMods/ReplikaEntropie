@@ -18,6 +18,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.core.registries.BuiltInRegistries;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -33,7 +34,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
             public void buildRecipes() {
         assemblerRecipe(ModBlocks.fabricator, 1)
                 .ingredient(Items.IRON_INGOT, 9)
-                .ingredient(Items.GLASS, 1)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.REDSTONE, 8)
                 .ingredient(ModItems.scrap, 8)
                 .ingredient(ModItems.fragments, 2)
@@ -42,14 +43,14 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
         assemblerRecipe(ModBlocks.replikaWorkbench, 1)
                 .ingredient(Items.IRON_INGOT, 9)
                 .ingredient(Items.DIAMOND, 4)
-                .ingredient(ModItems.chipset, 4)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(ModItems.scrap, 8)
                 .ingredient(ModItems.fragments, 4)
                 .save(output);
 
         assemblerRecipe(ModBlocks.entropicDataMiner, 1)
                 .ingredient(Items.IRON_INGOT, 9)
-                .ingredient(ModItems.chipset, 2)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.COPPER_INGOT, 3)
                 .ingredient(ModItems.fragments, 8)
                 .ingredient(ModItems.biomass, 8)
@@ -57,18 +58,21 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModItems.nightVisionGoggles, 1)
                 .ingredient(Items.IRON_INGOT, 2)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.GLOWSTONE_DUST, 2)
                 .ingredient(Items.GREEN_DYE, 2)
                 .save(output);
 
         assemblerRecipe(ModItems.brightVisionGoggles, 1)
                 .ingredient(Items.IRON_INGOT, 2)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.GLOWSTONE_DUST, 2)
                 .ingredient(Items.GLOW_INK_SAC, 2)
                 .save(output);
 
         assemblerRecipe(ModItems.graviliftEngine, 1)
                 .ingredient(Items.IRON_INGOT, 8)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.FEATHER, 8)
                 .ingredient(Items.GHAST_TEAR, 2)
                 .ingredient(ModBlocks.fragmentedSun, 1)
@@ -90,14 +94,15 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModBlocks.biomassIncubator, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(ModItems.biomass, 4)
                 .ingredient(Items.GLASS, 4)
-                .ingredient(Items.DIRT, 3)
-                .ingredient(Items.WATER_BUCKET, 1)
+                .ingredient(Items.BUCKET, 1)
                 .save(output);
 
         assemblerRecipe(ModBlocks.biomassHarvester, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.RAIL, 8)
                 .ingredient(Items.STICK, 4)
                 .ingredient(Items.HOPPER, 1)
@@ -106,6 +111,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModBlocks.cobblescrap, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.GLASS, 6)
                 .ingredient(Items.FLINT, 3)
                 .ingredient(Items.WATER_BUCKET, 1)
@@ -114,6 +120,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModBlocks.lavascrap, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.GLASS, 6)
                 .ingredient(Items.BRICK, 4)
                 .ingredient(Items.DIAMOND, 3)
@@ -121,6 +128,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModBlocks.worldEater, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.DIAMOND, 3)
                 .ingredient(Items.GLASS, 2)
                 .ingredient(Items.SPYGLASS, 1)
@@ -129,6 +137,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModBlocks.fragmentalHeater, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.GLASS, 8)
                 .ingredient(Items.GUNPOWDER, 4)
                 .ingredient(Items.BLAZE_POWDER, 2)
@@ -136,6 +145,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModBlocks.fragmentAccelerator, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.POWERED_RAIL, 8)
                 .ingredient(Items.COPPER_INGOT, 3)
                 .ingredient(Items.REDSTONE_TORCH, 1)
@@ -144,6 +154,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModBlocks.chaosEngine, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.NETHER_STAR, 1)
                 .ingredient(Items.RECOVERY_COMPASS, 1)
                 .ingredient(Items.CLOCK, 1)
@@ -152,18 +163,21 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModBlocks.waterSink, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.GLASS, 3)
                 .ingredient(Items.WATER_BUCKET, 2)
                 .save(output);
 
         assemblerRecipe(ModBlocks.lavaSink, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.GLASS, 3)
                 .ingredient(Items.LAVA_BUCKET, 2)
                 .save(output);
 
         assemblerRecipe(ModBlocks.solarSink, 1)
                 .ingredient(Items.IRON_INGOT, 9)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.GLASS, 3)
                 .ingredient(Items.REDSTONE, 2)
                 .ingredient(Items.DAYLIGHT_DETECTOR, 1)
@@ -171,42 +185,49 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
 
         assemblerRecipe(ModItems.nullphaser, 1)
                 .ingredient(Items.IRON_INGOT, 2)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.ENDER_PEARL, 1)
                 .ingredient(Items.GLASS, 1)
                 .save(output);
 
         assemblerRecipe(ModItems.oreVacuum, 1)
                 .ingredient(Items.IRON_INGOT, 4)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.HOPPER, 1)
                 .ingredient(Items.STICK, 1)
                 .save(output);
 
         assemblerRecipe(ModItems.slowphasers, 1)
                 .ingredient(Items.IRON_INGOT, 4)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.STRING, 2)
                 .ingredient(Items.ICE, 2)
                 .save(output);
 
         assemblerRecipe(ModItems.magphasers, 1)
                 .ingredient(Items.IRON_INGOT, 4)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.STRING, 2)
                 .ingredient(Items.ECHO_SHARD, 2)
                 .save(output);
 
         assemblerRecipe(ModItems.stompers, 1)
                 .ingredient(Items.IRON_INGOT, 4)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.STRING, 2)
                 .ingredient(Items.OBSIDIAN, 2)
                 .save(output);
 
         assemblerRecipe(ModItems.bouncers, 1)
                 .ingredient(Items.IRON_INGOT, 4)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.STRING, 2)
                 .ingredient(Items.IRON_CHAIN, 2)
                 .save(output);
 
         assemblerRecipe(ModItems.semisonicSpeeders, 1)
                 .ingredient(Items.IRON_INGOT, 7)
+                .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.BLAZE_ROD, 2)
                 .save(output);
             }
@@ -225,7 +246,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
     public static class AssemblerRecipeBuilder {
         private final ItemStackTemplate result;
         private final int count;
-        private final List<CountedIngredient> ingredients = new java.util.ArrayList<>();
+        private final List<CountedIngredient> ingredients = new ArrayList<>();
 
         public AssemblerRecipeBuilder(ItemStackTemplate result, int count) {
             this.result = result;

@@ -6,6 +6,9 @@
       "ingredient": "minecraft:iron_ingot"
     },
     {
+      "ingredient": "replikaentropie:chipset"
+    },
+    {
       "count": 8,
       "ingredient": "minecraft:feather"
     },

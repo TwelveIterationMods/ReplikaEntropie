@@ -6,6 +6,9 @@
       "ingredient": "minecraft:iron_ingot"
     },
     {
+      "ingredient": "replikaentropie:chipset"
+    },
+    {
       "count": 4,
       "ingredient": "replikaentropie:biomass"
     },
@@ -14,11 +17,7 @@
       "ingredient": "minecraft:glass"
     },
     {
-      "count": 3,
-      "ingredient": "minecraft:dirt"
-    },
-    {
-      "ingredient": "minecraft:water_bucket"
+      "ingredient": "minecraft:bucket"
     }
   ],
   "result": {

@@ -5,5 +5,5 @@
   },
   "seed": "minecraft:torchflower_seeds",
   "soil": "#replikaentropie:biomass_incubator/farmland_like",
-  "water": 50
+  "water": 100
 }
