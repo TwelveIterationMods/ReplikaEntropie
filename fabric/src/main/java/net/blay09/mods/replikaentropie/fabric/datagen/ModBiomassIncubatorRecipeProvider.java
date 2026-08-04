@@ -59,7 +59,7 @@ public class ModBiomassIncubatorRecipeProvider extends FabricRecipeProvider {
     public record BiomassIncubatorRecipeBuilder(Ingredient seed, Ingredient soil, ItemStackTemplate result) {
         public void save(RecipeOutput output) {
             final var id = ReplikaEntropie.id("biomass_incubator/" + ingredientPath(seed));
-            output.accept(ResourceKey.create(Registries.RECIPE, id), new BiomassIncubatorRecipe(seed, soil, result, 10), null);
+            output.accept(ResourceKey.create(Registries.RECIPE, id), new BiomassIncubatorRecipe(seed, soil, result, 100), null);
         }
 
         private static String ingredientPath(Ingredient ingredient) {

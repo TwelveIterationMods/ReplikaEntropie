@@ -62,7 +62,7 @@ public class BluePrinterBlockEntity extends BlockEntity implements BalmContainer
                 case OUTPUT_SLOT -> false;
                 case PAPER_SLOT -> itemStack.is(Items.PAPER);
                 case INK_SLOT -> itemStack.is(Items.INK_SAC);
-                case CYAN_DYE_SLOT -> itemStack.is(Items.CYAN_DYE);
+                case CYAN_DYE_SLOT -> itemStack.is(Items.CYAN_DYE) && getItem(slot).isEmpty();
                 default -> true;
             };
         }

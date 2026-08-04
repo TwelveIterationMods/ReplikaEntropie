@@ -3,7 +3,7 @@
   "data": 10,
   "fragments": 4,
   "hardDependencies": [
-    "replikaentropie:research/burst_energy"
+    "replikaentropie:research/replika_workbench"
   ],
   "icon": {
     "id": "replikaentropie:slowphasers"
@@ -11,7 +11,7 @@
   "nonogram": "replikaentropie:slowphasers",
   "research_type": "assembler",
   "scrap": 4,
-  "sort_order": 2000,
+  "sort_order": 3500,
   "unlocked_recipes": [
     "replikaentropie:assembler/slowphasers"
   ]

@@ -5,8 +5,8 @@
     "replikaentropie:research/recycler"
   ],
   "icon": {
-    "id": "minecraft:daylight_detector"
+    "id": "replikaentropie:makeshift_psu"
   },
-  "nonogram": "replikaentropie:entropic_energy",
+  "nonogram": "replikaentropie:makeshift_psu",
   "sort_order": 500
 }

@@ -4,7 +4,7 @@
   "data": 12,
   "fragments": 2,
   "hardDependencies": [
-    "replikaentropie:research/burst_energy"
+    "replikaentropie:research/replika_workbench"
   ],
   "icon": {
     "id": "replikaentropie:semisonic_speeders"
@@ -12,7 +12,7 @@
   "nonogram": "replikaentropie:semisonic_speeders",
   "research_type": "assembler",
   "scrap": 8,
-  "sort_order": 2300,
+  "sort_order": 3700,
   "unlocked_recipes": [
     "replikaentropie:assembler/semisonic_speeders"
   ]

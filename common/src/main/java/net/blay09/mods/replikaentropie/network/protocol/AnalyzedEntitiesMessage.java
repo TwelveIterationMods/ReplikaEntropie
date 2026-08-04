@@ -6,6 +6,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 
@@ -34,6 +35,9 @@ public record AnalyzedEntitiesMessage(boolean reset, List<EntityType<?>> entityT
         }
         for (final var entityType : message.entityTypes) {
             Analyzer.getLocalManager().analyzeEntity(player, entityType);
+        }
+        if (!message.reset && !message.entityTypes.isEmpty()) {
+            player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.8f, 1.2f);
         }
     }
 

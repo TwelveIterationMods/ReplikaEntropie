@@ -18,22 +18,22 @@ public class AssemblerScreen extends AbstractContainerScreen<AssemblerMenu> {
     private static final Identifier LEFT_WING = id("left_wing");
 
     private final SegmentedProgressRenderer progressRenderer = new SegmentedProgressRenderer(BACKGROUND, 256, 256)
-            .addReverseVerticalSegment(45, 43, 2, 39, 176, 0)
-            .addReverseVerticalSegment(129, 43, 2, 39, 176, 0)
-            .addReverseVerticalSegment(63, 43, 2, 39, 176, 0)
-            .addReverseVerticalSegment(111, 43, 2, 39, 176, 0)
+            .addReverseVerticalSegment(63, 51, 2, 39, 176, 0)
+            .addReverseVerticalSegment(147, 51, 2, 39, 176, 0)
+            .addReverseVerticalSegment(81, 51, 2, 39, 176, 0)
+            .addReverseVerticalSegment(129, 51, 2, 39, 176, 0)
             .addParallelSegments(
                     new SegmentedProgressRenderer(BACKGROUND, 256, 256)
-                            .addVerticalSegment(87, 43, 2, 5, 194, 20)
-                            .addReverseHorizontalSegment(71, 45, 16, 3, 178, 22)
-                            .addVerticalSegment(71, 48, 2, 17, 178, 25)
-                            .addHorizontalSegment(73, 62, 2, 3, 180, 39)
+                            .addVerticalSegment(105, 51, 2, 5, 194, 20)
+                            .addReverseHorizontalSegment(89, 53, 16, 3, 178, 22)
+                            .addVerticalSegment(89, 56, 2, 17, 178, 25)
+                            .addHorizontalSegment(91, 70, 2, 3, 180, 39)
                             .addInvisibleSegment(8),
                     new SegmentedProgressRenderer(BACKGROUND, 256, 256)
-                            .addReverseVerticalSegment(87, 77, 2, 5, 178, 15)
-                            .addHorizontalSegment(89, 77, 16, 3, 180, 15)
-                            .addReverseVerticalSegment(103, 62, 2, 15, 194, 0)
-                            .addReverseHorizontalSegment(101, 62, 2, 3, 192, 0)
+                            .addReverseVerticalSegment(105, 85, 2, 5, 178, 15)
+                            .addHorizontalSegment(107, 85, 16, 3, 180, 15)
+                            .addReverseVerticalSegment(121, 70, 2, 15, 194, 0)
+                            .addReverseHorizontalSegment(119, 70, 2, 3, 192, 0)
                             .addInvisibleSegment(8)
             );
     private final EnergyBar energyBar = new EnergyBar(-23, 11);

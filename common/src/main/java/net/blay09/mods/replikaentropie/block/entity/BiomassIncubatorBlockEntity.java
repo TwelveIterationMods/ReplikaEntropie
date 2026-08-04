@@ -14,6 +14,7 @@ import net.blay09.mods.balm.world.SubContainer;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityUtils;
 import net.blay09.mods.replikaentropie.menu.BiomassIncubatorMenu;
 import net.blay09.mods.replikaentropie.recipe.BiomassIncubatorRecipe;
+import net.blay09.mods.replikaentropie.tag.ModItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -50,10 +51,10 @@ import java.util.Optional;
 public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmContainerProvider, BalmFluidTankProvider, BalmMenuProvider<Unit>, BalmEnergyStorageProvider {
 
     public static final int CONTAINER_SIZE = 7;
-    private static final int GROWTH_TICKS = 200;
+    private static final int GROWTH_TICKS = 6000;
     private static final int ENERGY_CAPACITY = 10000;
     private static final int ENERGY_INPUT_RATE = 1000;
-    private static final int ENERGY_COST_PER_TICK = 10;
+    private static final int ENERGY_COST_PER_TICK = 100;
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override
@@ -66,9 +67,8 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         public boolean canPlaceItem(int index, ItemStack stack) {
             return switch (index) {
                 case 0 -> stack.is(Items.WATER_BUCKET);
-                case 2 -> level != null && BiomassIncubatorRecipe.getRecipe(level, stack).isPresent();
-                case 3 ->
-                        level != null && BiomassIncubatorRecipe.getRecipe(level, stack).map(it -> it.soil().test(stack)).orElse(false);
+                case 1 -> level != null && BiomassIncubatorRecipe.getRecipe(level, stack).isPresent();
+                case 2 -> stack.is(ModItemTags.BIOMASS_INCUBATOR_SOILS);
                 default -> false;
             };
         }
@@ -174,7 +174,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         }
 
         final var recipe = getRecipeForSeed();
-        if (recipe.isPresent() && hasWater(recipe.get())) {
+        if (recipe.isPresent() && hasSoil(recipe.get()) && hasWater(recipe.get())) {
             if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK) {
                 return;
             }
@@ -192,6 +192,11 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     private Optional<BiomassIncubatorRecipe> getRecipeForSeed() {
         final var seedStack = seedsContainer.getItem(0);
         return BiomassIncubatorRecipe.getRecipe(level, seedStack);
+    }
+
+    private boolean hasSoil(BiomassIncubatorRecipe recipe) {
+        final var soilStack = soilContainer.getItem(0);
+        return recipe.soil().test(soilStack);
     }
 
     private void completeGrowth() {

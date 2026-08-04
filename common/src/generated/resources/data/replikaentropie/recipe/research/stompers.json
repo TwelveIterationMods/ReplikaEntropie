@@ -3,7 +3,7 @@
   "data": 24,
   "fragments": 2,
   "hardDependencies": [
-    "replikaentropie:research/spring_boots"
+    "replikaentropie:research/bouncers"
   ],
   "icon": {
     "id": "replikaentropie:stompers"
@@ -11,7 +11,7 @@
   "nonogram": "replikaentropie:stompers",
   "research_type": "assembler",
   "scrap": 8,
-  "sort_order": 2500,
+  "sort_order": 3900,
   "unlocked_recipes": [
     "replikaentropie:assembler/stompers"
   ]

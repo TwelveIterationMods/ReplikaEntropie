@@ -47,7 +47,12 @@ public class BluePrinterMenu extends AbstractContainerMenu {
 
         addSlot(new IngredientSlot(container, BluePrinterBlockEntity.PAPER_SLOT, 81, 50, Ingredient.of(Items.PAPER), id("container/slot/paper")));
         addSlot(new IngredientSlot(container, BluePrinterBlockEntity.INK_SLOT, 81, 25, Ingredient.of(Items.INK_SAC), id("container/slot/ink_sac")));
-        addSlot(new IngredientSlot(container, BluePrinterBlockEntity.CYAN_DYE_SLOT, 106, 25, Ingredient.of(Items.CYAN_DYE), id("container/slot/cyan_dye")));
+        addSlot(new IngredientSlot(container, BluePrinterBlockEntity.CYAN_DYE_SLOT, 106, 25, Ingredient.of(Items.CYAN_DYE), id("container/slot/cyan_dye")) {
+            @Override
+            public int getMaxStackSize() {
+                return 1;
+            }
+        });
 
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {

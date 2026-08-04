@@ -187,6 +187,7 @@ public class HandheldAnalyzerClient {
                     final var obfuscatedName = entity.getName().copy().withStyle(ChatFormatting.OBFUSCATED);
                     graphics.text(minecraft.font, obfuscatedName, left + 50, top + 34, 0xFFFFFFFF);
                 }
+                ClientDataNotifications.render(graphics, left + 50, top + 46, delta, false);
             }
         }));
     }

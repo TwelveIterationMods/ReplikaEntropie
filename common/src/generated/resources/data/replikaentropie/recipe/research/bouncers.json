@@ -3,16 +3,16 @@
   "biomass": 2,
   "data": 12,
   "hardDependencies": [
-    "replikaentropie:research/burst_energy"
+    "replikaentropie:research/replika_workbench"
   ],
   "icon": {
     "id": "replikaentropie:bouncers"
   },
-  "nonogram": "replikaentropie:spring_boots",
+  "nonogram": "replikaentropie:bouncers",
   "research_type": "assembler",
   "scrap": 8,
-  "sort_order": 2400,
+  "sort_order": 3800,
   "unlocked_recipes": [
-    "replikaentropie:assembler/spring_boots"
+    "replikaentropie:assembler/bouncers"
   ]
 }

@@ -2,7 +2,7 @@
   "type": "replikaentropie:research",
   "data": 4,
   "hardDependencies": [
-    "replikaentropie:research/entropic_energy",
+    "replikaentropie:research/makeshift_psu",
     "replikaentropie:research/assembler"
   ],
   "icon": {

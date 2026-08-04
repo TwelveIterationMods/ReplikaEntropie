@@ -68,17 +68,17 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .sortOrder(sortOrder += 100)
                         .save(output);
 
-                research(id("entropic_energy"))
-                        .icon(Items.DAYLIGHT_DETECTOR)
+                research(id("makeshift_psu"))
+                        .icon(ModItems.makeshiftPSU)
                         .dependsOn(id("research/recycler"))
-                        .nonogram(id("entropic_energy"))
+                        .nonogram(id("makeshift_psu"))
                         .costs(1, 0, 0, 0)
                         .sortOrder(sortOrder += 100)
                         .save(output);
 
                 research(id("water_sink"))
                         .icon(ModBlocks.waterSink)
-                        .dependsOn(id("research/entropic_energy"))
+                        .dependsOn(id("research/makeshift_psu"))
                         .dependsOn(id("research/assembler"))
                         .unlocksRecipe(id("assembler/water_sink"))
                         .nonogram(id("water_sink"))
@@ -93,17 +93,6 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .dependsOn(id("research/assembler"))
                         .unlocksRecipe(id("assembler/solar_sink"))
                         .nonogram(id("solar_sink"))
-                        .costs(4, 2, 0, 0)
-                        .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
-
-                research(id("lava_sink"))
-                        .icon(ModBlocks.lavaSink)
-                        .dependsOn(id("research/entropic_energy"))
-                        .dependsOn(id("research/assembler"))
-                        .unlocksRecipe(id("assembler/lava_sink"))
-                        .nonogram(id("lava_sink"))
                         .costs(4, 2, 0, 0)
                         .sortOrder(sortOrder += 100)
                         .type(ResearchRecipe.Type.ASSEMBLER)
@@ -212,26 +201,6 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .type(ResearchRecipe.Type.ASSEMBLER)
                         .save(output);
 
-                research(id("slowphasers"))
-                        .icon(ModItems.slowphasers)
-                        .dependsOn(id("research/burst_energy"))
-                        .unlocksRecipe(id("assembler/slowphasers"))
-                        .nonogram(id("slowphasers"))
-                        .costs(10, 4, 0, 4)
-                        .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
-
-                research(id("magphasers"))
-                        .icon(ModItems.magphasers)
-                        .dependsOn(id("research/slowphasers"))
-                        .unlocksRecipe(id("assembler/magphasers"))
-                        .nonogram(id("magphasers"))
-                        .costs(20, 4, 0, 8)
-                        .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
-
                 research(id("nullphaser"))
                         .icon(ModItems.nullphaser)
                         .dependsOn(id("research/burst_energy"))
@@ -242,35 +211,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .type(ResearchRecipe.Type.ASSEMBLER)
                         .save(output);
 
-                research(id("semisonic_speeders"))
-                        .icon(ModItems.semisonicSpeeders)
-                        .dependsOn(id("research/burst_energy"))
-                        .unlocksRecipe(id("assembler/semisonic_speeders"))
-                        .nonogram(id("semisonic_speeders"))
-                        .costs(12, 8, 4, 2)
-                        .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
 
-                research(id("spring_boots"))
-                        .icon(ModItems.bouncers)
-                        .dependsOn(id("research/burst_energy"))
-                        .unlocksRecipe(id("assembler/spring_boots"))
-                        .nonogram(id("spring_boots"))
-                        .costs(12, 8, 2, 0)
-                        .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
-
-                research(id("stompers"))
-                        .icon(ModItems.stompers)
-                        .dependsOn(id("research/spring_boots"))
-                        .unlocksRecipe(id("assembler/stompers"))
-                        .nonogram(id("stompers"))
-                        .costs(24, 8, 0, 2)
-                        .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
 
                 research(id("nightvision_goggles"))
                         .icon(ModItems.nightVisionGoggles)
@@ -292,16 +233,6 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .type(ResearchRecipe.Type.ASSEMBLER)
                         .save(output);
 
-                research(id("gravilift_harness"))
-                        .icon(ModItems.graviliftEngine)
-                        .dependsOn(id("research/burst_energy"))
-                        .unlocksRecipe(id("assembler/gravilift_harness"))
-                        .nonogram(id("gravilift_harness"))
-                        .costs(32, 16, 4, 32)
-                        .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
-
                 research(id("cobblescrap"))
                         .icon(ModBlocks.cobblescrap)
                         .dependsOn(id("research/scrap"))
@@ -309,6 +240,17 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .unlocksRecipe(id("assembler/cobblescrap"))
                         .nonogram(id("cobblescrap"))
                         .costs(5, 2, 0, 0)
+                        .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
+                research(id("lava_sink"))
+                        .icon(ModBlocks.lavaSink)
+                        .dependsOn(id("research/entropic_energy"))
+                        .dependsOn(id("research/assembler"))
+                        .unlocksRecipe(id("assembler/lava_sink"))
+                        .nonogram(id("lava_sink"))
+                        .costs(4, 2, 0, 0)
                         .sortOrder(sortOrder += 100)
                         .type(ResearchRecipe.Type.ASSEMBLER)
                         .save(output);
@@ -417,20 +359,74 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .type(ResearchRecipe.Type.ASSEMBLER)
                         .save(output);
 
-        /*research(id("replika_skin"))
-                .icon(ModItems.replikaSkin)
-                .dependsOn(id("research/burst_energy"))
-                .nonogram(id("replika_skin"))
-                .costs(8, 0, 12, 0)
-                .sortOrder(sortOrder += 100)
-                .save(output);*/
-
                 research(id("replika_workbench"))
                         .icon(ModBlocks.replikaWorkbench)
                         .dependsOn(id("research/burst_energy"))
                         .unlocksRecipe(id("assembler/replika_workbench"))
                         .nonogram(id("replika_workbench"))
                         .costs(32, 32, 32, 32)
+                        .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
+
+
+                research(id("slowphasers"))
+                        .icon(ModItems.slowphasers)
+                        .dependsOn(id("research/replika_workbench"))
+                        .unlocksRecipe(id("assembler/slowphasers"))
+                        .nonogram(id("slowphasers"))
+                        .costs(10, 4, 0, 4)
+                        .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
+                research(id("magphasers"))
+                        .icon(ModItems.magphasers)
+                        .dependsOn(id("research/slowphasers"))
+                        .unlocksRecipe(id("assembler/magphasers"))
+                        .nonogram(id("magphasers"))
+                        .costs(20, 4, 0, 8)
+                        .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
+                research(id("semisonic_speeders"))
+                        .icon(ModItems.semisonicSpeeders)
+                        .dependsOn(id("research/replika_workbench"))
+                        .unlocksRecipe(id("assembler/semisonic_speeders"))
+                        .nonogram(id("semisonic_speeders"))
+                        .costs(12, 8, 4, 2)
+                        .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
+                research(id("bouncers"))
+                        .icon(ModItems.bouncers)
+                        .dependsOn(id("research/replika_workbench"))
+                        .unlocksRecipe(id("assembler/bouncers"))
+                        .nonogram(id("bouncers"))
+                        .costs(12, 8, 2, 0)
+                        .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
+                research(id("stompers"))
+                        .icon(ModItems.stompers)
+                        .dependsOn(id("research/bouncers"))
+                        .unlocksRecipe(id("assembler/stompers"))
+                        .nonogram(id("stompers"))
+                        .costs(24, 8, 0, 2)
+                        .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
+                research(id("gravilift_harness"))
+                        .icon(ModItems.graviliftEngine)
+                        .dependsOn(id("research/replika_workbench"))
+                        .unlocksRecipe(id("assembler/gravilift_harness"))
+                        .nonogram(id("gravilift_harness"))
+                        .costs(32, 16, 4, 32)
                         .sortOrder(sortOrder += 100)
                         .type(ResearchRecipe.Type.ASSEMBLER)
                         .save(output);

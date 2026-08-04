@@ -11,7 +11,7 @@
   },
   "nonogram": "replikaentropie:fragment_accelerator",
   "research_type": "assembler",
-  "sort_order": 3500,
+  "sort_order": 2900,
   "unlocked_recipes": [
     "replikaentropie:assembler/fragment_accelerator"
   ]

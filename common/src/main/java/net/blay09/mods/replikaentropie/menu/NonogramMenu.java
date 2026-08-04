@@ -132,6 +132,7 @@ public class NonogramMenu extends AbstractNonogramMenu {
                         serverPlayer.level().playSound(null, serverPlayer, soundEvent.value(), SoundSource.PLAYERS, 1f ,1f);
                     }
                 });
+                break;
             }
         }
 

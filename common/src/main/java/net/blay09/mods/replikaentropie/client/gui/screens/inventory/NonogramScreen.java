@@ -23,6 +23,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.blay09.mods.replikaentropie.client.gui.components.NonogramHelpButton;
+import org.jspecify.annotations.Nullable;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
@@ -45,6 +46,10 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
             id("automatic_hack_tool_button_highlighted"),
             id("automatic_hack_tool_button_disabled")
     );
+    private static final int AUTO_HACK_INITIAL_REPEAT_DELAY_MS = 250;
+    private static final int AUTO_HACK_REPEAT_INTERVAL_MS = 150;
+    private static final int AUTO_HACK_REPEAT_SPEEDUP_INTERVAL_MS = 1000;
+    private static final int AUTO_HACK_MIN_REPEAT_INTERVAL_MS = 25;
     private static final Component AUTO_HACK_MESSAGE = Component.translatable("gui.replikaentropie.nonogram.auto_hack");
     private static final Component NO_AUTO_HACK_MESSAGE = Component.translatable("gui.replikaentropie.nonogram.no_auto_hack");
 
@@ -55,8 +60,11 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
     private float completionFadeTime;
     private boolean completionSoundPlayed;
 
-    private NonogramHelpButton helpButton;
-    private ImageButton autoHackButton;
+    private @Nullable NonogramHelpButton helpButton;
+    private @Nullable ImageButton autoHackButton;
+    private boolean autoHackButtonHeld;
+    private long autoHackHeldStartTime;
+    private long nextAutoHackRepeatTime;
 
     public NonogramScreen(AbstractNonogramMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, PADDING_LEFT + PADDING_RIGHT + CELL_SIZE * menu.getClues().width(), PADDING_TOP + PADDING_BOTTOM + CELL_SIZE * menu.getClues().height());
@@ -69,11 +77,8 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
         helpButton = new NonogramHelpButton(leftPos + 20, topPos + 18, 16);
         addRenderableWidget(helpButton);
 
-        autoHackButton = new ImageButton(leftPos - 24, topPos + 5, 20, 20, AUTO_HACK_BUTTON_SPRITES, _ ->
-                Balm.networking().sendToServer(new NonogramAutoHackMessage(menu.containerId)), AUTO_HACK_MESSAGE);
-        final var canAutoHack = menu instanceof NonogramMenu nonogramMenu && nonogramMenu.canAutoHack();
-        autoHackButton.setTooltip(Tooltip.create(canAutoHack ? AUTO_HACK_MESSAGE : NO_AUTO_HACK_MESSAGE));
-        autoHackButton.active = canAutoHack;
+        autoHackButton = new ImageButton(leftPos - 24, topPos + 5, 20, 20, AUTO_HACK_BUTTON_SPRITES, _ -> requestAutoHack(), AUTO_HACK_MESSAGE);
+        updateAutoHackButtonState();
         addRenderableWidget(autoHackButton);
     }
 
@@ -227,6 +232,15 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() == 0
+                && autoHackButton != null
+                && autoHackButton.active
+                && autoHackButton.isMouseOver(event.x(), event.y())) {
+            autoHackButtonHeld = true;
+            autoHackHeldStartTime = System.currentTimeMillis();
+            nextAutoHackRepeatTime = autoHackHeldStartTime + AUTO_HACK_INITIAL_REPEAT_DELAY_MS;
+        }
+
         final var state = menu.getNonogramState();
         final var gridStartX = leftPos + PADDING_LEFT;
         final var gridStartY = topPos + PADDING_TOP;
@@ -288,6 +302,10 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
+        if (event.button() == 0) {
+            autoHackButtonHeld = false;
+        }
+
         if (event.button() == draggingButton) {
             draggingButton = -1;
             dragOnlyAffects = 0;
@@ -298,12 +316,10 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (minecraft != null
-                && minecraft.options.keyInventory.matches(event)
+        if (minecraft.options.keyInventory.matches(event)
                 || (event.isEscape() && this.shouldCloseOnEsc())) {
             onClose();
-            if (minecraft != null
-                    && minecraft.player != null
+            if (minecraft.player != null
                     && minecraft.player.getMainHandItem().is(ModItems.skyScraper)
                     && minecraft.gameMode != null) {
                 minecraft.gameMode.useItem(minecraft.player, InteractionHand.MAIN_HAND);
@@ -315,8 +331,13 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        if (autoHackButton != null) {
-            autoHackButton.active = menu instanceof NonogramMenu nonogramMenu && nonogramMenu.canAutoHack();
+        updateAutoHackButtonState();
+        if (autoHackButtonHeld && autoHackButton != null && autoHackButton.active) {
+            final var currentTime = System.currentTimeMillis();
+            if (currentTime >= nextAutoHackRepeatTime) {
+                requestAutoHack();
+                nextAutoHackRepeatTime = currentTime + getAutoHackRepeatInterval(currentTime);
+            }
         }
 
         if (menu.isCompleted()) {
@@ -331,6 +352,27 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
         }
 
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    private void updateAutoHackButtonState() {
+        if (autoHackButton != null) {
+            final var canAutoHack = menu instanceof NonogramMenu nonogramMenu && nonogramMenu.canAutoHack();
+            autoHackButton.active = canAutoHack;
+            autoHackButton.setTooltip(Tooltip.create(canAutoHack ? AUTO_HACK_MESSAGE : NO_AUTO_HACK_MESSAGE));
+            if (!canAutoHack) {
+                autoHackButtonHeld = false;
+            }
+        }
+    }
+
+    private void requestAutoHack() {
+        Balm.networking().sendToServer(new NonogramAutoHackMessage(menu.containerId));
+    }
+
+    private long getAutoHackRepeatInterval(long currentTime) {
+        final var speedupSteps = Math.max(0, (currentTime - autoHackHeldStartTime - AUTO_HACK_INITIAL_REPEAT_DELAY_MS) / AUTO_HACK_REPEAT_SPEEDUP_INTERVAL_MS);
+        final var repeatInterval = AUTO_HACK_REPEAT_INTERVAL_MS >> Math.min(speedupSteps, 30);
+        return Math.max(AUTO_HACK_MIN_REPEAT_INTERVAL_MS, repeatInterval);
     }
 
     public void mark(int column, int row, int mark) {

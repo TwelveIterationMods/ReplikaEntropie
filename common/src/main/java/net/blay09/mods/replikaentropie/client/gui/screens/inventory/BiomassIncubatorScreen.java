@@ -3,6 +3,7 @@ package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 import net.blay09.mods.balm.client.gui.components.ProgressRenderer;
 import net.blay09.mods.balm.client.gui.components.SimpleProgressRenderer;
 import net.blay09.mods.replikaentropie.client.gui.components.EnergyBar;
+import net.blay09.mods.replikaentropie.client.gui.components.FluidTankDisplay;
 import net.blay09.mods.replikaentropie.client.gui.components.MakeshiftPowerButton;
 import net.blay09.mods.replikaentropie.menu.BiomassIncubatorMenu;
 import net.blay09.mods.replikaentropie.menu.slot.ReadonlySlot;
@@ -19,7 +20,10 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
     private static final Identifier BACKGROUND = id("textures/gui/container/biomass_incubator.png");
     private static final Identifier LEFT_WING = id("left_wing");
 
-    private final ProgressRenderer waterTank = SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(45, 23).size(16, 48).uv(183, 30);
+    private final FluidTankDisplay waterTank = new FluidTankDisplay(
+            SimpleProgressRenderer.reverseVertical(BACKGROUND, 256, 256).pos(45, 23).size(16, 48).uv(183, 30),
+            45, 23, 16, 48,
+            Component.translatable("block.minecraft.water"));
     private final ProgressRenderer growthProgress = SimpleProgressRenderer.horizontal(BACKGROUND, 256, 256).pos(80, 56).size(16, 4).uv(199, 14);
     private final EnergyBar energyBar = new EnergyBar(-23, 6);
 
@@ -61,6 +65,10 @@ public class BiomassIncubatorScreen extends AbstractContainerScreen<BiomassIncub
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (energyBar.extractTooltip(graphics, font, leftPos, topPos, mouseX, mouseY, menu.getCurrentPower(), menu.getMaxPower())) {
+            return;
+        }
+
+        if (waterTank.extractTooltip(graphics, font, leftPos, topPos, mouseX, mouseY, menu.getWaterTank(), menu.getMaxWaterCapacity())) {
             return;
         }
 

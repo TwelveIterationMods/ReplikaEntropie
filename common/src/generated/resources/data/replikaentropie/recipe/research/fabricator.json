@@ -12,7 +12,7 @@
   "nonogram": "replikaentropie:fabricator",
   "research_type": "assembler",
   "scrap": 2,
-  "sort_order": 1500,
+  "sort_order": 1400,
   "unlocked_recipes": [
     "replikaentropie:assembler/fabricator"
   ]

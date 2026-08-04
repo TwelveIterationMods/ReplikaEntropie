@@ -26,7 +26,9 @@ public record AnalyzeEntityMessage(int id) implements CustomPacketPayload {
         // POSTJAM range check, cooldown check
         final var level = player.level();
         final var entity = level.getEntity(message.id);
-        Analyzer.analyzeEntity(player, entity);
+        if (entity != null) {
+            Analyzer.analyzeEntity(player, entity);
+        }
     }
 
 }

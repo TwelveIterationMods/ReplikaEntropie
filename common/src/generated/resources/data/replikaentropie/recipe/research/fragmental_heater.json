@@ -10,7 +10,7 @@
   },
   "nonogram": "replikaentropie:fragmental_heater",
   "research_type": "assembler",
-  "sort_order": 3700,
+  "sort_order": 3100,
   "unlocked_recipes": [
     "replikaentropie:assembler/fragmental_heater"
   ]

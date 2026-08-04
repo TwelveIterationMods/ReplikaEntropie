@@ -90,7 +90,7 @@ public class ModItems {
         nightVisionGoggles = items.register("nightvision_goggles", ReplikaPieceArmorItem::new, it -> withTooltip(withAbility(humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET), NightVisionAbility.ID), "nightvision_goggles")).asDeferredItem();
         brightVisionGoggles = items.register("brightvision_goggles", ReplikaPieceArmorItem::new, it -> withTooltip(withAbility(humanoidArmor(it, ModArmorMaterials.GOGGLES, ArmorType.HELMET), BrightVisionAbility.ID), "brightvision_goggles")).asDeferredItem();
         nullphaser = items.register("nullphaser", NullphaserItem::new, it -> withTooltip(it.durability(64), "nullphaser")).asDeferredItem();
-        automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> withTooltip(it.durability(16).component(DataComponents.BREAK_SOUND, SoundEvents.ITEM_BREAK), "automatic_hack_tool")).asDeferredItem();
+        automaticHackTool = items.register("automatic_hack_tool", Item::new, it -> withTooltip(it.durability(128).component(DataComponents.BREAK_SOUND, SoundEvents.ITEM_BREAK), "automatic_hack_tool")).asDeferredItem();
         oreVacuum = items.register("ore_vacuum", OreVacuumItem::new, it -> withTooltip(it.durability(256), "ore_vacuum")).asDeferredItem();
         metalDetector = items.register("metal_detector", MetalDetectorItem::new, it ->it.durability(600)).asDeferredItem();
         wasteBarrelMinecart = items.register("waste_barrel_minecart", properties -> createMinecartItem(ModEntities.wasteBarrelMinecart.value(), properties), it -> it.stacksTo(1)).asDeferredItem();

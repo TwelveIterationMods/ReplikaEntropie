@@ -71,7 +71,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.IRON_INGOT, 8)
                 .ingredient(Items.FEATHER, 8)
                 .ingredient(Items.GHAST_TEAR, 2)
-                .ingredient(Items.NETHER_STAR, 1)
+                .ingredient(ModBlocks.fragmentedSun, 1)
                 .save(output);
 
         assemblerRecipe(ModItems.chipset, 1)
