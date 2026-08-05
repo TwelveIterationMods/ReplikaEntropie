@@ -81,7 +81,13 @@ public class CraneBlockEntity extends BlockEntity {
 
         final var sourcePos = getSourcePos();
         final var destinationPos = getDestinationPos();
-        if (!serverLevel.isLoaded(sourcePos) || !serverLevel.isLoaded(destinationPos)) {
+        final var sourceAbovePos = sourcePos.above();
+        if (!serverLevel.isLoaded(sourcePos) || !serverLevel.isLoaded(sourceAbovePos) || !serverLevel.isLoaded(destinationPos)) {
+            return;
+        }
+
+        final var sourceAboveState = serverLevel.getBlockState(sourceAbovePos);
+        if (!sourceAboveState.isAir() && !sourceAboveState.canBeReplaced()) {
             return;
         }
 
