@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 2,
-  "ingredient": "minecraft:nether_star"
+  "ingredient": "minecraft:nether_star",
+  "speed_multiplier": 2.0
 }

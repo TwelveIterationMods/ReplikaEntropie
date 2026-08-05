@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "minecraft:redstone_torch"
+  "ingredient": "minecraft:redstone_torch",
+  "speed_multiplier": 1.1
 }

@@ -4,7 +4,7 @@
   "data": 12,
   "fragments": 4,
   "hardDependencies": [
-    "replikaentropie:research/biomass_harvester"
+    "replikaentropie:research/assembler"
   ],
   "icon": {
     "id": "replikaentropie:crane"

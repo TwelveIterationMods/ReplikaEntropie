@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.2,
-  "ingredient": "minecraft:torchflower_seeds"
+  "ingredient": "minecraft:torchflower_seeds",
+  "speed_multiplier": 1.2
 }

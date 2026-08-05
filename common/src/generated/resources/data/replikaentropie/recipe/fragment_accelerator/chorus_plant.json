@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.2,
-  "ingredient": "minecraft:chorus_plant"
+  "ingredient": "minecraft:chorus_plant",
+  "speed_multiplier": 1.2
 }

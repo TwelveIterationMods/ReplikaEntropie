@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 2,
-  "ingredient": "minecraft:heart_of_the_sea"
+  "ingredient": "minecraft:heart_of_the_sea",
+  "speed_multiplier": 2.0
 }

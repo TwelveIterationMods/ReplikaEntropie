@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "minecraft:magma_cream"
+  "ingredient": "minecraft:magma_cream",
+  "speed_multiplier": 1.1
 }

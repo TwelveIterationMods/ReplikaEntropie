@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 2,
-  "ingredient": "minecraft:dragon_breath"
+  "ingredient": "minecraft:dragon_breath",
+  "speed_multiplier": 2.0
 }

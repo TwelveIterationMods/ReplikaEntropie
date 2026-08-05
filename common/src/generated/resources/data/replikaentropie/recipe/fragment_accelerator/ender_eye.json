@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 2,
-  "ingredient": "minecraft:ender_eye"
+  "ingredient": "minecraft:ender_eye",
+  "speed_multiplier": 2.0
 }

@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.2,
-  "ingredient": "minecraft:glow_lichen"
+  "ingredient": "minecraft:glow_lichen",
+  "speed_multiplier": 1.2
 }

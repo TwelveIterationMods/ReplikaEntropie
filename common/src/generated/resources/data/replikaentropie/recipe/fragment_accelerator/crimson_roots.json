@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.2,
-  "ingredient": "minecraft:crimson_roots"
+  "ingredient": "minecraft:crimson_roots",
+  "speed_multiplier": 1.2
 }

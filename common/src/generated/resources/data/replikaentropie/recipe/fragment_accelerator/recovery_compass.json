@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.90000004,
-  "ingredient": "minecraft:recovery_compass"
+  "ingredient": "minecraft:recovery_compass",
+  "speed_multiplier": 1.9000001
 }

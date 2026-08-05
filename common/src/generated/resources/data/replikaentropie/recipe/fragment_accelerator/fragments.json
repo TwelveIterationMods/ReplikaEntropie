@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "replikaentropie:fragments"
+  "ingredient": "replikaentropie:fragments",
+  "speed_multiplier": 1.1
 }

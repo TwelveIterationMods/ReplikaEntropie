@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "minecraft:experience_bottle"
+  "ingredient": "minecraft:experience_bottle",
+  "speed_multiplier": 1.1
 }

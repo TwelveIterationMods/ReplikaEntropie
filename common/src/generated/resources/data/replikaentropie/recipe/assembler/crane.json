@@ -9,15 +9,11 @@
       "ingredient": "replikaentropie:chipset"
     },
     {
-      "count": 8,
-      "ingredient": "minecraft:rail"
-    },
-    {
       "count": 4,
       "ingredient": "minecraft:iron_chain"
     },
     {
-      "ingredient": "minecraft:hopper"
+      "ingredient": "minecraft:piston"
     },
     {
       "ingredient": "minecraft:lead"

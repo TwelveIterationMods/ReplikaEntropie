@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "minecraft:detector_rail"
+  "ingredient": "minecraft:detector_rail",
+  "speed_multiplier": 1.1
 }

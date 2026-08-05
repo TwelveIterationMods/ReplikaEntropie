@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.3,
-  "ingredient": "minecraft:comparator"
+  "ingredient": "minecraft:comparator",
+  "speed_multiplier": 1.3000001
 }

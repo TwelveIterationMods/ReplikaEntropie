@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "minecraft:music_disc_5"
+  "ingredient": "minecraft:music_disc_5",
+  "speed_multiplier": 1.1
 }

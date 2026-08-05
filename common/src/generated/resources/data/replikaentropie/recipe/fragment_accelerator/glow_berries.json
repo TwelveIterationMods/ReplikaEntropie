@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "minecraft:glow_berries"
+  "ingredient": "minecraft:glow_berries",
+  "speed_multiplier": 1.1
 }

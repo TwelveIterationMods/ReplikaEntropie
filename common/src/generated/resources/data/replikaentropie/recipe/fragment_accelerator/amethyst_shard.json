@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "minecraft:amethyst_shard"
+  "ingredient": "minecraft:amethyst_shard",
+  "speed_multiplier": 1.1
 }

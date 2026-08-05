@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "minecraft:tipped_arrow"
+  "ingredient": "minecraft:tipped_arrow",
+  "speed_multiplier": 1.1
 }

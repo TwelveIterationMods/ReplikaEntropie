@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.1,
-  "ingredient": "minecraft:enchanted_book"
+  "ingredient": "minecraft:enchanted_book",
+  "speed_multiplier": 1.1
 }

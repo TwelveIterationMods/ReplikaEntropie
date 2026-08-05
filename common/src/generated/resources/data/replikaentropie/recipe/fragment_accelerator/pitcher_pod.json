@@ -1,5 +1,5 @@
 {
   "type": "replikaentropie:fragment_accelerator",
-  "speed_multiplier": 1.2,
-  "ingredient": "minecraft:pitcher_pod"
+  "ingredient": "minecraft:pitcher_pod",
+  "speed_multiplier": 1.2
 }
