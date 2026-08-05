@@ -1,3 +1,1 @@
-- Fixed blocks dropping in one hit
-- Fixed /replikaentropie commands being available to non-ops
-- Fixed machine contents not dropping when broken
+- Updated to Minecraft 26.1
