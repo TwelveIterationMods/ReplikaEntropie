@@ -289,10 +289,20 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                 research(id("biomass_harvester"))
                         .icon(ModBlocks.biomassHarvester)
                         .dependsOn(id("research/biomass_incubator"))
-                        .unlocksRecipe(id("assembler/biomass_incubator"))
+                        .unlocksRecipe(id("assembler/biomass_harvester"))
                         .nonogram(id("biomass_harvester"))
                         .costs(10, 0, 32, 0)
                         .sortOrder(sortOrder += 100)
+                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .save(output);
+
+                research(id("crane"))
+                        .icon(ModBlocks.crane)
+                        .dependsOn(id("research/assembler"))
+                        .unlocksRecipe(id("assembler/crane"))
+                        .nonogram(id("crane"))
+                        .costs(12, 8, 16, 4)
+                        .sortOrder(sortOrder + 50)
                         .type(ResearchRecipe.Type.ASSEMBLER)
                         .save(output);
 

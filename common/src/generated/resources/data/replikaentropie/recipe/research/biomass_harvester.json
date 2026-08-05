@@ -12,6 +12,6 @@
   "research_type": "assembler",
   "sort_order": 2700,
   "unlocked_recipes": [
-    "replikaentropie:assembler/biomass_incubator"
+    "replikaentropie:assembler/biomass_harvester"
   ]
 }

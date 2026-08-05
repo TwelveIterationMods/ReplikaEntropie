@@ -109,6 +109,14 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.LEAD, 1)
                 .save(output);
 
+        assemblerRecipe(ModBlocks.crane, 1)
+                .ingredient(Items.IRON_INGOT, 12)
+                .ingredient(ModItems.chipset, 1)
+                .ingredient(Items.IRON_CHAIN, 4)
+                .ingredient(Items.PISTON, 1)
+                .ingredient(Items.LEAD, 1)
+                .save(output);
+
         assemblerRecipe(ModBlocks.cobblescrap, 1)
                 .ingredient(Items.IRON_INGOT, 9)
                 .ingredient(ModItems.chipset, 1)

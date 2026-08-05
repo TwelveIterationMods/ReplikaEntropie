@@ -253,6 +253,8 @@
   "research.replikaentropie.research/biomass_incubator.description": "We've [create]d so [much] biomass that the world is running out of [plant]s. This machine helps us create [more] plants so we can create [more] biomass.",
   "research.replikaentropie.research/biomass_harvester.title": "Biomass Harvester",
   "research.replikaentropie.research/biomass_harvester.description": "Replace plants with [big]ger, breathing plants to witness our newest [breath]taking upgrade to biomass production. Put some swords inside, [so]me animals around, and [keep] your [distance].",
+  "research.replikaentropie.research/crane.title": "Crane",
+  "research.replikaentropie.research/crane.description": "The crane [move]s a block to its [right]ful place, using a magnet to lift them [up] off the ground. It also [in]teracts with Mine[carts], inserting blocks or taking them out.",
   "research.replikaentropie.research/fragmental_heater.title": "Fragmental Heater",
   "research.replikaentropie.research/fragmental_heater.description": "Optimized for [break]ing fragments down into heat. Processes [each] slot individually, consuming items for warmth or cooling. P[lease] don't look directly at the glass.",
   "research.replikaentropie.research/lavascrap.title": "Lavascrap",
