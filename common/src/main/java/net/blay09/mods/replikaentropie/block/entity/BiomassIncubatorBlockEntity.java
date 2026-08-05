@@ -54,7 +54,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     private static final int GROWTH_TICKS = 6000;
     private static final int ENERGY_CAPACITY = 10000;
     private static final int ENERGY_INPUT_RATE = 100;
-    private static final int ENERGY_COST_PER_TICK = 20;
+    private static final int ENERGY_COST_PER_TICK = 15;
 
     private final DefaultContainer backingContainer = new DefaultContainer(CONTAINER_SIZE) {
         @Override
@@ -87,7 +87,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     private final Container seedsContainer = new SubContainer(backingContainer, 1, 2);
     private final Container soilContainer = new SubContainer(backingContainer, 2, 3);
     private final SubContainer outputContainer = new SubContainer(backingContainer, 3, 7);
-    private final DefaultFluidTank waterTank = new DefaultFluidTank(1000) {
+    private final DefaultFluidTank waterTank = new DefaultFluidTank(3000) {
         @Override
         public boolean canFill(Fluid fluid) {
             return fluid.isSame(Fluids.WATER);
