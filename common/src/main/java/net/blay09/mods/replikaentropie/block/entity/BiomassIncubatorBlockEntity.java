@@ -175,8 +175,8 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         }
 
         final var recipe = getRecipeForSeed();
-        if (recipe.isPresent() && hasSoil(recipe.get()) && hasWater(recipe.get())) {
-            if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK) {
+        if (recipe.isPresent() && hasSoil(recipe.get())) {
+            if (energyStorage.getEnergy() < ENERGY_COST_PER_TICK || !hasWater(recipe.get())) {
                 return;
             }
 
