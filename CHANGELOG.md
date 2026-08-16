@@ -1,1 +1,1 @@
-- Updated to Minecraft 26.1
+- Fixed Solar Sink and Lava Sink never being unlocked due to depending on outdated research entry
