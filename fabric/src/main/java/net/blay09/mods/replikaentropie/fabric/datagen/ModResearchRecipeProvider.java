@@ -89,7 +89,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
 
                 research(id("solar_sink"))
                         .icon(ModBlocks.solarSink)
-                        .dependsOn(id("research/entropic_energy"))
+                        .dependsOn(id("research/makeshift_psu"))
                         .dependsOn(id("research/assembler"))
                         .unlocksRecipe(id("assembler/solar_sink"))
                         .nonogram(id("solar_sink"))
@@ -246,7 +246,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
 
                 research(id("lava_sink"))
                         .icon(ModBlocks.lavaSink)
-                        .dependsOn(id("research/entropic_energy"))
+                        .dependsOn(id("research/makeshift_psu"))
                         .dependsOn(id("research/assembler"))
                         .unlocksRecipe(id("assembler/lava_sink"))
                         .nonogram(id("lava_sink"))
