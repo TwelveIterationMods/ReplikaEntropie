@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "ingredient": "minecraft:blue_bed",
+  "outputs": [
+    {
+      "id": "replikaentropie:biomass"
+    }
+  ]
+}

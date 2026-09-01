@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "ingredient": "minecraft:purple_carpet",
+  "outputs": [
+    {
+      "id": "replikaentropie:biomass"
+    }
+  ]
+}

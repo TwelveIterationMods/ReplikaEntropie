@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "ingredient": "minecraft:cyan_carpet",
+  "outputs": [
+    {
+      "id": "replikaentropie:biomass"
+    }
+  ]
+}

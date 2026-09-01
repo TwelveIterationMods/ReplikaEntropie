@@ -1,0 +1,9 @@
+{
+  "type": "replikaentropie:recycler",
+  "ingredient": "minecraft:magenta_candle",
+  "outputs": [
+    {
+      "id": "replikaentropie:biomass"
+    }
+  ]
+}

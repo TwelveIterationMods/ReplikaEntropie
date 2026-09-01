@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "replikaentropie:waste_barrel",
     "minecraft:minecart"
