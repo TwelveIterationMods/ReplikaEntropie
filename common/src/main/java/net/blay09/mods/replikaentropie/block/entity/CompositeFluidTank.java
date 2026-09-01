@@ -15,64 +15,65 @@ public class CompositeFluidTank implements FluidTank {
     }
 
     @Override
-    public int fill(Fluid fluid, int maxFill, boolean simulate) {
-        int filled = 0;
-        for (final var tank : tanks) {
-            filled += tank.fill(fluid, maxFill - filled, simulate);
-            if (filled >= maxFill) {
-                break;
-            }
+    public int fill(int slot, Fluid fluid, int maxFill, boolean simulate) {
+        return isValidSlot(slot) ? tanks.get(slot).fill(0, fluid, maxFill, simulate) : 0;
+    }
+
+    @Override
+    public int drain(int slot, Fluid fluid, int maxDrain, boolean simulate) {
+        return isValidSlot(slot) ? tanks.get(slot).drain(0, fluid, maxDrain, simulate) : 0;
+    }
+
+    @Override
+    public Fluid getFluid(int slot) {
+        return isValidSlot(slot) ? tanks.get(slot).getFluid(0) : Fluids.EMPTY;
+    }
+
+    @Override
+    public void setFluid(int slot, Fluid fluid, int amount) {
+        if (isValidSlot(slot)) {
+            tanks.get(slot).setFluid(0, fluid, amount);
         }
-        return filled;
     }
 
     @Override
-    public int drain(Fluid fluid, int maxDrain, boolean simulate) {
-        int drained = 0;
-        for (final var tank : tanks) {
-            drained += tank.drain(fluid, maxDrain - drained, simulate);
-            if (drained >= maxDrain) {
-                break;
-            }
+    public int getAmount(int slot) {
+        return isValidSlot(slot) ? tanks.get(slot).getAmount(0) : 0;
+    }
+
+    @Override
+    public void setAmount(int slot, int amount) {
+        if (isValidSlot(slot)) {
+            tanks.get(slot).setAmount(0, amount);
         }
-        return drained;
     }
 
     @Override
-    public Fluid getFluid() {
-        return Fluids.EMPTY;
+    public int getCapacity(int slot) {
+        return isValidSlot(slot) ? tanks.get(slot).getCapacity(0) : 0;
     }
 
     @Override
-    public void setFluid(Fluid fluid, int amount) {
+    public boolean canDrain(int slot, Fluid fluid) {
+        return isValidSlot(slot) && tanks.get(slot).canDrain(0, fluid);
     }
 
     @Override
-    public int getAmount() {
-        return 0;
+    public boolean canFill(int slot, Fluid fluid) {
+        return isValidSlot(slot) && tanks.get(slot).canFill(0, fluid);
     }
 
     @Override
-    public void setAmount(int amount) {
+    public boolean isEmpty(int slot) {
+        return !isValidSlot(slot) || tanks.get(slot).isEmpty(0);
     }
 
     @Override
-    public int getCapacity() {
-        return 0;
+    public int getSlotCount() {
+        return tanks.size();
     }
 
-    @Override
-    public boolean canDrain(Fluid fluid) {
-        return tanks.stream().anyMatch(it -> it.canDrain(fluid));
-    }
-
-    @Override
-    public boolean canFill(Fluid fluid) {
-        return tanks.stream().anyMatch(it -> it.canFill(fluid));
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return tanks.stream().allMatch(DefaultFluidTank::isEmpty);
+    private boolean isValidSlot(int slot) {
+        return slot >= 0 && slot < tanks.size();
     }
 }

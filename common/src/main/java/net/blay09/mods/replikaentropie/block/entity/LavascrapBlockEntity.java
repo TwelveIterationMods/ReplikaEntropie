@@ -37,14 +37,14 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity impl
 
     private final DefaultFluidTank waterTank = new DefaultFluidTank(3000) {
         @Override
-        public boolean canFill(Fluid fluid) {
-            return fluid.isSame(Fluids.WATER);
+        public boolean canFill(int slot, Fluid fluid) {
+            return super.canFill(slot, fluid) && fluid.isSame(Fluids.WATER);
         }
     };
     private final DefaultFluidTank lavaTank = new DefaultFluidTank(3000) {
         @Override
-        public boolean canFill(Fluid fluid) {
-            return fluid.isSame(Fluids.LAVA);
+        public boolean canFill(int slot, Fluid fluid) {
+            return super.canFill(slot, fluid) && fluid.isSame(Fluids.LAVA);
         }
     };
     private final CompositeFluidTank fluidTanks = new CompositeFluidTank(waterTank, lavaTank);
@@ -55,10 +55,10 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity impl
             return switch (index) {
                 case LavascrapMenu.DATA_PROCESSING_TICKS -> processingTicks;
                 case LavascrapMenu.DATA_MAX_PROCESSING_TICKS -> PROCESSING_TICKS;
-                case LavascrapMenu.DATA_WATER_TANK -> waterTank.getAmount();
-                case LavascrapMenu.DATA_MAX_WATER_TANK -> waterTank.getCapacity();
-                case LavascrapMenu.DATA_LAVA_TANK -> lavaTank.getAmount();
-                case LavascrapMenu.DATA_MAX_LAVA_TANK -> lavaTank.getCapacity();
+                case LavascrapMenu.DATA_WATER_TANK -> waterTank.getAmount(0);
+                case LavascrapMenu.DATA_MAX_WATER_TANK -> waterTank.getCapacity(0);
+                case LavascrapMenu.DATA_LAVA_TANK -> lavaTank.getAmount(0);
+                case LavascrapMenu.DATA_MAX_LAVA_TANK -> lavaTank.getCapacity(0);
                 default -> 0;
             };
         }
@@ -113,15 +113,15 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity impl
 
     private void processBuckets() {
         final var waterBucket = waterInputContainer.getItem(0);
-        if (waterBucket.is(Items.WATER_BUCKET) && waterTank.getAmount() + 1000 <= waterTank.getCapacity()) {
-            waterTank.fill(Fluids.WATER, 1000, false);
+        if (waterBucket.is(Items.WATER_BUCKET) && waterTank.getAmount(0) + 1000 <= waterTank.getCapacity(0)) {
+            waterTank.fill(0, Fluids.WATER, 1000, false);
             waterInputContainer.setItem(0, new ItemStack(Items.BUCKET));
             setChanged();
         }
 
         final var lavaBucket = lavaInputContainer.getItem(0);
-        if (lavaBucket.is(Items.LAVA_BUCKET) && lavaTank.getAmount() + 1000 <= lavaTank.getCapacity()) {
-            lavaTank.fill(Fluids.LAVA, 1000, false);
+        if (lavaBucket.is(Items.LAVA_BUCKET) && lavaTank.getAmount(0) + 1000 <= lavaTank.getCapacity(0)) {
+            lavaTank.fill(0, Fluids.LAVA, 1000, false);
             lavaInputContainer.setItem(0, new ItemStack(Items.BUCKET));
             setChanged();
         }
@@ -134,13 +134,13 @@ public class LavascrapBlockEntity extends AbstractScrapGeneratorBlockEntity impl
 
     @Override
     protected boolean hasInputResources() {
-        return waterTank.getAmount() >= 1000 && lavaTank.getAmount() >= 1000;
+        return waterTank.getAmount(0) >= 1000 && lavaTank.getAmount(0) >= 1000;
     }
 
     @Override
     protected ItemStack consumeResourcesAndCreateInput() {
-        waterTank.drain(Fluids.WATER, 1000, false);
-        lavaTank.drain(Fluids.LAVA, 1000, false);
+        waterTank.drain(0, Fluids.WATER, 1000, false);
+        lavaTank.drain(0, Fluids.LAVA, 1000, false);
         return new ItemStack(Items.OBSIDIAN);
     }
 

@@ -89,8 +89,8 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
     private final SubContainer outputContainer = new SubContainer(backingContainer, 3, 7);
     private final DefaultFluidTank waterTank = new DefaultFluidTank(3000) {
         @Override
-        public boolean canFill(Fluid fluid) {
-            return fluid.isSame(Fluids.WATER);
+        public boolean canFill(int slot, Fluid fluid) {
+            return super.canFill(slot, fluid) && fluid.isSame(Fluids.WATER);
         }
     };
     private final MakeshiftPsu energyStorage = new MakeshiftPsu(0, ENERGY_CAPACITY, ENERGY_INPUT_RATE, 0) {
@@ -111,8 +111,8 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         @Override
         public int get(int index) {
             return switch (index) {
-                case BiomassIncubatorMenu.DATA_WATER_TANK -> waterTank.getAmount();
-                case BiomassIncubatorMenu.DATA_MAX_WATER_TANK -> waterTank.getCapacity();
+                case BiomassIncubatorMenu.DATA_WATER_TANK -> waterTank.getAmount(0);
+                case BiomassIncubatorMenu.DATA_MAX_WATER_TANK -> waterTank.getCapacity(0);
                 case BiomassIncubatorMenu.DATA_GROWTH_TIME -> growthTicks;
                 case BiomassIncubatorMenu.DATA_MAX_GROWTH_TIME -> GROWTH_TICKS;
                 case BiomassIncubatorMenu.DATA_CURRENT_POWER -> energyStorage.getEnergy();
@@ -158,15 +158,15 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
 
     private void processBuckets() {
         final var waterBucket = waterContainer.getItem(0);
-        if (waterBucket.is(Items.WATER_BUCKET) && waterTank.getAmount() + 1000 <= waterTank.getCapacity()) {
-            waterTank.fill(Fluids.WATER, 1000, false);
+        if (waterBucket.is(Items.WATER_BUCKET) && waterTank.getAmount(0) + 1000 <= waterTank.getCapacity(0)) {
+            waterTank.fill(0, Fluids.WATER, 1000, false);
             waterContainer.setItem(0, new ItemStack(Items.BUCKET));
             setChanged();
         }
     }
 
     private boolean hasWater(BiomassIncubatorRecipe recipe) {
-        return waterTank.getAmount() >= recipe.water();
+        return waterTank.getAmount(0) >= recipe.water();
     }
 
     private void processGrowth() {
@@ -209,7 +209,7 @@ public class BiomassIncubatorBlockEntity extends BlockEntity implements BalmCont
         }
 
         final var biomassIncubatorRecipe = recipe.get();
-        waterTank.drain(Fluids.WATER, biomassIncubatorRecipe.water(), false);
+        waterTank.drain(0, Fluids.WATER, biomassIncubatorRecipe.water(), false);
         insertOrBuffer(biomassIncubatorRecipe.result().create());
         growthTicks = 0;
         setChanged();

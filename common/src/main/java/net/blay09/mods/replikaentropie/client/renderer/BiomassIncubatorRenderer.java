@@ -46,7 +46,7 @@ public class BiomassIncubatorRenderer implements BlockEntityRenderer<BiomassIncu
         if (soilState.is(Blocks.DIRT)) {
             soilState = Blocks.FARMLAND.defaultBlockState();
         }
-        if (soilState.hasProperty(BlockStateProperties.MOISTURE) && !blockEntity.getFluidTank().isEmpty()) {
+        if (soilState.hasProperty(BlockStateProperties.MOISTURE) && !blockEntity.getFluidTank().isEmpty(0)) {
             soilState = soilState.setValue(BlockStateProperties.MOISTURE, 7);
         }
         blockModelResolver.update(state.soilBlock, soilState, blockDisplayContext);

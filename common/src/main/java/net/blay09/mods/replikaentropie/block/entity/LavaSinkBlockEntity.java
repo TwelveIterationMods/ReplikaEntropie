@@ -76,8 +76,8 @@ public class LavaSinkBlockEntity extends BlockEntity implements BalmContainerPro
             return switch (index) {
                 case LavaSinkMenu.DATA_PROCESSING_TICKS -> processingTicks;
                 case LavaSinkMenu.DATA_MAX_PROCESSING_TICKS -> PROCESSING_TICKS;
-                case LavaSinkMenu.DATA_LAVA_TANK -> lavaTank.getAmount();
-                case LavaSinkMenu.DATA_MAX_LAVA_TANK -> lavaTank.getCapacity();
+                case LavaSinkMenu.DATA_LAVA_TANK -> lavaTank.getAmount(0);
+                case LavaSinkMenu.DATA_MAX_LAVA_TANK -> lavaTank.getCapacity(0);
                 default -> 0;
             };
         }
@@ -118,27 +118,27 @@ public class LavaSinkBlockEntity extends BlockEntity implements BalmContainerPro
         }
 
         backingContainer.removeItem(INPUT_SLOT, 1);
-        lavaTank.fill(Fluids.LAVA, LAVA_PER_OPERATION, false);
+        lavaTank.fill(0, Fluids.LAVA, LAVA_PER_OPERATION, false);
         processingTicks = 0;
         setChanged();
     }
 
     private boolean canGenerateLava() {
         final var inputStack = backingContainer.getItem(INPUT_SLOT);
-        return inputStack.is(Items.COBBLESTONE) && lavaTank.getAmount() + LAVA_PER_OPERATION <= lavaTank.getCapacity();
+        return inputStack.is(Items.COBBLESTONE) && lavaTank.getAmount(0) + LAVA_PER_OPERATION <= lavaTank.getCapacity(0);
     }
 
     private void fillBuckets() {
         final var bucketStack = backingContainer.getItem(BUCKET_SLOT);
-        if (bucketStack.is(Items.BUCKET) && bucketStack.count() == 1 && lavaTank.getAmount() >= 1000) {
-            lavaTank.drain(Fluids.LAVA, 1000, false);
+        if (bucketStack.is(Items.BUCKET) && bucketStack.count() == 1 && lavaTank.getAmount(0) >= 1000) {
+            lavaTank.drain(0, Fluids.LAVA, 1000, false);
             backingContainer.setItem(BUCKET_SLOT, new ItemStack(Items.LAVA_BUCKET));
             setChanged();
         }
     }
 
     private void pushLavaDown(Level level, BlockPos pos) {
-        if (lavaTank.isEmpty()) {
+        if (lavaTank.isEmpty(0)) {
             return;
         }
 
@@ -146,7 +146,7 @@ public class LavaSinkBlockEntity extends BlockEntity implements BalmContainerPro
             final var blockEntity = level.getBlockEntity(currentPos);
             if (blockEntity instanceof FragmentalHeaterBlockEntity fragmentalHeaterBlockEntity) {
                 if (fragmentalHeaterBlockEntity.adjustTemperature(0.1f)) {
-                    lavaTank.drain(Fluids.LAVA, 1, false);
+                    lavaTank.drain(0, Fluids.LAVA, 1, false);
                     setChanged();
                 }
                 return;
@@ -156,12 +156,15 @@ public class LavaSinkBlockEntity extends BlockEntity implements BalmContainerPro
                     ? Balm.capabilities().getCapability(blockEntity, Direction.UP, CommonCapabilities.FLUID_TANK)
                     : null;
             if (targetTank != null) {
-                if (targetTank.canFill(Fluids.LAVA)) {
-                    final int maxTransfer = lavaTank.getAmount();
-                    final int accepted = targetTank.fill(Fluids.LAVA, maxTransfer, true);
+                for (int slot = 0; slot < targetTank.getSlotCount(); slot++) {
+                    if (!targetTank.canFill(slot, Fluids.LAVA)) {
+                        continue;
+                    }
+                    final int maxTransfer = lavaTank.getAmount(0);
+                    final int accepted = targetTank.fill(slot, Fluids.LAVA, maxTransfer, true);
                     if (accepted > 0) {
-                        lavaTank.drain(Fluids.LAVA, accepted, false);
-                        targetTank.fill(Fluids.LAVA, accepted, false);
+                        lavaTank.drain(0, Fluids.LAVA, accepted, false);
+                        targetTank.fill(slot, Fluids.LAVA, accepted, false);
                         setChanged();
                     }
                 }

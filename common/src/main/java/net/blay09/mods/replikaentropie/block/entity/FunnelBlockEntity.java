@@ -42,29 +42,27 @@ public class FunnelBlockEntity extends BlockEntity implements BalmFluidTankProvi
         final var sourceTank = sourceBlockEntity != null
                 ? Balm.capabilities().getCapability(sourceBlockEntity, Direction.DOWN, CommonCapabilities.FLUID_TANK)
                 : null;
-        if (sourceTank == null || sourceTank.isEmpty()) {
+        if (sourceTank == null) {
             return;
         }
 
-        final Fluid fluid = sourceTank.getFluid();
-        final int simulatedDrain = sourceTank.drain(fluid, Integer.MAX_VALUE, true);
-        if (simulatedDrain <= 0) {
-            return;
-        }
-
-        final int accepted = fluidTank.fill(fluid, simulatedDrain, true);
-        if (accepted <= 0) {
-            return;
-        }
-
-        final int drained = sourceTank.drain(fluid, accepted, false);
-        if (drained > 0) {
-            fluidTank.fill(fluid, drained, false);
+        for (int slot = 0; slot < sourceTank.getSlotCount(); slot++) {
+            if (sourceTank.isEmpty(slot)) {
+                continue;
+            }
+            final Fluid fluid = sourceTank.getFluid(slot);
+            final int simulatedDrain = sourceTank.drain(slot, fluid, Integer.MAX_VALUE, true);
+            final int accepted = fluidTank.fill(0, fluid, simulatedDrain, true);
+            if (accepted > 0) {
+                final int drained = sourceTank.drain(slot, fluid, accepted, false);
+                fluidTank.fill(0, fluid, drained, false);
+                return;
+            }
         }
     }
 
     private void pushToOutput(Level level, BlockPos pos, Direction outputDirection) {
-        if (fluidTank.isEmpty()) {
+        if (fluidTank.isEmpty(0)) {
             return;
         }
 
@@ -76,15 +74,14 @@ public class FunnelBlockEntity extends BlockEntity implements BalmFluidTankProvi
             return;
         }
 
-        final Fluid fluid = fluidTank.getFluid();
-        final int accepted = targetTank.fill(fluid, fluidTank.getAmount(), true);
-        if (accepted <= 0) {
-            return;
-        }
-
-        final int drained = fluidTank.drain(fluid, accepted, false);
-        if (drained > 0) {
-            targetTank.fill(fluid, drained, false);
+        final Fluid fluid = fluidTank.getFluid(0);
+        for (int slot = 0; slot < targetTank.getSlotCount(); slot++) {
+            final int accepted = targetTank.fill(slot, fluid, fluidTank.getAmount(0), true);
+            if (accepted > 0) {
+                final int drained = fluidTank.drain(0, fluid, accepted, false);
+                targetTank.fill(slot, fluid, drained, false);
+                return;
+            }
         }
     }
 
@@ -123,57 +120,62 @@ public class FunnelBlockEntity extends BlockEntity implements BalmFluidTankProvi
         }
 
         @Override
-        public int fill(Fluid fluid, int maxFill, boolean simulate) {
-            return allowFill ? fluidTank.fill(fluid, maxFill, simulate) : 0;
+        public int fill(int slot, Fluid fluid, int maxFill, boolean simulate) {
+            return allowFill ? fluidTank.fill(slot, fluid, maxFill, simulate) : 0;
         }
 
         @Override
-        public int drain(Fluid fluid, int maxDrain, boolean simulate) {
+        public int drain(int slot, Fluid fluid, int maxDrain, boolean simulate) {
             if (!allowDrain) {
                 return 0;
             }
 
-            return fluidTank.drain(fluid, maxDrain, simulate);
+            return fluidTank.drain(slot, fluid, maxDrain, simulate);
         }
 
         @Override
-        public Fluid getFluid() {
-            return fluidTank.getFluid();
+        public Fluid getFluid(int slot) {
+            return fluidTank.getFluid(slot);
         }
 
         @Override
-        public void setFluid(Fluid fluid, int amount) {
-            fluidTank.setFluid(fluid, amount);
+        public void setFluid(int slot, Fluid fluid, int amount) {
+            fluidTank.setFluid(slot, fluid, amount);
         }
 
         @Override
-        public int getAmount() {
-            return fluidTank.getAmount();
+        public int getAmount(int slot) {
+            return fluidTank.getAmount(slot);
         }
 
         @Override
-        public void setAmount(int amount) {
-            fluidTank.setAmount(amount);
+        public void setAmount(int slot, int amount) {
+            fluidTank.setAmount(slot, amount);
         }
 
         @Override
-        public int getCapacity() {
-            return fluidTank.getCapacity();
+        public int getCapacity(int slot) {
+            return fluidTank.getCapacity(slot);
         }
 
         @Override
-        public boolean canDrain(Fluid fluid) {
-            return allowDrain && fluidTank.canDrain(fluid);
+        public boolean canDrain(int slot, Fluid fluid) {
+            return allowDrain && fluidTank.canDrain(slot, fluid);
         }
 
         @Override
-        public boolean canFill(Fluid fluid) {
-            return allowFill && fluidTank.canFill(fluid);
+        public boolean canFill(int slot, Fluid fluid) {
+            return allowFill && fluidTank.canFill(slot, fluid);
         }
 
         @Override
-        public boolean isEmpty() {
-            return fluidTank.isEmpty();
+        public boolean isEmpty(int slot) {
+            return fluidTank.isEmpty(slot);
+        }
+
+        @Override
+        public int getSlotCount() {
+            return fluidTank.getSlotCount();
         }
     }
 }

@@ -47,7 +47,7 @@ public class FunnelBlock extends HopperBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof FunnelBlockEntity funnel) {
-            final var fluid = Objects.requireNonNull(funnel.getFluidTank()).getFluid();
+            final var fluid = Objects.requireNonNull(funnel.getFluidTank()).getFluid(0);
             if (fluid.isSame(Fluids.LAVA)) {
                 serverLevel.sendParticles(ParticleTypes.FALLING_LAVA, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 4, 0.25f, 0.25f, 0.25f, 0);
             } else if (fluid.isSame(Fluids.EMPTY)) {

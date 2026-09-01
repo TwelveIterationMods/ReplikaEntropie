@@ -47,8 +47,10 @@ public class WaterSinkBlockEntity extends BlockEntity {
                     ? Balm.capabilities().getCapability(blockEntity, Direction.UP, CommonCapabilities.FLUID_TANK)
                     : null;
             if (targetTank != null) {
-                if (targetTank.canFill(Fluids.WATER)) {
-                    targetTank.fill(Fluids.WATER, Integer.MAX_VALUE, false);
+                for (int slot = 0; slot < targetTank.getSlotCount(); slot++) {
+                    if (targetTank.canFill(slot, Fluids.WATER)) {
+                        targetTank.fill(slot, Fluids.WATER, Integer.MAX_VALUE, false);
+                    }
                 }
                 return;
             }
