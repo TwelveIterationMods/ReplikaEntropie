@@ -39,8 +39,6 @@ public class ModBlocks {
     public static DeferredBlock crane;
 
     public static void initialize(BalmBlockRegistrar blocks) {
-        blocks.enableBlockDescriptionPrefixForItems();
-
         replikaWorkbench = blocks.register("replika_workbench", ReplikaWorkbenchBlock::new, it -> it.mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL))
                 .withDefaultItem(it -> withTooltip(it, "replika_workbench"))
                 .asDeferredBlock();

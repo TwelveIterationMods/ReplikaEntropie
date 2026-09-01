@@ -47,7 +47,7 @@ public class BluePrinterMenu extends AbstractContainerMenu {
 
         addSlot(new IngredientSlot(container, BluePrinterBlockEntity.PAPER_SLOT, 81, 50, Ingredient.of(Items.PAPER), id("container/slot/paper")));
         addSlot(new IngredientSlot(container, BluePrinterBlockEntity.INK_SLOT, 81, 25, Ingredient.of(Items.INK_SAC), id("container/slot/ink_sac")));
-        addSlot(new IngredientSlot(container, BluePrinterBlockEntity.CYAN_DYE_SLOT, 106, 25, Ingredient.of(Items.CYAN_DYE), id("container/slot/cyan_dye")) {
+        addSlot(new IngredientSlot(container, BluePrinterBlockEntity.CYAN_DYE_SLOT, 106, 25, Ingredient.of(Items.DYE.cyan()), id("container/slot/cyan_dye")) {
             @Override
             public int getMaxStackSize() {
                 return 1;
@@ -78,7 +78,7 @@ public class BluePrinterMenu extends AbstractContainerMenu {
                 .slotRange("grid", BluePrinterBlockEntity.GRID_START, BluePrinterBlockEntity.OUTPUT_SLOT)
                 .route(it -> it.is(Items.PAPER), QuickMove.PLAYER, "paper")
                 .route(it -> it.is(Items.INK_SAC), QuickMove.PLAYER, "ink")
-                .route(it -> it.is(Items.CYAN_DYE), QuickMove.PLAYER, "cyan_dye")
+                .route(it -> it.is(Items.DYE.cyan()), QuickMove.PLAYER, "cyan_dye")
                 .route(QuickMove.PLAYER, "grid")
                 .build();
 

@@ -60,7 +60,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(Items.IRON_INGOT, 2)
                 .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.GLOWSTONE_DUST, 2)
-                .ingredient(Items.GREEN_DYE, 2)
+                .ingredient(Items.DYE.green(), 2)
                 .save(output);
 
         assemblerRecipe(ModItems.brightVisionGoggles, 1)
@@ -81,7 +81,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
         assemblerRecipe(ModItems.chipset, 1)
                 .ingredient(Items.REDSTONE, 2)
                 .ingredient(Items.IRON_INGOT, 1)
-                .ingredient(Items.GREEN_DYE, 1)
+                .ingredient(Items.DYE.green(), 1)
                 .save(output);
 
         assemblerRecipe(ModBlocks.bluePrinter, 1)
@@ -89,7 +89,7 @@ public class ModAssemblerRecipeProvider extends FabricRecipeProvider {
                 .ingredient(ModItems.chipset, 1)
                 .ingredient(Items.PAPER, 4)
                 .ingredient(Items.INK_SAC, 2)
-                .ingredient(Items.CYAN_DYE, 1)
+                .ingredient(Items.DYE.cyan(), 1)
                 .save(output);
 
         assemblerRecipe(ModBlocks.biomassIncubator, 1)

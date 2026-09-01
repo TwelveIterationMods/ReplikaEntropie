@@ -31,7 +31,7 @@ public class ModFragmentalHeaterRecipeProvider extends FabricRecipeProvider {
             public void buildRecipes() {
                 final var fragmentTemperatureModifier = 1f / 10f;
                 final var iceTemperatureModifier = -1f / 5f;
-                fragmentalHeaterRecipe(ModItems.fragments.value(), 100, fragmentTemperatureModifier).save(output);
+                fragmentalHeaterRecipe(ModItems.fragments.asItem(), 100, fragmentTemperatureModifier).save(output);
                 fragmentalHeaterRecipe(Items.SNOWBALL, 0, iceTemperatureModifier).save(output);
                 fragmentalHeaterRecipe(Items.ICE, 0, iceTemperatureModifier).save(output);
                 fragmentalHeaterRecipe(Items.PACKED_ICE, 0, iceTemperatureModifier * 9).save(output);

@@ -95,9 +95,9 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
                 .slot("scrap", 1)
                 .slot("biomass", 2)
                 .slot("fragments", 3)
-                .route(it -> it.is(ModItems.scrap), QuickMove.PLAYER, "scrap")
-                .route(it -> it.is(ModItems.biomass), QuickMove.PLAYER, "biomass")
-                .route(it -> it.is(ModItems.fragments), QuickMove.PLAYER, "fragments")
+                .route(it -> it.is(ModItems.scrap.asItem()), QuickMove.PLAYER, "scrap")
+                .route(it -> it.is(ModItems.biomass.asItem()), QuickMove.PLAYER, "biomass")
+                .route(it -> it.is(ModItems.fragments.asItem()), QuickMove.PLAYER, "fragments")
                 .build();
 
         container.startOpen(playerInventory.player);

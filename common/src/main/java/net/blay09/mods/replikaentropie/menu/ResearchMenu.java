@@ -190,13 +190,13 @@ public class ResearchMenu extends AbstractContainerMenu {
                 }
                 final var inventory = player.getInventory();
                 if (recipe != null && recipe.scrapCost() > 0) {
-                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.scrap), recipe.scrapCost(), inventory);
+                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.scrap.asItem()), recipe.scrapCost(), inventory);
                 }
                 if (recipe != null && recipe.biomassCost() > 0) {
-                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.biomass), recipe.biomassCost(), inventory);
+                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.biomass.asItem()), recipe.biomassCost(), inventory);
                 }
                 if (recipe != null && recipe.fragmentsCost() > 0) {
-                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.fragments), recipe.fragmentsCost(), inventory);
+                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.fragments.asItem()), recipe.fragmentsCost(), inventory);
                 }
                 player.inventoryMenu.broadcastChanges();
                 Research.updateResearch(player, entry.id(), ResearchState.IN_PROGRESS);

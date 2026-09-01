@@ -28,7 +28,7 @@ public class ModFabricatorRecipeProvider extends FabricRecipeProvider {
             public void buildRecipes() {
                 int sortOrder = 0;
                 fabricatorRecipe(Items.IRON_CHAIN, 2, 0, 0, sortOrder += 100).save(output);
-                fabricatorRecipe(Items.COPPER_CHAIN.unaffected(), 2, 0, 0, sortOrder += 100).save(output);
+                fabricatorRecipe(Items.COPPER_CHAIN.weathering().unaffected(), 2, 0, 0, sortOrder += 100).save(output);
                 fabricatorRecipe(Items.STICK, 0, 1, 0, sortOrder += 100).save(output);
                 fabricatorRecipe(Items.LEVER, 1, 1, 0, sortOrder += 100).save(output);
                 fabricatorRecipe(Items.TRIPWIRE_HOOK, 1, 1, 0, sortOrder += 100).save(output);

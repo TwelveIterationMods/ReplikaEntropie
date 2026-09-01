@@ -5,7 +5,6 @@ import com.mojang.math.Axis;
 import net.blay09.mods.replikaentropie.block.entity.CraneBlockEntity;
 import net.blay09.mods.replikaentropie.client.ModBlockStateModels;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
@@ -19,6 +18,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -67,7 +67,7 @@ public class CraneRenderer implements BlockEntityRenderer<CraneBlockEntity, Cran
         state.facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
 
         final var level = blockEntity.getLevel();
-        state.armLightCoords = level != null ? LevelRenderer.getLightCoords(level, blockEntity.getBlockPos().above(2)) : state.lightCoords;
+        state.armLightCoords = level != null ? LightCoordsUtil.getLightCoords(level, blockEntity.getBlockPos().above(2)) : state.lightCoords;
         state.magnetLightCoords = state.armLightCoords;
 
         final var seed = blockEntity.getBlockPos().asLong();
@@ -136,7 +136,7 @@ public class CraneRenderer implements BlockEntityRenderer<CraneBlockEntity, Cran
             final var carriedBlockEntity = entityBlock.newBlockEntity(renderPos, carriedState);
             if (carriedBlockEntity != null) {
                 carriedBlockEntity.setLevel(clientLevel);
-                state.blockEntity = blockEntityRenderDispatcher.tryExtractRenderState(carriedBlockEntity, partialTick, breakProgress);
+                state.blockEntity = blockEntityRenderDispatcher.tryExtractRenderState(carriedBlockEntity, partialTick, breakProgress, false);
             }
         }
     }
@@ -164,7 +164,7 @@ public class CraneRenderer implements BlockEntityRenderer<CraneBlockEntity, Cran
 
         poseStack.pushPose();
         poseStack.translate(state.offset);
-        submitNodeCollector.submitMovingBlock(poseStack, state.block);
+        submitNodeCollector.submitMovingBlock(poseStack, state.block, 0);
         if (state.blockEntity != null) {
             blockEntityRenderDispatcher.submit(state.blockEntity, poseStack, submitNodeCollector, camera);
         }

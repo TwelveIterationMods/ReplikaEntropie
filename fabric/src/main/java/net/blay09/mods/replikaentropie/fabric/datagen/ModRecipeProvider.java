@@ -95,7 +95,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("DOD")
                         .pattern("ISI")
                         .define('I', Items.IRON_INGOT)
-                        .define('D', Items.LIME_DYE)
+                        .define('D', Items.DYE.lime())
                         .define('O', Items.OBSIDIAN)
                         .define('S', ModItems.scrap)
                         .unlockedBy("has_obsidian", has(Items.OBSIDIAN))
@@ -142,7 +142,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 shapeless(RecipeCategory.COMBAT, ModItems.hazmatLining, 4)
                         .requires(Items.LEATHER)
                         .requires(Items.ARMADILLO_SCUTE)
-                        .requires(Items.YELLOW_DYE)
+                        .requires(Items.DYE.yellow())
                         .unlockedBy("has_armadillo_scute", has(Items.ARMADILLO_SCUTE))
                         .save(output);
 

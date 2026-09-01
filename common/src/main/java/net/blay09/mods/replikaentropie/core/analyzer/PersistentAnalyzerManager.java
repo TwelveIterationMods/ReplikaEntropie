@@ -40,7 +40,7 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
     @Override
     public void analyzeItem(Player player, ItemStack itemStack) {
         final var usedScannerItemStack = player.getUseItem();
-        if (itemStack.is(ModBlocks.chaosEngine.asItem()) && usedScannerItemStack.is(ModItems.handheldAnalyzer)) {
+        if (itemStack.is(ModBlocks.chaosEngine.asItem()) && usedScannerItemStack.is(ModItems.handheldAnalyzer.asItem())) {
             final var usedScannerItem = usedScannerItemStack.getItem();
             usedScannerItemStack.shrink(1);
             player.onEquippedItemBroken(usedScannerItem, player.getUsedItemHand().asEquipmentSlot());
@@ -52,7 +52,7 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
         }
 
         final var dataForItem = ResearchItemRecords.getCollectableData(itemStack);
-        if (usedScannerItemStack.is(ModItems.handheldAnalyzer)) {
+        if (usedScannerItemStack.is(ModItems.handheldAnalyzer.asItem())) {
             grantData(player, dataForItem);
         } else {
             ReplikaEntropie.logger.warn("Tried to analyze item without using an analyzer");
@@ -84,7 +84,7 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
 
         final var usedScannerItemStack = player.getUseItem();
         final var dataForEntity = ResearchEntityRecords.getCollectableData(entity);
-        if (usedScannerItemStack.is(ModItems.handheldAnalyzer)) {
+        if (usedScannerItemStack.is(ModItems.handheldAnalyzer.asItem())) {
             grantData(player, dataForEntity);
         } else {
             ReplikaEntropie.logger.warn("Tried to analyze entity without using an analyzer");

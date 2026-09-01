@@ -87,7 +87,7 @@ public class ReplikaEntropie {
 
         // Redstone ore hijacks use interactions, so we hijack them back for the Vacuum Ore
         BlockCallback.Use.EVENT.register((player, level, hand, hitResult) -> {
-            if (player.getMainHandItem().is(ModItems.oreVacuum)
+            if (player.getMainHandItem().is(ModItems.oreVacuum.asItem())
                     && hitResult instanceof BlockHitResult blockHitResult
                     && level.getBlockState(blockHitResult.getBlockPos()).is(Blocks.REDSTONE_ORE)) {
                 player.startUsingItem(hand);

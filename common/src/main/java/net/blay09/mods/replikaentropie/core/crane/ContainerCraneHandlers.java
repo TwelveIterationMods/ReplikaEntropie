@@ -59,8 +59,8 @@ public class ContainerCraneHandlers {
 
     private static boolean canStore(CraneTransfer transfer) {
         return transfer.state().is(Blocks.TNT)
-                || transfer.state().is(ModBlocks.wasteBarrel)
-                || transfer.state().is(ModBlocks.fragmentalWaste);
+                || transfer.state().is(ModBlocks.wasteBarrel.asBlock())
+                || transfer.state().is(ModBlocks.fragmentalWaste.asBlock());
     }
 
     private static @Nullable Container getDestinationContainer(ServerLevel level, BlockPos destinationPos) {

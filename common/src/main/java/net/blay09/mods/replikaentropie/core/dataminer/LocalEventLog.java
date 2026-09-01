@@ -140,7 +140,7 @@ public class LocalEventLog {
             return true;
         }));
 
-        LivingEntityCallback.Death.Before.EVENT.register(((entity, damageSource) -> {
+        LivingEntityCallback.Death.Before.EVENT.register(((entity, damageSource, damage) -> {
             if (entity instanceof Player player) {
                 if (entity.level() instanceof ServerLevel serverLevel) {
                     final var showDeathMessages = serverLevel.getGameRules().get(GameRules.SHOW_DEATH_MESSAGES);

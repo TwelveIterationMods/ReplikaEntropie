@@ -62,7 +62,7 @@ public class BluePrinterBlockEntity extends BlockEntity implements BalmContainer
                 case OUTPUT_SLOT -> false;
                 case PAPER_SLOT -> itemStack.is(Items.PAPER);
                 case INK_SLOT -> itemStack.is(Items.INK_SAC);
-                case CYAN_DYE_SLOT -> itemStack.is(Items.CYAN_DYE) && getItem(slot).isEmpty();
+                case CYAN_DYE_SLOT -> itemStack.is(Items.DYE.cyan()) && getItem(slot).isEmpty();
                 default -> true;
             };
         }
@@ -166,7 +166,7 @@ public class BluePrinterBlockEntity extends BlockEntity implements BalmContainer
             }
         }
 
-        if (ticketStack.isEmpty() || !ticketStack.is(ModItems.assemblyTicket)) {
+        if (ticketStack.isEmpty() || !ticketStack.is(ModItems.assemblyTicket.asItem())) {
             return Optional.empty();
         }
 
@@ -244,7 +244,7 @@ public class BluePrinterBlockEntity extends BlockEntity implements BalmContainer
                 && !backingContainer.getItem(PAPER_SLOT).isEmpty()
                 && backingContainer.getItem(INK_SLOT).is(Items.INK_SAC)
                 && !backingContainer.getItem(INK_SLOT).isEmpty()
-                && backingContainer.getItem(CYAN_DYE_SLOT).is(Items.CYAN_DYE)
+                && backingContainer.getItem(CYAN_DYE_SLOT).is(Items.DYE.cyan())
                 && !backingContainer.getItem(CYAN_DYE_SLOT).isEmpty();
     }
 

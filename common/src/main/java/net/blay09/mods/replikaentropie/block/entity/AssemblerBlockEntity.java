@@ -53,8 +53,8 @@ public class AssemblerBlockEntity extends BlockEntity implements BalmContainerPr
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
             return switch (slot) {
                 case 0 -> false;
-                case 1 -> itemStack.is(ModItems.assemblyTicket);
-                default -> !itemStack.is(ModItems.assemblyTicket);
+                case 1 -> itemStack.is(ModItems.assemblyTicket.asItem());
+                default -> !itemStack.is(ModItems.assemblyTicket.asItem());
             };
         }
     };

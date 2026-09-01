@@ -2,6 +2,4 @@ dependencies {
     implementation(libs.balmFabric) {
         changing = libs.versions.balm.get().endsWith("SNAPSHOT")
     }
-
-    implementation "curse.maven:jei-238222:7920925"
 }

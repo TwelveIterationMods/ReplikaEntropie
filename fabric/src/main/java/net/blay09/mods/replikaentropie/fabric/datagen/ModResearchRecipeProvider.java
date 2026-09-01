@@ -163,7 +163,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .save(output);
 
                 research(id("burst_energy"))
-                        .icon(Items.LIGHTNING_ROD)
+                        .icon(Items.LIGHTNING_ROD.weathering().unaffected())
                         .dependsOn(id("research/assembler"))
                         .nonogram(id("burst_energy"))
                         .costs(5, 12, 12, 6)

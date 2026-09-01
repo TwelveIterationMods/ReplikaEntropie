@@ -57,9 +57,9 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
         @Override
         public boolean canPlaceItem(int slot, ItemStack itemStack) {
             return switch (slot) {
-                case 1 -> itemStack.is(ModItems.scrap);
-                case 2 -> itemStack.is(ModItems.biomass);
-                case 3 -> itemStack.is(ModItems.fragments);
+                case 1 -> itemStack.is(ModItems.scrap.asItem());
+                case 2 -> itemStack.is(ModItems.biomass.asItem());
+                case 3 -> itemStack.is(ModItems.fragments.asItem());
                 default -> false;
             };
         }
@@ -312,9 +312,9 @@ public class FabricatorBlockEntity extends BlockEntity implements BalmContainerP
         final var scrapInput = scrapContainer.getItem(0);
         final var biomassInput = biomassContainer.getItem(0);
         final var fragmentInput = fragmentContainer.getItem(0);
-        return (recipe.scrap() == 0f || (scrapInput.is(ModItems.scrap) && scrapInput.getCount() >= recipe.scrap())) &&
-                (recipe.biomass() == 0f || (biomassInput.is(ModItems.biomass) && biomassInput.getCount() >= recipe.biomass())) &&
-                (recipe.fragments() == 0f || (fragmentInput.is(ModItems.fragments) && fragmentInput.getCount() >= recipe.fragments()));
+        return (recipe.scrap() == 0f || (scrapInput.is(ModItems.scrap.asItem()) && scrapInput.getCount() >= recipe.scrap())) &&
+                (recipe.biomass() == 0f || (biomassInput.is(ModItems.biomass.asItem()) && biomassInput.getCount() >= recipe.biomass())) &&
+                (recipe.fragments() == 0f || (fragmentInput.is(ModItems.fragments.asItem()) && fragmentInput.getCount() >= recipe.fragments()));
     }
 
     private void consumeResources(FabricatorRecipe recipe) {

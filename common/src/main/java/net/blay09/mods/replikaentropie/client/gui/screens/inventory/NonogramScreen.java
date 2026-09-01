@@ -320,7 +320,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
                 || (event.isEscape() && this.shouldCloseOnEsc())) {
             onClose();
             if (minecraft.player != null
-                    && minecraft.player.getMainHandItem().is(ModItems.skyScraper)
+                    && minecraft.player.getMainHandItem().is(ModItems.skyScraper.asItem())
                     && minecraft.gameMode != null) {
                 minecraft.gameMode.useItem(minecraft.player, InteractionHand.MAIN_HAND);
             }

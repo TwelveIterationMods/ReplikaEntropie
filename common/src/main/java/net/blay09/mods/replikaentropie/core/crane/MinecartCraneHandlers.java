@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.minecart.Minecart;
 import net.minecraft.world.entity.vehicle.minecart.MinecartChest;
@@ -84,7 +85,7 @@ public class MinecartCraneHandlers {
                     continue;
                 }
 
-                final var replacement = new Minecart(EntityType.MINECART, level);
+                final var replacement = new Minecart(EntityTypes.MINECART, level);
                 replacement.setInitialPos(minecart.getX(), minecart.getY(), minecart.getZ());
                 replacement.setYRot(minecart.getYRot());
                 replacement.setXRot(minecart.getXRot());
@@ -115,7 +116,7 @@ public class MinecartCraneHandlers {
         }
 
         private boolean canPlace(ServerLevel level, BlockPos destinationPos, Minecart minecart, CraneTransfer transfer) {
-            return minecart.getType() == EntityType.MINECART
+            return minecart.getType() == EntityTypes.MINECART
                     && isCenteredAt(minecart, destinationPos)
                     && createMinecart(level, transfer.state()) != null;
         }
@@ -150,16 +151,16 @@ public class MinecartCraneHandlers {
 
     private static @Nullable AbstractMinecart createMinecart(ServerLevel level, BlockState state) {
         if (state.is(Blocks.HOPPER)) {
-            return new MinecartHopper(EntityType.HOPPER_MINECART, level);
+            return new MinecartHopper(EntityTypes.HOPPER_MINECART, level);
         } else if (state.is(Blocks.FURNACE)) {
-            return new MinecartFurnace(EntityType.FURNACE_MINECART, level);
+            return new MinecartFurnace(EntityTypes.FURNACE_MINECART, level);
         } else if (state.is(Blocks.CHEST)) {
-            return new MinecartChest(EntityType.CHEST_MINECART, level);
+            return new MinecartChest(EntityTypes.CHEST_MINECART, level);
         } else if (state.is(Blocks.TNT)) {
-            return new MinecartTNT(EntityType.TNT_MINECART, level);
-        } else if (state.is(ModBlocks.wasteBarrel)) {
+            return new MinecartTNT(EntityTypes.TNT_MINECART, level);
+        } else if (state.is(ModBlocks.wasteBarrel.asBlock())) {
             return new WasteBarrelMinecart(ModEntities.wasteBarrelMinecart.value(), level);
-        } else if (state.is(ModBlocks.biomassHarvester)) {
+        } else if (state.is(ModBlocks.biomassHarvester.asBlock())) {
             return new BiomassHarvesterMinecart(ModEntities.biomassHarvesterMinecart.value(), level);
         }
         return null;

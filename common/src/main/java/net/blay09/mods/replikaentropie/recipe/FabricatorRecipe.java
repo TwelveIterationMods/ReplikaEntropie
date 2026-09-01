@@ -87,7 +87,7 @@ public record FabricatorRecipe(int scrap, int biomass, int fragments,
     public List<RecipeDisplay> display() {
         return List.of(new FabricatorRecipeDisplay(
                 new SlotDisplay.ItemStackSlotDisplay(result),
-                new SlotDisplay.ItemSlotDisplay(ModBlocks.fabricator.value().asItem()),
+                new SlotDisplay.ItemSlotDisplay(ModBlocks.fabricator.asItem()),
                 scrap,
                 biomass,
                 fragments));

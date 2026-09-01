@@ -16,26 +16,26 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
 
     @Override
     public void generate() {
-        dropSelf(ModBlocks.replikaWorkbench.value());
-        dropSelf(ModBlocks.entropicDataMiner.value());
-        dropSelf(ModBlocks.fabricator.value());
-        dropSelf(ModBlocks.assembler.value());
-        dropSelf(ModBlocks.wasteBarrel.value());
-        dropSelf(ModBlocks.fragmentalWaste.value());
-        dropSelf(ModBlocks.biomassIncubator.value());
-        dropSelf(ModBlocks.biomassHarvester.value());
-        dropSelf(ModBlocks.cobblescrap.value());
-        dropSelf(ModBlocks.lavascrap.value());
-        dropSelf(ModBlocks.worldEater.value());
-        dropSelf(ModBlocks.fragmentalHeater.value());
-        dropSelf(ModBlocks.fragmentAccelerator.value());
-        dropSelf(ModBlocks.chaosEngine.value());
-        dropSelf(ModBlocks.waterSink.value());
-        dropSelf(ModBlocks.lavaSink.value());
-        dropSelf(ModBlocks.solarSink.value());
-        dropSelf(ModBlocks.fragmentedSun.value());
-        dropSelf(ModBlocks.recycler.value());
-        dropSelf(ModBlocks.bluePrinter.value());
-        add(ModBlocks.crane.value(), createSinglePropConditionTable(ModBlocks.crane.value(), BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER));
+        dropSelf(ModBlocks.replikaWorkbench.asBlock());
+        dropSelf(ModBlocks.entropicDataMiner.asBlock());
+        dropSelf(ModBlocks.fabricator.asBlock());
+        dropSelf(ModBlocks.assembler.asBlock());
+        dropSelf(ModBlocks.wasteBarrel.asBlock());
+        dropSelf(ModBlocks.fragmentalWaste.asBlock());
+        dropSelf(ModBlocks.biomassIncubator.asBlock());
+        dropSelf(ModBlocks.biomassHarvester.asBlock());
+        dropSelf(ModBlocks.cobblescrap.asBlock());
+        dropSelf(ModBlocks.lavascrap.asBlock());
+        dropSelf(ModBlocks.worldEater.asBlock());
+        dropSelf(ModBlocks.fragmentalHeater.asBlock());
+        dropSelf(ModBlocks.fragmentAccelerator.asBlock());
+        dropSelf(ModBlocks.chaosEngine.asBlock());
+        dropSelf(ModBlocks.waterSink.asBlock());
+        dropSelf(ModBlocks.lavaSink.asBlock());
+        dropSelf(ModBlocks.solarSink.asBlock());
+        dropSelf(ModBlocks.fragmentedSun.asBlock());
+        dropSelf(ModBlocks.recycler.asBlock());
+        dropSelf(ModBlocks.bluePrinter.asBlock());
+        add(ModBlocks.crane.asBlock(), createSinglePropConditionTable(ModBlocks.crane.asBlock(), BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER));
     }
 }

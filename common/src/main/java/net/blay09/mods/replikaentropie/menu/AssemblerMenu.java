@@ -87,8 +87,8 @@ public class AssemblerMenu extends AbstractContainerMenu implements MakeshiftPow
         quickMove = QuickMove.create(this, this::moveItemStackTo)
                 .slot("ticket", 1)
                 .slotRange("inputs", 2, 7)
-                .route(it -> it.is(ModItems.assemblyTicket), QuickMove.PLAYER, "ticket")
-                .route(it -> !it.is(ModItems.assemblyTicket), QuickMove.PLAYER, "inputs")
+                .route(it -> it.is(ModItems.assemblyTicket.asItem()), QuickMove.PLAYER, "ticket")
+                .route(it -> !it.is(ModItems.assemblyTicket.asItem()), QuickMove.PLAYER, "inputs")
                 .build();
 
         container.startOpen(inventory.player);

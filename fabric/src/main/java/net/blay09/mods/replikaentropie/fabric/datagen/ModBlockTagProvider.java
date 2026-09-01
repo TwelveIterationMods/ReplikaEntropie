@@ -5,9 +5,9 @@ import net.blay09.mods.replikaentropie.tag.ModBlockTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -18,38 +18,38 @@ public class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        valueLookupBuilder(ModBlockTags.BLOCKS_NULLPHASE).add(Blocks.BEDROCK, Blocks.BARRIER, Blocks.OBSIDIAN);
-        valueLookupBuilder(ModBlockTags.IMMUNE_TO_STOMPING).add(Blocks.BEDROCK, Blocks.BARRIER);
-        valueLookupBuilder(ModBlockTags.IMMUNE_TO_WORLD_EATER).add(Blocks.BEDROCK, Blocks.BARRIER);
-        valueLookupBuilder(ModBlockTags.CRANE_RELOCATION_NOT_SUPPORTED).add(
-                Blocks.RAIL,
-                Blocks.POWERED_RAIL,
-                Blocks.DETECTOR_RAIL,
-                Blocks.ACTIVATOR_RAIL
+        tag(ModBlockTags.BLOCKS_NULLPHASE).add(BlockItemIds.BEDROCK.block(), BlockItemIds.BARRIER.block(), BlockItemIds.OBSIDIAN.block());
+        tag(ModBlockTags.IMMUNE_TO_STOMPING).add(BlockItemIds.BEDROCK.block(), BlockItemIds.BARRIER.block());
+        tag(ModBlockTags.IMMUNE_TO_WORLD_EATER).add(BlockItemIds.BEDROCK.block(), BlockItemIds.BARRIER.block());
+        tag(ModBlockTags.CRANE_RELOCATION_NOT_SUPPORTED).add(
+                BlockItemIds.RAIL.block(),
+                BlockItemIds.POWERED_RAIL.block(),
+                BlockItemIds.DETECTOR_RAIL.block(),
+                BlockItemIds.ACTIVATOR_RAIL.block()
         );
         getOrCreateRawBuilder(ModBlockTags.CRANE_RELOCATION_NOT_SUPPORTED).addOptionalTag(Identifier.fromNamespaceAndPath("c", "relocation_not_supported"));
-        valueLookupBuilder(ModBlockTags.SLASHED_BY_BIOMASS_HARVESTER).add(Blocks.SUGAR_CANE);
+        tag(ModBlockTags.SLASHED_BY_BIOMASS_HARVESTER).add(BlockItemIds.SUGAR_CANE.block());
 
-        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE).add(
-                ModBlocks.replikaWorkbench.value(),
-                ModBlocks.entropicDataMiner.value(),
-                ModBlocks.fabricator.value(),
-                ModBlocks.assembler.value(),
-                ModBlocks.fragmentalWaste.value(),
-                ModBlocks.biomassIncubator.value(),
-                ModBlocks.biomassHarvester.value(),
-                ModBlocks.cobblescrap.value(),
-                ModBlocks.lavascrap.value(),
-                ModBlocks.worldEater.value(),
-                ModBlocks.fragmentalHeater.value(),
-                ModBlocks.fragmentAccelerator.value(),
-                ModBlocks.chaosEngine.value(),
-                ModBlocks.waterSink.value(),
-                ModBlocks.lavaSink.value(),
-                ModBlocks.solarSink.value(),
-                ModBlocks.fragmentedSun.value(),
-                ModBlocks.recycler.value(),
-                ModBlocks.crane.value()
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
+                ModBlocks.replikaWorkbench.asResourceKey(),
+                ModBlocks.entropicDataMiner.asResourceKey(),
+                ModBlocks.fabricator.asResourceKey(),
+                ModBlocks.assembler.asResourceKey(),
+                ModBlocks.fragmentalWaste.asResourceKey(),
+                ModBlocks.biomassIncubator.asResourceKey(),
+                ModBlocks.biomassHarvester.asResourceKey(),
+                ModBlocks.cobblescrap.asResourceKey(),
+                ModBlocks.lavascrap.asResourceKey(),
+                ModBlocks.worldEater.asResourceKey(),
+                ModBlocks.fragmentalHeater.asResourceKey(),
+                ModBlocks.fragmentAccelerator.asResourceKey(),
+                ModBlocks.chaosEngine.asResourceKey(),
+                ModBlocks.waterSink.asResourceKey(),
+                ModBlocks.lavaSink.asResourceKey(),
+                ModBlocks.solarSink.asResourceKey(),
+                ModBlocks.fragmentedSun.asResourceKey(),
+                ModBlocks.recycler.asResourceKey(),
+                ModBlocks.crane.asResourceKey()
         );
     }
 }

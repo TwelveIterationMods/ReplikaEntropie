@@ -178,7 +178,7 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
             final var outputStack = backingContainer.getItem(OUTPUT_SLOT);
             if (outputStack.isEmpty()) {
                 backingContainer.setItem(OUTPUT_SLOT, ModItems.fragments.createStack());
-            } else if (outputStack.is(ModItems.fragments)) {
+            } else if (outputStack.is(ModItems.fragments.asItem())) {
                 if (outputStack.getCount() < outputStack.getMaxStackSize()) {
                     outputStack.grow(1);
                     backingContainer.setChanged();
@@ -244,7 +244,7 @@ public class FragmentAcceleratorBlockEntity extends BlockEntity implements BalmC
 
     private boolean canAcceptOutput() {
         final var outputStack = backingContainer.getItem(OUTPUT_SLOT);
-        return outputStack.isEmpty() || (outputStack.is(ModItems.fragments) && outputStack.getCount() < outputStack.getMaxStackSize());
+        return outputStack.isEmpty() || (outputStack.is(ModItems.fragments.asItem()) && outputStack.getCount() < outputStack.getMaxStackSize());
     }
 
     private void generateWaste() {

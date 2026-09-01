@@ -58,7 +58,7 @@ public class HandheldAnalyzerClient {
     }
 
     public static boolean isAnalyzing(LivingEntity entity) {
-        return entity.isUsingItem() && entity.getUseItem().is(ModItems.handheldAnalyzer);
+        return entity.isUsingItem() && entity.getUseItem().is(ModItems.handheldAnalyzer.asItem());
     }
 
     public static void initialize() {

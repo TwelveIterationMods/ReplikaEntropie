@@ -14,15 +14,14 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class ModRecycleRecipeProvider extends FabricRecipeProvider {
     public ModRecycleRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
@@ -99,58 +98,10 @@ public class ModRecycleRecipeProvider extends FabricRecipeProvider {
             new WoodSet(PLANK_BIOMASS, Items.CHERRY_FENCE, Items.CHERRY_FENCE_GATE, Items.CHERRY_DOOR, Items.CHERRY_TRAPDOOR, Items.CHERRY_PRESSURE_PLATE, Items.CHERRY_BUTTON)
     );
 
-    private static final List<Item> CARPETS = List.of(
-            Items.WHITE_CARPET,
-            Items.LIGHT_GRAY_CARPET,
-            Items.GRAY_CARPET,
-            Items.BLACK_CARPET,
-            Items.BROWN_CARPET,
-            Items.RED_CARPET,
-            Items.ORANGE_CARPET,
-            Items.YELLOW_CARPET,
-            Items.LIME_CARPET,
-            Items.GREEN_CARPET
-    );
-
-    private static final List<Item> BEDS = List.of(
-            Items.WHITE_BED,
-            Items.LIGHT_GRAY_BED,
-            Items.GRAY_BED,
-            Items.BLACK_BED,
-            Items.BROWN_BED,
-            Items.RED_BED,
-            Items.ORANGE_BED,
-            Items.YELLOW_BED,
-            Items.LIME_BED,
-            Items.GREEN_BED
-    );
-
-    private static final List<Item> CANDLES = List.of(
-            Items.CANDLE,
-            Items.WHITE_CANDLE,
-            Items.LIGHT_GRAY_CANDLE,
-            Items.GRAY_CANDLE,
-            Items.BLACK_CANDLE,
-            Items.BROWN_CANDLE,
-            Items.RED_CANDLE,
-            Items.ORANGE_CANDLE,
-            Items.YELLOW_CANDLE,
-            Items.LIME_CANDLE,
-            Items.GREEN_CANDLE
-    );
-
-    private static final List<Item> BANNERS = List.of(
-            Items.WHITE_BANNER,
-            Items.LIGHT_GRAY_BANNER,
-            Items.GRAY_BANNER,
-            Items.BLACK_BANNER,
-            Items.BROWN_BANNER,
-            Items.RED_BANNER,
-            Items.ORANGE_BANNER,
-            Items.YELLOW_BANNER,
-            Items.LIME_BANNER,
-            Items.GREEN_BANNER
-    );
+    private static final List<Item> CARPETS = Items.CARPET.asList();
+    private static final List<Item> BEDS = Items.BED.asList();
+    private static final List<Item> CANDLES = Stream.concat(Stream.of(Items.CANDLE), Items.DYED_CANDLE.asList().stream()).toList();
+    private static final List<Item> BANNERS = Items.BANNER.asList();
 
     private static final List<Item> SAPLINGS = List.of(
             Items.OAK_SAPLING,
@@ -340,7 +291,7 @@ public class ModRecycleRecipeProvider extends FabricRecipeProvider {
         recycleRecipe(Items.BELL, 12f, 0f, 0f).save(output);
         recycleRecipe(Items.CONDUIT, 0f, 12f, 0f).save(output);
         final var COPPER_INGOT_SCRAP = 0.05f;
-        recycleRecipe(Items.LIGHTNING_ROD, COPPER_INGOT_SCRAP * 3, 0f, 0f).save(output);
+        recycleRecipe(Items.LIGHTNING_ROD.weathering().unaffected(), COPPER_INGOT_SCRAP * 3, 0f, 0f).save(output);
         final var clayScrap = 0.1f;
         recycleRecipe(Items.FLOWER_POT, clayScrap * 3, 0f, 0f).save(output);
         recycleRecipe(Items.LADDER, 0f, STICK_BIOMASS * 7, 0f).save(output);

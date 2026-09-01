@@ -101,7 +101,7 @@ public class EntropicDataMinerMenu extends AbstractContainerMenu implements Make
 
     @Override
     public boolean stillValid(Player player) {
-        return access.evaluate((level, pos) -> level.getBlockState(pos).is(ModBlocks.entropicDataMiner) && player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5F, pos.getZ() + 0.5f) <= 64f, true);
+        return access.evaluate((level, pos) -> level.getBlockState(pos).is(ModBlocks.entropicDataMiner.asBlock()) && player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5F, pos.getZ() + 0.5f) <= 64f, true);
     }
 
     @Override

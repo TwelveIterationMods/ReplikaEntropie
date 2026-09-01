@@ -97,7 +97,7 @@ public class NonogramMenu extends AbstractNonogramMenu {
     }
 
     public boolean canAutoHack() {
-        return playerInventory.hasAnyMatching(it -> it.is(ModItems.automaticHackTool));
+        return playerInventory.hasAnyMatching(it -> it.is(ModItems.automaticHackTool.asItem()));
     }
 
     public Optional<AutoHackResult> autoHack(Player player) {
@@ -125,7 +125,7 @@ public class NonogramMenu extends AbstractNonogramMenu {
 
         final var inventory = player.getInventory();
         for (final var itemStack : inventory.getNonEquipmentItems()) {
-            if (itemStack.is(ModItems.automaticHackTool)) {
+            if (itemStack.is(ModItems.automaticHackTool.asItem())) {
                 itemStack.hurtAndBreak(1, serverPlayer.level(), serverPlayer, item -> {
                     final var soundEvent = item.components().get(DataComponents.BREAK_SOUND);
                     if (soundEvent != null) {
