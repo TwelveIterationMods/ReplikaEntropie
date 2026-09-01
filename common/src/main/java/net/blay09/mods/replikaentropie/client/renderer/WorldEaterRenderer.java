@@ -3,6 +3,7 @@ package net.blay09.mods.replikaentropie.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.blay09.mods.replikaentropie.block.entity.WorldEaterBlockEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.BlockModelResolver;
@@ -11,12 +12,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
 import org.jspecify.annotations.Nullable;
 
 public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEntity, WorldEaterRenderer.State> {
@@ -43,6 +48,7 @@ public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEn
     public void extractRenderState(WorldEaterBlockEntity blockEntity, State state, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
         state.shouldRender = false;
+        state.shouldRenderScanArea = false;
         for (final var block : state.blocks) {
             block.clear();
         }
@@ -53,6 +59,15 @@ public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEn
         }
 
         final var pos = blockEntity.getBlockPos();
+        final var minecraft = Minecraft.getInstance();
+        state.shouldRenderScanArea = minecraft.player != null
+                && minecraft.player.isShiftKeyDown()
+                && minecraft.hitResult instanceof BlockHitResult hitResult
+                && hitResult.getBlockPos().equals(pos);
+        if (state.shouldRenderScanArea) {
+            state.scanArea = blockEntity.getScanArea().inflate(0.002).move(pos.multiply(-1));
+        }
+
         final var blockState = blockEntity.getBlockState();
         final var facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
         if (!Block.shouldRenderFace(blockState, level.getBlockState(pos.relative(facing)), facing)) {
@@ -76,6 +91,10 @@ public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEn
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        if (state.shouldRenderScanArea) {
+            submitScanArea(state.scanArea, poseStack, submitNodeCollector);
+        }
+
         if (!state.shouldRender) {
             return;
         }
@@ -121,6 +140,11 @@ public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEn
         poseStack.popPose();
     }
 
+    private static void submitScanArea(AABB area, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+        final float width = Minecraft.getInstance().gameRenderer.gameRenderState().windowRenderState.appropriateLineWidth * 2f;
+        submitNodeCollector.submitShapeOutline(poseStack, Shapes.create(area), RenderTypes.lines(), 0xFFFFFF00, width, false);
+    }
+
     public static class State extends BlockEntityRenderState {
         public final BlockModelRenderState[] blocks = new BlockModelRenderState[]{
                 new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(),
@@ -128,6 +152,8 @@ public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEn
                 new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState()
         };
         public boolean shouldRender;
+        public boolean shouldRenderScanArea;
+        public AABB scanArea = AABB.ofSize(Vec3.ZERO, 0, 0, 0);
         public Direction facing = Direction.NORTH;
     }
 }
