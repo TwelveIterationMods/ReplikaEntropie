@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:waste_barrel"
+        "recipes": "replikaentropie:waste_barrel"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

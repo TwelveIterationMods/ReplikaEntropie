@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:biomash"
+        "recipes": "replikaentropie:biomash"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

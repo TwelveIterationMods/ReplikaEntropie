@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:replika_leggings"
+        "recipes": "replikaentropie:replika_leggings"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

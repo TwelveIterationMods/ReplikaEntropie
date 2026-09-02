@@ -1,8 +1,6 @@
 {
   "type": "replikaentropie:metal_detector",
-  "state": {
-    "Name": "minecraft:sand"
-  },
+  "state": "minecraft:sand",
   "loot_table": "replikaentropie:metal_detector/sand",
   "chance": 0.005
 }

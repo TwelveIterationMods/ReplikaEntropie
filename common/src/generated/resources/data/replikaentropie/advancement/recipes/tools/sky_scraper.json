@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:sky_scraper"
+        "recipes": "replikaentropie:sky_scraper"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:biosteel"
+        "recipes": "replikaentropie:biosteel"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

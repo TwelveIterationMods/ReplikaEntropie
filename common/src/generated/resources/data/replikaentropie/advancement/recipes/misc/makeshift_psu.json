@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:makeshift_psu"
+        "recipes": "replikaentropie:makeshift_psu"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:metal_detector"
+        "recipes": "replikaentropie:metal_detector"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

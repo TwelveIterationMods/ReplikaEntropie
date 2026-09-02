@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:recycler"
+        "recipes": "replikaentropie:recycler"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

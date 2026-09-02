@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:funnel"
+        "recipes": "replikaentropie:funnel"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -2,19 +2,17 @@
   "type": "minecraft:empty",
   "pools": [
     {
-      "conditions": [
-        {
-          "chance": 0.6,
-          "condition": "minecraft:random_chance"
-        }
-      ],
+      "condition": {
+        "type": "minecraft:random_chance",
+        "chance": 0.6
+      },
       "entries": [
         {
           "type": "minecraft:item",
           "name": "replikaentropie:damaged_chipset"
         }
       ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ]
 }

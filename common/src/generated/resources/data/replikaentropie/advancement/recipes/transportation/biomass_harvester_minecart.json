@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:biomass_harvester_minecart"
+        "recipes": "replikaentropie:biomass_harvester_minecart"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

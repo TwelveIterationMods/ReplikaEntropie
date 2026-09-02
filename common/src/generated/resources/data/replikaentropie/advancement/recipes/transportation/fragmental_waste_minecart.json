@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:fragmental_waste_minecart"
+        "recipes": "replikaentropie:fragmental_waste_minecart"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

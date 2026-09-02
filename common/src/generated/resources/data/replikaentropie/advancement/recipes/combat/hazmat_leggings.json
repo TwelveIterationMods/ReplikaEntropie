@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:hazmat_leggings"
+        "recipes": "replikaentropie:hazmat_leggings"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

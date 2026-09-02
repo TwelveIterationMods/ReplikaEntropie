@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:hazmat_chestplate"
+        "recipes": "replikaentropie:hazmat_chestplate"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

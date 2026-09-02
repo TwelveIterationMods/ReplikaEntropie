@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:handheld_analyzer"
+        "recipes": "replikaentropie:handheld_analyzer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "replikaentropie:hazmat_lining"
+        "recipes": "replikaentropie:hazmat_lining"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
