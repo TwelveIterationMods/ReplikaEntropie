@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.client.gui.screens.inventory;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.client.gui.ExtendedGuiGraphics;
 import net.blay09.mods.replikaentropie.item.ModItems;
@@ -232,7 +233,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == 0
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT
                 && autoHackButton != null
                 && autoHackButton.active
                 && autoHackButton.isMouseOver(event.x(), event.y())) {
@@ -252,7 +253,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
             final var column = relativeMouseX / CELL_SIZE;
             final var row = relativeMouseY / CELL_SIZE;
             final var markCurrent = state.mark(column, row);
-            final var markToPlace = event.button() == 0 ? 1 : -1;
+            final var markToPlace = event.button() == InputConstants.MOUSE_BUTTON_LEFT ? 1 : -1;
             dragOnlyAffects = markCurrent;
             dragErases = (markCurrent == markToPlace);
             if (dragErases) {
@@ -290,7 +291,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
                 }
             } else {
                 if (currentMark == dragOnlyAffects) {
-                    final var markToPlace = event.button() == 0 ? 1 : -1;
+                    final var markToPlace = event.button() == InputConstants.MOUSE_BUTTON_LEFT ? 1 : -1;
                     mark(column, row, markToPlace);
                 }
             }
@@ -302,7 +303,7 @@ public class NonogramScreen extends AbstractContainerScreen<AbstractNonogramMenu
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        if (event.button() == 0) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             autoHackButtonHeld = false;
         }
 

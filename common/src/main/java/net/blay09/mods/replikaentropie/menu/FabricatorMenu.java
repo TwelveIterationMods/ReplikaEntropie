@@ -1,5 +1,6 @@
 package net.blay09.mods.replikaentropie.menu;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.slot.*;
 import net.blay09.mods.replikaentropie.power.MakeshiftPsu;
@@ -117,7 +118,7 @@ public class FabricatorMenu extends AbstractContainerMenu implements MakeshiftPo
             int recipeIndex = slots.get(slotId).getContainerSlot();
             if (recipeIndex < displays.size()) {
                 if (clickType == ContainerInput.PICKUP) {
-                    data.set(DATA_RECIPES_START + recipeIndex, Mth.clamp(data.get(DATA_RECIPES_START + recipeIndex) + (button == 1 ? -1 : 1), 0, 64));
+                    data.set(DATA_RECIPES_START + recipeIndex, Mth.clamp(data.get(DATA_RECIPES_START + recipeIndex) + (button == InputConstants.MOUSE_BUTTON_RIGHT ? -1 : 1), 0, 64));
                 } else if (clickType == ContainerInput.QUICK_MOVE) {
                     data.set(DATA_RECIPES_START + recipeIndex, data.get(DATA_RECIPES_START + recipeIndex) == -1 ? 0 : -1);
                 }
