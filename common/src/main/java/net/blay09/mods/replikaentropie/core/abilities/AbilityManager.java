@@ -18,6 +18,12 @@ import java.util.Map;
 
 public class AbilityManager {
 
+    private static final EquipmentSlot[] ARMOR_SLOTS = {
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET
+    };
     private static final Map<Identifier, Ability> abilities = new HashMap<>();
     private static final LocalAbilityStateManager localStateManager = new LocalAbilityStateManager();
     private static final AuthoritativeAbilityStateManager authoritativeStateManager = new AuthoritativeAbilityStateManager();
@@ -84,7 +90,7 @@ public class AbilityManager {
 
     @Nullable
     public static AbilitySourceContext resolveSource(Player player, Ability ability) {
-        for (final var slot : EquipmentSlot.values()) {
+        for (final var slot : ARMOR_SLOTS) {
             final var itemStack = player.getItemBySlot(slot);
             if (itemStack.isEmpty()) {
                 continue;
