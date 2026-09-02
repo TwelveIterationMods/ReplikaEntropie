@@ -13,8 +13,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class WasteBarrelBlock extends BaseEntityBlock {
-    public static final MapCodec<WasteBarrelBlock> CODEC = simpleCodec(WasteBarrelBlock::new);
-
     private final VoxelShape SHAPE = Shapes.or(
             box(4, 0, 2, 12, 16, 14),
             box(2, 0, 4, 14, 16, 12),
@@ -23,11 +21,6 @@ public class WasteBarrelBlock extends BaseEntityBlock {
 
     protected WasteBarrelBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

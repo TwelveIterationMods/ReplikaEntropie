@@ -27,8 +27,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class FragmentAcceleratorBlock extends BaseEntityBlock {
-    public static final MapCodec<FragmentAcceleratorBlock> CODEC = simpleCodec(FragmentAcceleratorBlock::new);
-
     public static final VoxelShape SHAPE = Shapes.or(
             Shapes.box(0, 0, 0, 1, 4/16f, 1),
             Shapes.box(1/16f, 4/16f, 7/16f, 3/16f, 12/16f, 9/16f),
@@ -41,11 +39,6 @@ public class FragmentAcceleratorBlock extends BaseEntityBlock {
 
     public FragmentAcceleratorBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

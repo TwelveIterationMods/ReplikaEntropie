@@ -24,8 +24,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class EntropicDataMinerBlock extends BaseEntityBlock {
-    public static final MapCodec<EntropicDataMinerBlock> CODEC = simpleCodec(EntropicDataMinerBlock::new);
-
     public static final VoxelShape[] SHAPES = new VoxelShape[]{
             Shapes.or(
                     Shapes.box(0f, 0f, 0f, 1f, 2 / 16f, 1f),
@@ -55,11 +53,6 @@ public class EntropicDataMinerBlock extends BaseEntityBlock {
 
     protected EntropicDataMinerBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

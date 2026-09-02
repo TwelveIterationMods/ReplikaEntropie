@@ -24,6 +24,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -190,13 +191,13 @@ public class ResearchMenu extends AbstractContainerMenu {
                 }
                 final var inventory = player.getInventory();
                 if (recipe != null && recipe.scrapCost() > 0) {
-                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.scrap.asItem()), recipe.scrapCost(), inventory);
+                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.scrap.asItem()), false, recipe.scrapCost(), inventory);
                 }
                 if (recipe != null && recipe.biomassCost() > 0) {
-                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.biomass.asItem()), recipe.biomassCost(), inventory);
+                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.biomass.asItem()), false, recipe.biomassCost(), inventory);
                 }
                 if (recipe != null && recipe.fragmentsCost() > 0) {
-                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.fragments.asItem()), recipe.fragmentsCost(), inventory);
+                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.fragments.asItem()), false, recipe.fragmentsCost(), inventory);
                 }
                 player.inventoryMenu.broadcastChanges();
                 Research.updateResearch(player, entry.id(), ResearchState.IN_PROGRESS);
@@ -206,7 +207,7 @@ public class ResearchMenu extends AbstractContainerMenu {
             } else if (entry.state() == MenuResearchState.UNLOCKED) {
                 final var itemStack = printAssemblyTicket(entry);
                 if (!player.addItem(itemStack)) {
-                    player.drop(itemStack, false);
+                    player.drop(itemStack, false, Prediction.SERVER_ONLY);
                 }
                 player.inventoryMenu.broadcastChanges();
             }

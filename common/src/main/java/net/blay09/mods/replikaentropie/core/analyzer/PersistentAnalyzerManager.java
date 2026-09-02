@@ -3,7 +3,6 @@ package net.blay09.mods.replikaentropie.core.analyzer;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
-import net.blay09.mods.replikaentropie.core.dataminer.DataMinedEvent;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.network.protocol.AnalyzedEntitiesMessage;
 import net.blay09.mods.replikaentropie.network.protocol.AnalyzedItemsMessage;
@@ -41,9 +40,8 @@ public class PersistentAnalyzerManager implements AnalyzerManager {
     public void analyzeItem(Player player, ItemStack itemStack) {
         final var usedScannerItemStack = player.getUseItem();
         if (itemStack.is(ModBlocks.chaosEngine.asItem()) && usedScannerItemStack.is(ModItems.handheldAnalyzer.asItem())) {
-            final var usedScannerItem = usedScannerItemStack.getItem();
+            player.onEquippedItemBroken(usedScannerItemStack, player.getUsedItemHand().asEquipmentSlot());
             usedScannerItemStack.shrink(1);
-            player.onEquippedItemBroken(usedScannerItem, player.getUsedItemHand().asEquipmentSlot());
             return;
         }
 

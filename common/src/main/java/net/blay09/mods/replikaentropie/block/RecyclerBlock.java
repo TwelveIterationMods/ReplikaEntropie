@@ -23,15 +23,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class RecyclerBlock extends BaseEntityBlock {
-    public static final MapCodec<RecyclerBlock> CODEC = simpleCodec(RecyclerBlock::new);
-
     public RecyclerBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

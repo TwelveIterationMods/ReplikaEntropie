@@ -24,15 +24,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class FabricatorBlock extends BaseEntityBlock {
-    public static final MapCodec<FabricatorBlock> CODEC = simpleCodec(FabricatorBlock::new);
-
     protected FabricatorBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

@@ -146,8 +146,8 @@ public class CraneRenderer implements BlockEntityRenderer<CraneBlockEntity, Cran
         if (!state.arm.isEmpty() || !state.magnet.isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(0.5f, 2f - 4/16f + 1/64f, 0.5f);
-            poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
-            poseStack.mulPose(Axis.YP.rotationDegrees(-state.armRotationDegrees));
+            poseStack.rotateDegrees(Axis.YP, -state.facing.toYRot());
+            poseStack.rotateDegrees(Axis.YP, -state.armRotationDegrees);
             poseStack.translate(-0.5f, 0f, 0f);
             state.arm.submit(poseStack, submitNodeCollector, state.armLightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.translate(state.magnetOffsetX, -1/16f, 0.5f - 1/16f + state.magnetOffsetZ);

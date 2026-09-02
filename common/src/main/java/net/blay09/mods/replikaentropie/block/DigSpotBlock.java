@@ -23,7 +23,6 @@ import org.jspecify.annotations.Nullable;
 
 public class DigSpotBlock extends BaseEntityBlock {
 
-    public static final MapCodec<DigSpotBlock> CODEC = simpleCodec(DigSpotBlock::new);
     private static final VoxelShape SHAPE = Shapes.empty();
 
     public DigSpotBlock(Properties properties) {
@@ -70,10 +69,5 @@ public class DigSpotBlock extends BaseEntityBlock {
                     0.0,
                     0.0);
         }
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 }

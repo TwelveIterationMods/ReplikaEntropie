@@ -17,15 +17,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class FragmentalWasteBlock extends WasteBarrelBlock {
-    public static final MapCodec<FragmentalWasteBlock> CODEC = simpleCodec(FragmentalWasteBlock::new);
-
     protected FragmentalWasteBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

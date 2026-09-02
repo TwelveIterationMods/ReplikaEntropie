@@ -111,7 +111,7 @@ public class WorldEaterRenderer implements BlockEntityRenderer<WorldEaterBlockEn
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
+        poseStack.rotateDegrees(Axis.YP, -state.facing.toYRot());
         poseStack.translate(0f, 0f, 0.38f);
 
         for (int row = 0; row < rows; row++) {

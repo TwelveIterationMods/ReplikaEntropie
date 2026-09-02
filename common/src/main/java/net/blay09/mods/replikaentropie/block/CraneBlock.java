@@ -32,7 +32,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
 public class CraneBlock extends BaseEntityBlock {
-    public static final MapCodec<CraneBlock> CODEC = simpleCodec(CraneBlock::new);
     private static final VoxelShape LOWER_SHAPE = Shapes.or(
             box(2, 0, 2, 14, 2, 14),
             box(5, 2, 5, 11, 16, 11)
@@ -48,11 +47,6 @@ public class CraneBlock extends BaseEntityBlock {
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
                 .setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER)
                 .setValue(BlockStateProperties.POWERED, false));
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

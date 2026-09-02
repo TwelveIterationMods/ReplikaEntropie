@@ -41,7 +41,6 @@ public class LavaSinkBlock extends BaseEntityBlock {
             Shapes.box(0, 13 / 16f, 0.5 / 16f, 1, 14 / 16f, 15.5 / 16f),
             Shapes.box(0, 14 / 16f, 14.5 / 16f, 1, 1, 15.5 / 16f)
     ).optimize());
-    public static final MapCodec<LavaSinkBlock> CODEC = simpleCodec(LavaSinkBlock::new);
 
     public LavaSinkBlock(Properties properties) {
         super(properties);
@@ -50,11 +49,6 @@ public class LavaSinkBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.HORIZONTAL_FACING);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

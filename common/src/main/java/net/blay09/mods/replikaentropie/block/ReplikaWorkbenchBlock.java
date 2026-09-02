@@ -29,8 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class ReplikaWorkbenchBlock extends BaseEntityBlock {
-    public static final MapCodec<ReplikaWorkbenchBlock> CODEC = simpleCodec(ReplikaWorkbenchBlock::new);
-
     public static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(Shapes.or(
             Shapes.box(0, 0, 0, 1, 5/16f, 1),
             Shapes.box(0.5f/16f, 15/16f, 1/16f, 1 - 0.5f/16f, 1, 1 - 0.5f/16f),
@@ -41,11 +39,6 @@ public class ReplikaWorkbenchBlock extends BaseEntityBlock {
 
     public ReplikaWorkbenchBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

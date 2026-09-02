@@ -127,7 +127,7 @@ public class NonogramMenu extends AbstractNonogramMenu {
         for (final var itemStack : inventory.getNonEquipmentItems()) {
             if (itemStack.is(ModItems.automaticHackTool.asItem())) {
                 itemStack.hurtAndBreak(1, serverPlayer.level(), serverPlayer, item -> {
-                    final var soundEvent = item.components().get(DataComponents.BREAK_SOUND);
+                    final var soundEvent = item.get(DataComponents.BREAK_SOUND);
                     if (soundEvent != null) {
                         serverPlayer.level().playSound(null, serverPlayer, soundEvent.value(), SoundSource.PLAYERS, 1f ,1f);
                     }

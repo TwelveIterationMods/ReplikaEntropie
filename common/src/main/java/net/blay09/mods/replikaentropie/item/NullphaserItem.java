@@ -56,7 +56,7 @@ public class NullphaserItem extends Item {
     }
 
     private boolean tryTeleportTo(ServerLevel level, ServerPlayer player, ItemStack itemStack, InteractionHand hand, BlockPos pos) {
-        if (level.getBlockState(pos).blocksMotion()) {
+        if (!level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()) {
             return false;
         }
 

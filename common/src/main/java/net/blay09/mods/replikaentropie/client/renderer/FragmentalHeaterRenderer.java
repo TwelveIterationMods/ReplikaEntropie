@@ -132,8 +132,8 @@ public class FragmentalHeaterRenderer implements BlockEntityRenderer<FragmentalH
             if (!contentState.item.isEmpty()) {
                 poseStack.pushPose();
                 poseStack.translate(contentState.x, contentState.y, contentState.z);
-                poseStack.mulPose(Axis.XP.rotationDegrees(90f));
-                poseStack.mulPose(Axis.ZP.rotationDegrees(contentState.rotation));
+                poseStack.rotateDegrees(Axis.XP, 90f);
+                poseStack.rotateDegrees(Axis.ZP, contentState.rotation);
                 poseStack.scale(contentState.scale, contentState.scale, contentState.scale);
                 contentState.item.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
                 poseStack.popPose();

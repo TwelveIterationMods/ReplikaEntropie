@@ -29,7 +29,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.Map;
 
 public class BluePrinterBlock extends BaseEntityBlock {
-    public static final MapCodec<BluePrinterBlock> CODEC = simpleCodec(BluePrinterBlock::new);
     private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(Shapes.or(
             Shapes.box(2 / 16f, 2 / 16f, 2 / 16f, 4 / 16f, 14 / 16f, 14 / 16f),
             Shapes.box(4 / 16f, 2 / 16f, 12 / 16f, 12 / 16f, 14 / 16f, 14 / 16f),
@@ -44,11 +43,6 @@ public class BluePrinterBlock extends BaseEntityBlock {
 
     protected BluePrinterBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

@@ -40,7 +40,6 @@ public class WaterSinkBlock extends BaseEntityBlock {
             Shapes.box(0, 13 / 16f, 0.5 / 16f, 1, 14 / 16f, 15.5 / 16f),
             Shapes.box(0, 14 / 16f, 14.5 / 16f, 1, 1, 15.5 / 16f)
     ).optimize());
-    public static final MapCodec<WaterSinkBlock> CODEC = simpleCodec(WaterSinkBlock::new);
 
     public WaterSinkBlock(Properties properties) {
         super(properties);
@@ -49,11 +48,6 @@ public class WaterSinkBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.HORIZONTAL_FACING);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

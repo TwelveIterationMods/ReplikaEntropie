@@ -14,17 +14,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class FragmentedSunBlock extends Block {
-    public static final MapCodec<FragmentedSunBlock> CODEC = simpleCodec(FragmentedSunBlock::new);
-
     private static final VoxelShape SHAPE = Shapes.box(4.5 / 16f, 3.5 / 16f, 4.5 / 16f, 11.5 / 16f, 10.5 / 16f, 11.5 / 16f);
 
     public FragmentedSunBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     @Override

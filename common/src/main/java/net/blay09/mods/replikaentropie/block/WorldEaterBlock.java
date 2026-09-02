@@ -27,8 +27,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class WorldEaterBlock extends BaseEntityBlock {
-    public static final MapCodec<WorldEaterBlock> CODEC = simpleCodec(WorldEaterBlock::new);
-
     public static final VoxelShape[] SHAPES = new VoxelShape[] {
             Shapes.or(
                     Shapes.box(0, 0, 0, 1, 1, 13 / 16f),
@@ -54,11 +52,6 @@ public class WorldEaterBlock extends BaseEntityBlock {
 
     public WorldEaterBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

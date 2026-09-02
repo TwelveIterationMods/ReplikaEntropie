@@ -27,8 +27,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class BiomassHarvesterBlock extends BaseEntityBlock {
-    public static final MapCodec<BiomassHarvesterBlock> CODEC = simpleCodec(BiomassHarvesterBlock::new);
-
     private static final VoxelShape SHAPE = Shapes.or(
             Shapes.box(0, 0, 0, 1, 6 / 16f, 1),
             Shapes.box(5 / 16f, 4 / 16f, 5 / 16f, 11 / 16f, 10 / 16f, 11 / 16f),
@@ -37,11 +35,6 @@ public class BiomassHarvesterBlock extends BaseEntityBlock {
 
     public BiomassHarvesterBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

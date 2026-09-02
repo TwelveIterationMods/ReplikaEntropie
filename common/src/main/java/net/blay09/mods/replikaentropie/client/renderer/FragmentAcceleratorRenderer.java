@@ -72,7 +72,7 @@ public class FragmentAcceleratorRenderer implements BlockEntityRenderer<Fragment
         for (final var item : state.items) {
             poseStack.pushPose();
             poseStack.translate(item.x, item.y, item.z);
-            poseStack.mulPose(Axis.YP.rotationDegrees(item.yRot));
+            poseStack.rotateDegrees(Axis.YP, item.yRot);
             poseStack.scale(item.scale, item.scale, item.scale);
             item.item.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();

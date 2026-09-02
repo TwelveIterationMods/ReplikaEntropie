@@ -23,15 +23,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class AssemblerBlock extends BaseEntityBlock {
-    public static final MapCodec<AssemblerBlock> CODEC = simpleCodec(AssemblerBlock::new);
-
     public AssemblerBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

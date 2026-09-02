@@ -65,7 +65,7 @@ public class BiomassHarvesterRenderer implements BlockEntityRenderer<BiomassHarv
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(Axis.XP.rotationDegrees(90f));
+        poseStack.rotateDegrees(Axis.XP, 90f);
         final var scale = 1.25f;
         poseStack.scale(scale, scale, scale);
 
@@ -76,8 +76,8 @@ public class BiomassHarvesterRenderer implements BlockEntityRenderer<BiomassHarv
             }
 
             poseStack.pushPose();
-            poseStack.mulPose(Axis.ZP.rotationDegrees(i * 90f));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(state.spinDegrees));
+            poseStack.rotateDegrees(Axis.ZP, i * 90f);
+            poseStack.rotateDegrees(Axis.ZP, state.spinDegrees);
 
             if (state.warningWobble != 0f) {
                 poseStack.translate(0.35f + state.warningWobble, 0.25f + state.warningWobble, 0f);

@@ -23,8 +23,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class FragmentalHeaterBlock extends BaseEntityBlock {
-    public static final MapCodec<FragmentalHeaterBlock> CODEC = simpleCodec(FragmentalHeaterBlock::new);
-
     public static final VoxelShape SHAPE = Shapes.or(
             Shapes.box(0, 0, 0, 1, 1/16f, 1),
             Shapes.box(1/16f, 1/16f, 1/16f, 15/16f, 15/16f, 15/16f),
@@ -33,11 +31,6 @@ public class FragmentalHeaterBlock extends BaseEntityBlock {
 
     public FragmentalHeaterBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

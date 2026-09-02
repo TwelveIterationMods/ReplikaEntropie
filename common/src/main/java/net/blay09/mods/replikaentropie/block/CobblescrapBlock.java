@@ -24,15 +24,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class CobblescrapBlock extends BaseEntityBlock {
-    public static final MapCodec<CobblescrapBlock> CODEC = simpleCodec(CobblescrapBlock::new);
-
     public CobblescrapBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

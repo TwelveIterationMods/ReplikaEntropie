@@ -13,14 +13,15 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
+import net.minecraft.world.level.storage.loot.entries.UniformContainerBase;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemDamageFunction;
 import net.minecraft.world.level.storage.loot.functions.SetNameFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -37,15 +38,15 @@ public class ModGameplayLootTableProvider extends SimpleFabricLootTableSubProvid
         output.accept(ResourceKey.create(Registries.LOOT_TABLE, id("metal_detector/sand")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .add(LootItem.lootTableItem(Items.GOLD_NUGGET).setWeight(4)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
+                                .apply(SetItemCountFunction.setCount(ContextIntProviders.between(1, 2))))
                         .add(LootItem.lootTableItem(Items.IRON_NUGGET).setWeight(6)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
+                                .apply(SetItemCountFunction.setCount(ContextIntProviders.between(1, 2))))
                         .add(LootItem.lootTableItem(ModItems.scrap))
                         .add(LootItem.lootTableItem(Items.IRON_CHAIN))
                         .add(LootItem.lootTableItem(Items.IRON_HELMET)
-                                .apply(SetItemDamageFunction.setDamage(UniformGenerator.between(0.1f, 0.2f))))
+                                .apply(SetItemDamageFunction.setDamage(ContextFloatProviders.between(0.1f, 0.2f))))
                         .add(LootItem.lootTableItem(Items.IRON_BOOTS)
-                                .apply(SetItemDamageFunction.setDamage(UniformGenerator.between(0.1f, 0.2f))))
+                                .apply(SetItemDamageFunction.setDamage(ContextFloatProviders.between(0.1f, 0.2f))))
                         .add(LootItem.lootTableItem(ModItems.damagedChipset).setWeight(2))));
 
         output.accept(ResourceKey.create(Registries.LOOT_TABLE, id("injected/damaged_chipsets")), LootTable.lootTable()
@@ -60,10 +61,13 @@ public class ModGameplayLootTableProvider extends SimpleFabricLootTableSubProvid
                         .add(chipsetAssemblyTicket(2))));
     }
 
-    private static LootPoolSingletonContainer.Builder<?> chipsetAssemblyTicket(int usesLeft) {
+    private static UniformContainerBase.Builder<?> chipsetAssemblyTicket(int usesLeft) {
         return LootItem.lootTableItem(ModItems.assemblyTicket)
                 .apply(SetNameFunction.setName(Component.translatable("item.replikaentropie.assembly_ticket.loot.chipset"), SetNameFunction.Target.CUSTOM_NAME))
                 .apply(SetComponentsFunction.setComponent(ModDataComponents.assemblyTicket(), new AssemblyTicket(id("assembler/chipset"), usesLeft)));
     }
 
+    @Override
+    public void run() {
+    }
 }

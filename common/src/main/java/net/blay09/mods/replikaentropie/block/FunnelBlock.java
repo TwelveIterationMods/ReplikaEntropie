@@ -23,15 +23,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class FunnelBlock extends HopperBlock {
-    public static final MapCodec<HopperBlock> CODEC = simpleCodec(FunnelBlock::new);
-
     public FunnelBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public MapCodec<HopperBlock> codec() {
-        return CODEC;
     }
 
     @Override

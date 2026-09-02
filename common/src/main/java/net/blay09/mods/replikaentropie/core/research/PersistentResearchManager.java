@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
@@ -56,11 +57,12 @@ public class PersistentResearchManager implements ResearchManager {
         researchTag.putInt(id.toString(), state.ordinal());
         modData.put(TAG_RESEARCH, researchTag);
 
-        if (state == ResearchState.UNLOCKED && player.level() instanceof ServerLevel serverLevel) {
+        if (state == ResearchState.UNLOCKED && player instanceof ServerPlayer serverPlayer
+                && player.level() instanceof ServerLevel serverLevel) {
             serverLevel.recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, id)).ifPresent(recipe -> {
                 if (recipe.value() instanceof ResearchRecipe researchRecipe
                         && researchRecipe.type() == ResearchRecipe.Type.CRAFTING) {
-                    player.awardRecipesByKey(researchRecipe.unlockedRecipes().stream().map(it -> ResourceKey.create(Registries.RECIPE, it)).toList());
+                    serverPlayer.awardRecipesByKey(researchRecipe.unlockedRecipes().stream().map(it -> ResourceKey.create(Registries.RECIPE, it)).toList());
                 }
             });
         }

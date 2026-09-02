@@ -52,7 +52,7 @@ public class ChaosEngineRenderer implements BlockEntityRenderer<ChaosEngineBlock
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f);
-        poseStack.mulPose(Axis.YP.rotationDegrees(state.time * 16));
+        poseStack.rotateDegrees(Axis.YP, state.time * 16);
         poseStack.translate(0f, Math.sin(state.time * 0.85f) * 0.05f, 0f);
 
         float scale = 0.5f;

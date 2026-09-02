@@ -23,15 +23,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class LavaScrapBlock extends BaseEntityBlock {
-    public static final MapCodec<LavaScrapBlock> CODEC = simpleCodec(LavaScrapBlock::new);
-
     public LavaScrapBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

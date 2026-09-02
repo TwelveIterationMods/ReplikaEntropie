@@ -27,8 +27,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class ChaosEngineBlock extends BaseEntityBlock {
-    public static final MapCodec<ChaosEngineBlock> CODEC = simpleCodec(ChaosEngineBlock::new);
-
     public static final VoxelShape[] SHAPES = new VoxelShape[]{
             Shapes.or(
                     Shapes.box(0, 0, 0, 1, 2 / 16f, 1),
@@ -93,11 +91,6 @@ public class ChaosEngineBlock extends BaseEntityBlock {
 
     public ChaosEngineBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

@@ -28,15 +28,9 @@ import org.jetbrains.annotations.Nullable;
 public class SolarSinkBlock extends BaseEntityBlock {
 
     private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, 4 / 16f, 1);
-    public static final MapCodec<SolarSinkBlock> CODEC = simpleCodec(SolarSinkBlock::new);
 
     public SolarSinkBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override
