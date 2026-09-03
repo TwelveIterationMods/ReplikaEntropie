@@ -3,7 +3,7 @@ package net.blay09.mods.replikaentropie.fabric.datagen;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.item.ModItems;
-import net.blay09.mods.replikaentropie.registry.ModResearch;
+import net.blay09.mods.replikaentropie.registry.ModDynamicRegistries;
 import net.blay09.mods.replikaentropie.registry.Research;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
@@ -521,7 +521,7 @@ public class ModResearchProvider extends FabricDynamicRegistryProvider {
             } else if (nonogram == null) {
                 throw new IllegalStateException("Research " + researchId + " is missing a nonogram");
             }
-            entries.add(ResourceKey.create(ModResearch.REGISTRY_KEY, researchId), new Research(icon, hardDependencies, softDependencies, unlockedRecipes, scrap, biomass, fragments, data, sortOrder, type, nonogram));
+            entries.add(ResourceKey.create(ModDynamicRegistries.RESEARCH, researchId), new Research(icon, hardDependencies, softDependencies, unlockedRecipes, scrap, biomass, fragments, data, sortOrder, type, nonogram));
         }
     }
 }

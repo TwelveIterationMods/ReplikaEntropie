@@ -5,13 +5,13 @@ import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.replikaentropie.component.AssemblyTicket;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
-import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
+import net.blay09.mods.replikaentropie.core.nonogram.Nonogram;
 import net.blay09.mods.replikaentropie.core.research.ResearchManagers;
 import net.blay09.mods.replikaentropie.core.research.ResearchState;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.slot.ResearchCostSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ResearchEntrySlot;
-import net.blay09.mods.replikaentropie.registry.ModResearch;
+import net.blay09.mods.replikaentropie.registry.ModDynamicRegistries;
 import net.blay09.mods.replikaentropie.registry.Research;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -229,22 +229,22 @@ public class ResearchMenu extends AbstractContainerMenu {
             @Override
             public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
                 final var researchId = entry.id();
-                final var nonogram = NonogramLoader.getNonogram(entry.research().nonogram())
-                        .orElseGet(NonogramLoader::createFallback);
+                final var nonogram = ModDynamicRegistries.nonograms(player.level().registryAccess()).getValue(entry.research().nonogram());
+                final var resolvedNonogram = nonogram != null ? nonogram : Nonogram.createFallbackNonogram();
                 final var nonogramState = ResearchManagers.getNonogramState(player, researchId)
-                        .map(nonogram::ensureState)
-                        .orElseGet(nonogram::createState);
-                return new NonogramResearchMenu(containerId, inventory, nonogram, nonogramState, researchId);
+                        .map(resolvedNonogram::ensureState)
+                        .orElseGet(resolvedNonogram::createState);
+                return new NonogramResearchMenu(containerId, inventory, resolvedNonogram, nonogramState, researchId);
             }
 
             @Override
             public NonogramMenu.Data getScreenOpeningData(ServerPlayer player) {
-                final var nonogram = NonogramLoader.getNonogram(entry.research().nonogram())
-                        .orElseGet(NonogramLoader::createFallback);
+                final var nonogram = ModDynamicRegistries.nonograms(player.level().registryAccess()).getValue(entry.research().nonogram());
+                final var resolvedNonogram = nonogram != null ? nonogram : Nonogram.createFallbackNonogram();
                 final var nonogramState = ResearchManagers.getNonogramState(player, entry.id())
-                        .map(nonogram::ensureState)
-                        .orElseGet(nonogram::createState);
-                return new NonogramMenu.Data(nonogram.clues(), nonogramState);
+                        .map(resolvedNonogram::ensureState)
+                        .orElseGet(resolvedNonogram::createState);
+                return new NonogramMenu.Data(resolvedNonogram.clues(), nonogramState);
             }
 
             @Override
@@ -404,7 +404,7 @@ public class ResearchMenu extends AbstractContainerMenu {
 
             final var researchManager = ResearchManagers.getManager(player);
 
-            final var entries = ModResearch.registry(serverLevel.registryAccess()).listElements()
+            final var entries = ModDynamicRegistries.research(serverLevel.registryAccess()).listElements()
                     .map(researchHolder -> {
                         final var id = researchHolder.key().identifier();
                         final var research = researchHolder.value();

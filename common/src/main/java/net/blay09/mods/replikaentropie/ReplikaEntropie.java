@@ -15,7 +15,6 @@ import net.blay09.mods.replikaentropie.core.crane.BlockCraneHandlers;
 import net.blay09.mods.replikaentropie.core.crane.ContainerCraneHandlers;
 import net.blay09.mods.replikaentropie.core.crane.MinecartCraneHandlers;
 import net.blay09.mods.replikaentropie.core.dataminer.LocalEventLog;
-import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
 import net.blay09.mods.replikaentropie.core.waste.FragmentalWaste;
 import net.blay09.mods.replikaentropie.effect.ModEffects;
 import net.blay09.mods.replikaentropie.entity.ModEntities;
@@ -24,7 +23,7 @@ import net.blay09.mods.replikaentropie.loot.ModLoot;
 import net.blay09.mods.replikaentropie.menu.ModMenus;
 import net.blay09.mods.replikaentropie.network.ModNetworking;
 import net.blay09.mods.replikaentropie.recipe.ModRecipes;
-import net.blay09.mods.replikaentropie.registry.ModResearch;
+import net.blay09.mods.replikaentropie.registry.ModDynamicRegistries;
 import net.blay09.mods.replikaentropie.worldgen.ModPoiTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -51,7 +50,7 @@ public class ReplikaEntropie {
         registrars.creativeModeTabs(ModItems::initialize);
         registrars.menuTypes(ModMenus::initialize);
         registrars.recipeTypes(ModRecipes::initialize);
-        ModResearch.initialize(registrars.registrar());
+        ModDynamicRegistries.initialize(registrars.registrar());
         registrars.poiTypes(ModPoiTypes::initialize);
         registrars.registrar(Registries.MOB_EFFECT, ModEffects::initialize);
 
@@ -68,8 +67,6 @@ public class ReplikaEntropie {
         AbilityManager.initialize();
         MagphaseAbility.initialize();
         StompingAbility.initialize();
-
-        registrars.resourceReloadListeners(registrar -> registrar.register("nonogram_loader", new NonogramLoader()));
 
         ItemCallback.Tooltip.EVENT.register((itemStack, tooltip, flags) -> {
             final var itemDescription = itemStack.get(ModDataComponents.itemDescription());

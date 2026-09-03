@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramClueProvider;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramClues;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
-import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
@@ -16,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class NonogramEditorMenu extends AbstractNonogramMenu {
+
+    private record JsonNonogram(int width, int height, int[][] grid) {}
 
     private final NonogramState nonogramState;
     @Nullable
@@ -73,7 +74,7 @@ public class NonogramEditorMenu extends AbstractNonogramMenu {
             }
         }
 
-        final var nonogramJson = new NonogramLoader.JsonNonogram(width, height, grid);
+        final var nonogramJson = new JsonNonogram(width, height, grid);
         final var jsonContent = new Gson().toJson(nonogramJson);
 
         final var outputDir = Path.of("replikaentropie_nonogram_output");

@@ -5,18 +5,18 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.balm.world.BalmMenuProvider;
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.blay09.mods.replikaentropie.core.nonogram.Nonogram;
-import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
 import net.blay09.mods.replikaentropie.core.research.ResearchManagers;
 import net.blay09.mods.replikaentropie.core.research.ResearchState;
 import net.blay09.mods.replikaentropie.menu.NonogramEditorMenu;
 import net.blay09.mods.replikaentropie.menu.NonogramMenu;
-import net.blay09.mods.replikaentropie.registry.ModResearch;
+import net.blay09.mods.replikaentropie.registry.ModDynamicRegistries;
 import net.blay09.mods.replikaentropie.registry.Research;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -44,9 +44,6 @@ public class ReplikaEntropieCommand {
     private static final SimpleCommandExceptionType INVALID_RESEARCH = new SimpleCommandExceptionType(Component.translatable("commands.replikaentropie.research.invalidResearch"));
     private static final SimpleCommandExceptionType INVALID_NONOGRAM = new SimpleCommandExceptionType(Component.translatable("commands.replikaentropie.nonogram.invalidNonogram"));
 
-    // POSTJAM need a sided proxy here because SharedSuggestionProvider does not have level access
-    public static final SuggestionProvider<CommandSourceStack> NONOGRAMS = SuggestionProviders.register(id("nonograms"), (context, builder) -> SharedSuggestionProvider.suggestResource(NonogramLoader.getNonogramIds(), builder));
-
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("replikaentropie")
                 .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
@@ -56,13 +53,13 @@ public class ReplikaEntropieCommand {
                 .then(Commands.literal("research")
                         .then(Commands.literal("unlock")
                                 .then(Commands.argument("targets", EntityArgument.players())
-                                        .then(Commands.argument("id", ResourceKeyArgument.key(ModResearch.REGISTRY_KEY))
+                                        .then(Commands.argument("id", ResourceKeyArgument.key(ModDynamicRegistries.RESEARCH))
                                                 .executes(ctx -> researchUnlock(ctx, EntityArgument.getPlayers(ctx, "targets"), ctx.getArgument("id", ResourceKey.class))))
                                         .then(Commands.literal("all").executes(ctx -> researchUnlockAll(ctx, EntityArgument.getPlayers(ctx, "targets")))))
                         )
                         .then(Commands.literal("reset")
                                 .then(Commands.argument("targets", EntityArgument.players())
-                                        .then(Commands.argument("id", ResourceKeyArgument.key(ModResearch.REGISTRY_KEY))
+                                        .then(Commands.argument("id", ResourceKeyArgument.key(ModDynamicRegistries.RESEARCH))
                                                 .executes(ctx -> researchReset(ctx, EntityArgument.getPlayers(ctx, "targets"), ctx.getArgument("id", ResourceKey.class))))
                                         .then(Commands.literal("all").executes(ctx -> researchResetAll(ctx, EntityArgument.getPlayers(ctx, "targets")))))
                         )
@@ -75,19 +72,16 @@ public class ReplikaEntropieCommand {
                                                         .executes(ctx -> createNonogram(ctx, IdentifierArgument.getId(ctx, "id"), IntegerArgumentType.getInteger(ctx, "width"), IntegerArgumentType.getInteger(ctx, "height")))
                                                 ))))
                         .then(Commands.literal("view")
-                                .then(Commands.argument("id", IdentifierArgument.id())
-                                        .suggests(NONOGRAMS)
-                                        .executes(ctx -> viewNonogram(ctx, IdentifierArgument.getId(ctx, "id")))
+                                .then(Commands.argument("id", ResourceKeyArgument.key(ModDynamicRegistries.NONOGRAM))
+                                        .executes(ctx -> viewNonogram(ctx, ResourceKeyArgument.getRegistryKey(ctx, "id", ModDynamicRegistries.NONOGRAM)))
                                 ))
                         .then(Commands.literal("play")
-                                .then(Commands.argument("id", IdentifierArgument.id())
-                                        .suggests(NONOGRAMS)
-                                        .executes(ctx -> playNonogram(ctx, IdentifierArgument.getId(ctx, "id")))
+                                .then(Commands.argument("id", ResourceKeyArgument.key(ModDynamicRegistries.NONOGRAM))
+                                        .executes(ctx -> playNonogram(ctx, ResourceKeyArgument.getRegistryKey(ctx, "id", ModDynamicRegistries.NONOGRAM)))
                                 ))
                         .then(Commands.literal("edit")
-                                .then(Commands.argument("id", IdentifierArgument.id())
-                                        .suggests(NONOGRAMS)
-                                        .executes(ctx -> editNonogram(ctx, IdentifierArgument.getId(ctx, "id")))))
+                                .then(Commands.argument("id", ResourceKeyArgument.key(ModDynamicRegistries.NONOGRAM))
+                                        .executes(ctx -> editNonogram(ctx, ResourceKeyArgument.getRegistryKey(ctx, "id", ModDynamicRegistries.NONOGRAM)))))
                 )
         );
     }
@@ -100,7 +94,7 @@ public class ReplikaEntropieCommand {
     }
 
     private static int researchUnlock(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> targets, ResourceKey<Research> researchKey) throws CommandSyntaxException {
-        ModResearch.registry(context.getSource().registryAccess()).get(researchKey).orElseThrow(INVALID_RESEARCH::create);
+        ModDynamicRegistries.research(context.getSource().registryAccess()).get(researchKey).orElseThrow(INVALID_RESEARCH::create);
         final var researchId = researchKey.identifier();
         targets.forEach(player -> ResearchManagers.updateResearch(player, researchId, ResearchState.UNLOCKED));
         context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.unlock", researchId.toString()), false);
@@ -108,7 +102,7 @@ public class ReplikaEntropieCommand {
     }
 
     private static int researchUnlockAll(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> targets) {
-        final var registry = ModResearch.registry(context.getSource().registryAccess());
+        final var registry = ModDynamicRegistries.research(context.getSource().registryAccess());
         targets.forEach(player -> registry.keySet()
                 .forEach(id -> ResearchManagers.updateResearch(player, id, ResearchState.UNLOCKED)));
         context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.unlockAll"), false);
@@ -116,7 +110,7 @@ public class ReplikaEntropieCommand {
     }
 
     private static int researchReset(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> targets, ResourceKey<Research> researchKey) throws CommandSyntaxException {
-        ModResearch.registry(context.getSource().registryAccess()).get(researchKey).orElseThrow(INVALID_RESEARCH::create);
+        ModDynamicRegistries.research(context.getSource().registryAccess()).get(researchKey).orElseThrow(INVALID_RESEARCH::create);
         final var researchId = researchKey.identifier();
         targets.forEach(player -> ResearchManagers.updateResearch(player, researchId, ResearchState.NONE));
         context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.research.reset", researchId.toString()), false);
@@ -161,7 +155,7 @@ public class ReplikaEntropieCommand {
 
     private static int viewNonogram(CommandContext<CommandSourceStack> context, Identifier id) throws CommandSyntaxException {
         final var player = context.getSource().getPlayerOrException();
-        final var nonogram = NonogramLoader.getNonogram(id).orElseThrow(INVALID_NONOGRAM::create);
+        final var nonogram = getNonogram(context, id);
 
         Balm.networking().openMenu(player, new BalmMenuProvider<NonogramMenu.Data>() {
             @Override
@@ -191,7 +185,7 @@ public class ReplikaEntropieCommand {
 
     private static int playNonogram(CommandContext<CommandSourceStack> context, Identifier id) throws CommandSyntaxException {
         final var player = context.getSource().getPlayerOrException();
-        final var nonogram = NonogramLoader.getNonogram(id).orElseThrow(INVALID_NONOGRAM::create);
+        final var nonogram = getNonogram(context, id);
 
         Balm.networking().openMenu(player, new BalmMenuProvider<NonogramMenu.Data>() {
             @Override
@@ -221,7 +215,7 @@ public class ReplikaEntropieCommand {
 
     private static int editNonogram(CommandContext<CommandSourceStack> context, Identifier id) throws CommandSyntaxException {
         final var player = context.getSource().getPlayerOrException();
-        final var nonogram = NonogramLoader.getNonogram(id).orElseThrow(INVALID_NONOGRAM::create);
+        final var nonogram = getNonogram(context, id);
 
         Balm.networking().openMenu(player, new BalmMenuProvider<NonogramMenu.Data>() {
             @Override
@@ -247,6 +241,14 @@ public class ReplikaEntropieCommand {
 
         context.getSource().sendSuccess(() -> Component.translatable("commands.replikaentropie.nonogram.edit", id.toString()), false);
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static Nonogram getNonogram(CommandContext<CommandSourceStack> context, Identifier id) throws CommandSyntaxException {
+        final var nonogram = ModDynamicRegistries.nonograms(context.getSource().registryAccess()).getValue(id);
+        if (nonogram == null) {
+            throw INVALID_NONOGRAM.create();
+        }
+        return nonogram;
     }
 
 }

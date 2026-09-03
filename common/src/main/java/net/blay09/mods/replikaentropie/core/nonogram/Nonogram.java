@@ -1,8 +1,18 @@
 package net.blay09.mods.replikaentropie.core.nonogram;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 
+import java.util.List;
+
 public class Nonogram implements NonogramClueProvider {
+    public static final Codec<Nonogram> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("width").forGetter(Nonogram::width),
+            Codec.INT.fieldOf("height").forGetter(Nonogram::height),
+            Codec.INT.listOf().listOf().fieldOf("grid").forGetter(Nonogram::serializedGrid)
+    ).apply(instance, Nonogram::ofSerializedGrid));
+
     private final int width;
     private final int height;
     private final int[] grid;
@@ -23,6 +33,24 @@ public class Nonogram implements NonogramClueProvider {
             }
         }
         return new Nonogram(width, height, indexedGrid);
+    }
+
+    private static Nonogram ofSerializedGrid(int width, int height, List<List<Integer>> grid) {
+        final var indexedGrid = new int[width * height];
+        for (int column = 0; column < width; column++) {
+            for (int row = 0; row < height; row++) {
+                indexedGrid[index(column, row, width)] = grid.get(column).get(row);
+            }
+        }
+        return new Nonogram(width, height, indexedGrid);
+    }
+
+    private List<List<Integer>> serializedGrid() {
+        return java.util.stream.IntStream.range(0, width)
+                .mapToObj(column -> java.util.stream.IntStream.range(0, height)
+                        .mapToObj(row -> grid[index(column, row)])
+                        .toList())
+                .toList();
     }
 
     public int width() {
@@ -88,5 +116,15 @@ public class Nonogram implements NonogramClueProvider {
             return createState();
         }
         return state;
+    }
+
+    public static Nonogram createFallbackNonogram() {
+        return Nonogram.ofGrid(5, 5, new int[][] {
+                { 0, 0, 1, 0, 0 },
+                { 0, 1, 1, 1, 0 },
+                { 1, 1, 1, 1, 1 },
+                { 0, 1, 1, 1, 0 },
+                { 0, 0, 1, 0, 0 },
+        });
     }
 }
