@@ -17,7 +17,7 @@ public class ModEffects {
     public static void initialize(BalmRegistrar.Scoped<MobEffect> registries) {
         entropicSpeed = registries.register("entropic_speed", _ ->
                 new CustomMobEffect(MobEffectCategory.BENEFICIAL, 0xFF33EBFF)
-                        .addAttributeModifier(Attributes.MOVEMENT_SPEED, id("entropic_speed"), 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-        fragmentalContamination = registries.register("fragmental_contamination", _ -> new FragmentalContaminationEffect());
+                        .addAttributeModifier(Attributes.MOVEMENT_SPEED, id("entropic_speed"), 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)).asHolder();
+        fragmentalContamination = registries.register("fragmental_contamination", _ -> new FragmentalContaminationEffect()).asHolder();
     }
 }
