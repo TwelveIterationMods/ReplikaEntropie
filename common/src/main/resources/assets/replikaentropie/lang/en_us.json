@@ -299,7 +299,7 @@
   "commands.replikaentropie.research.unlockAll": "Unlocked all research.",
   "commands.replikaentropie.research.reset": "Reset research: %s",
   "commands.replikaentropie.research.resetAll": "Reset all research.",
-  "commands.replikaentropie.research.invalidRecipe": "Not a research recipe.",
+  "commands.replikaentropie.research.invalidResearch": "Research not found.",
   "commands.replikaentropie.nonogram.create": "Created nonogram %s (%d x %d).",
   "commands.replikaentropie.nonogram.view": "Opened nonogram %s (view).",
   "commands.replikaentropie.nonogram.play": "Opened nonogram %s (play).",

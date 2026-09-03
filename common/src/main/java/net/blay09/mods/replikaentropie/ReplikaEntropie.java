@@ -24,6 +24,7 @@ import net.blay09.mods.replikaentropie.loot.ModLoot;
 import net.blay09.mods.replikaentropie.menu.ModMenus;
 import net.blay09.mods.replikaentropie.network.ModNetworking;
 import net.blay09.mods.replikaentropie.recipe.ModRecipes;
+import net.blay09.mods.replikaentropie.registry.ModResearch;
 import net.blay09.mods.replikaentropie.worldgen.ModPoiTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -50,6 +51,7 @@ public class ReplikaEntropie {
         registrars.creativeModeTabs(ModItems::initialize);
         registrars.menuTypes(ModMenus::initialize);
         registrars.recipeTypes(ModRecipes::initialize);
+        ModResearch.initialize(registrars.registrar());
         registrars.poiTypes(ModPoiTypes::initialize);
         registrars.registrar(Registries.MOB_EFFECT, ModEffects::initialize);
 

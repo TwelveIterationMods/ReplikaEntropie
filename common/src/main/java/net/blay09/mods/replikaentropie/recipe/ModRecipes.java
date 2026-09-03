@@ -19,7 +19,6 @@ public class ModRecipes {
     public static DeferredRecipeType<SingleRecipeInput, OreVacuumRecipe> oreVacuum;
     public static DeferredRecipeType<RecipeInput, MetalDetectorRecipe> metalDetector;
     public static DeferredRecipeType<RecipeInput, AssemblerRecipe> assembler;
-    public static DeferredRecipeType<RecipeInput, ResearchRecipe> research;
 
     public static void initialize(BalmRecipeTypeRegistrar recipes) {
         fabricatorDisplay = recipes.registerDisplayType("fabricator", _ -> new RecipeDisplay.Type<>(FabricatorRecipeDisplay.MAP_CODEC, FabricatorRecipeDisplay.STREAM_CODEC))
@@ -65,9 +64,5 @@ public class ModRecipes {
                 .withRecipeBookCategory()
                 .asDeferredRecipeType();
 
-        research = recipes.register("research", ResearchRecipe.class)
-                .withSerializer(ResearchRecipe::serializer)
-                .withRecipeBookCategory()
-                .asDeferredRecipeType();
     }
 }

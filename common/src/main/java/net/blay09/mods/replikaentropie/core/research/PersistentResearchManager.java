@@ -3,7 +3,8 @@ package net.blay09.mods.replikaentropie.core.research;
 import net.blay09.mods.balm.Balm;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
-import net.blay09.mods.replikaentropie.recipe.ResearchRecipe;
+import net.blay09.mods.replikaentropie.registry.Research;
+import net.blay09.mods.replikaentropie.registry.ModResearch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -59,10 +60,10 @@ public class PersistentResearchManager implements ResearchManager {
 
         if (state == ResearchState.UNLOCKED && player instanceof ServerPlayer serverPlayer
                 && player.level() instanceof ServerLevel serverLevel) {
-            serverLevel.recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, id)).ifPresent(recipe -> {
-                if (recipe.value() instanceof ResearchRecipe researchRecipe
-                        && researchRecipe.type() == ResearchRecipe.Type.CRAFTING) {
-                    serverPlayer.awardRecipesByKey(researchRecipe.unlockedRecipes().stream().map(it -> ResourceKey.create(Registries.RECIPE, it)).toList());
+            ModResearch.registry(serverLevel.registryAccess()).get(id).ifPresent(researchHolder -> {
+                final var research = researchHolder.value();
+                if (research.type() == Research.Type.CRAFTING) {
+                    serverPlayer.awardRecipesByKey(research.unlockedRecipes().stream().map(it -> ResourceKey.create(Registries.RECIPE, it)).toList());
                 }
             });
         }

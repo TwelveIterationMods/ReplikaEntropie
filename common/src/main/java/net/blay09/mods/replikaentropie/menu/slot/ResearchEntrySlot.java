@@ -17,7 +17,7 @@ public class ResearchEntrySlot extends ReadonlySlot {
 
     public void setResearchEntry(@Nullable ResearchMenu.StatefulResearchEntry researchEntry) {
         this.researchEntry = researchEntry;
-        icon = researchEntry != null ? researchEntry.recipe().icon().create() : ItemStack.EMPTY;
+        icon = researchEntry != null ? researchEntry.research().icon().create() : ItemStack.EMPTY;
     }
 
     @Override

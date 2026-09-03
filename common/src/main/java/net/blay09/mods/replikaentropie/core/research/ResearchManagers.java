@@ -2,12 +2,11 @@ package net.blay09.mods.replikaentropie.core.research;
 
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
 
-public class Research {
+public class ResearchManagers {
 
     private static final InMemoryResearchManager localManager = new InMemoryResearchManager();
     private static final PersistentResearchManager persistentManager = new PersistentResearchManager();

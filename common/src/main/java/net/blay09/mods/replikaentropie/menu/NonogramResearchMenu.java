@@ -2,7 +2,7 @@ package net.blay09.mods.replikaentropie.menu;
 
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramClueProvider;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
-import net.blay09.mods.replikaentropie.core.research.Research;
+import net.blay09.mods.replikaentropie.core.research.ResearchManagers;
 import net.blay09.mods.replikaentropie.core.research.ResearchState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,12 +19,12 @@ public class NonogramResearchMenu extends NonogramMenu {
     @Override
     public void mark(int column, int row, int mark) {
         super.mark(column, row, mark);
-        Research.updateNonogram(playerInventory.player, researchId, nonogramState);
+        ResearchManagers.updateNonogram(playerInventory.player, researchId, nonogramState);
     }
 
     @Override
     public void markCompleted() {
         super.markCompleted();
-        Research.updateResearch(playerInventory.player, researchId, ResearchState.UNLOCKED);
+        ResearchManagers.updateResearch(playerInventory.player, researchId, ResearchState.UNLOCKED);
     }
 }

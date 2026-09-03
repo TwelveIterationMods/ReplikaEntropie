@@ -3,22 +3,17 @@ package net.blay09.mods.replikaentropie.fabric.datagen;
 import net.blay09.mods.replikaentropie.ReplikaEntropie;
 import net.blay09.mods.replikaentropie.block.ModBlocks;
 import net.blay09.mods.replikaentropie.item.ModItems;
-import net.blay09.mods.replikaentropie.recipe.ResearchRecipe;
+import net.blay09.mods.replikaentropie.registry.ModResearch;
+import net.blay09.mods.replikaentropie.registry.Research;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.advancements.Advancement;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,24 +21,21 @@ import java.util.concurrent.CompletableFuture;
 
 import static net.blay09.mods.replikaentropie.ReplikaEntropie.id;
 
-public class ModResearchRecipeProvider extends FabricRecipeProvider {
-    public ModResearchRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+public class ModResearchProvider extends FabricDynamicRegistryProvider {
+    public ModResearchProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
-        return new RecipeProvider(recipes, advancements) {
-            @Override
-            public void buildRecipes() {
+    protected void configure(HolderLookup.Provider registries, Entries entries) {
                 int sortOrder = 0;
                 research(id("sky_scraper"))
                         .icon(ModItems.skyScraper)
                         .nonogram(id("sky_scraper"))
                         .unlocksRecipe(id("handheld_analyzer"))
-                        .type(ResearchRecipe.Type.CRAFTING)
+                        .type(Research.Type.CRAFTING)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("handheld_analyzer"))
                         .icon(ModItems.handheldAnalyzer)
@@ -51,7 +43,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("handheld_analyzer"))
                         .costs(0, 0, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("automatic_hack_tool"))
                         .icon(ModItems.automaticHackTool)
@@ -59,17 +51,17 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("automatic_hack_tool"))
                         .costs(1, 0, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("recycler"))
                         .icon(ModBlocks.recycler)
                         .dependsOn(id("research/handheld_analyzer"))
                         .unlocksRecipe(id("recycler"))
-                        .type(ResearchRecipe.Type.CRAFTING)
+                        .type(Research.Type.CRAFTING)
                         .nonogram(id("recycler"))
                         .costs(5, 0, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("makeshift_psu"))
                         .icon(ModItems.makeshiftPSU)
@@ -77,7 +69,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("makeshift_psu"))
                         .costs(1, 0, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("water_sink"))
                         .icon(ModBlocks.waterSink)
@@ -87,8 +79,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("water_sink"))
                         .costs(4, 2, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("solar_sink"))
                         .icon(ModBlocks.solarSink)
@@ -98,8 +90,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("solar_sink"))
                         .costs(4, 2, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("scrap"))
                         .icon(ModItems.scrap)
@@ -107,7 +99,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("scrap"))
                         .costs(1, 1, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("biomass"))
                         .icon(ModItems.biomass)
@@ -115,7 +107,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("biomass"))
                         .costs(1, 0, 1, 0)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("fragments"))
                         .icon(ModItems.fragments)
@@ -123,7 +115,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("fragments"))
                         .costs(1, 0, 0, 1)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("biosteel"))
                         .icon(ModItems.biosteel)
@@ -131,9 +123,9 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .dependsOn(id("research/biomass"))
                         .nonogram(id("biosteel"))
                         .costs(1, 1, 1, 0)
-                        .type(ResearchRecipe.Type.CRAFTING)
+                        .type(Research.Type.CRAFTING)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("assembler"))
                         .icon(ModBlocks.assembler)
@@ -143,9 +135,9 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("assembler"))
                         .unlocksRecipe(id("assembler"))
                         .costs(5, 2, 2, 2)
-                        .type(ResearchRecipe.Type.CRAFTING)
+                        .type(Research.Type.CRAFTING)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("assembly_ticket"))
                         .icon(ModItems.assemblyTicket)
@@ -153,7 +145,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("assembly_ticket"))
                         .costs(1, 0, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("fabricator"))
                         .icon(ModBlocks.assembler)
@@ -162,8 +154,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("fabricator"))
                         .costs(5, 2, 2, 2)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("burst_energy"))
                         .icon(Items.LIGHTNING_ROD.weathering().unaffected())
@@ -171,7 +163,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("burst_energy"))
                         .costs(5, 12, 12, 6)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("chipset"))
                         .icon(ModItems.chipset)
@@ -179,9 +171,9 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .unlocksRecipe(id("assembler/chipset"))
                         .nonogram(id("chipset"))
                         .costs(4, 1, 0, 1)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .type(Research.Type.ASSEMBLER)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("blue_printer"))
                         .icon(ModBlocks.bluePrinter)
@@ -190,9 +182,9 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .unlocksRecipe(id("assembler/blue_printer"))
                         .nonogram(id("blue_printer"))
                         .costs(8, 4, 0, 2)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
+                        .type(Research.Type.ASSEMBLER)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("ore_vacuum"))
                         .icon(ModItems.oreVacuum)
@@ -201,8 +193,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("ore_vacuum"))
                         .costs(10, 8, 0, 2)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("nullphaser"))
                         .icon(ModItems.nullphaser)
@@ -211,8 +203,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("nullphaser"))
                         .costs(8, 4, 0, 8)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
 
 
@@ -223,8 +215,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("nightvision_goggles"))
                         .costs(12, 4, 0, 4)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("brightvision_goggles"))
                         .icon(ModItems.brightVisionGoggles)
@@ -233,8 +225,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("brightvision_goggles"))
                         .costs(24, 8, 8, 16)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("cobblescrap"))
                         .icon(ModBlocks.cobblescrap)
@@ -244,8 +236,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("cobblescrap"))
                         .costs(5, 2, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("lava_sink"))
                         .icon(ModBlocks.lavaSink)
@@ -255,8 +247,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("lava_sink"))
                         .costs(4, 2, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("biomass_incubator"))
                         .icon(ModBlocks.biomassIncubator)
@@ -266,8 +258,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("biomass_incubator"))
                         .costs(5, 0, 2, 0)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("entropic_data_miner"))
                         .icon(ModBlocks.entropicDataMiner)
@@ -276,8 +268,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("entropic_data_miner"))
                         .costs(0, 2, 2, 2)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("lavascrap"))
                         .icon(ModBlocks.lavascrap)
@@ -286,8 +278,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("lavascrap"))
                         .costs(10, 32, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("biomass_harvester"))
                         .icon(ModBlocks.biomassHarvester)
@@ -296,8 +288,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("biomass_harvester"))
                         .costs(10, 0, 32, 0)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("crane"))
                         .icon(ModBlocks.crane)
@@ -306,8 +298,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("crane"))
                         .costs(12, 8, 16, 4)
                         .sortOrder(sortOrder + 50)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("world_eater"))
                         .icon(ModBlocks.worldEater)
@@ -316,8 +308,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("world_eater"))
                         .costs(20, 64, 0, 0)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("fragment_accelerator"))
                         .icon(ModBlocks.fragmentAccelerator)
@@ -327,8 +319,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("fragment_accelerator"))
                         .costs(20, 0, 0, 32)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("fragmental_waste"))
                         .icon(ModBlocks.fragmentalWaste)
@@ -336,7 +328,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("fragmental_waste"))
                         .costs(1, 0, 0, 2)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("fragmental_heater"))
                         .icon(ModBlocks.fragmentalHeater)
@@ -345,8 +337,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("fragmental_heater"))
                         .costs(5, 0, 0, 2)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("hazmat"))
                         .icon(ModItems.hazmatHelmet)
@@ -355,11 +347,11 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .unlocksRecipe(id("hazmat_chestplate"))
                         .unlocksRecipe(id("hazmat_leggings"))
                         .unlocksRecipe(id("hazmat_boots"))
-                        .type(ResearchRecipe.Type.CRAFTING)
+                        .type(Research.Type.CRAFTING)
                         .nonogram(id("hazmat"))
                         .costs(1, 1, 4, 4)
                         .sortOrder(sortOrder += 100)
-                        .save(output);
+                        .save(entries);
 
                 research(id("chaos_engine"))
                         .icon(ModBlocks.chaosEngine)
@@ -369,8 +361,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("chaos_engine"))
                         .costs(20, 24, 12, 48)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("replika_workbench"))
                         .icon(ModBlocks.replikaWorkbench)
@@ -379,8 +371,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("replika_workbench"))
                         .costs(32, 32, 32, 32)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
 
 
@@ -391,8 +383,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("slowphasers"))
                         .costs(10, 4, 0, 4)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("magphasers"))
                         .icon(ModItems.magphasers)
@@ -401,8 +393,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("magphasers"))
                         .costs(20, 4, 0, 8)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("semisonic_speeders"))
                         .icon(ModItems.semisonicSpeeders)
@@ -411,8 +403,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("semisonic_speeders"))
                         .costs(12, 8, 4, 2)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("bouncers"))
                         .icon(ModItems.bouncers)
@@ -421,8 +413,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("bouncers"))
                         .costs(12, 8, 2, 0)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("stompers"))
                         .icon(ModItems.stompers)
@@ -431,8 +423,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("stompers"))
                         .costs(24, 8, 0, 2)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
 
                 research(id("gravilift_harness"))
                         .icon(ModItems.graviliftEngine)
@@ -441,15 +433,13 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
                         .nonogram(id("gravilift_harness"))
                         .costs(32, 16, 4, 32)
                         .sortOrder(sortOrder += 100)
-                        .type(ResearchRecipe.Type.ASSEMBLER)
-                        .save(output);
-            }
-        };
+                        .type(Research.Type.ASSEMBLER)
+                        .save(entries);
     }
 
     @Override
     public String getName() {
-        return ReplikaEntropie.MOD_ID + " Research Recipes";
+        return ReplikaEntropie.MOD_ID + " Research";
     }
 
     private static ResearchRecipeBuilder research(Identifier id) {
@@ -458,7 +448,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
 
     public static class ResearchRecipeBuilder {
         private final Identifier id;
-        private ItemStackTemplate icon;
+        private @Nullable ItemStackTemplate icon;
         private final List<Identifier> hardDependencies = new ArrayList<>();
         private final List<Identifier> softDependencies = new ArrayList<>();
         private final List<Identifier> unlockedRecipes = new ArrayList<>();
@@ -467,8 +457,8 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
         private int fragments;
         private int data;
         private int sortOrder;
-        private ResearchRecipe.Type type = ResearchRecipe.Type.LORE;
-        private Identifier nonogram;
+        private Research.Type type = Research.Type.LORE;
+        private @Nullable Identifier nonogram;
 
         private ResearchRecipeBuilder(Identifier id) {
             this.id = id;
@@ -504,7 +494,7 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
             return this;
         }
 
-        public ResearchRecipeBuilder type(ResearchRecipe.Type type) {
+        public ResearchRecipeBuilder type(Research.Type type) {
             this.type = type;
             return this;
         }
@@ -524,12 +514,14 @@ public class ModResearchRecipeProvider extends FabricRecipeProvider {
             return this;
         }
 
-        public void save(RecipeOutput output) {
-            final var recipeId = id.withPrefix("research/");
+        public void save(Entries entries) {
+            final var researchId = id.withPrefix("research/");
             if (icon == null) {
-                throw new IllegalStateException("Research recipe " + recipeId + " is missing an icon");
+                throw new IllegalStateException("Research " + researchId + " is missing an icon");
+            } else if (nonogram == null) {
+                throw new IllegalStateException("Research " + researchId + " is missing a nonogram");
             }
-            output.accept(ResourceKey.create(Registries.RECIPE, recipeId), new ResearchRecipe(icon, hardDependencies, softDependencies, unlockedRecipes, scrap, biomass, fragments, data, sortOrder, type, nonogram), null);
+            entries.add(ResourceKey.create(ModResearch.REGISTRY_KEY, researchId), new Research(icon, hardDependencies, softDependencies, unlockedRecipes, scrap, biomass, fragments, data, sortOrder, type, nonogram));
         }
     }
 }

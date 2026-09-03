@@ -20,6 +20,6 @@ public class ModDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(ModFabricatorRecipeProvider::new);
         pack.addProvider(ModFragmentalHeaterRecipeProvider::new);
         pack.addProvider(ModAssemblerRecipeProvider::new);
-        pack.addProvider(ModResearchRecipeProvider::new);
+        pack.addProvider(ModResearchProvider::new);
     }
 }

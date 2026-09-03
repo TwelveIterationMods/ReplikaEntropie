@@ -6,14 +6,13 @@ import net.blay09.mods.replikaentropie.component.AssemblyTicket;
 import net.blay09.mods.replikaentropie.component.ModDataComponents;
 import net.blay09.mods.replikaentropie.core.analyzer.Analyzer;
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramLoader;
-import net.blay09.mods.replikaentropie.core.research.Research;
+import net.blay09.mods.replikaentropie.core.research.ResearchManagers;
 import net.blay09.mods.replikaentropie.core.research.ResearchState;
 import net.blay09.mods.replikaentropie.item.ModItems;
 import net.blay09.mods.replikaentropie.menu.slot.ResearchCostSlot;
 import net.blay09.mods.replikaentropie.menu.slot.ResearchEntrySlot;
-import net.blay09.mods.replikaentropie.recipe.ModRecipes;
-import net.blay09.mods.replikaentropie.recipe.ResearchRecipe;
-import net.minecraft.network.FriendlyByteBuf;
+import net.blay09.mods.replikaentropie.registry.ModResearch;
+import net.blay09.mods.replikaentropie.registry.Research;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.chat.Component;
@@ -25,7 +24,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Prediction;
-import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -66,17 +64,13 @@ public class ResearchMenu extends AbstractContainerMenu {
         }
     }
 
-    public record StatefulResearchEntry(Identifier id, ResearchRecipe recipe, MenuResearchState state) {
-        private static final StreamCodec<RegistryFriendlyByteBuf, ResearchRecipe> RESEARCH_RECIPE_STREAM_CODEC = StreamCodec.of(
-                (buf, recipe) -> ModRecipes.research.serializer().streamCodec().encode(buf, recipe),
-                buf -> ModRecipes.research.serializer().streamCodec().decode(buf)
-        );
+    public record StatefulResearchEntry(Identifier id, Research research, MenuResearchState state) {
 
         public static final StreamCodec<RegistryFriendlyByteBuf, StatefulResearchEntry> STREAM_CODEC = StreamCodec.composite(
                 Identifier.STREAM_CODEC,
                 StatefulResearchEntry::id,
-                RESEARCH_RECIPE_STREAM_CODEC,
-                StatefulResearchEntry::recipe,
+                Research.STREAM_CODEC,
+                StatefulResearchEntry::research,
                 ByteBufCodecs.idMapper(MenuResearchState.BY_ID, MenuResearchState::ordinal).cast(),
                 StatefulResearchEntry::state,
                 StatefulResearchEntry::new
@@ -114,7 +108,7 @@ public class ResearchMenu extends AbstractContainerMenu {
     private final List<StatefulResearchEntry> filteredEntries;
     private final Comparator<StatefulResearchEntry> currentSorting =
             Comparator.comparingInt((StatefulResearchEntry it) -> it.state().priority())
-                    .thenComparingInt(it -> it.recipe().sortOrder())
+                    .thenComparingInt(it -> it.research().sortOrder())
                     .thenComparing(StatefulResearchEntry::id);
 
     @Nullable
@@ -185,22 +179,22 @@ public class ResearchMenu extends AbstractContainerMenu {
         final var entry = buttonId >= 0 && buttonId < researchEntries.size() ? researchEntries.get(buttonId) : null;
         if (entry != null) {
             if (entry.state() == MenuResearchState.AVAILABLE) {
-                final var recipe = entry.recipe();
-                if (recipe != null && recipe.dataCost() > 0) {
-                    Analyzer.getManager(player).grantData(player, -recipe.dataCost());
+                final var research = entry.research();
+                if (research.dataCost() > 0) {
+                    Analyzer.getManager(player).grantData(player, -research.dataCost());
                 }
                 final var inventory = player.getInventory();
-                if (recipe != null && recipe.scrapCost() > 0) {
-                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.scrap.asItem()), false, recipe.scrapCost(), inventory);
+                if (research.scrapCost() > 0) {
+                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.scrap.asItem()), false, research.scrapCost(), inventory);
                 }
-                if (recipe != null && recipe.biomassCost() > 0) {
-                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.biomass.asItem()), false, recipe.biomassCost(), inventory);
+                if (research.biomassCost() > 0) {
+                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.biomass.asItem()), false, research.biomassCost(), inventory);
                 }
-                if (recipe != null && recipe.fragmentsCost() > 0) {
-                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.fragments.asItem()), false, recipe.fragmentsCost(), inventory);
+                if (research.fragmentsCost() > 0) {
+                    inventory.clearOrCountMatchingItems(it -> it.is(ModItems.fragments.asItem()), false, research.fragmentsCost(), inventory);
                 }
                 player.inventoryMenu.broadcastChanges();
-                Research.updateResearch(player, entry.id(), ResearchState.IN_PROGRESS);
+                ResearchManagers.updateResearch(player, entry.id(), ResearchState.IN_PROGRESS);
                 openNonogram(player, entry);
             } else if (entry.state() == MenuResearchState.IN_PROGRESS) {
                 openNonogram(player, entry);
@@ -218,9 +212,9 @@ public class ResearchMenu extends AbstractContainerMenu {
     private ItemStack printAssemblyTicket(StatefulResearchEntry entry) {
         final var itemStack = ModItems.assemblyTicket.createStack();
         itemStack.set(DataComponents.CUSTOM_NAME, entry.title());
-        final var recipe = entry.recipe();
-        if (recipe != null && !recipe.unlockedRecipes().isEmpty()) {
-            itemStack.set(ModDataComponents.assemblyTicket(), new AssemblyTicket(recipe.unlockedRecipes().get(0), 1));
+        final var research = entry.research();
+        if (!research.unlockedRecipes().isEmpty()) {
+            itemStack.set(ModDataComponents.assemblyTicket(), new AssemblyTicket(research.unlockedRecipes().getFirst(), 1));
         }
         return itemStack;
     }
@@ -235,9 +229,9 @@ public class ResearchMenu extends AbstractContainerMenu {
             @Override
             public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
                 final var researchId = entry.id();
-                final var nonogram = NonogramLoader.getNonogram(entry.recipe().nonogram())
+                final var nonogram = NonogramLoader.getNonogram(entry.research().nonogram())
                         .orElseGet(NonogramLoader::createFallback);
-                final var nonogramState = Research.getNonogramState(player, researchId)
+                final var nonogramState = ResearchManagers.getNonogramState(player, researchId)
                         .map(nonogram::ensureState)
                         .orElseGet(nonogram::createState);
                 return new NonogramResearchMenu(containerId, inventory, nonogram, nonogramState, researchId);
@@ -245,9 +239,9 @@ public class ResearchMenu extends AbstractContainerMenu {
 
             @Override
             public NonogramMenu.Data getScreenOpeningData(ServerPlayer player) {
-                final var nonogram = NonogramLoader.getNonogram(entry.recipe().nonogram())
+                final var nonogram = NonogramLoader.getNonogram(entry.research().nonogram())
                         .orElseGet(NonogramLoader::createFallback);
-                final var nonogramState = Research.getNonogramState(player, entry.id())
+                final var nonogramState = ResearchManagers.getNonogramState(player, entry.id())
                         .map(nonogram::ensureState)
                         .orElseGet(nonogram::createState);
                 return new NonogramMenu.Data(nonogram.clues(), nonogramState);
@@ -282,11 +276,11 @@ public class ResearchMenu extends AbstractContainerMenu {
             return;
         }
 
-        final var recipe = statefulEntry.recipe();
-        final var data = recipe != null ? recipe.dataCost() : 0;
-        final var scrap = recipe != null ? recipe.scrapCost() : 0;
-        final var biomass = recipe != null ? recipe.biomassCost() : 0;
-        final var fragments = recipe != null ? recipe.fragmentsCost() : 0;
+        final var research = statefulEntry.research();
+        final var data = research.dataCost();
+        final var scrap = research.scrapCost();
+        final var biomass = research.biomassCost();
+        final var fragments = research.fragmentsCost();
         dataCostSlot.setCost(statefulEntry.state().requiresPayment() ? data : 0);
         dataCostSlot.setAvailable(Mth.clamp(dataCollected, 0, data));
         scrapCostSlot.setCost(statefulEntry.state().requiresPayment() ? scrap : 0);
@@ -338,10 +332,8 @@ public class ResearchMenu extends AbstractContainerMenu {
             return false;
         }
 
-        final var recipe = clientSelectedResearch.recipe();
-        return recipe != null
-                && recipe.type() == ResearchRecipe.Type.ASSEMBLER
-                && !recipe.unlockedRecipes().isEmpty();
+        final var research = clientSelectedResearch.research();
+        return research.type() == Research.Type.ASSEMBLER && !research.unlockedRecipes().isEmpty();
     }
 
     public boolean clientMissingIngredients() {
@@ -354,7 +346,7 @@ public class ResearchMenu extends AbstractContainerMenu {
     }
 
     public void setSearchQuery(String query) {
-        final var lowercaseQuery = query != null ? query.trim().toLowerCase(Locale.ROOT) : "";
+        final var lowercaseQuery = query.trim().toLowerCase(Locale.ROOT);
         filteredEntries.clear();
         if (lowercaseQuery.isEmpty()) {
             filteredEntries.addAll(researchEntries);
@@ -375,7 +367,7 @@ public class ResearchMenu extends AbstractContainerMenu {
     public int getFilteredIndexOf(Identifier id) {
         for (int i = 0; i < filteredEntries.size(); i++) {
             final var entry = filteredEntries.get(i);
-            if (entry.recipe() != null && entry.id().equals(id)) {
+            if (entry.id().equals(id)) {
                 return i;
             }
         }
@@ -410,27 +402,25 @@ public class ResearchMenu extends AbstractContainerMenu {
                 return new ResearchMenu.Data(List.of(), dataCollected);
             }
 
-            final var recipeManager = serverLevel.recipeAccess();
-            final var researchManager = Research.getManager(player);
+            final var researchManager = ResearchManagers.getManager(player);
 
-            final var entries = recipeManager.getRecipes().stream()
-                    .filter(holder -> holder.value().getType() == ModRecipes.research.type())
-                    .map(holder -> {
-                        final var id = holder.id().identifier();
-                        final var recipe = (ResearchRecipe) holder.value();
+            final var entries = ModResearch.registry(serverLevel.registryAccess()).listElements()
+                    .map(researchHolder -> {
+                        final var id = researchHolder.key().identifier();
+                        final var research = researchHolder.value();
                         final var state = researchManager.getResearchState(player, id);
                         if (state == ResearchState.NONE) {
-                            if (!researchManager.meetsDependencies(player, recipe.hardDependencies())) {
+                            if (!researchManager.meetsDependencies(player, research.hardDependencies())) {
                                 return null;
                             }
                         }
 
                         final var menuState = switch (state) {
                             case NONE -> {
-                                if (!researchManager.meetsDependencies(player, recipe.softDependencies())) {
+                                if (!researchManager.meetsDependencies(player, research.softDependencies())) {
                                     yield MenuResearchState.MISSING_DEPENDENCIES;
                                 }
-                                if (!canAfford(player, recipe)) {
+                                if (!canAfford(player, research)) {
                                     yield MenuResearchState.MISSING_INGREDIENTS;
                                 }
                                 yield MenuResearchState.AVAILABLE;
@@ -439,22 +429,22 @@ public class ResearchMenu extends AbstractContainerMenu {
                             default -> MenuResearchState.UNLOCKED;
                         };
 
-                        return new ResearchMenu.StatefulResearchEntry(id, recipe, menuState);
+                        return new ResearchMenu.StatefulResearchEntry(id, research, menuState);
                     })
                     .filter(Objects::nonNull)
                     .toList();
             return new ResearchMenu.Data(entries, dataCollected);
         }
 
-        private static boolean canAfford(Player player, ResearchRecipe recipe) {
+        private static boolean canAfford(Player player, Research research) {
             final var dataCollected = Analyzer.getManager(player).getDataCollected(player);
             final var scrap = player.getInventory().countItem(ModItems.scrap.asItem());
             final var biomass = player.getInventory().countItem(ModItems.biomass.asItem());
             final var fragments = player.getInventory().countItem(ModItems.fragments.asItem());
-            return dataCollected >= recipe.dataCost()
-                    && scrap >= recipe.scrapCost()
-                    && biomass >= recipe.biomassCost()
-                    && fragments >= recipe.fragmentsCost();
+            return dataCollected >= research.dataCost()
+                    && scrap >= research.scrapCost()
+                    && biomass >= research.biomassCost()
+                    && fragments >= research.fragmentsCost();
         }
     }
 

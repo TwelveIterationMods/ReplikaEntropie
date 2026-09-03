@@ -1,7 +1,6 @@
 package net.blay09.mods.replikaentropie.core.research;
 
 import net.blay09.mods.replikaentropie.core.nonogram.NonogramState;
-import net.blay09.mods.replikaentropie.recipe.ResearchRecipe;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
