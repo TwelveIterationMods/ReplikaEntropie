@@ -1,0 +1,12 @@
+{
+  "data": 1,
+  "hardDependencies": [
+    "replikaentropie:research/recycler"
+  ],
+  "icon": {
+    "id": "replikaentropie:scrap"
+  },
+  "nonogram": "replikaentropie:scrap",
+  "scrap": 1,
+  "sort_order": 800
+}

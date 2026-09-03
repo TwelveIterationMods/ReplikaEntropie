@@ -1,0 +1,14 @@
+{
+  "biomass": 12,
+  "data": 5,
+  "fragments": 6,
+  "hardDependencies": [
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "id": "minecraft:lightning_rod"
+  },
+  "nonogram": "replikaentropie:burst_energy",
+  "scrap": 12,
+  "sort_order": 1500
+}

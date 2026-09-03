@@ -1,0 +1,11 @@
+{
+  "data": 1,
+  "hardDependencies": [
+    "replikaentropie:research/recycler"
+  ],
+  "icon": {
+    "id": "replikaentropie:makeshift_psu"
+  },
+  "nonogram": "replikaentropie:makeshift_psu",
+  "sort_order": 500
+}

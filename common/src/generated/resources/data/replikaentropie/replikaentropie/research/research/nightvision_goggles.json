@@ -1,0 +1,17 @@
+{
+  "data": 12,
+  "fragments": 4,
+  "hardDependencies": [
+    "replikaentropie:research/burst_energy"
+  ],
+  "icon": {
+    "id": "replikaentropie:nightvision_goggles"
+  },
+  "nonogram": "replikaentropie:nightvision_goggles",
+  "research_type": "assembler",
+  "scrap": 4,
+  "sort_order": 2000,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/nightvision_goggles"
+  ]
+}

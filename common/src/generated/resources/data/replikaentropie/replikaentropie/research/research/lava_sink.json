@@ -1,0 +1,17 @@
+{
+  "data": 4,
+  "hardDependencies": [
+    "replikaentropie:research/makeshift_psu",
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "id": "replikaentropie:lava_sink"
+  },
+  "nonogram": "replikaentropie:lava_sink",
+  "research_type": "assembler",
+  "scrap": 2,
+  "sort_order": 2300,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/lava_sink"
+  ]
+}

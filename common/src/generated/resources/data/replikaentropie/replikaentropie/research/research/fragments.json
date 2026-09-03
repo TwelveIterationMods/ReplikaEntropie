@@ -1,0 +1,12 @@
+{
+  "data": 1,
+  "fragments": 1,
+  "hardDependencies": [
+    "replikaentropie:research/recycler"
+  ],
+  "icon": {
+    "id": "replikaentropie:fragments"
+  },
+  "nonogram": "replikaentropie:fragments",
+  "sort_order": 1000
+}

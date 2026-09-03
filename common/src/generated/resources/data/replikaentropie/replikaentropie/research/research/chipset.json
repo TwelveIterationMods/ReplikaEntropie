@@ -1,0 +1,17 @@
+{
+  "data": 4,
+  "fragments": 1,
+  "hardDependencies": [
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "id": "replikaentropie:chipset"
+  },
+  "nonogram": "replikaentropie:chipset",
+  "research_type": "assembler",
+  "scrap": 1,
+  "sort_order": 1600,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/chipset"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "data": 10,
+  "fragments": 2,
+  "hardDependencies": [
+    "replikaentropie:research/burst_energy"
+  ],
+  "icon": {
+    "id": "replikaentropie:ore_vacuum"
+  },
+  "nonogram": "replikaentropie:ore_vacuum",
+  "research_type": "assembler",
+  "scrap": 8,
+  "sort_order": 1800,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/ore_vacuum"
+  ]
+}

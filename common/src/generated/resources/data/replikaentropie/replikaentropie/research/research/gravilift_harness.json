@@ -1,0 +1,18 @@
+{
+  "biomass": 4,
+  "data": 32,
+  "fragments": 32,
+  "hardDependencies": [
+    "replikaentropie:research/replika_workbench"
+  ],
+  "icon": {
+    "id": "replikaentropie:gravilift_engine"
+  },
+  "nonogram": "replikaentropie:gravilift_harness",
+  "research_type": "assembler",
+  "scrap": 16,
+  "sort_order": 4000,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/gravilift_harness"
+  ]
+}

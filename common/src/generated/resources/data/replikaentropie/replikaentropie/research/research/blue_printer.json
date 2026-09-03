@@ -1,0 +1,18 @@
+{
+  "data": 8,
+  "fragments": 2,
+  "hardDependencies": [
+    "replikaentropie:research/assembly_ticket",
+    "replikaentropie:research/chipset"
+  ],
+  "icon": {
+    "id": "replikaentropie:blue_printer"
+  },
+  "nonogram": "replikaentropie:blue_printer",
+  "research_type": "assembler",
+  "scrap": 4,
+  "sort_order": 1700,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/blue_printer"
+  ]
+}

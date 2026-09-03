@@ -1,0 +1,16 @@
+{
+  "data": 5,
+  "fragments": 2,
+  "hardDependencies": [
+    "replikaentropie:research/fragment_accelerator"
+  ],
+  "icon": {
+    "id": "replikaentropie:fragmental_heater"
+  },
+  "nonogram": "replikaentropie:fragmental_heater",
+  "research_type": "assembler",
+  "sort_order": 3100,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/fragmental_heater"
+  ]
+}

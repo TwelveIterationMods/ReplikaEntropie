@@ -1,0 +1,15 @@
+{
+  "data": 5,
+  "hardDependencies": [
+    "replikaentropie:research/handheld_analyzer"
+  ],
+  "icon": {
+    "id": "replikaentropie:recycler"
+  },
+  "nonogram": "replikaentropie:recycler",
+  "research_type": "crafting",
+  "sort_order": 400,
+  "unlocked_recipes": [
+    "replikaentropie:recycler"
+  ]
+}

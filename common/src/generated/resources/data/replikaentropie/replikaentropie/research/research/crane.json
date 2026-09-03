@@ -1,0 +1,18 @@
+{
+  "biomass": 16,
+  "data": 12,
+  "fragments": 4,
+  "hardDependencies": [
+    "replikaentropie:research/assembler"
+  ],
+  "icon": {
+    "id": "replikaentropie:crane"
+  },
+  "nonogram": "replikaentropie:crane",
+  "research_type": "assembler",
+  "scrap": 8,
+  "sort_order": 2750,
+  "unlocked_recipes": [
+    "replikaentropie:assembler/crane"
+  ]
+}
