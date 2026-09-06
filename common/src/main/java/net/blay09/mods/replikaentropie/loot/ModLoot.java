@@ -61,7 +61,7 @@ public class ModLoot {
                     return;
                 }
 
-                final var blockEntity = context.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+                final var blockEntity = context.getOptional(LootContextParams.BLOCK_ENTITY);
                 if (!(blockEntity instanceof DigSpotBlockEntity digSpotBlockEntity) || digSpotBlockEntity.getLootTable() == null) {
                     return;
                 }
